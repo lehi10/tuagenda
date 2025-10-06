@@ -1,13 +1,11 @@
-"use client";
+"use client"
 
 import { GalleryVerticalEnd } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { LoginForm } from "@/components/login-form"
 
 export default function LoginPage() {
-  const router = useRouter();
-
-  
+  const router = useRouter()
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -16,8 +14,6 @@ export default function LoginPage() {
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
           </div>
-
-          
           Acme Inc.
         </a>
         <LoginForm
