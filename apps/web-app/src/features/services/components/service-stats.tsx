@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Briefcase, DollarSign, TrendingUp } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
+import { Briefcase, DollarSign, TrendingUp } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
 
 export function ServiceStats() {
   const stats = [
@@ -23,7 +23,7 @@ export function ServiceStats() {
       icon: DollarSign,
       description: "Across all services",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -31,5 +31,5 @@ export function ServiceStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

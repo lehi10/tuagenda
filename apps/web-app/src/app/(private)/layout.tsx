@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import React from "react"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-import { OrganizationProvider } from "@/contexts/organization-context"
-import { PrivateFooter } from "@/components/private-footer"
+import React from "react";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { OrganizationProvider } from "@/contexts/organization-context";
+import { PrivateFooter } from "@/components/private-footer";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <OrganizationProvider>
@@ -23,5 +23,5 @@ export default function RootLayout({
         </SidebarInset>
       </SidebarProvider>
     </OrganizationProvider>
-  )
+  );
 }

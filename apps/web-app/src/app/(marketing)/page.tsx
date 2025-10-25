@@ -1,8 +1,9 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "@/i18n"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
+import Link from "next/link";
+import Image from "next/image";
 import {
   Calendar,
   Users,
@@ -10,10 +11,10 @@ import {
   BarChart3,
   MapPin,
   CreditCard,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function Home() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const features = [
     {
@@ -46,7 +47,7 @@ export default function Home() {
       title: t.landing.features.payments.title,
       description: t.landing.features.payments.description,
     },
-  ]
+  ];
 
   const testimonials = [
     {
@@ -67,7 +68,7 @@ export default function Home() {
       role: t.landing.testimonials.testimonial3.role,
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Laura",
     },
-  ]
+  ];
 
   return (
     <>
@@ -146,9 +147,11 @@ export default function Home() {
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
                 <div className="mt-6 flex items-center gap-3">
-                  <img
+                  <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
+                    width={48}
+                    height={48}
                     className="h-12 w-12 rounded-full"
                   />
                   <div>
@@ -187,5 +190,5 @@ export default function Home() {
         </div>
       </section>
     </>
-  )
+  );
 }

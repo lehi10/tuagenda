@@ -1,30 +1,40 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useTranslation } from "@/i18n"
+} from "@/components/ui/select";
+import { useTranslation } from "@/i18n";
 
 export function SettingsTabs() {
-  const { t, locale, setLocale } = useTranslation()
+  const { t, locale, setLocale } = useTranslation();
 
   return (
     <Tabs defaultValue="general" className="space-y-4">
       <TabsList>
         <TabsTrigger value="general">{t.pages.settings.general}</TabsTrigger>
         <TabsTrigger value="profile">{t.pages.settings.profile}</TabsTrigger>
-        <TabsTrigger value="notifications">{t.pages.settings.notifications}</TabsTrigger>
-        <TabsTrigger value="preferences">{t.pages.settings.preferences}</TabsTrigger>
+        <TabsTrigger value="notifications">
+          {t.pages.settings.notifications}
+        </TabsTrigger>
+        <TabsTrigger value="preferences">
+          {t.pages.settings.preferences}
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="general" className="space-y-4">
@@ -42,11 +52,19 @@ export function SettingsTabs() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="business-email">Business Email</Label>
-              <Input id="business-email" type="email" defaultValue="contact@acme.com" />
+              <Input
+                id="business-email"
+                type="email"
+                defaultValue="contact@acme.com"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="business-phone">Business Phone</Label>
-              <Input id="business-phone" type="tel" defaultValue="(555) 123-4567" />
+              <Input
+                id="business-phone"
+                type="tel"
+                defaultValue="(555) 123-4567"
+              />
             </div>
             <Button>{t.common.save}</Button>
           </CardContent>
@@ -57,9 +75,7 @@ export function SettingsTabs() {
         <Card>
           <CardHeader>
             <CardTitle>{t.pages.settings.profile}</CardTitle>
-            <CardDescription>
-              Update your personal information
-            </CardDescription>
+            <CardDescription>Update your personal information</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -133,9 +149,7 @@ export function SettingsTabs() {
         <Card>
           <CardHeader>
             <CardTitle>{t.pages.settings.preferences}</CardTitle>
-            <CardDescription>
-              Customize your experience
-            </CardDescription>
+            <CardDescription>Customize your experience</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -185,5 +199,5 @@ export function SettingsTabs() {
         </Card>
       </TabsContent>
     </Tabs>
-  )
+  );
 }

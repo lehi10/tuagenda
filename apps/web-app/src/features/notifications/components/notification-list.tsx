@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { Bell, Calendar, DollarSign, UserPlus } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useTranslation } from "@/i18n"
+import { Bell, Calendar, DollarSign, UserPlus } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslation } from "@/i18n";
 
 interface Notification {
-  id: string
-  type: "appointment" | "payment" | "client" | "general"
-  title: string
-  message: string
-  time: string
-  read: boolean
+  id: string;
+  type: "appointment" | "payment" | "client" | "general";
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
 }
 
 export function NotificationList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const notifications: Notification[] = [
     {
@@ -52,25 +52,29 @@ export function NotificationList() {
       time: "1 day ago",
       read: true,
     },
-  ]
+  ];
 
   const getIcon = (type: string) => {
     switch (type) {
       case "appointment":
-        return <Calendar className="h-5 w-5" />
+        return <Calendar className="h-5 w-5" />;
       case "payment":
-        return <DollarSign className="h-5 w-5" />
+        return <DollarSign className="h-5 w-5" />;
       case "client":
-        return <UserPlus className="h-5 w-5" />
+        return <UserPlus className="h-5 w-5" />;
       default:
-        return <Bell className="h-5 w-5" />
+        return <Bell className="h-5 w-5" />;
     }
-  }
+  };
 
-  const unreadNotifications = notifications.filter((n) => !n.read)
-  const allNotifications = notifications
+  const unreadNotifications = notifications.filter((n) => !n.read);
+  const allNotifications = notifications;
 
-  const NotificationCard = ({ notification }: { notification: Notification }) => (
+  const NotificationCard = ({
+    notification,
+  }: {
+    notification: Notification;
+  }) => (
     <Card className={notification.read ? "opacity-60" : ""}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
@@ -96,7 +100,7 @@ export function NotificationList() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 
   return (
     <div>
@@ -124,17 +128,23 @@ export function NotificationList() {
             </p>
           ) : (
             unreadNotifications.map((notification) => (
-              <NotificationCard key={notification.id} notification={notification} />
+              <NotificationCard
+                key={notification.id}
+                notification={notification}
+              />
             ))
           )}
         </TabsContent>
 
         <TabsContent value="all" className="space-y-3">
           {allNotifications.map((notification) => (
-            <NotificationCard key={notification.id} notification={notification} />
+            <NotificationCard
+              key={notification.id}
+              notification={notification}
+            />
           ))}
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

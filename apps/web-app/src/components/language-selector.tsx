@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useTranslation, type Locale } from "@/i18n"
+import { useTranslation } from "@/i18n";
 
 export function LanguageSelector() {
-  const { locale, setLocale } = useTranslation()
+  const { locale, setLocale } = useTranslation();
 
   return (
     <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
@@ -25,5 +25,5 @@ export function LanguageSelector() {
         ES
       </button>
     </div>
-  )
+  );
 }

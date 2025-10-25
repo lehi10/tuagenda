@@ -1,55 +1,55 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Separator } from "@/components/ui/separator"
-import { useTranslation } from "@/i18n"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "@/i18n";
 
 interface ClientInfoStepProps {
   onContinue: (data: {
-    fullName: string
-    phone: string
-    email: string
-    password?: string
-    createAccount: boolean
-  }) => void
-  isAuthenticated?: boolean
+    fullName: string;
+    phone: string;
+    email: string;
+    password?: string;
+    createAccount: boolean;
+  }) => void;
+  isAuthenticated?: boolean;
 }
 
 export function ClientInfoStep({
   onContinue,
   isAuthenticated = false,
 }: ClientInfoStepProps) {
-  const { t } = useTranslation()
-  const [fullName, setFullName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [createAccount, setCreateAccount] = useState(false)
+  const { t } = useTranslation();
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [createAccount, setCreateAccount] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     onContinue({
       fullName,
       phone,
       email,
       password: createAccount ? password : undefined,
       createAccount,
-    })
-  }
+    });
+  };
 
   const handleLoginClick = () => {
     // TODO: Implement login modal/redirect
-    console.log("Login clicked")
-  }
+    console.log("Login clicked");
+  };
 
   const handleSocialLogin = (provider: string) => {
     // TODO: Implement social login
-    console.log(`${provider} login clicked`)
-  }
+    console.log(`${provider} login clicked`);
+  };
 
   return (
     <div className="space-y-6">
@@ -195,7 +195,9 @@ export function ClientInfoStep({
               <Checkbox
                 id="createAccount"
                 checked={createAccount}
-                onCheckedChange={(checked) => setCreateAccount(checked === true)}
+                onCheckedChange={(checked) =>
+                  setCreateAccount(checked === true)
+                }
               />
               <Label
                 htmlFor="createAccount"
@@ -223,7 +225,9 @@ export function ClientInfoStep({
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirmar Contraseña *</Label>
+                  <Label htmlFor="confirmPassword">
+                    Confirmar Contraseña *
+                  </Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -242,5 +246,5 @@ export function ClientInfoStep({
         </Button>
       </form>
     </div>
-  )
+  );
 }

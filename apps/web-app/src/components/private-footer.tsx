@@ -1,7 +1,7 @@
-import packageJson from "../../package.json"
+import packageJson from "../../package.json";
 
 export function PrivateFooter() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="border-t py-4">
@@ -11,5 +11,5 @@ export function PrivateFooter() {
         </p>
       </div>
     </footer>
-  )
+  );
 }

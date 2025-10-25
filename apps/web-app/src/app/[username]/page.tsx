@@ -1,23 +1,22 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { BusinessProfile } from "@/components/booking/business-profile"
-import { BookingSummary } from "@/components/booking/booking-summary"
-import { ServiceSelection } from "@/components/booking/service-selection"
-import { ProfessionalSelection } from "@/components/booking/professional-selection"
-import { DateSelection } from "@/components/booking/date-selection"
-import { TimeSlotSelection } from "@/components/booking/time-slot-selection"
-import { ClientInfoStep } from "@/components/booking/client-info-step"
-import { PaymentStep, PaymentMethod } from "@/components/booking/payment-step"
-import { ConfirmationStep } from "@/components/booking/confirmation-step"
-import { PublicFooter } from "@/components/public-footer"
+import { useState, useEffect } from "react";
+import { BusinessProfile } from "@/components/booking/business-profile";
+import { BookingSummary } from "@/components/booking/booking-summary";
+import { ServiceSelection } from "@/components/booking/service-selection";
+import { ProfessionalSelection } from "@/components/booking/professional-selection";
+import { DateSelection } from "@/components/booking/date-selection";
+import { TimeSlotSelection } from "@/components/booking/time-slot-selection";
+import { ClientInfoStep } from "@/components/booking/client-info-step";
+import { PaymentStep, PaymentMethod } from "@/components/booking/payment-step";
+import { ConfirmationStep } from "@/components/booking/confirmation-step";
+import { PublicFooter } from "@/components/public-footer";
 import {
   defaultStepConfig,
-  getEnabledSteps,
   getNextStep,
   type StepType,
   type StepConfig,
-} from "@/lib/booking-steps"
+} from "@/lib/booking-steps";
 
 // Mock data - Replace with actual data fetching based on [username]
 const mockBusiness = {
@@ -28,7 +27,7 @@ const mockBusiness = {
   email: "contacto@elegance.com",
   phone: "+51 999 888 777",
   location: "Av. Principal 123, Lima",
-}
+};
 
 const mockServices = [
   {
@@ -85,7 +84,7 @@ const mockServices = [
     category: "Uñas",
     location: "in-person" as const,
   },
-]
+];
 
 const mockProfessionals = [
   {
@@ -109,64 +108,63 @@ const mockProfessionals = [
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ana",
     available: true,
   },
-]
+];
 
 // Generate time slots (9 AM to 6 PM)
 const generateTimeSlots = () => {
-  const slots = []
+  const slots = [];
   for (let hour = 9; hour < 18; hour++) {
     slots.push({
       time: `${hour.toString().padStart(2, "0")}:00`,
       available: Math.random() > 0.3,
-    })
+    });
     slots.push({
       time: `${hour.toString().padStart(2, "0")}:30`,
       available: Math.random() > 0.3,
-    })
+    });
   }
-  return slots
-}
+  return slots;
+};
 
 interface BookingData {
   service?: {
-    id: string
-    name: string
-    duration: number
-    price: number
-    location: "in-person" | "virtual"
-  }
+    id: string;
+    name: string;
+    duration: number;
+    price: number;
+    location: "in-person" | "virtual";
+  };
   professional?: {
-    id: string
-    name: string
-  }
-  date?: Date
-  timeSlot?: string
+    id: string;
+    name: string;
+  };
+  date?: Date;
+  timeSlot?: string;
   clientInfo?: {
-    fullName: string
-    email: string
-    phone: string
-    password?: string
-    createAccount: boolean
-  }
-  paymentMethod?: PaymentMethod
+    fullName: string;
+    email: string;
+    phone: string;
+    password?: string;
+    createAccount: boolean;
+  };
+  paymentMethod?: PaymentMethod;
 }
 
 export default function BookingPage() {
   // You can modify this configuration based on business settings
   // For example, if business has only one professional:
   // const stepConfig = singleProfessionalConfig
-  const stepConfig: StepConfig[] = defaultStepConfig
+  const stepConfig: StepConfig[] = defaultStepConfig;
 
-  const [bookingData, setBookingData] = useState<BookingData>({})
-  const [currentStep, setCurrentStep] = useState<StepType>("service")
-  const [isAuthenticated] = useState(false) // TODO: Get from auth context
+  const [bookingData, setBookingData] = useState<BookingData>({});
+  const [currentStep, setCurrentStep] = useState<StepType>("service");
+  const [isAuthenticated] = useState(false); // TODO: Get from auth context
 
-  const timeSlots = generateTimeSlots()
-  const enabledSteps = getEnabledSteps(stepConfig)
+  const timeSlots = generateTimeSlots();
 
   // Auto-select professional if only one is available and step is disabled
   useEffect(() => {
-    const professionalStep = stepConfig.find((s) => s.id === "professional")
+    const professionalStep = stepConfig.find((s) => s.id === "professional");
     if (!professionalStep?.enabled && mockProfessionals.length === 1) {
       setBookingData((prev) => ({
         ...prev,
@@ -174,18 +172,18 @@ export default function BookingPage() {
           id: mockProfessionals[0].id,
           name: mockProfessionals[0].name,
         },
-      }))
+      }));
     }
-  }, [stepConfig])
+  }, [stepConfig]);
 
   const goToNextStep = () => {
-    const next = getNextStep(currentStep, stepConfig)
+    const next = getNextStep(currentStep, stepConfig);
     if (next) {
-      setCurrentStep(next)
+      setCurrentStep(next);
     }
-  }
+  };
 
-  const handleServiceSelect = (service: typeof mockServices[0]) => {
+  const handleServiceSelect = (service: (typeof mockServices)[0]) => {
     setBookingData({
       ...bookingData,
       service: {
@@ -195,12 +193,12 @@ export default function BookingPage() {
         price: service.price,
         location: service.location,
       },
-    })
-    goToNextStep()
-  }
+    });
+    goToNextStep();
+  };
 
   const handleProfessionalSelect = (
-    professional: typeof mockProfessionals[0]
+    professional: (typeof mockProfessionals)[0]
   ) => {
     setBookingData({
       ...bookingData,
@@ -208,61 +206,61 @@ export default function BookingPage() {
         id: professional.id,
         name: professional.name,
       },
-    })
-    goToNextStep()
-  }
+    });
+    goToNextStep();
+  };
 
   const handleDateSelect = (date: Date | undefined) => {
     setBookingData({
       ...bookingData,
       date: date,
       timeSlot: undefined,
-    })
+    });
     if (date) {
-      goToNextStep()
+      goToNextStep();
     }
-  }
+  };
 
   const handleTimeSlotSelect = (slot: string) => {
     setBookingData({
       ...bookingData,
       timeSlot: slot,
-    })
-    goToNextStep()
-  }
+    });
+    goToNextStep();
+  };
 
   const handleClientInfoSubmit = (data: {
-    fullName: string
-    phone: string
-    email: string
-    password?: string
-    createAccount: boolean
+    fullName: string;
+    phone: string;
+    email: string;
+    password?: string;
+    createAccount: boolean;
   }) => {
     setBookingData({
       ...bookingData,
       clientInfo: data,
-    })
-    goToNextStep()
-  }
+    });
+    goToNextStep();
+  };
 
   const handlePaymentMethodSelect = (method: PaymentMethod) => {
     setBookingData({
       ...bookingData,
       paymentMethod: method,
-    })
-    goToNextStep()
-  }
+    });
+    goToNextStep();
+  };
 
   const handleBackToHome = () => {
-    setBookingData({})
-    setCurrentStep("service")
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    setBookingData({});
+    setCurrentStep("service");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleClear = () => {
-    setBookingData({})
-    setCurrentStep("service")
-  }
+    setBookingData({});
+    setCurrentStep("service");
+  };
 
   // Render current step
   const renderStep = () => {
@@ -274,7 +272,7 @@ export default function BookingPage() {
             onSelect={handleServiceSelect}
             selectedServiceId={bookingData.service?.id}
           />
-        )
+        );
 
       case "professional":
         return (
@@ -283,7 +281,7 @@ export default function BookingPage() {
             onSelect={handleProfessionalSelect}
             selectedProfessionalId={bookingData.professional?.id}
           />
-        )
+        );
 
       case "date":
         return (
@@ -291,7 +289,7 @@ export default function BookingPage() {
             selectedDate={bookingData.date}
             onSelect={handleDateSelect}
           />
-        )
+        );
 
       case "time":
         return (
@@ -300,7 +298,7 @@ export default function BookingPage() {
             selectedSlot={bookingData.timeSlot}
             onSelect={handleTimeSlotSelect}
           />
-        )
+        );
 
       case "client-info":
         return (
@@ -308,7 +306,7 @@ export default function BookingPage() {
             onContinue={handleClientInfoSubmit}
             isAuthenticated={isAuthenticated}
           />
-        )
+        );
 
       case "payment":
         return (
@@ -316,7 +314,7 @@ export default function BookingPage() {
             onContinue={handlePaymentMethodSelect}
             isInPerson={bookingData.service?.location === "in-person"}
           />
-        )
+        );
 
       case "confirmation":
         return (
@@ -336,12 +334,12 @@ export default function BookingPage() {
             }}
             onBackToHome={handleBackToHome}
           />
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -372,5 +370,5 @@ export default function BookingPage() {
 
       <PublicFooter />
     </div>
-  )
+  );
 }

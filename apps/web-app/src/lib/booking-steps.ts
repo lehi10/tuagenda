@@ -8,13 +8,13 @@ export type StepType =
   | "time"
   | "client-info"
   | "payment"
-  | "confirmation"
+  | "confirmation";
 
 export interface StepConfig {
-  id: StepType
-  enabled: boolean
-  required: boolean
-  order: number
+  id: StepType;
+  enabled: boolean;
+  required: boolean;
+  order: number;
 }
 
 // Default step configuration
@@ -62,11 +62,13 @@ export const defaultStepConfig: StepConfig[] = [
     required: true,
     order: 7,
   },
-]
+];
 
 // Helper to get enabled steps in order
 export function getEnabledSteps(config: StepConfig[]): StepConfig[] {
-  return config.filter((step) => step.enabled).sort((a, b) => a.order - b.order)
+  return config
+    .filter((step) => step.enabled)
+    .sort((a, b) => a.order - b.order);
 }
 
 // Helper to get next step
@@ -74,14 +76,16 @@ export function getNextStep(
   currentStep: StepType,
   config: StepConfig[]
 ): StepType | null {
-  const enabledSteps = getEnabledSteps(config)
-  const currentIndex = enabledSteps.findIndex((step) => step.id === currentStep)
+  const enabledSteps = getEnabledSteps(config);
+  const currentIndex = enabledSteps.findIndex(
+    (step) => step.id === currentStep
+  );
 
   if (currentIndex === -1 || currentIndex === enabledSteps.length - 1) {
-    return null
+    return null;
   }
 
-  return enabledSteps[currentIndex + 1].id
+  return enabledSteps[currentIndex + 1].id;
 }
 
 // Helper to get previous step
@@ -89,14 +93,16 @@ export function getPreviousStep(
   currentStep: StepType,
   config: StepConfig[]
 ): StepType | null {
-  const enabledSteps = getEnabledSteps(config)
-  const currentIndex = enabledSteps.findIndex((step) => step.id === currentStep)
+  const enabledSteps = getEnabledSteps(config);
+  const currentIndex = enabledSteps.findIndex(
+    (step) => step.id === currentStep
+  );
 
   if (currentIndex <= 0) {
-    return null
+    return null;
   }
 
-  return enabledSteps[currentIndex - 1].id
+  return enabledSteps[currentIndex - 1].id;
 }
 
 // Example: Configuration for a business with only one professional
@@ -143,4 +149,4 @@ export const singleProfessionalConfig: StepConfig[] = [
     required: true,
     order: 7,
   },
-]
+];

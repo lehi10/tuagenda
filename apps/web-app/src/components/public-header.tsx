@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { GalleryVerticalEnd } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "@/i18n"
-import Link from "next/link"
+import { GalleryVerticalEnd } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
+import Link from "next/link";
 
 export function PublicHeader() {
-  const { t, locale, setLocale } = useTranslation()
+  const { t, locale, setLocale } = useTranslation();
 
   return (
     <header className="border-b">
@@ -55,5 +55,5 @@ export function PublicHeader() {
         </div>
       </div>
     </header>
-  )
+  );
 }

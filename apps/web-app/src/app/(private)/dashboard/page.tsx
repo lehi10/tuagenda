@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { OrganizationBanner } from "@/components/organization-banner"
-import { DashboardStats } from "@/features/dashboard/components/dashboard-stats"
-import { RecentAppointments } from "@/features/dashboard/components/recent-appointments"
+import { useTranslation } from "@/i18n";
+import { OrganizationBanner } from "@/components/organization-banner";
+import { DashboardStats } from "@/features/dashboard/components/dashboard-stats";
+import { RecentAppointments } from "@/features/dashboard/components/recent-appointments";
 
 export default function DashboardPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -20,5 +20,5 @@ export default function DashboardPage() {
       <DashboardStats />
       <RecentAppointments />
     </div>
-  )
+  );
 }

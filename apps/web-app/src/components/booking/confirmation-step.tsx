@@ -1,71 +1,79 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { useTranslation } from "@/i18n"
-import { CheckCircle2, Calendar, Clock, User, CreditCard, Mail, MapPin } from "lucide-react"
-import { format } from "date-fns"
-import { es, enUS } from "date-fns/locale"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "@/i18n";
+import {
+  CheckCircle2,
+  Calendar,
+  Clock,
+  User,
+  CreditCard,
+  Mail,
+  MapPin,
+} from "lucide-react";
+import { format } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 
 interface BookingSummary {
   service: {
-    name: string
-    duration: number
-    price: number
-    location: "in-person" | "virtual"
-  }
+    name: string;
+    duration: number;
+    price: number;
+    location: "in-person" | "virtual";
+  };
   professional?: {
-    name: string
-  }
-  date: Date
-  timeSlot: string
+    name: string;
+  };
+  date: Date;
+  timeSlot: string;
   clientInfo: {
-    fullName: string
-    email: string
-    phone: string
-  }
-  paymentMethod: string
+    fullName: string;
+    email: string;
+    phone: string;
+  };
+  paymentMethod: string;
   businessLocation?: {
-    address: string
-    lat?: number
-    lng?: number
-  }
+    address: string;
+    lat?: number;
+    lng?: number;
+  };
 }
 
 interface ConfirmationStepProps {
-  bookingSummary: BookingSummary
-  onBackToHome: () => void
+  bookingSummary: BookingSummary;
+  onBackToHome: () => void;
 }
 
 export function ConfirmationStep({
   bookingSummary,
   onBackToHome,
 }: ConfirmationStepProps) {
-  const { t, locale } = useTranslation()
-  const dateLocale = locale === "es" ? es : enUS
+  const { t, locale } = useTranslation();
+  const dateLocale = locale === "es" ? es : enUS;
 
   const paymentMethodLabels: Record<string, string> = {
     card: "Tarjeta de Crédito/Débito",
     onsite: "Pago en el Local",
     "digital-wallet": "Billetera Digital (Yape/Plin)",
-  }
+  };
 
   // Generate Google Maps URL
   const getGoogleMapsUrl = () => {
-    if (!bookingSummary.businessLocation) return ""
+    if (!bookingSummary.businessLocation) return "";
 
-    const { address, lat, lng } = bookingSummary.businessLocation
+    const { address, lat, lng } = bookingSummary.businessLocation;
 
     if (lat && lng) {
-      return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+      return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     }
 
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`
-  }
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+  };
 
-  const isInPerson = bookingSummary.service.location === "in-person"
-  const hasLocation = bookingSummary.businessLocation
+  const isInPerson = bookingSummary.service.location === "in-person";
+  const hasLocation = bookingSummary.businessLocation;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -90,7 +98,9 @@ export function ConfirmationStep({
         <div className="space-y-6">
           <Card>
             <CardContent className="p-6">
-              <h3 className="mb-4 text-lg font-semibold">Detalles de tu Reserva</h3>
+              <h3 className="mb-4 text-lg font-semibold">
+                Detalles de tu Reserva
+              </h3>
 
               <div className="space-y-3">
                 {/* Service */}
@@ -99,9 +109,12 @@ export function ConfirmationStep({
                     <Calendar className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-sm">{bookingSummary.service.name}</p>
+                    <p className="font-medium text-sm">
+                      {bookingSummary.service.name}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {bookingSummary.service.duration} {t.booking.summary.minutes} • $
+                      {bookingSummary.service.duration}{" "}
+                      {t.booking.summary.minutes} • $
                       {bookingSummary.service.price}
                     </p>
                   </div>
@@ -136,7 +149,9 @@ export function ConfirmationStep({
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-sm">
-                      {format(bookingSummary.date, "PPP", { locale: dateLocale })}
+                      {format(bookingSummary.date, "PPP", {
+                        locale: dateLocale,
+                      })}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {bookingSummary.timeSlot}
@@ -152,7 +167,9 @@ export function ConfirmationStep({
                     <CreditCard className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-muted-foreground">Método de pago</p>
+                    <p className="text-xs text-muted-foreground">
+                      Método de pago
+                    </p>
                     <p className="font-medium text-sm">
                       {paymentMethodLabels[bookingSummary.paymentMethod] ||
                         bookingSummary.paymentMethod}
@@ -175,7 +192,8 @@ export function ConfirmationStep({
                   <p className="text-xs text-blue-700 dark:text-blue-300">
                     {isInPerson ? (
                       <>
-                        Hemos enviado un correo con todos los detalles de tu reserva a{" "}
+                        Hemos enviado un correo con todos los detalles de tu
+                        reserva a{" "}
                         <span className="font-medium">
                           {bookingSummary.clientInfo.email}
                         </span>
@@ -185,8 +203,9 @@ export function ConfirmationStep({
                         Hemos enviado un correo a{" "}
                         <span className="font-medium">
                           {bookingSummary.clientInfo.email}
-                        </span>
-                        {" "}con la invitación para la videollamada. Puedes aceptar la invitación para que aparezca en tu calendario.
+                        </span>{" "}
+                        con la invitación para la videollamada. Puedes aceptar
+                        la invitación para que aparezca en tu calendario.
                       </>
                     )}
                   </p>
@@ -207,7 +226,7 @@ export function ConfirmationStep({
                 <div className="flex-1">
                   <h3 className="font-semibold text-sm mb-1">Ubicación</h3>
                   <p className="text-xs text-muted-foreground">
-                    {bookingSummary.businessLocation.address}
+                    {bookingSummary?.businessLocation?.address}
                   </p>
                 </div>
               </div>
@@ -215,7 +234,7 @@ export function ConfirmationStep({
               {/* Google Maps Embed */}
               <div className="relative aspect-video w-full overflow-hidden rounded-lg border">
                 <iframe
-                  src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(bookingSummary.businessLocation.address)}`}
+                  src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(bookingSummary?.businessLocation?.address || "")}`}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -253,28 +272,33 @@ export function ConfirmationStep({
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Ingresa puntualmente:</strong> Las citas virtuales no pueden extenderse más allá del tiempo programado.
+                      <strong>Ingresa puntualmente:</strong> Las citas virtuales
+                      no pueden extenderse más allá del tiempo programado.
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Duración:</strong> El profesional estará disponible únicamente durante los {bookingSummary.service.duration} minutos reservados.
+                      <strong>Duración:</strong> El profesional estará
+                      disponible únicamente durante los{" "}
+                      {bookingSummary.service.duration} minutos reservados.
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Enlace de videollamada:</strong> Revisa tu correo electrónico para acceder al enlace de la videollamada.
+                      <strong>Enlace de videollamada:</strong> Revisa tu correo
+                      electrónico para acceder al enlace de la videollamada.
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Calendario:</strong> Acepta la invitación del calendario para recibir recordatorios automáticos.
+                      <strong>Calendario:</strong> Acepta la invitación del
+                      calendario para recibir recordatorios automáticos.
                     </p>
                   </div>
                 </div>
@@ -282,7 +306,9 @@ export function ConfirmationStep({
                 <Separator className="bg-purple-200 dark:bg-purple-800" />
 
                 <div className="text-xs text-purple-800 dark:text-purple-200">
-                  <p className="font-medium mb-1">¿Necesitas reagendar o cancelar?</p>
+                  <p className="font-medium mb-1">
+                    ¿Necesitas reagendar o cancelar?
+                  </p>
                   <p>
                     Contáctanos al{" "}
                     <a
@@ -318,5 +344,5 @@ export function ConfirmationStep({
         </p>
       </div>
     </div>
-  )
+  );
 }

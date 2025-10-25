@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { SettingsTabs } from "@/features/settings/components/settings-tabs"
+import { useTranslation } from "@/i18n";
+import { SettingsTabs } from "@/features/settings/components/settings-tabs";
 
 export default function SettingsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -16,5 +16,5 @@ export default function SettingsPage() {
       </div>
       <SettingsTabs />
     </div>
-  )
+  );
 }

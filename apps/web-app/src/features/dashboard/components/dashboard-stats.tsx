@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Calendar, Clock, DollarSign, Users } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
-import { useTranslation } from "@/i18n"
+import { Calendar, Clock, DollarSign, Users } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
+import { useTranslation } from "@/i18n";
 
 export function DashboardStats() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const stats = [
     {
@@ -32,7 +32,7 @@ export function DashboardStats() {
       icon: DollarSign,
       description: "+20% from last month",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -40,5 +40,5 @@ export function DashboardStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

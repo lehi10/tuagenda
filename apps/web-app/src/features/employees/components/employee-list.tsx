@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTableWithFilters } from "@/components/shared/data-table-with-filters"
-import { useTranslation } from "@/i18n"
+} from "@/components/ui/dropdown-menu";
+import { DataTableWithFilters } from "@/components/shared/data-table-with-filters";
+import { useTranslation } from "@/i18n";
 
 interface Employee {
-  id: string
-  name: string
-  email: string
-  role: string
-  avatar?: string
-  status: "active" | "inactive"
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar?: string;
+  status: "active" | "inactive";
 }
 
 export function EmployeeList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const employees: Employee[] = [
     {
@@ -122,15 +122,15 @@ export function EmployeeList() {
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel",
       status: "active",
     },
-  ]
+  ];
 
   const getInitials = (name: string) => {
     return name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
-  }
+      .toUpperCase();
+  };
 
   const columns = [
     {
@@ -173,7 +173,7 @@ export function EmployeeList() {
         </DropdownMenu>
       ),
     },
-  ]
+  ];
 
   return (
     <DataTableWithFilters
@@ -202,5 +202,5 @@ export function EmployeeList() {
       ]}
       pageSize={5}
     />
-  )
+  );
 }

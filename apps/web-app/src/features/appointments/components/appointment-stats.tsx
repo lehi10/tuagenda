@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
-import { useTranslation } from "@/i18n"
+import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
+import { useTranslation } from "@/i18n";
 
 export function AppointmentStats() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const stats = [
     {
@@ -32,7 +32,7 @@ export function AppointmentStats() {
       icon: XCircle,
       description: "This month",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-4">
@@ -40,5 +40,5 @@ export function AppointmentStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

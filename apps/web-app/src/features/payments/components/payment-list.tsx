@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/ui/badge"
-import { DataTable } from "@/components/shared/data-table"
-import { useTranslation } from "@/i18n"
+import { Badge } from "@/components/ui/badge";
+import { DataTable } from "@/components/shared/data-table";
+import { useTranslation } from "@/i18n";
 
 interface Payment {
-  id: string
-  client: string
-  service: string
-  amount: string
-  date: string
-  method: "card" | "cash" | "online"
-  status: "pending" | "completed" | "failed"
+  id: string;
+  client: string;
+  service: string;
+  amount: string;
+  date: string;
+  method: "card" | "cash" | "online";
+  status: "pending" | "completed" | "failed";
 }
 
 export function PaymentList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const payments: Payment[] = [
     {
@@ -45,20 +45,20 @@ export function PaymentList() {
       method: "online",
       status: "pending",
     },
-  ]
+  ];
 
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "completed":
-        return "default"
+        return "default";
       case "pending":
-        return "secondary"
+        return "secondary";
       case "failed":
-        return "destructive"
+        return "destructive";
       default:
-        return "outline"
+        return "outline";
     }
-  }
+  };
 
   const columns = [
     { header: t.pages.clients.name, accessor: "client" as const },
@@ -72,7 +72,7 @@ export function PaymentList() {
         <Badge variant={getStatusVariant(item.status)}>{item.status}</Badge>
       ),
     },
-  ]
+  ];
 
-  return <DataTable data={payments} columns={columns} />
+  return <DataTable data={payments} columns={columns} />;
 }

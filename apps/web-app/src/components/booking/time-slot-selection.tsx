@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "@/i18n"
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 interface TimeSlot {
-  time: string
-  available: boolean
+  time: string;
+  available: boolean;
 }
 
 interface TimeSlotSelectionProps {
-  timeSlots: TimeSlot[]
-  selectedSlot?: string
-  onSelect: (slot: string) => void
+  timeSlots: TimeSlot[];
+  selectedSlot?: string;
+  onSelect: (slot: string) => void;
 }
 
 export function TimeSlotSelection({
@@ -19,9 +19,9 @@ export function TimeSlotSelection({
   selectedSlot,
   onSelect,
 }: TimeSlotSelectionProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const availableSlots = timeSlots.filter((slot) => slot.available)
+  const availableSlots = timeSlots.filter((slot) => slot.available);
 
   return (
     <div className="space-y-6">
@@ -48,5 +48,5 @@ export function TimeSlotSelection({
         </div>
       )}
     </div>
-  )
+  );
 }

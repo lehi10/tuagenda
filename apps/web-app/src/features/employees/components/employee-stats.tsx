@@ -1,12 +1,9 @@
-"use client"
+"use client";
 
-import { Users, UserCheck, Calendar } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
-import { useTranslation } from "@/i18n"
+import { Users, UserCheck, Calendar } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
 
 export function EmployeeStats() {
-  const { t } = useTranslation()
-
   const stats = [
     {
       title: "Total Employees",
@@ -26,7 +23,7 @@ export function EmployeeStats() {
       icon: Calendar,
       description: "Across all employees",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -34,5 +31,5 @@ export function EmployeeStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { Building2, MapPin, Users, Crown } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { useOrganization } from "@/contexts/organization-context"
+import { Building2, MapPin, Users, Crown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { useOrganization } from "@/contexts/organization-context";
 
 export function OrganizationBanner() {
-  const { currentOrg, isSuperAdmin } = useOrganization()
+  const { currentOrg, isSuperAdmin } = useOrganization();
 
-  if (!currentOrg) return null
+  if (!currentOrg) return null;
 
   const getPlanColor = (plan: string) => {
     switch (plan) {
       case "enterprise":
-        return "bg-purple-100 text-purple-700 border-purple-200"
+        return "bg-purple-100 text-purple-700 border-purple-200";
       case "pro":
-        return "bg-blue-100 text-blue-700 border-blue-200"
+        return "bg-blue-100 text-blue-700 border-blue-200";
       default:
-        return "bg-gray-100 text-gray-700 border-gray-200"
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
-  }
+  };
 
   return (
     <Card className="border-2 border-dashed">
@@ -60,5 +60,5 @@ export function OrganizationBanner() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

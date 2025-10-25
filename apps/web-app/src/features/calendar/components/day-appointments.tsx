@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Clock, User } from "lucide-react"
-import { useTranslation } from "@/i18n"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Clock, User } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface Appointment {
-  id: string
-  time: string
-  client: string
-  service: string
-  employee: string
-  status: "pending" | "completed" | "cancelled"
+  id: string;
+  time: string;
+  client: string;
+  service: string;
+  employee: string;
+  status: "pending" | "completed" | "cancelled";
 }
 
 interface DayAppointmentsProps {
-  date?: Date
+  date?: Date;
 }
 
 export function DayAppointments({ date }: DayAppointmentsProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const appointments: Appointment[] = [
     {
@@ -46,7 +46,7 @@ export function DayAppointments({ date }: DayAppointmentsProps) {
       employee: "Mike Brown",
       status: "completed",
     },
-  ]
+  ];
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -54,21 +54,21 @@ export function DayAppointments({ date }: DayAppointmentsProps) {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })
-  }
+    });
+  };
 
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "completed":
-        return "default"
+        return "default";
       case "pending":
-        return "secondary"
+        return "secondary";
       case "cancelled":
-        return "destructive"
+        return "destructive";
       default:
-        return "outline"
+        return "outline";
     }
-  }
+  };
 
   return (
     <Card>
@@ -111,5 +111,5 @@ export function DayAppointments({ date }: DayAppointmentsProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useTranslation } from "@/i18n"
+import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslation } from "@/i18n";
 
 interface CalendarViewProps {
-  onDateSelect?: (date: Date | undefined) => void
+  onDateSelect?: (date: Date | undefined) => void;
 }
 
 export function CalendarView({ onDateSelect }: CalendarViewProps) {
-  const { t } = useTranslation()
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const { t } = useTranslation();
+  const [date, setDate] = useState<Date | undefined>(new Date());
 
   const handleDateSelect = (newDate: Date | undefined) => {
-    setDate(newDate)
-    onDateSelect?.(newDate)
-  }
+    setDate(newDate);
+    onDateSelect?.(newDate);
+  };
 
   return (
     <Card>
@@ -32,5 +32,5 @@ export function CalendarView({ onDateSelect }: CalendarViewProps) {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

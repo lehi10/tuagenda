@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { AppointmentStats } from "@/features/appointments/components/appointment-stats"
-import { AppointmentList } from "@/features/appointments/components/appointment-list"
-import { Button } from "@/components/ui/button"
+import { useTranslation } from "@/i18n";
+import { AppointmentStats } from "@/features/appointments/components/appointment-stats";
+import { AppointmentList } from "@/features/appointments/components/appointment-list";
+import { Button } from "@/components/ui/button";
 
 export default function AppointmentsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -22,5 +22,5 @@ export default function AppointmentsPage() {
       <AppointmentStats />
       <AppointmentList />
     </div>
-  )
+  );
 }

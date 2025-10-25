@@ -1,42 +1,43 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
-  onLogin?: () => void
-  onAppleLogin?: () => void
-  onGoogleLogin?: () => void
-  onForgotPassword?: () => void
-  onSignup?: () => void
-  title?: string
-  description?: string
-  emailLabel?: string
-  passwordLabel?: string
-  loginButtonText?: string
-  appleButtonText?: string
-  googleButtonText?: string
-  orContinueText?: string
-  forgotPasswordText?: string
-  dontHaveAccountText?: string
-  signupText?: string
-  termsText?: string
-  termsOfServiceText?: string
-  privacyPolicyText?: string
-  andText?: string
+  onLogin?: () => void;
+  onAppleLogin?: () => void;
+  onGoogleLogin?: () => void;
+  onForgotPassword?: () => void;
+  onSignup?: () => void;
+  title?: string;
+  description?: string;
+  emailLabel?: string;
+  passwordLabel?: string;
+  loginButtonText?: string;
+  appleButtonText?: string;
+  googleButtonText?: string;
+  orContinueText?: string;
+  forgotPasswordText?: string;
+  dontHaveAccountText?: string;
+  signupText?: string;
+  termsText?: string;
+  termsOfServiceText?: string;
+  privacyPolicyText?: string;
+  andText?: string;
 }
 
 export function LoginForm({
@@ -65,9 +66,9 @@ export function LoginForm({
 }: LoginFormProps) {
   // Maneja el submit del formulario
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (onLogin) onLogin()
-  }
+    e.preventDefault();
+    if (onLogin) onLogin();
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -118,8 +119,8 @@ export function LoginForm({
                     href="#"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                     onClick={(e) => {
-                      e.preventDefault()
-                      if (onForgotPassword) onForgotPassword()
+                      e.preventDefault();
+                      if (onForgotPassword) onForgotPassword();
                     }}
                   >
                     {forgotPasswordText}
@@ -134,8 +135,8 @@ export function LoginForm({
                   <a
                     href="#"
                     onClick={(e) => {
-                      e.preventDefault()
-                      if (onSignup) onSignup()
+                      e.preventDefault();
+                      if (onSignup) onSignup();
                     }}
                   >
                     {signupText}
@@ -148,15 +149,15 @@ export function LoginForm({
       </Card>
       <FieldDescription className="px-6 text-center">
         {termsText}{" "}
-        <a href="/terms-of-service" className="underline">
+        <Link href="/terms-of-service" className="underline">
           {termsOfServiceText}
-        </a>{" "}
+        </Link>{" "}
         {andText}{" "}
-        <a href="/privacy-policy" className="underline">
+        <Link href="/privacy-policy" className="underline">
           {privacyPolicyText}
-        </a>
+        </Link>
         .
       </FieldDescription>
     </div>
-  )
+  );
 }

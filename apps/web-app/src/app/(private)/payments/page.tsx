@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { PaymentStats } from "@/features/payments/components/payment-stats"
-import { PaymentList } from "@/features/payments/components/payment-list"
+import { useTranslation } from "@/i18n";
+import { PaymentStats } from "@/features/payments/components/payment-stats";
+import { PaymentList } from "@/features/payments/components/payment-list";
 
 export default function PaymentsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -18,5 +18,5 @@ export default function PaymentsPage() {
       <PaymentStats />
       <PaymentList />
     </div>
-  )
+  );
 }

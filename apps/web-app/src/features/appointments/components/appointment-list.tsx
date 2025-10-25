@@ -1,29 +1,30 @@
-"use client"
+"use client";
 
-import { MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTableWithFilters } from "@/components/shared/data-table-with-filters"
-import { useTranslation } from "@/i18n"
+} from "@/components/ui/dropdown-menu";
+import { DataTableWithFilters } from "@/components/shared/data-table-with-filters";
+import { useTranslation } from "@/i18n";
 
 interface Appointment {
-  id: string
-  client: string
-  service: string
-  employee: string
-  date: string
-  time: string
-  status: "pending" | "completed" | "cancelled"
+  [key: string]: unknown;
+  id: string;
+  client: string;
+  service: string;
+  employee: string;
+  date: string;
+  time: string;
+  status: "pending" | "completed" | "cancelled";
 }
 
 export function AppointmentList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const appointments: Appointment[] = [
     {
@@ -116,20 +117,20 @@ export function AppointmentList() {
       time: "4:00 PM",
       status: "completed",
     },
-  ]
+  ];
 
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "completed":
-        return "default"
+        return "default";
       case "pending":
-        return "secondary"
+        return "secondary";
       case "cancelled":
-        return "destructive"
+        return "destructive";
       default:
-        return "outline"
+        return "outline";
     }
-  }
+  };
 
   const columns = [
     { header: t.pages.clients.name, accessor: "client" as const },
@@ -161,7 +162,7 @@ export function AppointmentList() {
         </DropdownMenu>
       ),
     },
-  ]
+  ];
 
   return (
     <DataTableWithFilters
@@ -191,5 +192,5 @@ export function AppointmentList() {
       ]}
       pageSize={7}
     />
-  )
+  );
 }

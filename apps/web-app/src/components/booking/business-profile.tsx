@@ -1,23 +1,20 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MapPin, Mail, Phone } from "lucide-react"
-import { useTranslation } from "@/i18n"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MapPin, Mail, Phone } from "lucide-react";
 
 interface BusinessProfileProps {
   business: {
-    name: string
-    description: string
-    avatar: string
-    email: string
-    phone: string
-    location: string
-  }
+    name: string;
+    description: string;
+    avatar: string;
+    email: string;
+    phone: string;
+    location: string;
+  };
 }
 
 export function BusinessProfile({ business }: BusinessProfileProps) {
-  const { t } = useTranslation()
-
   return (
     <div className="border-b bg-card">
       <div className="container mx-auto px-4 py-8">
@@ -57,5 +54,5 @@ export function BusinessProfile({ business }: BusinessProfileProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
