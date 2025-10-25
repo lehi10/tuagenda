@@ -17,10 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  useOrganization,
-  type Organization,
-} from "@/contexts/organization-context";
+import { useOrganization } from "@/contexts/organization-context";
 import { cn } from "@/lib/utils";
 
 export function OrganizationSwitcher() {

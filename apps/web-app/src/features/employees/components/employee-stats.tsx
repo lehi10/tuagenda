@@ -2,11 +2,8 @@
 
 import { Users, UserCheck, Calendar } from "lucide-react";
 import { StatCard } from "@/components/shared/stat-card";
-import { useTranslation } from "@/i18n";
 
 export function EmployeeStats() {
-  const { t } = useTranslation();
-
   const stats = [
     {
       title: "Total Employees",

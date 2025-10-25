@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Mail, Phone } from "lucide-react";
-import { useTranslation } from "@/i18n";
 
 interface BusinessProfileProps {
   business: {
@@ -16,8 +15,6 @@ interface BusinessProfileProps {
 }
 
 export function BusinessProfile({ business }: BusinessProfileProps) {
-  const { t } = useTranslation();
-
   return (
     <div className="border-b bg-card">
       <div className="container mx-auto px-4 py-8">

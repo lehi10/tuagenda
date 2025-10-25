@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
         <div className="flex w-full max-w-sm flex-col gap-6">
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 self-center font-medium"
           >
@@ -32,7 +33,7 @@ export default function ForgotPasswordPage() {
               <GalleryVerticalEnd className="size-4" />
             </div>
             TuAgenda
-          </a>
+          </Link>
           <Card>
             <CardHeader className="text-center">
               <CardTitle className="text-xl">{t.auth.checkYourEmail}</CardTitle>
@@ -53,12 +54,15 @@ export default function ForgotPasswordPage() {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="/" className="flex items-center gap-2 self-center font-medium">
+        <Link
+          href="/"
+          className="flex items-center gap-2 self-center font-medium"
+        >
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
           </div>
           TuAgenda
-        </a>
+        </Link>
         <ForgotPasswordForm
           title={t.auth.resetPassword}
           description={t.auth.resetPasswordDescription}

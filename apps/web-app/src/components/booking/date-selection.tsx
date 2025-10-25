@@ -10,11 +10,7 @@ interface DateSelectionProps {
   availableDates?: Date[];
 }
 
-export function DateSelection({
-  selectedDate,
-  onSelect,
-  availableDates,
-}: DateSelectionProps) {
+export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
   const { t, locale } = useTranslation();
 
   const dateLocale = locale === "es" ? es : enUS;

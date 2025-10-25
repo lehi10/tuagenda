@@ -15,6 +15,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 interface SignupFormProps extends React.ComponentProps<"div"> {
   onSignup?: () => void;
@@ -152,7 +153,7 @@ export function SignupForm({
                 </Button>
                 <FieldDescription className="text-center">
                   {alreadyHaveAccountText}{" "}
-                  <a
+                  <Link
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
@@ -160,7 +161,7 @@ export function SignupForm({
                     }}
                   >
                     {loginText}
-                  </a>
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -169,13 +170,13 @@ export function SignupForm({
       </Card>
       <FieldDescription className="px-6 text-center">
         {termsText}{" "}
-        <a href="/terms-of-service" className="underline">
+        <Link href="/terms-of-service" className="underline">
           {termsOfServiceText}
-        </a>{" "}
+        </Link>{" "}
         {andText}{" "}
-        <a href="/privacy-policy" className="underline">
+        <Link href="/privacy-policy" className="underline">
           {privacyPolicyText}
-        </a>
+        </Link>
         .
       </FieldDescription>
     </div>

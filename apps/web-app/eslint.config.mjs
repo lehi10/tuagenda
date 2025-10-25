@@ -27,6 +27,7 @@ export default [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "components/ui/**",
     ],
     plugins: {
       "@typescript-eslint": tsPlugin,
@@ -37,6 +38,7 @@ export default [
       quotes: ["error", "double"],
       semi: ["error", "always"],
       "no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 ];

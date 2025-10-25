@@ -16,10 +16,10 @@ export default function TermsOfServicePage() {
         <section>
           <h2>1. Acceptance of Terms</h2>
           <p>
-            By accessing and using TuAgenda ("the Service"), you accept and
-            agree to be bound by the terms and provision of this agreement. If
-            you do not agree to these Terms of Service, please do not use the
-            Service.
+            By accessing and using TuAgenda (&quot;the Service&quot;), you
+            accept and agree to be bound by the terms and provision of this
+            agreement. If you do not agree to these Terms of Service, please do
+            not use the Service.
           </p>
         </section>
 

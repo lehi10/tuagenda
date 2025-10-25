@@ -219,7 +219,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section>
-          <h2>10. Children's Privacy</h2>
+          <h2>10. Children&apos;s Privacy</h2>
           <p>
             TuAgenda is not intended for individuals under the age of 18. We do
             not knowingly collect personal information from children. If you
@@ -243,8 +243,8 @@ export default function PrivacyPolicyPage() {
           <p>
             We may update this privacy policy from time to time. We will notify
             you of any material changes by posting the new policy on this page
-            and updating the "Last updated" date. We will also send you an email
-            notification for significant changes.
+            and updating the &quot;Last updated&quot; date. We will also send
+            you an email notification for significant changes.
           </p>
         </section>
 

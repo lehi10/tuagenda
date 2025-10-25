@@ -13,6 +13,7 @@ import { DataTableWithFilters } from "@/components/shared/data-table-with-filter
 import { useTranslation } from "@/i18n";
 
 interface Appointment {
+  [key: string]: unknown;
   id: string;
   client: string;
   service: string;

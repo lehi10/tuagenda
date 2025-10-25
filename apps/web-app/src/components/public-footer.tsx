@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/i18n";
+import Link from "next/link";
 
 export function PublicFooter() {
   const { t, locale, setLocale } = useTranslation();
@@ -13,18 +14,18 @@ export function PublicFooter() {
             © 2025 TuAgenda. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
-            <a href="/terms-of-service" className="hover:underline">
+            <Link href="/terms-of-service" className="hover:underline">
               {t.legal.termsOfService}
-            </a>
-            <a href="/privacy-policy" className="hover:underline">
+            </Link>
+            <Link href="/privacy-policy" className="hover:underline">
               {t.legal.privacyPolicy}
-            </a>
-            <a href="/about-us" className="hover:underline">
+            </Link>
+            <Link href="/about-us" className="hover:underline">
               {t.navigation.aboutUs}
-            </a>
-            <a href="/pricing" className="hover:underline">
+            </Link>
+            <Link href="/pricing" className="hover:underline">
               {t.navigation.pricing}
-            </a>
+            </Link>
           </div>
           {/* Language Selector Dropdown */}
           <select

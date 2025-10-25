@@ -13,7 +13,6 @@ import { ConfirmationStep } from "@/components/booking/confirmation-step";
 import { PublicFooter } from "@/components/public-footer";
 import {
   defaultStepConfig,
-  getEnabledSteps,
   getNextStep,
   type StepType,
   type StepConfig,
@@ -162,7 +161,6 @@ export default function BookingPage() {
   const [isAuthenticated] = useState(false); // TODO: Get from auth context
 
   const timeSlots = generateTimeSlots();
-  const enabledSteps = getEnabledSteps(stepConfig);
 
   // Auto-select professional if only one is available and step is disabled
   useEffect(() => {

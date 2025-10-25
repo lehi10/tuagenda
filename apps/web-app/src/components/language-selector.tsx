@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation, type Locale } from "@/i18n";
+import { useTranslation } from "@/i18n";
 
 export function LanguageSelector() {
   const { locale, setLocale } = useTranslation();

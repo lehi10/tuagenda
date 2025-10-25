@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Calendar,
   Users,
@@ -146,9 +147,11 @@ export default function Home() {
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
                 <div className="mt-6 flex items-center gap-3">
-                  <img
+                  <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}
+                    width={48}
+                    height={48}
                     className="h-12 w-12 rounded-full"
                   />
                   <div>

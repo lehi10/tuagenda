@@ -15,6 +15,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   onLogin?: () => void;
@@ -148,13 +149,13 @@ export function LoginForm({
       </Card>
       <FieldDescription className="px-6 text-center">
         {termsText}{" "}
-        <a href="/terms-of-service" className="underline">
+        <Link href="/terms-of-service" className="underline">
           {termsOfServiceText}
-        </a>{" "}
+        </Link>{" "}
         {andText}{" "}
-        <a href="/privacy-policy" className="underline">
+        <Link href="/privacy-policy" className="underline">
           {privacyPolicyText}
-        </a>
+        </Link>
         .
       </FieldDescription>
     </div>

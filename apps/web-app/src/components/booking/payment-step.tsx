@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useTranslation } from "@/i18n";
 import { CreditCard, Smartphone, Store, Check } from "lucide-react";
 
 export type PaymentMethod = "card" | "onsite" | "digital-wallet";
@@ -17,7 +16,6 @@ export function PaymentStep({
   onContinue,
   isInPerson = true,
 }: PaymentStepProps) {
-  const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
     null
   );
