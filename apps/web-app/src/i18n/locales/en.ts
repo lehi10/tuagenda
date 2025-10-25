@@ -60,6 +60,56 @@ export const en = {
     privacyPolicy: "Privacy Policy",
     lastUpdated: "Last updated",
   },
+  booking: {
+    title: "Book an Appointment",
+    steps: {
+      service: "Select Service",
+      professional: "Select Professional",
+      date: "Select Date",
+      time: "Select Time",
+      confirm: "Confirm",
+    },
+    service: {
+      title: "What service do you need?",
+      filterByLocation: "Filter by location",
+      filterByCategory: "Filter by category",
+      locationInPerson: "In-Person",
+      locationVirtual: "Virtual",
+      allCategories: "All Categories",
+      noServices: "No services available",
+    },
+    professional: {
+      title: "Who would you like to see?",
+      available: "Available",
+      noStaff: "No professionals available",
+    },
+    date: {
+      title: "When would you like your appointment?",
+      selectDate: "Select a date",
+    },
+    time: {
+      title: "What time works best?",
+      available: "available",
+      noSlots: "No time slots available for this date",
+    },
+    summary: {
+      title: "Your Selection",
+      service: "Service",
+      professional: "Professional",
+      date: "Date",
+      time: "Time",
+      duration: "Duration",
+      price: "Price",
+      clear: "Clear",
+      continue: "Continue",
+      minutes: "min",
+    },
+    contact: {
+      phone: "Phone",
+      email: "Email",
+      location: "Location",
+    },
+  },
   landing: {
     hero: {
       title: "Manage your appointments with ease",

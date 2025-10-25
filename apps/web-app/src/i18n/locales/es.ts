@@ -62,6 +62,56 @@ export const es: Translations = {
     privacyPolicy: "Política de Privacidad",
     lastUpdated: "Última actualización",
   },
+  booking: {
+    title: "Reservar una Cita",
+    steps: {
+      service: "Seleccionar Servicio",
+      professional: "Seleccionar Profesional",
+      date: "Seleccionar Fecha",
+      time: "Seleccionar Hora",
+      confirm: "Confirmar",
+    },
+    service: {
+      title: "¿Qué servicio necesitas?",
+      filterByLocation: "Filtrar por ubicación",
+      filterByCategory: "Filtrar por categoría",
+      locationInPerson: "Presencial",
+      locationVirtual: "Virtual",
+      allCategories: "Todas las Categorías",
+      noServices: "No hay servicios disponibles",
+    },
+    professional: {
+      title: "¿Con quién te gustaría agendar?",
+      available: "Disponible",
+      noStaff: "No hay profesionales disponibles",
+    },
+    date: {
+      title: "¿Cuándo te gustaría tu cita?",
+      selectDate: "Selecciona una fecha",
+    },
+    time: {
+      title: "¿Qué hora te viene mejor?",
+      available: "disponible",
+      noSlots: "No hay horarios disponibles para esta fecha",
+    },
+    summary: {
+      title: "Tu Selección",
+      service: "Servicio",
+      professional: "Profesional",
+      date: "Fecha",
+      time: "Hora",
+      duration: "Duración",
+      price: "Precio",
+      clear: "Limpiar",
+      continue: "Continuar",
+      minutes: "min",
+    },
+    contact: {
+      phone: "Teléfono",
+      email: "Correo",
+      location: "Ubicación",
+    },
+  },
   landing: {
     hero: {
       title: "Gestiona tus citas con facilidad",
