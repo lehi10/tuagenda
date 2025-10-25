@@ -1,7 +1,13 @@
+"use client"
+
+import { useTranslation } from "@/i18n"
+
 export default function AppointmentsPage() {
+  const { t } = useTranslation()
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold">Appointments</h1>
+      <h1 className="text-2xl font-bold">{t.pages.appointments.title}</h1>
     </div>
   )
 }

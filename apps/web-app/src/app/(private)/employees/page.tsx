@@ -1,7 +1,13 @@
+"use client"
+
+import { useTranslation } from "@/i18n"
+
 export default function EmployeesPage() {
+  const { t } = useTranslation()
+
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold">Employees</h1>
+      <h1 className="text-2xl font-bold">{t.pages.employees.title}</h1>
     </div>
   )
 }

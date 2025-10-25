@@ -17,6 +17,8 @@ import {
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
+import { LanguageSelector } from "@/components/language-selector"
+import { useTranslation } from "@/i18n"
 import {
   Sidebar,
   SidebarContent,
@@ -27,67 +29,68 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { t } = useTranslation()
+
+  const navMain = [
     {
-      title: "Dashboard",
+      title: t.navigation.dashboard,
       url: "/dashboard",
       icon: LayoutDashboard,
     },
     {
-      title: "Employees",
+      title: t.navigation.employees,
       url: "/employees",
       icon: Users,
     },
     {
-      title: "Calendar",
+      title: t.navigation.calendar,
       url: "/calendar",
       icon: Calendar,
     },
     {
-      title: "Appointments",
+      title: t.navigation.appointments,
       url: "/appointments",
       icon: Clock,
     },
     {
-      title: "Services",
+      title: t.navigation.services,
       url: "/services",
       icon: Briefcase,
     },
     {
-      title: "Locations",
+      title: t.navigation.locations,
       url: "/locations",
       icon: MapPin,
     },
     {
-      title: "Clients",
+      title: t.navigation.clients,
       url: "/clients",
       icon: UserCheck,
     },
     {
-      title: "Payments",
+      title: t.navigation.payments,
       url: "/payments",
       icon: CreditCard,
     },
     {
-      title: "Notifications",
+      title: t.navigation.notifications,
       url: "/notifications",
       icon: Bell,
     },
     {
-      title: "Settings",
+      title: t.navigation.settings,
       url: "/settings",
       icon: Settings,
     },
-  ],
-}
+  ]
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  }
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -108,10 +111,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <div className="px-2 py-1">
+          <LanguageSelector />
+        </div>
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )
