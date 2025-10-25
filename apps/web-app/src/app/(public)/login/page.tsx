@@ -18,6 +18,8 @@ export default function LoginPage() {
         </a>
         <LoginForm
           onLogin={() => router.push("/dashboard")}
+          onAppleLogin={() => router.push("/dashboard")}
+          onGoogleLogin={() => router.push("/dashboard")}
           onForgotPassword={() => alert("Forgot password")}
           onSignup={() => alert("Sign up")}
         />
