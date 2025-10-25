@@ -1,14 +1,14 @@
 {
   "name": "tuagenda",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm -r --parallel run dev"   
+    "dev": "pnpm --filter ./apps/web-app dev",
+    "dev:all": "pnpm -r --parallel run dev",
+    "build": "pnpm --filter ./apps/web-app build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "packageManager": "pnpm@10.12.1"
 }
