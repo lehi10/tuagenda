@@ -2,43 +2,47 @@
 
 import { GalleryVerticalEnd } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { LoginForm } from "@/components/login-form"
+import { SignupForm } from "@/components/signup-form"
 import { useTranslation } from "@/i18n"
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
   const { t } = useTranslation()
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="/" className="flex items-center gap-2 self-center font-medium">
+        <a
+          href="/"
+          className="flex items-center gap-2 self-center font-medium"
+        >
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
           </div>
           TuAgenda
         </a>
-        <LoginForm
-          title={t.auth.welcomeBack}
-          description={t.auth.loginWith}
+        <SignupForm
+          title={t.auth.createAccount}
+          description={t.auth.signUpWith}
           emailLabel={t.auth.email}
           passwordLabel={t.auth.password}
-          loginButtonText={t.auth.login}
-          appleButtonText={t.auth.loginWithApple}
-          googleButtonText={t.auth.loginWithGoogle}
+          confirmPasswordLabel={t.auth.confirmPassword}
+          fullNameLabel={t.auth.fullName}
+          companyNameLabel={t.auth.companyName}
+          signupButtonText={t.auth.createAccount}
+          appleButtonText={t.auth.signUpWithApple}
+          googleButtonText={t.auth.signUpWithGoogle}
           orContinueText={t.auth.orContinueWith}
-          forgotPasswordText={t.auth.forgotPassword}
-          dontHaveAccountText={t.auth.dontHaveAccount}
-          signupText={t.auth.signUp}
+          alreadyHaveAccountText={t.auth.alreadyHaveAccount}
+          loginText={t.auth.login}
           termsText={t.auth.termsAndPrivacy}
           termsOfServiceText={t.legal.termsOfService}
           privacyPolicyText={t.legal.privacyPolicy}
           andText={t.auth.and}
-          onLogin={() => router.push("/dashboard")}
-          onAppleLogin={() => router.push("/dashboard")}
-          onGoogleLogin={() => router.push("/dashboard")}
-          onForgotPassword={() => router.push("/forgot-password")}
-          onSignup={() => router.push("/signup")}
+          onSignup={() => router.push("/dashboard")}
+          onAppleSignup={() => router.push("/dashboard")}
+          onGoogleSignup={() => router.push("/dashboard")}
+          onLogin={() => router.push("/login")}
         />
       </div>
     </div>
