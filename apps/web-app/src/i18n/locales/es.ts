@@ -23,6 +23,8 @@ export const es: Translations = {
     payments: "Pagos",
     notifications: "Notificaciones",
     settings: "Configuración",
+    aboutUs: "Nosotros",
+    pricing: "Precios",
   },
   auth: {
     login: "Iniciar sesión",
@@ -60,7 +62,125 @@ export const es: Translations = {
     privacyPolicy: "Política de Privacidad",
     lastUpdated: "Última actualización",
   },
+  landing: {
+    hero: {
+      title: "Gestiona tus citas con facilidad",
+      subtitle: "La plataforma completa para gestionar tu negocio de servicios. Citas, clientes, empleados y más en un solo lugar.",
+      cta: "Comenzar gratis",
+      ctaSecondary: "Ver demo",
+    },
+    features: {
+      title: "Todo lo que necesitas para hacer crecer tu negocio",
+      subtitle: "Herramientas poderosas diseñadas para negocios de servicios",
+      appointments: {
+        title: "Citas Inteligentes",
+        description: "Gestiona tu agenda de forma eficiente. Disponibilidad en tiempo real y recordatorios automáticos.",
+      },
+      clients: {
+        title: "Gestión de Clientes",
+        description: "Mantén el control de tus clientes, sus preferencias y el historial completo de citas.",
+      },
+      team: {
+        title: "Colaboración en Equipo",
+        description: "Coordina a tu equipo, asigna servicios y optimiza el tiempo de todos.",
+      },
+      analytics: {
+        title: "Reportes y Análisis",
+        description: "Toma decisiones informadas con reportes detallados sobre el rendimiento de tu negocio.",
+      },
+      multiLocation: {
+        title: "Múltiples Ubicaciones",
+        description: "Administra múltiples locales desde una sola plataforma centralizada.",
+      },
+      payments: {
+        title: "Control de Pagos",
+        description: "Rastrea pagos, genera facturas y administra las finanzas de tu negocio.",
+      },
+    },
+    cta: {
+      title: "¿Listo para transformar tu negocio?",
+      subtitle: "Únete a miles de negocios que ya confían en TuAgenda",
+      button: "Comenzar ahora",
+    },
+    testimonials: {
+      title: "Lo que dicen nuestros clientes",
+      subtitle: "Miles de profesionales confían en TuAgenda para gestionar su negocio",
+      testimonial1: {
+        quote: "TuAgenda transformó cómo gestiono mis citas. ¡Mis pacientes aman los recordatorios automáticos!",
+        name: "Dra. Ana García",
+        role: "Psicóloga",
+      },
+      testimonial2: {
+        quote: "Gestionar múltiples locales era una pesadilla. Ahora todo está centralizado y es eficiente.",
+        name: "Carlos Mendoza",
+        role: "Dueño de Salón",
+      },
+      testimonial3: {
+        quote: "Los reportes me ayudan a tomar mejores decisiones para mi negocio. ¡Muy recomendado!",
+        name: "Laura Torres",
+        role: "Nutricionista",
+      },
+    },
+  },
   pages: {
+    aboutUs: {
+      title: "Nosotros",
+      subtitle: "Conoce más sobre TuAgenda y nuestra misión",
+      mission: {
+        title: "Nuestra Misión",
+        description: "En TuAgenda, creemos que gestionar citas debe ser simple y eficiente. Nuestra misión es proporcionar a los negocios de servicios las mejores herramientas para administrar su tiempo, clientes y equipo de manera efectiva.",
+      },
+      story: {
+        title: "Nuestra Historia",
+        description: "Fundada en 2024, TuAgenda nació de la necesidad de simplificar la gestión de citas para profesionales de servicios. Comenzamos con una idea simple: crear una plataforma que combine poder y simplicidad, permitiendo a los dueños de negocios enfocarse en lo que mejor hacen - servir a sus clientes.",
+      },
+      values: {
+        title: "Nuestros Valores",
+        value1: { title: "Simplicidad", description: "Creemos que el software debe ser intuitivo y fácil de usar." },
+        value2: { title: "Innovación", description: "Mejoramos constantemente nuestra plataforma con funciones de vanguardia." },
+        value3: { title: "Soporte", description: "Nuestro equipo está siempre listo para ayudarte a tener éxito." },
+      },
+    },
+    pricing: {
+      title: "Precios",
+      subtitle: "Elige el plan perfecto para tu negocio",
+      monthly: "Mensual",
+      annual: "Anual",
+      save20: "Ahorra 20%",
+      perMonth: "/mes",
+      getStarted: "Comenzar",
+      free: {
+        name: "Gratis",
+        price: "0",
+        description: "Perfecto para empezar",
+        feature1: "Hasta 50 citas/mes",
+        feature2: "1 ubicación",
+        feature3: "Reportes básicos",
+        feature4: "Soporte por email",
+      },
+      pro: {
+        name: "Pro",
+        price: "29",
+        description: "Para negocios en crecimiento",
+        feature1: "Citas ilimitadas",
+        feature2: "Hasta 3 ubicaciones",
+        feature3: "Reportes avanzados",
+        feature4: "Soporte prioritario",
+        feature5: "Marca personalizada",
+        feature6: "Integraciones",
+      },
+      enterprise: {
+        name: "Enterprise",
+        price: "99",
+        description: "Para grandes organizaciones",
+        feature1: "Todo en Pro",
+        feature2: "Ubicaciones ilimitadas",
+        feature3: "Gerente de cuenta dedicado",
+        feature4: "Soporte telefónico 24/7",
+        feature5: "Desarrollo personalizado",
+        feature6: "Garantía SLA",
+      },
+    },
     dashboard: {
       title: "Panel",
       welcome: "Bienvenido a tu panel",

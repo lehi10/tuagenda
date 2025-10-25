@@ -1,26 +1,12 @@
 "use client"
 
-import { GalleryVerticalEnd } from "lucide-react"
 import { useTranslation } from "@/i18n"
-import { PublicFooter } from "@/components/public-footer"
 
 export default function PrivacyPolicyPage() {
   const { t } = useTranslation()
 
   return (
-    <div className="bg-background min-h-svh">
-      <header className="border-b">
-        <div className="container mx-auto flex h-16 items-center px-4">
-          <a href="/" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
-            TuAgenda
-          </a>
-        </div>
-      </header>
-
-      <main className="container mx-auto max-w-4xl px-4 py-12">
+    <div className="container mx-auto max-w-4xl px-4 py-12">
         <div className="prose prose-neutral dark:prose-invert max-w-none">
           <h1>{t.legal.privacyPolicy}</h1>
           <p className="text-muted-foreground">
@@ -277,30 +263,7 @@ export default function PrivacyPolicyPage() {
               Data Protection Officer: dpo@tuagenda.com
             </p>
           </section>
-
-          <section>
-            <h2>14. Specific Regional Provisions</h2>
-            <h3>For European Economic Area (EEA) Users</h3>
-            <p>
-              If you are located in the EEA, you have additional rights under
-              the General Data Protection Regulation (GDPR), including the
-              right to lodge a complaint with your local data protection
-              authority.
-            </p>
-
-            <h3>For California Residents</h3>
-            <p>
-              If you are a California resident, you have additional rights
-              under the California Consumer Privacy Act (CCPA), including the
-              right to know what personal information is collected and the
-              right to opt-out of the sale of personal information (note: we do
-              not sell personal information).
-            </p>
-          </section>
         </div>
-      </main>
-
-      <PublicFooter />
     </div>
   )
 }

@@ -1,26 +1,12 @@
 "use client"
 
-import { GalleryVerticalEnd } from "lucide-react"
 import { useTranslation } from "@/i18n"
-import { PublicFooter } from "@/components/public-footer"
 
 export default function TermsOfServicePage() {
   const { t } = useTranslation()
 
   return (
-    <div className="bg-background min-h-svh">
-      <header className="border-b">
-        <div className="container mx-auto flex h-16 items-center px-4">
-          <a href="/" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
-            TuAgenda
-          </a>
-        </div>
-      </header>
-
-      <main className="container mx-auto max-w-4xl px-4 py-12">
+    <div className="container mx-auto max-w-4xl px-4 py-12">
         <div className="prose prose-neutral dark:prose-invert max-w-none">
           <h1>{t.legal.termsOfService}</h1>
           <p className="text-muted-foreground">
@@ -194,9 +180,6 @@ export default function TermsOfServicePage() {
             </p>
           </section>
         </div>
-      </main>
-
-      <PublicFooter />
     </div>
   )
 }
