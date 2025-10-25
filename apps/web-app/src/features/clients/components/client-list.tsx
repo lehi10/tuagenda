@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DataTable } from "@/components/shared/data-table"
+import { DataTableWithFilters } from "@/components/shared/data-table-with-filters"
 import { useTranslation } from "@/i18n"
 
 interface Client {
@@ -57,6 +57,56 @@ export function ClientList() {
       appointments: 5,
       lastVisit: "2024-09-15",
       status: "inactive",
+    },
+    {
+      id: "4",
+      name: "Alice Brown",
+      email: "alice@example.com",
+      phone: "(555) 234-5678",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
+      appointments: 15,
+      lastVisit: "2024-10-23",
+      status: "active",
+    },
+    {
+      id: "5",
+      name: "Charlie Green",
+      email: "charlie@example.com",
+      phone: "(555) 345-6789",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie",
+      appointments: 3,
+      lastVisit: "2024-08-10",
+      status: "inactive",
+    },
+    {
+      id: "6",
+      name: "Diana Prince",
+      email: "diana@example.com",
+      phone: "(555) 456-7891",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Diana",
+      appointments: 20,
+      lastVisit: "2024-10-24",
+      status: "active",
+    },
+    {
+      id: "7",
+      name: "Ethan Hunt",
+      email: "ethan@example.com",
+      phone: "(555) 567-8912",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ethan",
+      appointments: 7,
+      lastVisit: "2024-10-18",
+      status: "active",
+    },
+    {
+      id: "8",
+      name: "Fiona White",
+      email: "fiona@example.com",
+      phone: "(555) 678-9123",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fiona",
+      appointments: 11,
+      lastVisit: "2024-10-21",
+      status: "active",
     },
   ]
 
@@ -115,5 +165,22 @@ export function ClientList() {
     },
   ]
 
-  return <DataTable data={clients} columns={columns} />
+  return (
+    <DataTableWithFilters
+      data={clients}
+      columns={columns}
+      searchableColumns={["name", "email", "phone"]}
+      filters={[
+        {
+          placeholder: "Filter by status",
+          accessor: "status",
+          options: [
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+          ],
+        },
+      ]}
+      pageSize={5}
+    />
+  )
 }

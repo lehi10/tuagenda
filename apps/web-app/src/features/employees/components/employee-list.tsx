@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DataTable } from "@/components/shared/data-table"
+import { DataTableWithFilters } from "@/components/shared/data-table-with-filters"
 import { useTranslation } from "@/i18n"
 
 interface Employee {
@@ -49,6 +49,78 @@ export function EmployeeList() {
       role: "Nail Technician",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
       status: "inactive",
+    },
+    {
+      id: "4",
+      name: "Robert Wilson",
+      email: "robert@example.com",
+      role: "Massage Therapist",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
+      status: "active",
+    },
+    {
+      id: "5",
+      name: "Lisa Anderson",
+      email: "lisa@example.com",
+      role: "Stylist",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
+      status: "active",
+    },
+    {
+      id: "6",
+      name: "Tom Harris",
+      email: "tom@example.com",
+      role: "Barber",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tom",
+      status: "inactive",
+    },
+    {
+      id: "7",
+      name: "Amy Chen",
+      email: "amy@example.com",
+      role: "Nail Technician",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amy",
+      status: "active",
+    },
+    {
+      id: "8",
+      name: "David Martinez",
+      email: "david@example.com",
+      role: "Massage Therapist",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+      status: "active",
+    },
+    {
+      id: "9",
+      name: "Emma Taylor",
+      email: "emma@example.com",
+      role: "Stylist",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      status: "active",
+    },
+    {
+      id: "10",
+      name: "James Lee",
+      email: "james@example.com",
+      role: "Barber",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
+      status: "active",
+    },
+    {
+      id: "11",
+      name: "Sophia Garcia",
+      email: "sophia@example.com",
+      role: "Nail Technician",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia",
+      status: "inactive",
+    },
+    {
+      id: "12",
+      name: "Daniel Kim",
+      email: "daniel@example.com",
+      role: "Massage Therapist",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel",
+      status: "active",
     },
   ]
 
@@ -103,5 +175,32 @@ export function EmployeeList() {
     },
   ]
 
-  return <DataTable data={employees} columns={columns} />
+  return (
+    <DataTableWithFilters
+      data={employees}
+      columns={columns}
+      searchableColumns={["name", "email"]}
+      filters={[
+        {
+          placeholder: "Filter by status",
+          accessor: "status",
+          options: [
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+          ],
+        },
+        {
+          placeholder: "Filter by role",
+          accessor: "role",
+          options: [
+            { value: "Stylist", label: "Stylist" },
+            { value: "Barber", label: "Barber" },
+            { value: "Nail Technician", label: "Nail Technician" },
+            { value: "Massage Therapist", label: "Massage Therapist" },
+          ],
+        },
+      ]}
+      pageSize={5}
+    />
+  )
 }
