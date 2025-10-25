@@ -4,6 +4,7 @@ import React from "react"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { I18nProvider } from "@/i18n"
+import { OrganizationProvider } from "@/contexts/organization-context"
 
 export default function RootLayout({
   children,
@@ -12,10 +13,12 @@ export default function RootLayout({
 }) {
   return (
     <I18nProvider>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>{children}</SidebarInset>
-      </SidebarProvider>
+      <OrganizationProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset>{children}</SidebarInset>
+        </SidebarProvider>
+      </OrganizationProvider>
     </I18nProvider>
   )
 }

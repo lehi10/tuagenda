@@ -3,6 +3,7 @@
 import { MoreHorizontal } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,7 @@ interface Employee {
   name: string
   email: string
   role: string
+  avatar?: string
   status: "active" | "inactive"
 }
 
@@ -29,6 +31,7 @@ export function EmployeeList() {
       name: "Sarah Johnson",
       email: "sarah@example.com",
       role: "Stylist",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
       status: "active",
     },
     {
@@ -36,6 +39,7 @@ export function EmployeeList() {
       name: "Mike Brown",
       email: "mike@example.com",
       role: "Barber",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
       status: "active",
     },
     {
@@ -43,12 +47,32 @@ export function EmployeeList() {
       name: "Emily Davis",
       email: "emily@example.com",
       role: "Nail Technician",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
       status: "inactive",
     },
   ]
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+  }
+
   const columns = [
-    { header: t.pages.clients.name, accessor: "name" as const },
+    {
+      header: t.pages.clients.name,
+      accessor: (item: Employee) => (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={item.avatar} alt={item.name} />
+            <AvatarFallback>{getInitials(item.name)}</AvatarFallback>
+          </Avatar>
+          <span className="font-medium">{item.name}</span>
+        </div>
+      ),
+    },
     { header: t.pages.clients.email, accessor: "email" as const },
     { header: "Role", accessor: "role" as const },
     {
