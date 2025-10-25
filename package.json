@@ -7,5 +7,8 @@
     "dev:all": "pnpm -r --parallel run dev",
     "build": "pnpm --filter ./apps/web-app build"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "packageManager": "pnpm@10.12.1"
 }
