@@ -328,6 +328,11 @@ export default function BookingPage() {
               timeSlot: bookingData.timeSlot!,
               clientInfo: bookingData.clientInfo!,
               paymentMethod: bookingData.paymentMethod!,
+              businessLocation: {
+                address: mockBusiness.location,
+                lat: -12.0464, // Mock coordinates for Lima, Peru
+                lng: -77.0428,
+              },
             }}
             onBackToHome={handleBackToHome}
           />
@@ -343,12 +348,16 @@ export default function BookingPage() {
       <BusinessProfile business={mockBusiness} />
 
       <div className="container mx-auto flex-1 px-4 py-8">
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Main Content */}
-          <div className="lg:col-span-2">{renderStep()}</div>
+        {currentStep === "confirmation" ? (
+          // Full width for confirmation step
+          <div className="w-full">{renderStep()}</div>
+        ) : (
+          // Two column layout for booking steps
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Main Content */}
+            <div className="lg:col-span-2">{renderStep()}</div>
 
-          {/* Booking Summary - Hidden on confirmation step */}
-          {currentStep !== "confirmation" && (
+            {/* Booking Summary */}
             <div className="lg:col-span-1">
               <div className="sticky top-4">
                 <BookingSummary
@@ -357,8 +366,8 @@ export default function BookingPage() {
                 />
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <PublicFooter />

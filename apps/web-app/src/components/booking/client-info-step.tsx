@@ -62,7 +62,16 @@ export function ClientInfoStep({
 
       {!isAuthenticated && (
         <>
-          <div className="rounded-lg border bg-muted/50 p-4">
+          {/* TODO: ANALIZAR COMPORTAMIENTO DE LOGIN/SIGNUP CON REDES SOCIALES
+           * Consideraciones:
+           * 1. Los botones de Google/Apple deben funcionar tanto para login como para signup
+           * 2. Si el usuario hace click en Google/Apple:
+           *    - Si ya tiene cuenta: hacer login y preservar datos del formulario
+           *    - Si no tiene cuenta: crear cuenta automáticamente
+           * 3. Usar modal/popup para OAuth para no perder progreso del booking
+           * 4. Al completar OAuth, volver a este paso con la info autocompletada
+           */}
+          <div className="mx-auto max-w-md rounded-lg border bg-muted/50 p-4">
             <p className="mb-3 text-center text-sm font-medium">
               ¿Ya tienes una cuenta?
             </p>
@@ -128,44 +137,60 @@ export function ClientInfoStep({
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="fullName">Nombre Completo *</Label>
-          <Input
-            id="fullName"
-            type="text"
-            placeholder="Juan Pérez"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
-        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2 sm:col-span-2">
+            <Label htmlFor="fullName">Nombre Completo *</Label>
+            <Input
+              id="fullName"
+              type="text"
+              placeholder="Juan Pérez"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phone">Teléfono *</Label>
-          <Input
-            id="phone"
-            type="tel"
-            placeholder="+51 999 888 777"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Teléfono *</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="+51 999 888 777"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Correo Electrónico *</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="correo@ejemplo.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="space-y-2">
+            <Label htmlFor="email">Correo Electrónico *</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="correo@ejemplo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
         </div>
 
         {!isAuthenticated && (
           <>
+            {/* TODO: ANALIZAR FLUJO DE CREACIÓN DE CUENTA
+             * Consideraciones:
+             * 1. ¿El checkbox "crear cuenta" debe ser la única forma de crear cuenta con email/password?
+             * 2. ¿Qué pasa si el usuario quiere crear cuenta con Google/Apple?
+             *    - Opción A: Los botones de arriba pueden crear cuenta automáticamente (sin checkbox)
+             *    - Opción B: Mostrar un modal/popup para no perder el progreso del usuario
+             * 3. ¿Necesitamos distinguir entre "continuar como invitado" vs "crear cuenta"?
+             * 4. ¿El flujo de Google/Apple debe preservar los datos ya ingresados en el formulario?
+             *
+             * Flujo actual:
+             * - Checkbox desmarcado + no autenticado = continuar como invitado
+             * - Checkbox marcado = crear cuenta con email/password (requiere contraseña)
+             * - Botones sociales arriba = ¿crear cuenta o solo login? (por definir)
+             */}
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="createAccount"
@@ -181,20 +206,32 @@ export function ClientInfoStep({
             </div>
 
             {createAccount && (
-              <div className="space-y-2">
-                <Label htmlFor="password">Contraseña *</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required={createAccount}
-                  minLength={6}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Mínimo 6 caracteres
-                </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="password">Contraseña *</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required={createAccount}
+                    minLength={6}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Mínimo 6 caracteres
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirmar Contraseña *</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    required={createAccount}
+                    minLength={6}
+                  />
+                </div>
               </div>
             )}
           </>
