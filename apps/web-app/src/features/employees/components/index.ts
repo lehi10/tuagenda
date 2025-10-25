@@ -1,2 +1,2 @@
-export { EmployeeList } from "./employee-list"
-export { EmployeeStats } from "./employee-stats"
+export { EmployeeList } from "./employee-list";
+export { EmployeeStats } from "./employee-stats";

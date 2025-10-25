@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState } from "react";
 
 export interface Organization {
-  id: string
-  name: string
-  slug: string
-  logo?: string
-  plan: "free" | "pro" | "enterprise"
-  employees: number
-  locations: number
+  id: string;
+  name: string;
+  slug: string;
+  logo?: string;
+  plan: "free" | "pro" | "enterprise";
+  employees: number;
+  locations: number;
 }
 
 interface OrganizationContextType {
-  currentOrg: Organization | null
-  organizations: Organization[]
-  setCurrentOrg: (org: Organization) => void
-  isSuperAdmin: boolean
+  currentOrg: Organization | null;
+  organizations: Organization[];
+  setCurrentOrg: (org: Organization) => void;
+  isSuperAdmin: boolean;
 }
 
 const OrganizationContext = createContext<OrganizationContextType | undefined>(
   undefined
-)
+);
 
 // Mock data de organizaciones
 const mockOrganizations: Organization[] = [
@@ -65,38 +65,38 @@ const mockOrganizations: Organization[] = [
     employees: 10,
     locations: 2,
   },
-]
+];
 
 export function OrganizationProvider({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   const [currentOrg, setCurrentOrg] = useState<Organization | null>(
     mockOrganizations[0]
-  )
-  const [isSuperAdmin] = useState(true) // En producción esto vendría del usuario autenticado
+  );
+  const [isSuperAdmin] = useState(true); // En producción esto vendría del usuario autenticado
 
   const value = {
     currentOrg,
     organizations: mockOrganizations,
     setCurrentOrg,
     isSuperAdmin,
-  }
+  };
 
   return (
     <OrganizationContext.Provider value={value}>
       {children}
     </OrganizationContext.Provider>
-  )
+  );
 }
 
 export function useOrganization() {
-  const context = useContext(OrganizationContext)
+  const context = useContext(OrganizationContext);
   if (context === undefined) {
     throw new Error(
       "useOrganization must be used within an OrganizationProvider"
-    )
+    );
   }
-  return context
+  return context;
 }

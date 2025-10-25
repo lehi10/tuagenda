@@ -49,7 +49,8 @@ export const en = {
     termsAndPrivacy: "By clicking continue, you agree to our",
     and: "and",
     resetPassword: "Reset password",
-    resetPasswordDescription: "Enter your email address and we'll send you a link to reset your password.",
+    resetPasswordDescription:
+      "Enter your email address and we'll send you a link to reset your password.",
     sendResetLink: "Send reset link",
     backToLogin: "Back to login",
     checkYourEmail: "Check your email",
@@ -113,7 +114,8 @@ export const en = {
   landing: {
     hero: {
       title: "Manage your appointments with ease",
-      subtitle: "The complete platform to manage your service business. Appointments, clients, employees, and more in one place.",
+      subtitle:
+        "The complete platform to manage your service business. Appointments, clients, employees, and more in one place.",
       cta: "Start for free",
       ctaSecondary: "Watch demo",
     },
@@ -122,27 +124,33 @@ export const en = {
       subtitle: "Powerful tools designed for service businesses",
       appointments: {
         title: "Smart Appointments",
-        description: "Manage your schedule efficiently. Real-time availability and automatic reminders.",
+        description:
+          "Manage your schedule efficiently. Real-time availability and automatic reminders.",
       },
       clients: {
         title: "Client Management",
-        description: "Keep track of your clients, their preferences, and complete appointment history.",
+        description:
+          "Keep track of your clients, their preferences, and complete appointment history.",
       },
       team: {
         title: "Team Collaboration",
-        description: "Coordinate your team, assign services, and optimize everyone's time.",
+        description:
+          "Coordinate your team, assign services, and optimize everyone's time.",
       },
       analytics: {
         title: "Reports & Analytics",
-        description: "Make informed decisions with detailed reports on your business performance.",
+        description:
+          "Make informed decisions with detailed reports on your business performance.",
       },
       multiLocation: {
         title: "Multiple Locations",
-        description: "Manage multiple locations from a single centralized platform.",
+        description:
+          "Manage multiple locations from a single centralized platform.",
       },
       payments: {
         title: "Payment Control",
-        description: "Track payments, generate invoices, and manage your business finances.",
+        description:
+          "Track payments, generate invoices, and manage your business finances.",
       },
     },
     cta: {
@@ -152,19 +160,23 @@ export const en = {
     },
     testimonials: {
       title: "What our clients say",
-      subtitle: "Thousands of professionals trust TuAgenda to manage their business",
+      subtitle:
+        "Thousands of professionals trust TuAgenda to manage their business",
       testimonial1: {
-        quote: "TuAgenda transformed how I manage my appointments. My patients love the automatic reminders!",
+        quote:
+          "TuAgenda transformed how I manage my appointments. My patients love the automatic reminders!",
         name: "Dr. Ana García",
         role: "Psychologist",
       },
       testimonial2: {
-        quote: "Managing multiple locations was a nightmare. Now everything is centralized and efficient.",
+        quote:
+          "Managing multiple locations was a nightmare. Now everything is centralized and efficient.",
         name: "Carlos Mendoza",
         role: "Salon Owner",
       },
       testimonial3: {
-        quote: "The reports help me make better decisions for my business. Highly recommended!",
+        quote:
+          "The reports help me make better decisions for my business. Highly recommended!",
         name: "Laura Torres",
         role: "Nutritionist",
       },
@@ -176,17 +188,30 @@ export const en = {
       subtitle: "Learn more about TuAgenda and our mission",
       mission: {
         title: "Our Mission",
-        description: "At TuAgenda, we believe that managing appointments should be simple and efficient. Our mission is to provide service businesses with the best tools to manage their time, clients, and team effectively.",
+        description:
+          "At TuAgenda, we believe that managing appointments should be simple and efficient. Our mission is to provide service businesses with the best tools to manage their time, clients, and team effectively.",
       },
       story: {
         title: "Our Story",
-        description: "Founded in 2024, TuAgenda was born from the need to simplify appointment management for service professionals. We started with a simple idea: create a platform that combines power and simplicity, allowing business owners to focus on what they do best - serving their clients.",
+        description:
+          "Founded in 2024, TuAgenda was born from the need to simplify appointment management for service professionals. We started with a simple idea: create a platform that combines power and simplicity, allowing business owners to focus on what they do best - serving their clients.",
       },
       values: {
         title: "Our Values",
-        value1: { title: "Simplicity", description: "We believe software should be intuitive and easy to use." },
-        value2: { title: "Innovation", description: "We constantly improve our platform with cutting-edge features." },
-        value3: { title: "Support", description: "Our team is always ready to help you succeed." },
+        value1: {
+          title: "Simplicity",
+          description:
+            "We believe software should be intuitive and easy to use.",
+        },
+        value2: {
+          title: "Innovation",
+          description:
+            "We constantly improve our platform with cutting-edge features.",
+        },
+        value3: {
+          title: "Support",
+          description: "Our team is always ready to help you succeed.",
+        },
       },
     },
     pricing: {
@@ -298,6 +323,6 @@ export const en = {
       account: "Account",
     },
   },
-}
+};
 
-export type Translations = typeof en
+export type Translations = typeof en;

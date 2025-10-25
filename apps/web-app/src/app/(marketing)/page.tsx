@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { useTranslation } from "@/i18n"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
+import Link from "next/link";
 import {
   Calendar,
   Users,
@@ -10,10 +10,10 @@ import {
   BarChart3,
   MapPin,
   CreditCard,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function Home() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const features = [
     {
@@ -46,7 +46,7 @@ export default function Home() {
       title: t.landing.features.payments.title,
       description: t.landing.features.payments.description,
     },
-  ]
+  ];
 
   const testimonials = [
     {
@@ -67,7 +67,7 @@ export default function Home() {
       role: t.landing.testimonials.testimonial3.role,
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Laura",
     },
-  ]
+  ];
 
   return (
     <>
@@ -187,5 +187,5 @@ export default function Home() {
         </div>
       </section>
     </>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { EmployeeStats } from "@/features/employees/components/employee-stats"
-import { EmployeeList } from "@/features/employees/components/employee-list"
-import { Button } from "@/components/ui/button"
+import { useTranslation } from "@/i18n";
+import { EmployeeStats } from "@/features/employees/components/employee-stats";
+import { EmployeeList } from "@/features/employees/components/employee-list";
+import { Button } from "@/components/ui/button";
 
 export default function EmployeesPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -22,5 +22,5 @@ export default function EmployeesPage() {
       <EmployeeStats />
       <EmployeeList />
     </div>
-  )
+  );
 }

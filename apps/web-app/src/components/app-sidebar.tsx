@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Bell,
   Briefcase,
@@ -12,13 +12,13 @@ import {
   Settings,
   UserCheck,
   Users,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
-import { LanguageSelector } from "@/components/language-selector"
-import { OrganizationSwitcher } from "@/components/organization-switcher"
-import { useTranslation } from "@/i18n"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { LanguageSelector } from "@/components/language-selector";
+import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { useTranslation } from "@/i18n";
 import {
   Sidebar,
   SidebarContent,
@@ -27,10 +27,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const navMain = [
     {
@@ -83,13 +83,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/settings",
       icon: Settings,
     },
-  ]
+  ];
 
   const user = {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
-  }
+  };
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -106,5 +106,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

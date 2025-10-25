@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { useTranslation } from "@/i18n"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/i18n";
 
 interface Professional {
-  id: string
-  name: string
-  role: string
-  avatar: string
-  available: boolean
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  available: boolean;
 }
 
 interface ProfessionalSelectionProps {
-  professionals: Professional[]
-  onSelect: (professional: Professional) => void
-  selectedProfessionalId?: string
+  professionals: Professional[];
+  onSelect: (professional: Professional) => void;
+  selectedProfessionalId?: string;
 }
 
 export function ProfessionalSelection({
@@ -24,15 +24,15 @@ export function ProfessionalSelection({
   onSelect,
   selectedProfessionalId,
 }: ProfessionalSelectionProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const getInitials = (name: string) => {
     return name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
-  }
+      .toUpperCase();
+  };
 
   return (
     <div className="space-y-6">
@@ -89,5 +89,5 @@ export function ProfessionalSelection({
         </div>
       )}
     </div>
-  )
+  );
 }

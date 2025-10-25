@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { ServiceStats } from "@/features/services/components/service-stats"
-import { ServiceList } from "@/features/services/components/service-list"
-import { Button } from "@/components/ui/button"
+import { useTranslation } from "@/i18n";
+import { ServiceStats } from "@/features/services/components/service-stats";
+import { ServiceList } from "@/features/services/components/service-list";
+import { Button } from "@/components/ui/button";
 
 export default function ServicesPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -22,5 +22,5 @@ export default function ServicesPage() {
       <ServiceStats />
       <ServiceList />
     </div>
-  )
+  );
 }

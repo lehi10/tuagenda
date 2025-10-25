@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { GalleryVerticalEnd } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { LoginForm } from "@/components/login-form"
-import { useTranslation } from "@/i18n"
+import { GalleryVerticalEnd } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LoginForm } from "@/components/login-form";
+import { useTranslation } from "@/i18n";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const { t } = useTranslation()
+  const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -42,5 +42,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  )
+  );
 }

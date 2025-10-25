@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { Search, X } from "lucide-react"
+import { useState, useMemo } from "react";
+import { Search, X } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -18,40 +18,40 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Column<T> {
-  header: string
-  accessor: keyof T | ((item: T) => React.ReactNode)
-  className?: string
+  header: string;
+  accessor: keyof T | ((item: T) => React.ReactNode);
+  className?: string;
 }
 
 interface FilterOption {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 interface FilterConfig {
-  placeholder: string
-  options: FilterOption[]
-  accessor: string
+  placeholder: string;
+  options: FilterOption[];
+  accessor: string;
 }
 
 interface DataTableWithFiltersProps<T> {
-  data: T[]
-  columns: Column<T>[]
-  searchableColumns?: (keyof T)[]
-  filters?: FilterConfig[]
-  pageSize?: number
+  data: T[];
+  columns: Column<T>[];
+  searchableColumns?: (keyof T)[];
+  filters?: FilterConfig[];
+  pageSize?: number;
 }
 
 export function DataTableWithFilters<T extends Record<string, any>>({
@@ -61,58 +61,63 @@ export function DataTableWithFilters<T extends Record<string, any>>({
   filters = [],
   pageSize = 10,
 }: DataTableWithFiltersProps<T>) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string>>({})
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, string>
+  >({});
 
   // Filtrar datos
   const filteredData = useMemo(() => {
-    let result = [...data]
+    let result = [...data];
 
     // Filtro de búsqueda
     if (searchQuery && searchableColumns.length > 0) {
       result = result.filter((item) =>
         searchableColumns.some((column) => {
-          const value = item[column]
-          return String(value).toLowerCase().includes(searchQuery.toLowerCase())
+          const value = item[column];
+          return String(value)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
         })
-      )
+      );
     }
 
     // Filtros por columnas
     Object.entries(selectedFilters).forEach(([key, value]) => {
       if (value && value !== "all") {
-        result = result.filter((item) => String(item[key]) === value)
+        result = result.filter((item) => String(item[key]) === value);
       }
-    })
+    });
 
-    return result
-  }, [data, searchQuery, searchableColumns, selectedFilters])
+    return result;
+  }, [data, searchQuery, searchableColumns, selectedFilters]);
 
   // Paginación
-  const totalPages = Math.ceil(filteredData.length / pageSize)
-  const startIndex = (currentPage - 1) * pageSize
-  const endIndex = startIndex + pageSize
-  const paginatedData = filteredData.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedData = filteredData.slice(startIndex, endIndex);
 
   // Resetear a página 1 cuando cambian los filtros
   const handleFilterChange = (key: string, value: string) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }))
-    setCurrentPage(1)
-  }
+    setSelectedFilters((prev) => ({ ...prev, [key]: value }));
+    setCurrentPage(1);
+  };
 
   const handleSearchChange = (value: string) => {
-    setSearchQuery(value)
-    setCurrentPage(1)
-  }
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
 
   const clearFilters = () => {
-    setSearchQuery("")
-    setSelectedFilters({})
-    setCurrentPage(1)
-  }
+    setSearchQuery("");
+    setSelectedFilters({});
+    setCurrentPage(1);
+  };
 
-  const hasActiveFilters = searchQuery || Object.values(selectedFilters).some((v) => v && v !== "all")
+  const hasActiveFilters =
+    searchQuery || Object.values(selectedFilters).some((v) => v && v !== "all");
 
   return (
     <div className="space-y-4">
@@ -147,7 +152,9 @@ export function DataTableWithFilters<T extends Record<string, any>>({
             <Select
               key={filter.accessor}
               value={selectedFilters[filter.accessor] || "all"}
-              onValueChange={(value) => handleFilterChange(filter.accessor, value)}
+              onValueChange={(value) =>
+                handleFilterChange(filter.accessor, value)
+              }
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={filter.placeholder} />
@@ -175,7 +182,8 @@ export function DataTableWithFilters<T extends Record<string, any>>({
       {/* Contador de resultados */}
       <div className="text-sm text-muted-foreground">
         Showing {paginatedData.length} of {filteredData.length} results
-        {filteredData.length !== data.length && ` (filtered from ${data.length} total)`}
+        {filteredData.length !== data.length &&
+          ` (filtered from ${data.length} total)`}
       </div>
 
       {/* Tabla */}
@@ -222,12 +230,16 @@ export function DataTableWithFilters<T extends Record<string, any>>({
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                className={
+                  currentPage === 1
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
               />
             </PaginationItem>
 
             {[...Array(totalPages)].map((_, index) => {
-              const pageNumber = index + 1
+              const pageNumber = index + 1;
               // Mostrar primera página, última página, y páginas cercanas a la actual
               if (
                 pageNumber === 1 ||
@@ -244,7 +256,7 @@ export function DataTableWithFilters<T extends Record<string, any>>({
                       {pageNumber}
                     </PaginationLink>
                   </PaginationItem>
-                )
+                );
               }
               // Mostrar ellipsis
               if (
@@ -255,16 +267,20 @@ export function DataTableWithFilters<T extends Record<string, any>>({
                   <PaginationItem key={pageNumber}>
                     <PaginationEllipsis />
                   </PaginationItem>
-                )
+                );
               }
-              return null
+              return null;
             })}
 
             <PaginationItem>
               <PaginationNext
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 className={
-                  currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
                 }
               />
             </PaginationItem>
@@ -272,5 +288,5 @@ export function DataTableWithFilters<T extends Record<string, any>>({
         </Pagination>
       )}
     </div>
-  )
+  );
 }

@@ -1,24 +1,24 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { ArrowLeft } from "lucide-react"
+} from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft } from "lucide-react";
 
 interface ForgotPasswordFormProps extends React.ComponentProps<"div"> {
-  onSubmit?: () => void
-  onBackToLogin?: () => void
-  title?: string
-  description?: string
-  emailLabel?: string
-  submitButtonText?: string
-  backToLoginText?: string
+  onSubmit?: () => void;
+  onBackToLogin?: () => void;
+  title?: string;
+  description?: string;
+  emailLabel?: string;
+  submitButtonText?: string;
+  backToLoginText?: string;
 }
 
 export function ForgotPasswordForm({
@@ -33,9 +33,9 @@ export function ForgotPasswordForm({
   ...props
 }: ForgotPasswordFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (onSubmit) onSubmit()
-  }
+    e.preventDefault();
+    if (onSubmit) onSubmit();
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -75,5 +75,5 @@ export function ForgotPasswordForm({
         {backToLoginText}
       </Button>
     </div>
-  )
+  );
 }

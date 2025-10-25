@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { Calendar, CheckCircle, Clock } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
-import { useTranslation } from "@/i18n"
+import { Calendar, CheckCircle, Clock } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
+import { useTranslation } from "@/i18n";
 
 export function CalendarStats() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const stats = [
     {
@@ -26,7 +26,7 @@ export function CalendarStats() {
       icon: CheckCircle,
       description: "This month",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -34,5 +34,5 @@ export function CalendarStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

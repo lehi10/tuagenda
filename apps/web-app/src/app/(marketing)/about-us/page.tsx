@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { CheckCircle2 } from "lucide-react"
+import { useTranslation } from "@/i18n";
+import { CheckCircle2 } from "lucide-react";
 
 export default function AboutUsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const values = [
     {
@@ -19,7 +19,7 @@ export default function AboutUsPage() {
       title: t.pages.aboutUs.values.value3.title,
       description: t.pages.aboutUs.values.value3.description,
     },
-  ]
+  ];
 
   return (
     <>
@@ -87,5 +87,5 @@ export default function AboutUsPage() {
         </div>
       </section>
     </>
-  )
+  );
 }

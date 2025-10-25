@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTable } from "@/components/shared/data-table"
-import { useTranslation } from "@/i18n"
+} from "@/components/ui/dropdown-menu";
+import { DataTable } from "@/components/shared/data-table";
+import { useTranslation } from "@/i18n";
 
 interface Service {
-  id: string
-  name: string
-  duration: string
-  price: string
-  category: string
-  active: boolean
+  id: string;
+  name: string;
+  duration: string;
+  price: string;
+  category: string;
+  active: boolean;
 }
 
 export function ServiceList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const services: Service[] = [
     {
@@ -57,7 +57,7 @@ export function ServiceList() {
       category: "Spa",
       active: false,
     },
-  ]
+  ];
 
   const columns = [
     { header: t.pages.services.serviceName, accessor: "name" as const },
@@ -90,7 +90,7 @@ export function ServiceList() {
         </DropdownMenu>
       ),
     },
-  ]
+  ];
 
-  return <DataTable data={services} columns={columns} />
+  return <DataTable data={services} columns={columns} />;
 }

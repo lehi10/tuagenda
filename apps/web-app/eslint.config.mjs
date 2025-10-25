@@ -1,16 +1,16 @@
-import { dirname } from "path"
-import { fileURLToPath } from "url"
-import { FlatCompat } from "@eslint/eslintrc"
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
 
-import tsPlugin from "@typescript-eslint/eslint-plugin"
-import prettierPlugin from "eslint-plugin-prettier"
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import prettierPlugin from "eslint-plugin-prettier";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
-})
+});
 
 export default [
   ...compat.extends(
@@ -34,9 +34,9 @@ export default [
     },
     rules: {
       "prettier/prettier": "error",
-      quotes: ["error", "single"],
+      quotes: ["error", "double"],
       semi: ["error", "always"],
       "no-unused-vars": "warn",
     },
   },
-]
+];

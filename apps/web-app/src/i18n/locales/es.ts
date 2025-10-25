@@ -1,4 +1,4 @@
-import type { Translations } from "./en"
+import type { Translations } from "./en";
 
 export const es: Translations = {
   common: {
@@ -51,11 +51,13 @@ export const es: Translations = {
     termsAndPrivacy: "Al hacer clic en continuar, aceptas nuestros",
     and: "y",
     resetPassword: "Restablecer contraseña",
-    resetPasswordDescription: "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+    resetPasswordDescription:
+      "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
     sendResetLink: "Enviar enlace",
     backToLogin: "Volver al inicio de sesión",
     checkYourEmail: "Revisa tu correo",
-    resetLinkSent: "Hemos enviado un enlace de restablecimiento de contraseña a tu correo electrónico.",
+    resetLinkSent:
+      "Hemos enviado un enlace de restablecimiento de contraseña a tu correo electrónico.",
   },
   legal: {
     termsOfService: "Términos de Servicio",
@@ -115,7 +117,8 @@ export const es: Translations = {
   landing: {
     hero: {
       title: "Gestiona tus citas con facilidad",
-      subtitle: "La plataforma completa para gestionar tu negocio de servicios. Citas, clientes, empleados y más en un solo lugar.",
+      subtitle:
+        "La plataforma completa para gestionar tu negocio de servicios. Citas, clientes, empleados y más en un solo lugar.",
       cta: "Comenzar gratis",
       ctaSecondary: "Ver demo",
     },
@@ -124,27 +127,33 @@ export const es: Translations = {
       subtitle: "Herramientas poderosas diseñadas para negocios de servicios",
       appointments: {
         title: "Citas Inteligentes",
-        description: "Gestiona tu agenda de forma eficiente. Disponibilidad en tiempo real y recordatorios automáticos.",
+        description:
+          "Gestiona tu agenda de forma eficiente. Disponibilidad en tiempo real y recordatorios automáticos.",
       },
       clients: {
         title: "Gestión de Clientes",
-        description: "Mantén el control de tus clientes, sus preferencias y el historial completo de citas.",
+        description:
+          "Mantén el control de tus clientes, sus preferencias y el historial completo de citas.",
       },
       team: {
         title: "Colaboración en Equipo",
-        description: "Coordina a tu equipo, asigna servicios y optimiza el tiempo de todos.",
+        description:
+          "Coordina a tu equipo, asigna servicios y optimiza el tiempo de todos.",
       },
       analytics: {
         title: "Reportes y Análisis",
-        description: "Toma decisiones informadas con reportes detallados sobre el rendimiento de tu negocio.",
+        description:
+          "Toma decisiones informadas con reportes detallados sobre el rendimiento de tu negocio.",
       },
       multiLocation: {
         title: "Múltiples Ubicaciones",
-        description: "Administra múltiples locales desde una sola plataforma centralizada.",
+        description:
+          "Administra múltiples locales desde una sola plataforma centralizada.",
       },
       payments: {
         title: "Control de Pagos",
-        description: "Rastrea pagos, genera facturas y administra las finanzas de tu negocio.",
+        description:
+          "Rastrea pagos, genera facturas y administra las finanzas de tu negocio.",
       },
     },
     cta: {
@@ -154,19 +163,23 @@ export const es: Translations = {
     },
     testimonials: {
       title: "Lo que dicen nuestros clientes",
-      subtitle: "Miles de profesionales confían en TuAgenda para gestionar su negocio",
+      subtitle:
+        "Miles de profesionales confían en TuAgenda para gestionar su negocio",
       testimonial1: {
-        quote: "TuAgenda transformó cómo gestiono mis citas. ¡Mis pacientes aman los recordatorios automáticos!",
+        quote:
+          "TuAgenda transformó cómo gestiono mis citas. ¡Mis pacientes aman los recordatorios automáticos!",
         name: "Dra. Ana García",
         role: "Psicóloga",
       },
       testimonial2: {
-        quote: "Gestionar múltiples locales era una pesadilla. Ahora todo está centralizado y es eficiente.",
+        quote:
+          "Gestionar múltiples locales era una pesadilla. Ahora todo está centralizado y es eficiente.",
         name: "Carlos Mendoza",
         role: "Dueño de Salón",
       },
       testimonial3: {
-        quote: "Los reportes me ayudan a tomar mejores decisiones para mi negocio. ¡Muy recomendado!",
+        quote:
+          "Los reportes me ayudan a tomar mejores decisiones para mi negocio. ¡Muy recomendado!",
         name: "Laura Torres",
         role: "Nutricionista",
       },
@@ -178,17 +191,31 @@ export const es: Translations = {
       subtitle: "Conoce más sobre TuAgenda y nuestra misión",
       mission: {
         title: "Nuestra Misión",
-        description: "En TuAgenda, creemos que gestionar citas debe ser simple y eficiente. Nuestra misión es proporcionar a los negocios de servicios las mejores herramientas para administrar su tiempo, clientes y equipo de manera efectiva.",
+        description:
+          "En TuAgenda, creemos que gestionar citas debe ser simple y eficiente. Nuestra misión es proporcionar a los negocios de servicios las mejores herramientas para administrar su tiempo, clientes y equipo de manera efectiva.",
       },
       story: {
         title: "Nuestra Historia",
-        description: "Fundada en 2024, TuAgenda nació de la necesidad de simplificar la gestión de citas para profesionales de servicios. Comenzamos con una idea simple: crear una plataforma que combine poder y simplicidad, permitiendo a los dueños de negocios enfocarse en lo que mejor hacen - servir a sus clientes.",
+        description:
+          "Fundada en 2024, TuAgenda nació de la necesidad de simplificar la gestión de citas para profesionales de servicios. Comenzamos con una idea simple: crear una plataforma que combine poder y simplicidad, permitiendo a los dueños de negocios enfocarse en lo que mejor hacen - servir a sus clientes.",
       },
       values: {
         title: "Nuestros Valores",
-        value1: { title: "Simplicidad", description: "Creemos que el software debe ser intuitivo y fácil de usar." },
-        value2: { title: "Innovación", description: "Mejoramos constantemente nuestra plataforma con funciones de vanguardia." },
-        value3: { title: "Soporte", description: "Nuestro equipo está siempre listo para ayudarte a tener éxito." },
+        value1: {
+          title: "Simplicidad",
+          description:
+            "Creemos que el software debe ser intuitivo y fácil de usar.",
+        },
+        value2: {
+          title: "Innovación",
+          description:
+            "Mejoramos constantemente nuestra plataforma con funciones de vanguardia.",
+        },
+        value3: {
+          title: "Soporte",
+          description:
+            "Nuestro equipo está siempre listo para ayudarte a tener éxito.",
+        },
       },
     },
     pricing: {
@@ -300,4 +327,4 @@ export const es: Translations = {
       account: "Cuenta",
     },
   },
-}
+};

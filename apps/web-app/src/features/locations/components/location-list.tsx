@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { MapPin, MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { MapPin, MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useTranslation } from "@/i18n"
+} from "@/components/ui/dropdown-menu";
+import { useTranslation } from "@/i18n";
 
 interface Location {
-  id: string
-  name: string
-  address: string
-  phone: string
-  employees: number
-  status: "active" | "inactive"
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  employees: number;
+  status: "active" | "inactive";
 }
 
 export function LocationList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const locations: Location[] = [
     {
@@ -49,7 +49,7 @@ export function LocationList() {
       employees: 4,
       status: "inactive",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -64,7 +64,9 @@ export function LocationList() {
                 <div>
                   <h3 className="font-semibold">{location.name}</h3>
                   <Badge
-                    variant={location.status === "active" ? "default" : "outline"}
+                    variant={
+                      location.status === "active" ? "default" : "outline"
+                    }
                     className="mt-1"
                   >
                     {location.status}
@@ -96,5 +98,5 @@ export function LocationList() {
         </Card>
       ))}
     </div>
-  )
+  );
 }

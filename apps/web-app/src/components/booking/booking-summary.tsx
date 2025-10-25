@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { useTranslation } from "@/i18n"
-import { X } from "lucide-react"
-import { format } from "date-fns"
-import { es, enUS } from "date-fns/locale"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "@/i18n";
+import { X } from "lucide-react";
+import { format } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 
 interface BookingData {
   service?: {
-    id: string
-    name: string
-    duration: number
-    price: number
-  }
+    id: string;
+    name: string;
+    duration: number;
+    price: number;
+  };
   professional?: {
-    id: string
-    name: string
-  }
-  date?: Date
-  timeSlot?: string
+    id: string;
+    name: string;
+  };
+  date?: Date;
+  timeSlot?: string;
 }
 
 interface BookingSummaryProps {
-  bookingData: BookingData
-  onClear: () => void
-  onContinue?: () => void
-  className?: string
+  bookingData: BookingData;
+  onClear: () => void;
+  onContinue?: () => void;
+  className?: string;
 }
 
 export function BookingSummary({
@@ -36,14 +36,14 @@ export function BookingSummary({
   onContinue,
   className,
 }: BookingSummaryProps) {
-  const { t, locale } = useTranslation()
+  const { t, locale } = useTranslation();
   const hasAnySelection =
     bookingData.service ||
     bookingData.professional ||
     bookingData.date ||
-    bookingData.timeSlot
+    bookingData.timeSlot;
 
-  const dateLocale = locale === "es" ? es : enUS
+  const dateLocale = locale === "es" ? es : enUS;
 
   return (
     <Card className={className}>
@@ -91,7 +91,9 @@ export function BookingSummary({
                   <p className="text-sm font-medium text-muted-foreground">
                     {t.booking.summary.professional}
                   </p>
-                  <p className="font-semibold">{bookingData.professional.name}</p>
+                  <p className="font-semibold">
+                    {bookingData.professional.name}
+                  </p>
                 </div>
               </>
             )}
@@ -135,5 +137,5 @@ export function BookingSummary({
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

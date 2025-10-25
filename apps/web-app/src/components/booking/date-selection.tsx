@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Calendar } from "@/components/ui/calendar"
-import { useTranslation } from "@/i18n"
-import { es, enUS } from "date-fns/locale"
+import { Calendar } from "@/components/ui/calendar";
+import { useTranslation } from "@/i18n";
+import { es, enUS } from "date-fns/locale";
 
 interface DateSelectionProps {
-  selectedDate?: Date
-  onSelect: (date: Date | undefined) => void
-  availableDates?: Date[]
+  selectedDate?: Date;
+  onSelect: (date: Date | undefined) => void;
+  availableDates?: Date[];
 }
 
 export function DateSelection({
@@ -15,12 +15,12 @@ export function DateSelection({
   onSelect,
   availableDates,
 }: DateSelectionProps) {
-  const { t, locale } = useTranslation()
+  const { t, locale } = useTranslation();
 
-  const dateLocale = locale === "es" ? es : enUS
+  const dateLocale = locale === "es" ? es : enUS;
 
   // Disable past dates
-  const disabledDays = { before: new Date() }
+  const disabledDays = { before: new Date() };
 
   return (
     <div className="space-y-6">
@@ -39,5 +39,5 @@ export function DateSelection({
         />
       </div>
     </div>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { DollarSign, TrendingUp, CreditCard, Clock } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
+import { DollarSign, TrendingUp, CreditCard, Clock } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
 
 export function PaymentStats() {
   const stats = [
@@ -29,7 +29,7 @@ export function PaymentStats() {
       icon: Clock,
       description: "Awaiting payment",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-4">
@@ -37,5 +37,5 @@ export function PaymentStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

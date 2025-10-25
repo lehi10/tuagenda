@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
+import { useTranslation } from "@/i18n";
 
 export function PublicFooter() {
-  const { t, locale, setLocale } = useTranslation()
+  const { t, locale, setLocale } = useTranslation();
 
   return (
     <footer className="border-t py-8">
@@ -38,5 +38,5 @@ export function PublicFooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

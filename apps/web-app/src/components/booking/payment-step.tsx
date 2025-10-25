@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { useTranslation } from "@/i18n"
-import { CreditCard, Smartphone, Store, Check } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useTranslation } from "@/i18n";
+import { CreditCard, Smartphone, Store, Check } from "lucide-react";
 
-export type PaymentMethod = "card" | "onsite" | "digital-wallet"
+export type PaymentMethod = "card" | "onsite" | "digital-wallet";
 
 interface PaymentStepProps {
-  onContinue: (method: PaymentMethod) => void
-  isInPerson?: boolean // To show/hide onsite payment option
+  onContinue: (method: PaymentMethod) => void;
+  isInPerson?: boolean; // To show/hide onsite payment option
 }
 
 export function PaymentStep({
   onContinue,
   isInPerson = true,
 }: PaymentStepProps) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
     null
-  )
+  );
 
   const paymentMethods = [
     {
@@ -44,15 +44,15 @@ export function PaymentStep({
       icon: Smartphone,
       available: true,
     },
-  ]
+  ];
 
-  const availableMethods = paymentMethods.filter((method) => method.available)
+  const availableMethods = paymentMethods.filter((method) => method.available);
 
   const handleContinue = () => {
     if (selectedMethod) {
-      onContinue(selectedMethod)
+      onContinue(selectedMethod);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -65,8 +65,8 @@ export function PaymentStep({
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {availableMethods.map((method) => {
-          const Icon = method.icon
-          const isSelected = selectedMethod === method.id
+          const Icon = method.icon;
+          const isSelected = selectedMethod === method.id;
 
           return (
             <Card
@@ -103,7 +103,7 @@ export function PaymentStep({
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -116,5 +116,5 @@ export function PaymentStep({
         Continuar
       </Button>
     </div>
-  )
+  );
 }

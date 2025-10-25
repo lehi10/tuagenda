@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { Button } from "@/components/ui/button"
-import { Check } from "lucide-react"
-import Link from "next/link"
+import { useTranslation } from "@/i18n";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+import Link from "next/link";
 
 export default function PricingPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const plans = [
     {
@@ -55,7 +55,7 @@ export default function PricingPage() {
       href: "/signup",
       highlighted: false,
     },
-  ]
+  ];
 
   return (
     <>
@@ -131,5 +131,5 @@ export default function PricingPage() {
         </div>
       </section>
     </>
-  )
+  );
 }

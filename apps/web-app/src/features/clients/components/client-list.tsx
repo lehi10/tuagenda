@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import { MoreHorizontal } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTableWithFilters } from "@/components/shared/data-table-with-filters"
-import { useTranslation } from "@/i18n"
+} from "@/components/ui/dropdown-menu";
+import { DataTableWithFilters } from "@/components/shared/data-table-with-filters";
+import { useTranslation } from "@/i18n";
 
 interface Client {
-  id: string
-  name: string
-  email: string
-  phone: string
-  avatar?: string
-  appointments: number
-  lastVisit: string
-  status: "active" | "inactive"
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  avatar?: string;
+  appointments: number;
+  lastVisit: string;
+  status: "active" | "inactive";
 }
 
 export function ClientList() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const clients: Client[] = [
     {
@@ -108,15 +108,15 @@ export function ClientList() {
       lastVisit: "2024-10-21",
       status: "active",
     },
-  ]
+  ];
 
   const getInitials = (name: string) => {
     return name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
-  }
+      .toUpperCase();
+  };
 
   const columns = [
     {
@@ -163,7 +163,7 @@ export function ClientList() {
         </DropdownMenu>
       ),
     },
-  ]
+  ];
 
   return (
     <DataTableWithFilters
@@ -182,5 +182,5 @@ export function ClientList() {
       ]}
       pageSize={5}
     />
-  )
+  );
 }

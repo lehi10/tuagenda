@@ -2,4 +2,4 @@ export {
   OrganizationProvider,
   useOrganization,
   type Organization,
-} from "./organization-context"
+} from "./organization-context";

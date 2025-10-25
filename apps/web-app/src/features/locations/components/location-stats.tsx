@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { MapPin, Users, Building } from "lucide-react"
-import { StatCard } from "@/components/shared/stat-card"
+import { MapPin, Users, Building } from "lucide-react";
+import { StatCard } from "@/components/shared/stat-card";
 
 export function LocationStats() {
   const stats = [
@@ -23,7 +23,7 @@ export function LocationStats() {
       icon: MapPin,
       description: "3 districts",
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -31,5 +31,5 @@ export function LocationStats() {
         <StatCard key={stat.title} {...stat} />
       ))}
     </div>
-  )
+  );
 }

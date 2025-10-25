@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { DataTable } from "@/components/shared/data-table"
-import { useTranslation } from "@/i18n"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { DataTable } from "@/components/shared/data-table";
+import { useTranslation } from "@/i18n";
 
 interface Appointment {
-  id: string
-  client: string
-  service: string
-  date: string
-  time: string
-  status: "pending" | "completed" | "cancelled"
+  id: string;
+  client: string;
+  service: string;
+  date: string;
+  time: string;
+  status: "pending" | "completed" | "cancelled";
 }
 
 export function RecentAppointments() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const appointments: Appointment[] = [
     {
@@ -42,20 +42,20 @@ export function RecentAppointments() {
       time: "2:00 PM",
       status: "completed",
     },
-  ]
+  ];
 
   const getStatusVariant = (status: string) => {
     switch (status) {
       case "completed":
-        return "default"
+        return "default";
       case "pending":
-        return "secondary"
+        return "secondary";
       case "cancelled":
-        return "destructive"
+        return "destructive";
       default:
-        return "outline"
+        return "outline";
     }
-  }
+  };
 
   const columns = [
     { header: t.pages.clients.name, accessor: "client" as const },
@@ -65,12 +65,10 @@ export function RecentAppointments() {
     {
       header: t.pages.payments.status,
       accessor: (item: Appointment) => (
-        <Badge variant={getStatusVariant(item.status)}>
-          {item.status}
-        </Badge>
+        <Badge variant={getStatusVariant(item.status)}>{item.status}</Badge>
       ),
     },
-  ]
+  ];
 
   return (
     <Card>
@@ -81,5 +79,5 @@ export function RecentAppointments() {
         <DataTable data={appointments} columns={columns} />
       </CardContent>
     </Card>
-  )
+  );
 }

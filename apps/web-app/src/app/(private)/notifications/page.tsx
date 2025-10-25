@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useTranslation } from "@/i18n"
-import { NotificationList } from "@/features/notifications/components/notification-list"
+import { useTranslation } from "@/i18n";
+import { NotificationList } from "@/features/notifications/components/notification-list";
 
 export default function NotificationsPage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <div className="p-6 space-y-6">
@@ -16,5 +16,5 @@ export default function NotificationsPage() {
       </div>
       <NotificationList />
     </div>
-  )
+  );
 }

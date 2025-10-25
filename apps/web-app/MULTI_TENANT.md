@@ -13,24 +13,26 @@ TuAgenda es un sistema SaaS que permite a múltiples empresas usar la misma plat
 ### 1. **OrganizationContext** (`src/contexts/organization-context.tsx`)
 
 Context global que mantiene:
+
 - `currentOrg`: Organización actualmente seleccionada
 - `organizations`: Lista de todas las organizaciones
 - `setCurrentOrg`: Función para cambiar de organización
 - `isSuperAdmin`: Flag que indica si el usuario es super admin
 
 ```tsx
-import { useOrganization } from "@/contexts/organization-context"
+import { useOrganization } from "@/contexts/organization-context";
 
 function MyComponent() {
-  const { currentOrg, setCurrentOrg, isSuperAdmin } = useOrganization()
+  const { currentOrg, setCurrentOrg, isSuperAdmin } = useOrganization();
 
-  return <div>{currentOrg?.name}</div>
+  return <div>{currentOrg?.name}</div>;
 }
 ```
 
 ### 2. **OrganizationSwitcher** (`src/components/organization-switcher.tsx`)
 
 Componente selector de empresas con:
+
 - Lista completa de organizaciones
 - Búsqueda por nombre
 - Información de cada organización (empleados, ubicaciones, plan)
@@ -42,6 +44,7 @@ Componente selector de empresas con:
 ### 3. **OrganizationBanner** (`src/components/organization-banner.tsx`)
 
 Banner informativo que muestra:
+
 - Nombre de la organización actual
 - Plan contratado
 - Número de empleados y ubicaciones
@@ -54,18 +57,21 @@ Banner informativo que muestra:
 ## 🔐 Tipos de Usuarios
 
 ### Super Admin
+
 - **Acceso:** Todas las organizaciones
 - **Permisos:** Crear, editar, eliminar organizaciones
 - **Vista:** Puede cambiar entre empresas con el selector
 - **Caso de uso:** Tu equipo de soporte/administración
 
 ### Admin de Empresa
+
 - **Acceso:** Solo su organización
 - **Permisos:** Gestión completa de su empresa
 - **Vista:** No ve el selector, solo su empresa
 - **Caso de uso:** Dueño del salón/spa/clínica
 
 ### Empleado
+
 - **Acceso:** Solo su organización (vista limitada)
 - **Permisos:** Ver su agenda, clientes asignados
 - **Vista:** Dashboard simplificado
@@ -116,11 +122,13 @@ CREATE TABLE appointments (
 ```
 
 **Ventajas:**
+
 - Simple de implementar
 - Fácil de entender
 - Queries directos
 
 **Desventajas:**
+
 - Posibilidad de fugas de datos si olvidas el WHERE
 - No óptimo para escala masiva
 
@@ -142,11 +150,13 @@ CREATE TABLE org_beauty_salon.clients (...);
 ```
 
 **Ventajas:**
+
 - Aislamiento completo de datos
 - Imposible mezclar datos entre empresas
 - Mejor para cumplimiento (GDPR, HIPAA)
 
 **Desventajas:**
+
 - Más complejo de administrar
 - Queries cross-tenant complicadas
 
@@ -155,6 +165,7 @@ CREATE TABLE org_beauty_salon.clients (...);
 Cada organización tiene su propia database.
 
 **Solo usar si:**
+
 - Clientes muy grandes (enterprise)
 - Requisitos regulatorios estrictos
 - SLA diferenciado por cliente
@@ -189,24 +200,24 @@ CREATE POLICY "Users see own organization data" ON clients
 
 ```typescript
 // middleware.ts
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const orgId = request.cookies.get('current_org_id')?.value
+  const orgId = request.cookies.get("current_org_id")?.value;
 
   if (!orgId && !isPublicRoute(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/select-org', request.url))
+    return NextResponse.redirect(new URL("/select-org", request.url));
   }
 
   // Añadir org_id a los headers para todas las requests
-  const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('x-organization-id', orgId)
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-organization-id", orgId);
 
   return NextResponse.next({
     request: {
       headers: requestHeaders,
     },
-  })
+  });
 }
 ```
 
@@ -214,13 +225,16 @@ export async function middleware(request: NextRequest) {
 
 ```typescript
 // app/api/employees/route.ts
-import { NextRequest } from 'next/server'
+import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const orgId = request.headers.get('x-organization-id')
+  const orgId = request.headers.get("x-organization-id");
 
   if (!orgId) {
-    return Response.json({ error: 'No organization selected' }, { status: 400 })
+    return Response.json(
+      { error: "No organization selected" },
+      { status: 400 }
+    );
   }
 
   // SIEMPRE filtrar por organization_id
@@ -228,9 +242,9 @@ export async function GET(request: NextRequest) {
     where: {
       organization_id: orgId,
     },
-  })
+  });
 
-  return Response.json(employees)
+  return Response.json(employees);
 }
 ```
 
@@ -238,39 +252,39 @@ export async function GET(request: NextRequest) {
 
 ```typescript
 // lib/db.ts
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
 export function createPrismaClient(organizationId: string) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
 
   // Middleware para auto-filtrar por org
   prisma.$use(async (params, next) => {
     if (params.model) {
-      if (params.action === 'findMany' || params.action === 'findFirst') {
+      if (params.action === "findMany" || params.action === "findFirst") {
         params.args = {
           ...params.args,
           where: {
             ...params.args?.where,
             organization_id: organizationId,
           },
-        }
+        };
       }
 
-      if (params.action === 'create') {
+      if (params.action === "create") {
         params.args = {
           ...params.args,
           data: {
             ...params.args?.data,
             organization_id: organizationId,
           },
-        }
+        };
       }
     }
 
-    return next(params)
-  })
+    return next(params);
+  });
 
-  return prisma
+  return prisma;
 }
 ```
 
@@ -281,12 +295,12 @@ export function createPrismaClient(organizationId: string) {
 ### En cualquier componente:
 
 ```tsx
-"use client"
+"use client";
 
-import { useOrganization } from "@/contexts/organization-context"
+import { useOrganization } from "@/contexts/organization-context";
 
 export function MyComponent() {
-  const { currentOrg, organizations, setCurrentOrg } = useOrganization()
+  const { currentOrg, organizations, setCurrentOrg } = useOrganization();
 
   // Mostrar datos de la organización actual
   return (
@@ -294,22 +308,22 @@ export function MyComponent() {
       <h1>{currentOrg?.name}</h1>
       <p>Plan: {currentOrg?.plan}</p>
     </div>
-  )
+  );
 }
 ```
 
 ### Cambiar de organización:
 
 ```tsx
-const { organizations, setCurrentOrg } = useOrganization()
+const { organizations, setCurrentOrg } = useOrganization();
 
 // Cambiar a otra organización
 const handleSwitch = (orgId: string) => {
-  const org = organizations.find(o => o.id === orgId)
+  const org = organizations.find((o) => o.id === orgId);
   if (org) {
-    setCurrentOrg(org)
+    setCurrentOrg(org);
   }
-}
+};
 ```
 
 ---
@@ -319,18 +333,18 @@ const handleSwitch = (orgId: string) => {
 ### Ejemplo de verificación de permisos:
 
 ```tsx
-"use client"
+"use client";
 
-import { useOrganization } from "@/contexts/organization-context"
+import { useOrganization } from "@/contexts/organization-context";
 
 export function DeleteButton() {
-  const { isSuperAdmin } = useOrganization()
+  const { isSuperAdmin } = useOrganization();
 
   if (!isSuperAdmin) {
-    return null // Solo super admins pueden eliminar
+    return null; // Solo super admins pueden eliminar
   }
 
-  return <button>Delete Organization</button>
+  return <button>Delete Organization</button>;
 }
 ```
 
@@ -354,27 +368,27 @@ export function DeleteButton() {
 ### Test de aislamiento de datos:
 
 ```typescript
-describe('Organization Isolation', () => {
-  it('should not return data from other organizations', async () => {
-    const user = await loginAs('org1_admin')
-    const employees = await getEmployees(user)
+describe("Organization Isolation", () => {
+  it("should not return data from other organizations", async () => {
+    const user = await loginAs("org1_admin");
+    const employees = await getEmployees(user);
 
     // Verificar que NO haya empleados de org2
-    expect(employees.every(e => e.organization_id === 'org1')).toBe(true)
-  })
+    expect(employees.every((e) => e.organization_id === "org1")).toBe(true);
+  });
 
-  it('super admin can switch organizations', async () => {
-    const superAdmin = await loginAsSuperAdmin()
+  it("super admin can switch organizations", async () => {
+    const superAdmin = await loginAsSuperAdmin();
 
-    await switchOrganization('org1')
-    const org1Data = await getEmployees(superAdmin)
+    await switchOrganization("org1");
+    const org1Data = await getEmployees(superAdmin);
 
-    await switchOrganization('org2')
-    const org2Data = await getEmployees(superAdmin)
+    await switchOrganization("org2");
+    const org2Data = await getEmployees(superAdmin);
 
-    expect(org1Data).not.toEqual(org2Data)
-  })
-})
+    expect(org1Data).not.toEqual(org2Data);
+  });
+});
 ```
 
 ---
@@ -397,6 +411,7 @@ describe('Organization Isolation', () => {
    - Invitaciones a empleados
 
 4. **Subdominios (opcional):**
+
    ```
    acme-inc.tuagenda.com
    beauty-salon.tuagenda.com
