@@ -150,11 +150,25 @@ interface BookingData {
   paymentMethod?: PaymentMethod;
 }
 
-export default function BookingPage() {
+interface PageProps {
+  params: Promise<{
+    username: string;
+  }>;
+}
+
+export default function BookingPage({ params }: PageProps) {
   // You can modify this configuration based on business settings
   // For example, if business has only one professional:
   // const stepConfig = singleProfessionalConfig
   const stepConfig: StepConfig[] = defaultStepConfig;
+
+  // Access the username parameter
+  useEffect(() => {
+    params.then((resolvedParams) => {
+      console.log("Booking page for:", resolvedParams.username);
+      // TODO: Fetch business data based on resolvedParams.username
+    });
+  }, [params]);
 
   const [bookingData, setBookingData] = useState<BookingData>({});
   const [currentStep, setCurrentStep] = useState<StepType>("service");
