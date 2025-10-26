@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "@/i18n";
 
 interface ClientInfoStepProps {
-  onContinue: (data: {
+  onContinue: (_data: {
     fullName: string;
     phone: string;
     email: string;

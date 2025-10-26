@@ -6,7 +6,7 @@ import { es, enUS } from "date-fns/locale";
 
 interface DateSelectionProps {
   selectedDate?: Date;
-  onSelect: (date: Date | undefined) => void;
+  onSelect: (_date: Date | undefined) => void;
   availableDates?: Date[];
 }
 

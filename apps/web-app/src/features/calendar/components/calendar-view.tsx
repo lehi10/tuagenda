@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
 
 interface CalendarViewProps {
-  onDateSelect?: (date: Date | undefined) => void;
+  onDateSelect?: (_date: Date | undefined) => void;
 }
 
 export function CalendarView({ onDateSelect }: CalendarViewProps) {

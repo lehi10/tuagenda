@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button";
 
 interface Column<T> {
   header: string;
-  accessor: keyof T | ((item: T) => React.ReactNode);
+  accessor: keyof T | ((_item: T) => React.ReactNode);
   className?: string;
 }
 
@@ -54,7 +54,7 @@ interface DataTableWithFiltersProps<T> {
   pageSize?: number;
 }
 
-export function DataTableWithFilters<T extends Record<string, any>>({
+export function DataTableWithFilters<T extends Record<string, unknown>>({
   data,
   columns,
   searchableColumns = [],
