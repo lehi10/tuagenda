@@ -1,59 +1,126 @@
 "use client";
 
-import { GalleryVerticalEnd } from "lucide-react";
+import { GalleryVerticalEnd, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
+import { useState } from "react";
 
 export function PublicHeader() {
   const { t, locale, setLocale } = useTranslation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="border-b">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-medium">
-          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-            <GalleryVerticalEnd className="size-4" />
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:h-16">
+        <Link href="/" className="group flex items-center gap-2 font-medium">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary to-secondary opacity-75 blur-sm transition-opacity group-hover:opacity-100" />
+            <div className="relative flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg sm:size-8">
+              <GalleryVerticalEnd className="size-4 sm:size-5" />
+            </div>
           </div>
-          <span className="font-semibold">TuAgenda</span>
+          <span className="text-base font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent sm:text-lg">
+            TuAgenda
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Navigation */}
+        <nav className="hidden items-center gap-6 lg:flex lg:gap-8">
           <Link
             href="/about-us"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             {t.navigation.aboutUs}
           </Link>
           <Link
             href="/pricing"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             {t.navigation.pricing}
           </Link>
         </nav>
 
-        <div className="flex items-center gap-4">
-          {/* Language Selector Dropdown */}
+        {/* Desktop Actions */}
+        <div className="hidden items-center gap-2 lg:flex lg:gap-3">
           <select
             value={locale}
             onChange={(e) => setLocale(e.target.value as "en" | "es")}
-            className="h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="h-9 rounded-lg border border-input bg-background px-3 py-1 text-sm shadow-sm transition-all hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <option value="es">ES</option>
             <option value="en">EN</option>
           </select>
 
           <Link href="/login">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="font-medium">
               {t.auth.login}
             </Button>
           </Link>
           <Link href="/signup">
-            <Button size="sm">{t.auth.signUp}</Button>
+            <Button size="sm" className="font-medium shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl hover:shadow-primary/30">
+              {t.auth.signUp}
+            </Button>
           </Link>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden rounded-lg p-2 text-foreground hover:bg-muted"
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="border-t border-border/40 bg-background/95 backdrop-blur lg:hidden">
+          <div className="container mx-auto px-4 py-4">
+            <nav className="flex flex-col gap-3">
+              <Link
+                href="/about-us"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.navigation.aboutUs}
+              </Link>
+              <Link
+                href="/pricing"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.navigation.pricing}
+              </Link>
+
+              <div className="my-2 border-t border-border" />
+
+              <div className="flex flex-col gap-2">
+                <select
+                  value={locale}
+                  onChange={(e) => setLocale(e.target.value as "en" | "es")}
+                  className="h-9 rounded-lg border border-input bg-background px-3 py-1 text-sm shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <option value="es">Español</option>
+                  <option value="en">English</option>
+                </select>
+
+                <Link href="/login" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full font-medium">
+                    {t.auth.login}
+                  </Button>
+                </Link>
+                <Link href="/signup" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button size="sm" className="w-full font-medium shadow-lg shadow-primary/25">
+                    {t.auth.signUp}
+                  </Button>
+                </Link>
+              </div>
+            </nav>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
