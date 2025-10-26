@@ -12,7 +12,8 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "apps/web-app/$1"
+      "dest": "apps/web-app/$1",
+      "continue": true
     }
   ]
 }
