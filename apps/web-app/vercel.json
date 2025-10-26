@@ -1,4 +1,0 @@
-{
-  "buildCommand": "cd ../.. && pnpm --filter ./apps/web-app build",
-  "outputDirectory": "apps/web-app/.next"
-}
