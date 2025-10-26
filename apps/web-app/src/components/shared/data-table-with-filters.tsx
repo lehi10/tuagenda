@@ -54,7 +54,7 @@ interface DataTableWithFiltersProps<T> {
   pageSize?: number;
 }
 
-export function DataTableWithFilters<T extends Record<string, unknown>>({
+export function DataTableWithFilters<T extends Record<string, any>>({
   data,
   columns,
   searchableColumns = [],
