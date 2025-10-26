@@ -1,9 +1,10 @@
 "use client";
 
-import { GalleryVerticalEnd, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 export function PublicHeader() {
@@ -13,16 +14,15 @@ export function PublicHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:h-16">
-        <Link href="/" className="group flex items-center gap-2 font-medium">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary to-secondary opacity-75 blur-sm transition-opacity group-hover:opacity-100" />
-            <div className="relative flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg sm:size-8">
-              <GalleryVerticalEnd className="size-4 sm:size-5" />
-            </div>
-          </div>
-          <span className="text-base font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent sm:text-lg">
-            TuAgenda
-          </span>
+        <Link href="/" className="group flex items-center font-medium">
+          <Image
+            src="/icons/2_horizontal_color.png"
+            alt="TuAgenda"
+            width={140}
+            height={32}
+            className="h-8 w-auto transition-opacity group-hover:opacity-90"
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
@@ -58,7 +58,10 @@ export function PublicHeader() {
             </Button>
           </Link>
           <Link href="/signup">
-            <Button size="sm" className="font-medium shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl hover:shadow-primary/30">
+            <Button
+              size="sm"
+              className="font-medium shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl hover:shadow-primary/30"
+            >
               {t.auth.signUp}
             </Button>
           </Link>
@@ -70,7 +73,11 @@ export function PublicHeader() {
           className="lg:hidden rounded-lg p-2 text-foreground hover:bg-muted"
           aria-label="Toggle menu"
         >
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {mobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
       </div>
 
@@ -106,13 +113,28 @@ export function PublicHeader() {
                   <option value="en">English</option>
                 </select>
 
-                <Link href="/login" className="w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" size="sm" className="w-full font-medium">
+                <Link
+                  href="/login"
+                  className="w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full font-medium"
+                  >
                     {t.auth.login}
                   </Button>
                 </Link>
-                <Link href="/signup" className="w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <Button size="sm" className="w-full font-medium shadow-lg shadow-primary/25">
+                <Link
+                  href="/signup"
+                  className="w-full"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Button
+                    size="sm"
+                    className="w-full font-medium shadow-lg shadow-primary/25"
+                  >
                     {t.auth.signUp}
                   </Button>
                 </Link>

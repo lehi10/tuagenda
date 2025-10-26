@@ -31,7 +31,9 @@ export function OrganizationBanner() {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <h3 className="font-semibold text-base sm:text-lg truncate">{currentOrg.name}</h3>
+                <h3 className="font-semibold text-base sm:text-lg truncate">
+                  {currentOrg.name}
+                </h3>
                 <Badge
                   variant="outline"
                   className={`${getPlanColor(currentOrg.plan)} text-xs flex-shrink-0`}
@@ -52,7 +54,10 @@ export function OrganizationBanner() {
             </div>
           </div>
           {isSuperAdmin && (
-            <Badge variant="secondary" className="gap-1 text-xs flex-shrink-0 w-fit">
+            <Badge
+              variant="secondary"
+              className="gap-1 text-xs flex-shrink-0 w-fit"
+            >
               <Crown className="h-3 w-3" />
               <span className="whitespace-nowrap">Super Admin View</span>
             </Badge>

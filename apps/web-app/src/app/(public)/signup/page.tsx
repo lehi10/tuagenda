@@ -1,7 +1,7 @@
 "use client";
 
-import { GalleryVerticalEnd } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { SignupForm } from "@/components/signup-form";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
@@ -18,17 +18,16 @@ export default function SignupPage() {
       <div className="relative flex w-full max-w-sm flex-col gap-4 sm:gap-6">
         <Link
           href="/"
-          className="group flex items-center gap-2 self-center font-medium"
+          className="group flex items-center justify-center self-center"
         >
-          <div className="relative">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary to-secondary opacity-75 blur-sm transition-opacity group-hover:opacity-100" />
-            <div className="relative flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg sm:size-8">
-              <GalleryVerticalEnd className="size-4 sm:size-5" />
-            </div>
-          </div>
-          <span className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent sm:text-xl">
-            TuAgenda
-          </span>
+          <Image
+            src="/icons/2_vertical_color.png"
+            alt="TuAgenda"
+            width={120}
+            height={80}
+            className="h-20 w-auto transition-opacity group-hover:opacity-90"
+            priority
+          />
         </Link>
         <SignupForm
           title={t.auth.createAccount}

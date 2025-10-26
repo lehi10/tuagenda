@@ -54,19 +54,22 @@ export default function Home() {
       quote: t.landing.testimonials.testimonial1.quote,
       name: t.landing.testimonials.testimonial1.name,
       role: t.landing.testimonials.testimonial1.role,
-      avatar: "https://ui-avatars.com/api/?name=Ana+Garcia&background=4C3DFF&color=fff&size=128&bold=true",
+      avatar:
+        "https://ui-avatars.com/api/?name=Ana+Garcia&background=4C3DFF&color=fff&size=128&bold=true",
     },
     {
       quote: t.landing.testimonials.testimonial2.quote,
       name: t.landing.testimonials.testimonial2.name,
       role: t.landing.testimonials.testimonial2.role,
-      avatar: "https://ui-avatars.com/api/?name=Carlos+Lopez&background=48A9A6&color=fff&size=128&bold=true",
+      avatar:
+        "https://ui-avatars.com/api/?name=Carlos+Lopez&background=48A9A6&color=fff&size=128&bold=true",
     },
     {
       quote: t.landing.testimonials.testimonial3.quote,
       name: t.landing.testimonials.testimonial3.name,
       role: t.landing.testimonials.testimonial3.role,
-      avatar: "https://ui-avatars.com/api/?name=Laura+Martinez&background=4C3DFF&color=fff&size=128&bold=true",
+      avatar:
+        "https://ui-avatars.com/api/?name=Laura+Martinez&background=4C3DFF&color=fff&size=128&bold=true",
     },
   ];
 
@@ -86,7 +89,9 @@ export default function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
               </span>
-              <span className="hidden sm:inline">Plataforma profesional de gestión</span>
+              <span className="hidden sm:inline">
+                Plataforma profesional de gestión
+              </span>
               <span className="sm:hidden">Profesional</span>
             </div>
 
@@ -98,15 +103,32 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:justify-center sm:gap-4">
               <Link href="/signup" className="w-full sm:w-auto">
-                <Button size="lg" className="group h-12 w-full gap-2 px-6 text-sm font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 sm:h-14 sm:px-8 sm:text-base">
+                <Button
+                  size="lg"
+                  className="group h-12 w-full gap-2 px-6 text-sm font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 sm:h-14 sm:px-8 sm:text-base"
+                >
                   {t.landing.hero.cta}
-                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <svg
+                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </Button>
               </Link>
               <Link href="/login" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="h-12 w-full border-2 px-6 text-sm font-semibold transition-all hover:border-primary/50 hover:bg-primary/5 sm:h-14 sm:px-8 sm:text-base">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-12 w-full border-2 px-6 text-sm font-semibold transition-all hover:border-primary/50 hover:bg-primary/5 sm:h-14 sm:px-8 sm:text-base"
+                >
                   {t.auth.login}
                 </Button>
               </Link>
@@ -115,16 +137,28 @@ export default function Home() {
             {/* Stats */}
             <div className="mt-12 grid grid-cols-3 gap-4 border-t border-border pt-8 sm:mt-20 sm:gap-8 sm:pt-12">
               <div>
-                <div className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">10K+</div>
-                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">Usuarios activos</div>
+                <div className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
+                  10K+
+                </div>
+                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">
+                  Usuarios activos
+                </div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-secondary sm:text-3xl md:text-4xl">99.9%</div>
-                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">Tiempo activo</div>
+                <div className="text-2xl font-bold text-secondary sm:text-3xl md:text-4xl">
+                  99.9%
+                </div>
+                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">
+                  Tiempo activo
+                </div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">24/7</div>
-                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">Soporte</div>
+                <div className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
+                  24/7
+                </div>
+                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">
+                  Soporte
+                </div>
               </div>
             </div>
           </div>
@@ -159,8 +193,12 @@ export default function Home() {
                   <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25 sm:mb-6 sm:h-14 sm:w-14 sm:rounded-xl">
                     <feature.icon className="h-6 w-6 text-primary-foreground sm:h-7 sm:w-7" />
                   </div>
-                  <h3 className="mb-2 text-lg font-bold sm:mb-3 sm:text-xl">{feature.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">{feature.description}</p>
+                  <h3 className="mb-2 text-lg font-bold sm:mb-3 sm:text-xl">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -191,7 +229,11 @@ export default function Home() {
               >
                 {/* Quote icon */}
                 <div className="absolute right-4 top-4 opacity-10 transition-opacity group-hover:opacity-20 sm:right-6 sm:top-6">
-                  <svg className="h-10 w-10 text-secondary sm:h-12 sm:w-12" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-10 w-10 text-secondary sm:h-12 sm:w-12"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                   </svg>
                 </div>
@@ -212,7 +254,9 @@ export default function Home() {
                       />
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground sm:text-base">{testimonial.name}</p>
+                      <p className="truncate text-sm font-semibold text-foreground sm:text-base">
+                        {testimonial.name}
+                      </p>
                       <p className="truncate text-xs text-muted-foreground sm:text-sm">
                         {testimonial.role}
                       </p>
@@ -240,7 +284,9 @@ export default function Home() {
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.landing.cta.title}
               </h2>
-              <p className="mt-4 text-base opacity-95 sm:mt-6 sm:text-lg md:text-xl lg:text-2xl">{t.landing.cta.subtitle}</p>
+              <p className="mt-4 text-base opacity-95 sm:mt-6 sm:text-lg md:text-xl lg:text-2xl">
+                {t.landing.cta.subtitle}
+              </p>
               <div className="mt-8 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:justify-center sm:gap-4">
                 <Link href="/signup" className="w-full sm:w-auto">
                   <Button
@@ -249,8 +295,18 @@ export default function Home() {
                     className="group h-12 w-full gap-2 bg-white px-6 text-sm font-semibold text-primary shadow-xl transition-all hover:scale-105 hover:bg-white hover:shadow-2xl sm:h-14 sm:px-8 sm:text-base"
                   >
                     {t.landing.cta.button}
-                    <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg
+                      className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
                     </svg>
                   </Button>
                 </Link>
@@ -259,20 +315,44 @@ export default function Home() {
               {/* Trust indicators */}
               <div className="mt-8 flex flex-col items-center justify-center gap-3 text-xs opacity-80 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-6 sm:text-sm">
                 <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span>Sin tarjeta de crédito</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span>Prueba gratuita 14 días</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  <svg
+                    className="h-4 w-4 sm:h-5 sm:w-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span>Cancela cuando quieras</span>
                 </div>

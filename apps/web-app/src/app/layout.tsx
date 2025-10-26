@@ -13,6 +13,10 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "TuAgenda - Gestión de Citas",
   description: "Sistema de gestión de citas y clientes para tu negocio",
+  icons: {
+    icon: "/icons/ícono_color.png",
+    apple: "/icons/ícono_color.png",
+  },
 };
 
 export default function RootLayout({
@@ -22,9 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${poppins.variable} antialiased font-sans`}
-      >
+      <body className={`${poppins.variable} antialiased font-sans`}>
         <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
