@@ -3,14 +3,17 @@
 import { useState } from "react";
 import { useTranslation } from "@/i18n";
 import { CalendarStats } from "@/features/calendar/components/calendar-stats";
-import { CalendarView } from "@/features/calendar/components/calendar-view";
-import { DayAppointments } from "@/features/calendar/components/day-appointments";
+import {
+  AppointmentsCalendar,
+  AppointmentDetailModal,
+} from "@/features/calendar/components";
+import { mockAppointments } from "@/features/calendar/data/mock-appointments";
+import type { Appointment } from "@/features/calendar/types";
 
 export default function CalendarPage() {
   const { t } = useTranslation();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
   return (
     <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
@@ -23,10 +26,17 @@ export default function CalendarPage() {
         </p>
       </div>
       <CalendarStats />
-      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-        <CalendarView onDateSelect={setSelectedDate} />
-        <DayAppointments date={selectedDate} />
-      </div>
+      <AppointmentsCalendar
+        title={t.pages.calendar.title}
+        appointments={mockAppointments}
+        onAppointmentClick={setSelectedAppointment}
+        onDateRangeSelect={(start, end) => console.log("Selected:", start, end)}
+      />
+      <AppointmentDetailModal
+        appointment={selectedAppointment}
+        open={!!selectedAppointment}
+        onOpenChange={(open) => !open && setSelectedAppointment(null)}
+      />
     </div>
   );
 }
