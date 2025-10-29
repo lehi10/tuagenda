@@ -11,6 +11,7 @@ import { ClientInfoStep } from "@/components/booking/client-info-step";
 import { PaymentStep, PaymentMethod } from "@/components/booking/payment-step";
 import { ConfirmationStep } from "@/components/booking/confirmation-step";
 import { PublicFooter } from "@/components/public-footer";
+import { BookingHeader } from "@/components/booking/booking-header";
 import {
   defaultStepConfig,
   getNextStep,
@@ -357,9 +358,10 @@ export default function BookingPage({ params }: PageProps) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <BookingHeader />
       <BusinessProfile business={mockBusiness} />
 
-      <div className="container mx-auto flex-1 px-4 py-8">
+      <div className="container mx-auto flex-1 px-4 py-6 sm:py-8">
         {currentStep === "confirmation" ? (
           // Full width for confirmation step
           <div className="w-full">{renderStep()}</div>
