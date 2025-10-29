@@ -19,6 +19,7 @@ import { NavUser } from "@/components/nav-user";
 import { LanguageSelector } from "@/components/language-selector";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
 import { useTranslation } from "@/i18n";
+import { useAuth } from "@/contexts";
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +29,7 @@ import {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const navMain = [
     {
@@ -82,10 +84,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
   ];
 
-  const user = {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+  // Prepare user data for NavUser component
+  const userData = {
+    name: user?.displayName || user?.email?.split("@")[0] || "User",
+    email: user?.email || "",
+    avatar: user?.photoURL || "",
   };
 
   return (
@@ -100,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="px-2 py-1">
           <LanguageSelector />
         </div>
-        <NavUser user={user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );

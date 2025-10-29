@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 
 interface BusinessProfileProps {
   business: {
@@ -16,37 +16,35 @@ interface BusinessProfileProps {
 
 export function BusinessProfile({ business }: BusinessProfileProps) {
   return (
-    <div className="border-b bg-card">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col items-center gap-6 md:flex-row md:items-start">
-          <Avatar className="h-24 w-24 md:h-32 md:w-32">
+    <div className="border-b bg-card/50">
+      <div className="container mx-auto px-4 py-4 sm:py-5">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Avatar className="h-14 w-14 sm:h-16 sm:w-16 shrink-0">
             <AvatarImage src={business.avatar} alt={business.name} />
-            <AvatarFallback className="text-2xl">
+            <AvatarFallback className="text-lg">
               {business.name.charAt(0)}
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold">{business.name}</h1>
-            <p className="mt-2 text-muted-foreground">{business.description}</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg font-bold sm:text-xl truncate">
+              {business.name}
+            </h1>
+            <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1 sm:text-sm">
+              {business.description}
+            </p>
 
-            <div className="mt-4 flex flex-col gap-2 text-sm text-muted-foreground md:flex-row md:gap-4">
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground sm:gap-x-4">
               {business.phone && (
-                <div className="flex items-center justify-center gap-2 md:justify-start">
-                  <Phone className="h-4 w-4" />
-                  <span>{business.phone}</span>
-                </div>
-              )}
-              {business.email && (
-                <div className="flex items-center justify-center gap-2 md:justify-start">
-                  <Mail className="h-4 w-4" />
-                  <span>{business.email}</span>
+                <div className="flex items-center gap-1">
+                  <Phone className="h-3 w-3" />
+                  <span className="truncate">{business.phone}</span>
                 </div>
               )}
               {business.location && (
-                <div className="flex items-center justify-center gap-2 md:justify-start">
-                  <MapPin className="h-4 w-4" />
-                  <span>{business.location}</span>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  <span className="truncate">{business.location}</span>
                 </div>
               )}
             </div>

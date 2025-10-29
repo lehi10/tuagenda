@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,10 +19,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useAuth } from "@/contexts";
 
 interface SignupFormProps extends React.ComponentProps<"div"> {
-  onSignup?: () => void;
-  onAppleSignup?: () => void;
+  onSignupSuccess?: () => void;
   onGoogleSignup?: () => void;
   onLogin?: () => void;
   title?: string;
@@ -30,7 +33,6 @@ interface SignupFormProps extends React.ComponentProps<"div"> {
   fullNameLabel?: string;
   companyNameLabel?: string;
   signupButtonText?: string;
-  appleButtonText?: string;
   googleButtonText?: string;
   orContinueText?: string;
   alreadyHaveAccountText?: string;
@@ -43,19 +45,17 @@ interface SignupFormProps extends React.ComponentProps<"div"> {
 
 export function SignupForm({
   className,
-  onSignup,
-  onAppleSignup,
+  onSignupSuccess,
   onGoogleSignup,
   onLogin,
   title = "Create an account",
-  description = "Sign up with your Apple or Google account",
+  description = "Sign up with your Google account",
   emailLabel = "Email",
   passwordLabel = "Password",
   confirmPasswordLabel = "Confirm Password",
   fullNameLabel = "Full Name",
   companyNameLabel = "Company Name",
   signupButtonText = "Create account",
-  appleButtonText = "Sign up with Apple",
   googleButtonText = "Sign up with Google",
   orContinueText = "Or continue with",
   alreadyHaveAccountText = "Already have an account?",
@@ -66,9 +66,58 @@ export function SignupForm({
   andText = "and",
   ...props
 }: SignupFormProps) {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { signUp, signInWithGoogle, loading, error } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (onSignup) onSignup();
+    setFormError(null);
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setFormError("Passwords do not match");
+      return;
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      setFormError("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      await signUp({
+        email,
+        password,
+        displayName: fullName,
+      });
+      if (onSignupSuccess) onSignupSuccess();
+    } catch (err) {
+      setFormError(
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again."
+      );
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    setFormError(null);
+    try {
+      await signInWithGoogle();
+      if (onGoogleSignup) onGoogleSignup();
+    } catch (err) {
+      setFormError(
+        err instanceof Error
+          ? err.message
+          : "Failed to sign up with Google. Please try again."
+      );
+    }
   };
 
   return (
@@ -82,19 +131,11 @@ export function SignupForm({
           <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
-                <Button variant="outline" type="button" onClick={onAppleSignup}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  {appleButtonText}
-                </Button>
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={onGoogleSignup}
+                  onClick={handleGoogleSignUp}
+                  disabled={loading}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -108,13 +149,21 @@ export function SignupForm({
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 {orContinueText}
               </FieldSeparator>
+              {(formError || error) && (
+                <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                  {formError || error?.message}
+                </div>
+              )}
               <Field>
                 <FieldLabel htmlFor="fullName">{fullNameLabel}</FieldLabel>
                 <Input
                   id="fullName"
                   type="text"
                   placeholder="John Doe"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </Field>
               <Field>
@@ -125,7 +174,10 @@ export function SignupForm({
                   id="companyName"
                   type="text"
                   placeholder="My Salon"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </Field>
               <Field>
@@ -134,22 +186,39 @@ export function SignupForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </Field>
               <Field>
                 <FieldLabel htmlFor="password">{passwordLabel}</FieldLabel>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="confirmPassword">
                   {confirmPasswordLabel}
                 </FieldLabel>
-                <Input id="confirmPassword" type="password" required />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                />
               </Field>
               <Field>
-                <Button type="submit" className="w-full">
-                  {signupButtonText}
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Creating account..." : signupButtonText}
                 </Button>
                 <FieldDescription className="text-center">
                   {alreadyHaveAccountText}{" "}

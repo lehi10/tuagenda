@@ -52,15 +52,17 @@ export function ServiceSelection({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold">{t.booking.service.title}</h2>
+        <h2 className="text-xl font-bold sm:text-2xl">
+          {t.booking.service.title}
+        </h2>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
         <Select value={locationFilter} onValueChange={setLocationFilter}>
-          <SelectTrigger className="w-full sm:w-[200px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder={t.booking.service.filterByLocation} />
           </SelectTrigger>
           <SelectContent>
@@ -77,7 +79,7 @@ export function ServiceSelection({
         </Select>
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full sm:w-[200px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder={t.booking.service.filterByCategory} />
           </SelectTrigger>
           <SelectContent>
@@ -95,11 +97,11 @@ export function ServiceSelection({
 
       {/* Services Grid */}
       {filteredServices.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
+        <div className="py-8 text-center text-sm text-muted-foreground">
           {t.booking.service.noServices}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredServices.map((service) => (
             <Card
               key={service.id}
@@ -108,29 +110,31 @@ export function ServiceSelection({
               }`}
               onClick={() => onSelect(service)}
             >
-              <CardContent className="p-6">
-                <div className="mb-3 flex items-start justify-between">
-                  <h3 className="font-semibold">{service.name}</h3>
+              <CardContent className="p-3 sm:p-4">
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <h3 className="font-semibold text-sm sm:text-base line-clamp-1">
+                    {service.name}
+                  </h3>
                   {service.location === "virtual" ? (
-                    <Video className="h-5 w-5 text-muted-foreground" />
+                    <Video className="h-4 w-4 text-muted-foreground shrink-0" />
                   ) : (
-                    <MapPin className="h-5 w-5 text-muted-foreground" />
+                    <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                   )}
                 </div>
 
-                <p className="mb-4 text-sm text-muted-foreground line-clamp-2">
+                <p className="mb-3 text-xs text-muted-foreground line-clamp-2">
                   {service.description}
                 </p>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
                   <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="h-4 w-4" />
+                    <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span>
                       {service.duration} {t.booking.summary.minutes}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 font-semibold">
-                    <DollarSign className="h-4 w-4" />
+                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span>{service.price}</span>
                   </div>
                 </div>
