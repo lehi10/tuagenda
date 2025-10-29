@@ -104,7 +104,7 @@ export default function Home() {
                 <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl md:text-2xl">
                   {t.landing.hero.subtitle}
                 </p>
-                
+
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-4 lg:justify-start">
                   <Link href="/signup" className="w-full sm:w-auto">
                     <Button
@@ -155,8 +155,11 @@ export default function Home() {
                           <Calendar className="h-12 w-12 text-primary" />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Agrega aquí tu screenshot principal<br />
-                          <span className="text-xs">(Dashboard, calendario, etc.)</span>
+                          Agrega aquí tu screenshot principal
+                          <br />
+                          <span className="text-xs">
+                            (Dashboard, calendario, etc.)
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -215,7 +218,8 @@ export default function Home() {
                           Screenshot principal del producto
                         </p>
                         <p className="mt-2 text-sm text-muted-foreground">
-                          Muestra tu dashboard, interfaz principal o funcionalidad destacada
+                          Muestra tu dashboard, interfaz principal o
+                          funcionalidad destacada
                         </p>
                       </div>
                     </div>
@@ -242,7 +246,7 @@ export default function Home() {
                             height={32}
                             className="opacity-50"
                             onError={(e) => {
-                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.style.display = "none";
                             }}
                           />
                         </div>
@@ -260,7 +264,10 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative bg-gradient-to-b from-background via-background to-muted/30 py-24 sm:py-32">
+      <section
+        id="features"
+        className="relative bg-gradient-to-b from-background via-background to-muted/30 py-24 sm:py-32"
+      >
         {/* Background decoration */}
         <div className="absolute right-0 top-1/4 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute left-0 bottom-1/4 h-96 w-96 rounded-full bg-secondary/5 blur-3xl" />
@@ -287,7 +294,7 @@ export default function Home() {
               >
                 {/* Gradient background on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 transition-opacity group-hover:opacity-100" />
-                
+
                 {/* Shine effect */}
                 <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
 
@@ -310,9 +317,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <h3 className="mb-3 text-xl font-bold">
-                    {feature.title}
-                  </h3>
+                  <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
                   <p className="leading-relaxed text-muted-foreground">
                     {feature.description}
                   </p>
@@ -344,17 +349,20 @@ export default function Home() {
                 {
                   step: "01",
                   title: "Crea tu cuenta",
-                  description: "Regístrate gratis en menos de 2 minutos. Sin tarjeta de crédito requerida.",
+                  description:
+                    "Regístrate gratis en menos de 2 minutos. Sin tarjeta de crédito requerida.",
                 },
                 {
                   step: "02",
                   title: "Configura tu negocio",
-                  description: "Personaliza servicios, horarios y equipo según tus necesidades.",
+                  description:
+                    "Personaliza servicios, horarios y equipo según tus necesidades.",
                 },
                 {
                   step: "03",
                   title: "Comienza a gestionar",
-                  description: "Recibe reservas, gestiona clientes y haz crecer tu negocio.",
+                  description:
+                    "Recibe reservas, gestiona clientes y haz crecer tu negocio.",
                 },
               ].map((item, index) => (
                 <div
@@ -404,7 +412,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-gradient-to-b from-muted/30 via-muted/10 to-background py-24 sm:py-32">
         {/* Background decoration */}
         <div className="absolute left-1/4 top-0 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
-        
+
         <div className="container relative mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/5 px-4 py-2 text-sm font-medium text-secondary backdrop-blur-sm">
@@ -427,7 +435,7 @@ export default function Home() {
               >
                 {/* Gradient background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                
+
                 {/* Quote icon */}
                 <div className="absolute right-6 top-6 opacity-10 transition-all group-hover:scale-110 group-hover:opacity-20">
                   <svg
@@ -451,11 +459,11 @@ export default function Home() {
                       </svg>
                     ))}
                   </div>
-                  
+
                   <p className="mb-6 text-base leading-relaxed text-foreground">
                     &ldquo;{testimonial.quote}&rdquo;
                   </p>
-                  
+
                   <div className="flex items-center gap-4 border-t border-border pt-6">
                     <div className="relative flex-shrink-0">
                       <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-secondary opacity-75 blur-sm" />
@@ -506,14 +514,14 @@ export default function Home() {
                 <Sparkles className="h-4 w-4" />
                 <span>Comienza hoy</span>
               </div>
-              
+
               <h2 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
                 {t.landing.cta.title}
               </h2>
               <p className="mx-auto mt-6 max-w-2xl text-lg opacity-95 sm:text-xl md:text-2xl">
                 {t.landing.cta.subtitle}
               </p>
-              
+
               <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
                 <Link href="/signup" className="w-full sm:w-auto">
                   <Button
