@@ -15,7 +15,7 @@ export interface Organization {
 interface OrganizationContextType {
   currentOrg: Organization | null;
   organizations: Organization[];
-  setCurrentOrg: (org: Organization) => void;
+  setCurrentOrg: (_org: Organization) => void;
   isSuperAdmin: boolean;
 }
 

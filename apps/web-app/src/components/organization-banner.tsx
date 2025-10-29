@@ -23,23 +23,25 @@ export function OrganizationBanner() {
 
   return (
     <Card className="border-2 border-dashed">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <Building2 className="h-5 w-5 text-primary" />
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="bg-primary/10 p-2 rounded-lg flex-shrink-0">
+              <Building2 className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-lg">{currentOrg.name}</h3>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <h3 className="font-semibold text-base sm:text-lg truncate">
+                  {currentOrg.name}
+                </h3>
                 <Badge
                   variant="outline"
-                  className={getPlanColor(currentOrg.plan)}
+                  className={`${getPlanColor(currentOrg.plan)} text-xs flex-shrink-0`}
                 >
                   {currentOrg.plan.toUpperCase()}
                 </Badge>
               </div>
-              <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
                   <span>{currentOrg.employees} employees</span>
@@ -52,9 +54,12 @@ export function OrganizationBanner() {
             </div>
           </div>
           {isSuperAdmin && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge
+              variant="secondary"
+              className="gap-1 text-xs flex-shrink-0 w-fit"
+            >
               <Crown className="h-3 w-3" />
-              Super Admin View
+              <span className="whitespace-nowrap">Super Admin View</span>
             </Badge>
           )}
         </div>

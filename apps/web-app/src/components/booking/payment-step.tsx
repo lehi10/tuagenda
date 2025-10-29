@@ -8,7 +8,7 @@ import { CreditCard, Smartphone, Store, Check } from "lucide-react";
 export type PaymentMethod = "card" | "onsite" | "digital-wallet";
 
 interface PaymentStepProps {
-  onContinue: (method: PaymentMethod) => void;
+  onContinue: (_method: PaymentMethod) => void;
   isInPerson?: boolean; // To show/hide onsite payment option
 }
 

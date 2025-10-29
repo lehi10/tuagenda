@@ -14,7 +14,7 @@ const translations: Record<Locale, Translations> = {
 
 interface I18nContextType {
   locale: Locale;
-  setLocale: (locale: Locale) => void;
+  setLocale: (_locale: Locale) => void;
   t: Translations;
 }
 

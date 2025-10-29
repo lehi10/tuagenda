@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button";
 
 interface Column<T> {
   header: string;
-  accessor: keyof T | ((item: T) => React.ReactNode);
+  accessor: keyof T | ((_item: T) => React.ReactNode);
   className?: string;
 }
 

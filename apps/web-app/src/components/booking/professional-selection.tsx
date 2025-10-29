@@ -15,7 +15,7 @@ interface Professional {
 
 interface ProfessionalSelectionProps {
   professionals: Professional[];
-  onSelect: (professional: Professional) => void;
+  onSelect: (_professional: Professional) => void;
   selectedProfessionalId?: string;
 }
 

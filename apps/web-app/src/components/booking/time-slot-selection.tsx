@@ -11,7 +11,7 @@ interface TimeSlot {
 interface TimeSlotSelectionProps {
   timeSlots: TimeSlot[];
   selectedSlot?: string;
-  onSelect: (slot: string) => void;
+  onSelect: (_slot: string) => void;
 }
 
 export function TimeSlotSelection({

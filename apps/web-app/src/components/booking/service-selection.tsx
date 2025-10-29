@@ -24,7 +24,7 @@ interface Service {
 
 interface ServiceSelectionProps {
   services: Service[];
-  onSelect: (service: Service) => void;
+  onSelect: (_service: Service) => void;
   selectedServiceId?: string;
 }
 

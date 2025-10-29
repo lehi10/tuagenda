@@ -13,15 +13,17 @@ export default function CalendarPage() {
   );
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t.pages.calendar.title}</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl font-bold sm:text-2xl">
+          {t.pages.calendar.title}
+        </h1>
+        <p className="text-xs text-muted-foreground sm:text-sm">
           Manage your appointments and schedule
         </p>
       </div>
       <CalendarStats />
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <CalendarView onDateSelect={setSelectedDate} />
         <DayAppointments date={selectedDate} />
       </div>
