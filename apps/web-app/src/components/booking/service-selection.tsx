@@ -54,7 +54,9 @@ export function ServiceSelection({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-xl font-bold sm:text-2xl">{t.booking.service.title}</h2>
+        <h2 className="text-xl font-bold sm:text-2xl">
+          {t.booking.service.title}
+        </h2>
       </div>
 
       {/* Filters */}

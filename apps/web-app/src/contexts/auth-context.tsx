@@ -119,9 +119,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         ...prev,
         loading: false,
         error:
-          error instanceof Error
-            ? error
-            : new Error("Google sign in failed"),
+          error instanceof Error ? error : new Error("Google sign in failed"),
       }));
       throw error;
     }
@@ -150,9 +148,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setState((prev) => ({
         ...prev,
         error:
-          error instanceof Error
-            ? error
-            : new Error("Password reset failed"),
+          error instanceof Error ? error : new Error("Password reset failed"),
       }));
       throw error;
     }
@@ -172,9 +168,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setState((prev) => ({
         ...prev,
         error:
-          error instanceof Error
-            ? error
-            : new Error("Profile update failed"),
+          error instanceof Error ? error : new Error("Profile update failed"),
       }));
       throw error;
     }

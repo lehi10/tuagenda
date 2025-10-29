@@ -37,7 +37,9 @@ export function ProfessionalSelection({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-xl font-bold sm:text-2xl">{t.booking.professional.title}</h2>
+        <h2 className="text-xl font-bold sm:text-2xl">
+          {t.booking.professional.title}
+        </h2>
       </div>
 
       {professionals.length === 0 ? (

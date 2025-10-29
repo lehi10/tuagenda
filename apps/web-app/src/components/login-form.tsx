@@ -78,7 +78,9 @@ export function LoginForm({
       if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
       setFormError(
-        err instanceof Error ? err.message : "Failed to sign in. Please try again."
+        err instanceof Error
+          ? err.message
+          : "Failed to sign in. Please try again."
       );
     }
   };

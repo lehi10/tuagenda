@@ -23,8 +23,13 @@ export function AppointmentDetailModal({
 }: AppointmentDetailModalProps) {
   if (!appointment) return null;
 
-  const getStatusVariant = (status: Appointment["status"]) => {
-    const variants = {
+  const getStatusVariant = (
+    status: Appointment["status"]
+  ): "default" | "destructive" | "outline" | "secondary" => {
+    const variants: Record<
+      Appointment["status"],
+      "default" | "destructive" | "secondary"
+    > = {
       completed: "default",
       pending: "secondary",
       cancelled: "destructive",

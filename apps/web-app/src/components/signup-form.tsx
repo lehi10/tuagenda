@@ -99,7 +99,9 @@ export function SignupForm({
       if (onSignupSuccess) onSignupSuccess();
     } catch (err) {
       setFormError(
-        err instanceof Error ? err.message : "Failed to create account. Please try again."
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again."
       );
     }
   };

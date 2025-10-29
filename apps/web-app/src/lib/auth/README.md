@@ -23,11 +23,13 @@ src/lib/auth/
 ## Configuración
 
 1. Copia `.env.example` a `.env.local`:
+
 ```bash
 cp .env.example .env.local
 ```
 
 2. Configura las variables de Firebase en `.env.local`:
+
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=tu_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=tu_dominio.firebaseapp.com
@@ -44,7 +46,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=tu_app_id
 ### En componentes React
 
 ```tsx
-import { useAuth } from '@/contexts';
+import { useAuth } from "@/contexts";
 
 function LoginForm() {
   const { signIn, user, loading, error } = useAuth();
@@ -53,22 +55,18 @@ function LoginForm() {
     e.preventDefault();
     try {
       await signIn({
-        email: 'user@example.com',
-        password: 'password123'
+        email: "user@example.com",
+        password: "password123",
       });
       // Usuario autenticado
     } catch (error) {
-      console.error('Error al iniciar sesión:', error);
+      console.error("Error al iniciar sesión:", error);
     }
   };
 
   if (loading) return <div>Cargando...</div>;
 
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* Tu formulario aquí */}
-    </form>
-  );
+  return <form onSubmit={handleSubmit}>{/* Tu formulario aquí */}</form>;
 }
 ```
 
@@ -77,16 +75,16 @@ function LoginForm() {
 ```tsx
 const {
   // Estado
-  user,           // Usuario actual o null
-  loading,        // true mientras se verifica la autenticación
-  error,          // Error si ocurrió alguno
+  user, // Usuario actual o null
+  loading, // true mientras se verifica la autenticación
+  error, // Error si ocurrió alguno
 
   // Métodos
-  signIn,         // Iniciar sesión
-  signUp,         // Registrarse
-  signOut,        // Cerrar sesión
-  sendPasswordResetEmail,  // Enviar email de recuperación
-  updateProfile   // Actualizar perfil del usuario
+  signIn, // Iniciar sesión
+  signUp, // Registrarse
+  signOut, // Cerrar sesión
+  sendPasswordResetEmail, // Enviar email de recuperación
+  updateProfile, // Actualizar perfil del usuario
 } = useAuth();
 ```
 
@@ -95,19 +93,19 @@ const {
 Si necesitas usar la autenticación fuera de componentes React:
 
 ```ts
-import { authService } from '@/lib/auth/auth-service';
+import { authService } from "@/lib/auth/auth-service";
 
 // Iniciar sesión
 await authService.signIn({
-  email: 'user@example.com',
-  password: 'password123'
+  email: "user@example.com",
+  password: "password123",
 });
 
 // Registrarse
 await authService.signUp({
-  email: 'user@example.com',
-  password: 'password123',
-  displayName: 'Usuario'
+  email: "user@example.com",
+  password: "password123",
+  displayName: "Usuario",
 });
 
 // Cerrar sesión
@@ -118,7 +116,7 @@ const user = authService.getCurrentUser();
 
 // Escuchar cambios de autenticación
 const unsubscribe = authService.onAuthStateChanged((user) => {
-  console.log('Usuario cambió:', user);
+  console.log("Usuario cambió:", user);
 });
 // No olvides cancelar la suscripción
 unsubscribe();
@@ -127,15 +125,15 @@ unsubscribe();
 ## Ejemplo completo: Página de Login
 
 ```tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuth } from '@/contexts';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useAuth } from "@/contexts";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { signIn, loading, error } = useAuth();
   const router = useRouter();
 
@@ -143,10 +141,10 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await signIn({ email, password });
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err) {
       // Error ya está en el estado del contexto
-      console.error('Error:', err);
+      console.error("Error:", err);
     }
   };
 
@@ -166,9 +164,9 @@ export default function LoginPage() {
         placeholder="Password"
         required
       />
-      {error && <p style={{ color: 'red' }}>{error.message}</p>}
+      {error && <p style={{ color: "red" }}>{error.message}</p>}
       <button type="submit" disabled={loading}>
-        {loading ? 'Cargando...' : 'Iniciar Sesión'}
+        {loading ? "Cargando..." : "Iniciar Sesión"}
       </button>
     </form>
   );
@@ -198,11 +196,11 @@ El resto de tu aplicación seguirá funcionando sin cambios.
 Para proteger rutas privadas, puedes crear un componente de guard:
 
 ```tsx
-'use client';
+"use client";
 
-import { useAuth } from '@/contexts';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useAuth } from "@/contexts";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -210,7 +208,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [user, loading, router]);
 
@@ -224,11 +222,11 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 Luego úsalo en tus layouts de rutas privadas:
 
 ```tsx
-export default function PrivateLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <ProtectedRoute>
-      {children}
-    </ProtectedRoute>
-  );
+export default function PrivateLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <ProtectedRoute>{children}</ProtectedRoute>;
 }
 ```
