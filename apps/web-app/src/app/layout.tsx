@@ -13,10 +13,6 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "TuAgenda - Gestión de Citas",
   description: "Sistema de gestión de citas y clientes para tu negocio",
-  icons: {
-    icon: "/icons/ícono_color.png",
-    apple: "/icons/ícono_color.png",
-  },
 };
 
 export default function RootLayout({
