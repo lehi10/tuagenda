@@ -3,7 +3,7 @@
 import { GalleryVerticalEnd } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ForgotPasswordForm } from "@/components/forgot-password-form";
+import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import { useTranslation } from "@/i18n";
 import {
   Card,

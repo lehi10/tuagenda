@@ -22,26 +22,13 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useAuth } from "@/contexts";
+import { useTranslation } from "@/i18n";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   onLoginSuccess?: () => void;
   onGoogleLogin?: () => void;
   onForgotPassword?: () => void;
   onSignup?: () => void;
-  title?: string;
-  description?: string;
-  emailLabel?: string;
-  passwordLabel?: string;
-  loginButtonText?: string;
-  googleButtonText?: string;
-  orContinueText?: string;
-  forgotPasswordText?: string;
-  dontHaveAccountText?: string;
-  signupText?: string;
-  termsText?: string;
-  termsOfServiceText?: string;
-  privacyPolicyText?: string;
-  andText?: string;
 }
 
 export function LoginForm({
@@ -50,22 +37,9 @@ export function LoginForm({
   onGoogleLogin,
   onForgotPassword,
   onSignup,
-  title = "Welcome back",
-  description = "Login with your Google account",
-  emailLabel = "Email",
-  passwordLabel = "Password",
-  loginButtonText = "Login",
-  googleButtonText = "Login with Google",
-  orContinueText = "Or continue with",
-  forgotPasswordText = "Forgot your password?",
-  dontHaveAccountText = "Don't have an account?",
-  signupText = "Sign up",
-  termsText = "By clicking continue, you agree to our",
-  termsOfServiceText = "Terms of Service",
-  privacyPolicyText = "Privacy Policy",
-  andText = "and",
   ...props
 }: LoginFormProps) {
+  const { t } = useTranslation();
   const { signIn, signInWithGoogle, loading, error } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -149,8 +123,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-xl">{t.auth.welcomeBack}</CardTitle>
+          <CardDescription>{t.auth.loginWith}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -168,11 +142,11 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  {googleButtonText}
+                  {t.auth.loginWithGoogle}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                {orContinueText}
+                {t.auth.orContinueWith}
               </FieldSeparator>
               {(formError || error) && (
                 <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
@@ -180,7 +154,7 @@ export function LoginForm({
                 </div>
               )}
               <Field>
-                <FieldLabel htmlFor="email">{emailLabel}</FieldLabel>
+                <FieldLabel htmlFor="email">{t.auth.email}</FieldLabel>
                 <Input
                   id="email"
                   type="email"
@@ -193,7 +167,7 @@ export function LoginForm({
               </Field>
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">{passwordLabel}</FieldLabel>
+                  <FieldLabel htmlFor="password">{t.auth.password}</FieldLabel>
                   <a
                     href="#"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -202,7 +176,7 @@ export function LoginForm({
                       if (onForgotPassword) onForgotPassword();
                     }}
                   >
-                    {forgotPasswordText}
+                    {t.auth.forgotPassword}
                   </a>
                 </div>
                 <Input
@@ -216,10 +190,10 @@ export function LoginForm({
               </Field>
               <Field>
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Signing in..." : loginButtonText}
+                  {loading ? "Signing in..." : t.auth.login}
                 </Button>
                 <FieldDescription className="text-center">
-                  {dontHaveAccountText}{" "}
+                  {t.auth.dontHaveAccount}{" "}
                   <a
                     href="#"
                     onClick={(e) => {
@@ -227,7 +201,7 @@ export function LoginForm({
                       if (onSignup) onSignup();
                     }}
                   >
-                    {signupText}
+                    {t.auth.signUp}
                   </a>
                 </FieldDescription>
               </Field>
@@ -236,13 +210,13 @@ export function LoginForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        {termsText}{" "}
+        {t.auth.termsAndPrivacy}{" "}
         <Link href="/terms-of-service" className="underline">
-          {termsOfServiceText}
+          {t.legal.termsOfService}
         </Link>{" "}
-        {andText}{" "}
+        {t.auth.and}{" "}
         <Link href="/privacy-policy" className="underline">
-          {privacyPolicyText}
+          {t.legal.privacyPolicy}
         </Link>
         .
       </FieldDescription>

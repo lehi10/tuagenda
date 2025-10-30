@@ -2,15 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { LoginForm } from "@/components/login-form";
+import { LoginForm } from "@/components/auth/login-form";
 import { PublicRoute } from "@/components/public-route";
-import { useTranslation } from "@/i18n";
 import Link from "next/link";
 import { Suspense } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { t } = useTranslation();
 
   return (
     <Suspense>
@@ -34,20 +32,6 @@ export default function LoginPage() {
               />
             </Link>
             <LoginForm
-              title={t.auth.welcomeBack}
-              description={t.auth.loginWith}
-              emailLabel={t.auth.email}
-              passwordLabel={t.auth.password}
-              loginButtonText={t.auth.login}
-              googleButtonText={t.auth.loginWithGoogle}
-              orContinueText={t.auth.orContinueWith}
-              forgotPasswordText={t.auth.forgotPassword}
-              dontHaveAccountText={t.auth.dontHaveAccount}
-              signupText={t.auth.signUp}
-              termsText={t.auth.termsAndPrivacy}
-              termsOfServiceText={t.legal.termsOfService}
-              privacyPolicyText={t.legal.privacyPolicy}
-              andText={t.auth.and}
               onLoginSuccess={() => router.push("/dashboard")}
               onGoogleLogin={() => router.push("/dashboard")}
               onForgotPassword={() => router.push("/forgot-password")}

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { SignupForm } from "@/components/signup-form";
+import { SignupForm } from "@/components/auth/signup-form";
 import { PublicRoute } from "@/components/public-route";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
