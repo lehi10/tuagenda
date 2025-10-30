@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 interface UseGoogleAuthOptions {
   onSuccess?: () => void;
-  mode?: 'login' | 'signup';
+  mode?: "login" | "signup";
 }
 
 export function useGoogleAuth(options?: UseGoogleAuthOptions) {
@@ -25,7 +25,7 @@ export function useGoogleAuth(options?: UseGoogleAuthOptions) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mode = options?.mode || 'login';
+  const mode = options?.mode || "login";
 
   const authenticate = async () => {
     setLoading(true);
@@ -39,24 +39,26 @@ export function useGoogleAuth(options?: UseGoogleAuthOptions) {
       toast.success("Google authentication successful");
 
       // Step 2: Extract first and last name from displayName
-      const displayName = firebaseUser.displayName || '';
+      const displayName = firebaseUser.displayName || "";
       const nameParts = displayName.trim().split(/\s+/);
-      const firstName = nameParts[0] || 'User';
-      const lastName = nameParts.slice(1).join(' ') || '';
+      const firstName = nameParts[0] || "User";
+      const lastName = nameParts.slice(1).join(" ") || "";
 
       // Step 3: Create/update user in PostgreSQL database as 'customer'
       // This handles both first-time login (creates user) and returning users (no-op)
-      console.log('🔄 Attempting to sync user with database...', {
+      console.log("🔄 Attempting to sync user with database...", {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         firstName,
         lastName,
       });
 
-      toast.loading(mode === 'signup' ? "Saving your profile..." : "Syncing profile...");
+      toast.loading(
+        mode === "signup" ? "Saving your profile..." : "Syncing profile..."
+      );
       const dbResult = await createUserInDatabase({
         id: firebaseUser.uid,
-        email: firebaseUser.email || '',
+        email: firebaseUser.email || "",
         firstName,
         lastName,
         pictureFullPath: firebaseUser.photoURL,
@@ -64,16 +66,18 @@ export function useGoogleAuth(options?: UseGoogleAuthOptions) {
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error('❌ Failed to sync user with database:', dbResult.error);
+        console.error("❌ Failed to sync user with database:", dbResult.error);
         toast.error(`Failed to sync profile: ${dbResult.error}`);
-        setError(`Authentication successful, but failed to sync user data: ${dbResult.error}`);
+        setError(
+          `Authentication successful, but failed to sync user data: ${dbResult.error}`
+        );
         setLoading(false);
         return { success: false, error: dbResult.error };
       }
 
-      console.log('✅ User synced successfully to database:', dbResult.userId);
+      console.log("✅ User synced successfully to database:", dbResult.userId);
 
-      if (mode === 'signup') {
+      if (mode === "signup") {
         toast.success("Account created successfully! 🎉");
       } else {
         toast.success("Welcome back! 🎉");
@@ -84,9 +88,10 @@ export function useGoogleAuth(options?: UseGoogleAuthOptions) {
       return { success: true };
     } catch (err) {
       toast.dismiss();
-      const errorMessage = err instanceof Error
-        ? err.message
-        : `Failed to ${mode === 'signup' ? 'sign up' : 'sign in'} with Google. Please try again.`;
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : `Failed to ${mode === "signup" ? "sign up" : "sign in"} with Google. Please try again.`;
       toast.error(errorMessage);
       setError(errorMessage);
       setLoading(false);

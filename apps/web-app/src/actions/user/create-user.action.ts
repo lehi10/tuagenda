@@ -54,35 +54,49 @@ type CreateUserResult =
 export async function createUserInDatabase(
   data: CreateUserFromAuthInput
 ): Promise<CreateUserResult> {
-  console.log('[SERVER ACTION] 🚀 createUserInDatabase called with data:', JSON.stringify(data, null, 2));
+  console.log(
+    "[SERVER ACTION] 🚀 createUserInDatabase called with data:",
+    JSON.stringify(data, null, 2)
+  );
 
   try {
     // Validate input data with Zod schema
-    console.log('[SERVER ACTION] 📋 Validating data with Zod...');
+    console.log("[SERVER ACTION] 📋 Validating data with Zod...");
     const validatedData = createUserFromAuthSchema.parse(data);
-    console.log('[SERVER ACTION] ✅ Data validated successfully');
+    console.log("[SERVER ACTION] ✅ Data validated successfully");
 
     // Truncate values to prevent database errors
     const firstName = validatedData.firstName.substring(0, 255);
     const lastName = validatedData.lastName.substring(0, 255);
-    console.log('[SERVER ACTION] 📏 Truncated names if needed - firstName:', firstName.length, 'lastName:', lastName.length);
+    console.log(
+      "[SERVER ACTION] 📏 Truncated names if needed - firstName:",
+      firstName.length,
+      "lastName:",
+      lastName.length
+    );
 
     // Check if user already exists
-    console.log('[SERVER ACTION] 🔍 Checking if user exists with ID:', validatedData.id);
+    console.log(
+      "[SERVER ACTION] 🔍 Checking if user exists with ID:",
+      validatedData.id
+    );
     const existingUser = await prisma.user.findUnique({
       where: { id: validatedData.id },
     });
 
     if (existingUser) {
       // User already exists, return success
-      console.log('[SERVER ACTION] ℹ️  User already exists, returning existing user:', existingUser.id);
+      console.log(
+        "[SERVER ACTION] ℹ️  User already exists, returning existing user:",
+        existingUser.id
+      );
       return {
         success: true,
         userId: existingUser.id,
       };
     }
 
-    console.log('[SERVER ACTION] 🆕 User does not exist, creating new user...');
+    console.log("[SERVER ACTION] 🆕 User does not exist, creating new user...");
 
     // Create new user in database
     // Type is automatically set to 'customer' via Prisma schema default
@@ -99,18 +113,18 @@ export async function createUserInDatabase(
       },
     });
 
-    console.log('[SERVER ACTION] 🎉 User created successfully:', user.id);
+    console.log("[SERVER ACTION] 🎉 User created successfully:", user.id);
 
     return {
       success: true,
       userId: user.id,
     };
   } catch (error) {
-    console.error('[SERVER ACTION] ❌ Error occurred:', error);
+    console.error("[SERVER ACTION] ❌ Error occurred:", error);
 
     // Handle Zod validation errors
     if (error instanceof Error && error.name === "ZodError") {
-      console.error('[SERVER ACTION] 📛 Zod validation error');
+      console.error("[SERVER ACTION] 📛 Zod validation error");
       return {
         success: false,
         error: "Invalid user data provided",
@@ -119,7 +133,7 @@ export async function createUserInDatabase(
 
     // Handle Prisma unique constraint violations
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error('[SERVER ACTION] 🔒 Prisma error code:', error.code);
+      console.error("[SERVER ACTION] 🔒 Prisma error code:", error.code);
       if (error.code === "P2002") {
         return {
           success: false,
@@ -129,7 +143,10 @@ export async function createUserInDatabase(
     }
 
     // Handle other errors
-    console.error("[SERVER ACTION] 💥 Unexpected error creating user in database:", error);
+    console.error(
+      "[SERVER ACTION] 💥 Unexpected error creating user in database:",
+      error
+    );
     return {
       success: false,
       error: "Failed to create user. Please try again later.",

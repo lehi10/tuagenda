@@ -106,7 +106,7 @@ export function SignupForm({
       const lastName = nameParts.slice(1).join(" ") || nameParts[0] || "";
 
       // Step 3: Create user in PostgreSQL database as 'customer'
-      console.log('🔄 Creating user in database...', {
+      console.log("🔄 Creating user in database...", {
         uid: firebaseUser.uid,
         email: firebaseUser.email || email,
         firstName,
@@ -124,21 +124,24 @@ export function SignupForm({
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error('❌ Failed to create user in database:', dbResult.error);
+        console.error("❌ Failed to create user in database:", dbResult.error);
         toast.error(`Failed to save profile: ${dbResult.error}`);
-        setFormError(`Account created but profile save failed: ${dbResult.error}`);
+        setFormError(
+          `Account created but profile save failed: ${dbResult.error}`
+        );
         return; // Don't proceed if DB creation fails
       }
 
-      console.log('✅ User created successfully in database:', dbResult.userId);
+      console.log("✅ User created successfully in database:", dbResult.userId);
       toast.success("Account created successfully! 🎉");
 
       if (onSignupSuccess) onSignupSuccess();
     } catch (err) {
       toast.dismiss();
-      const errorMessage = err instanceof Error
-        ? err.message
-        : "Failed to create account. Please try again.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again.";
       toast.error(errorMessage);
       setFormError(errorMessage);
     }
@@ -160,7 +163,7 @@ export function SignupForm({
       const lastName = nameParts.slice(1).join(" ") || "";
 
       // Step 3: Create user in PostgreSQL database as 'customer'
-      console.log('🔄 Creating user in database (Google signup)...', {
+      console.log("🔄 Creating user in database (Google signup)...", {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         firstName,
@@ -178,21 +181,24 @@ export function SignupForm({
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error('❌ Failed to create user in database:', dbResult.error);
+        console.error("❌ Failed to create user in database:", dbResult.error);
         toast.error(`Failed to save profile: ${dbResult.error}`);
-        setFormError(`Google signup successful, but failed to save profile: ${dbResult.error}`);
+        setFormError(
+          `Google signup successful, but failed to save profile: ${dbResult.error}`
+        );
         return; // Don't proceed if DB creation fails
       }
 
-      console.log('✅ User created successfully in database:', dbResult.userId);
+      console.log("✅ User created successfully in database:", dbResult.userId);
       toast.success("Account created successfully! 🎉");
 
       if (onGoogleSignup) onGoogleSignup();
     } catch (err) {
       toast.dismiss();
-      const errorMessage = err instanceof Error
-        ? err.message
-        : "Failed to sign up with Google. Please try again.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to sign up with Google. Please try again.";
       toast.error(errorMessage);
       setFormError(errorMessage);
     }

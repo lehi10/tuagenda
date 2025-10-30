@@ -97,14 +97,14 @@ export function LoginForm({
       toast.success("Google authentication successful");
 
       // Step 2: Extract first and last name from displayName
-      const displayName = firebaseUser.displayName || '';
+      const displayName = firebaseUser.displayName || "";
       const nameParts = displayName.trim().split(/\s+/);
-      const firstName = nameParts[0] || 'User';
-      const lastName = nameParts.slice(1).join(' ') || '';
+      const firstName = nameParts[0] || "User";
+      const lastName = nameParts.slice(1).join(" ") || "";
 
       // Step 3: Create/update user in PostgreSQL database as 'customer'
       // This handles both first-time login (creates user) and returning users (no-op)
-      console.log('🔄 Attempting to sync user with database...', {
+      console.log("🔄 Attempting to sync user with database...", {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         firstName,
@@ -114,7 +114,7 @@ export function LoginForm({
       toast.loading("Syncing profile...");
       const dbResult = await createUserInDatabase({
         id: firebaseUser.uid,
-        email: firebaseUser.email || '',
+        email: firebaseUser.email || "",
         firstName,
         lastName,
         pictureFullPath: firebaseUser.photoURL,
@@ -122,21 +122,24 @@ export function LoginForm({
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error('❌ Failed to sync user with database:', dbResult.error);
+        console.error("❌ Failed to sync user with database:", dbResult.error);
         toast.error(`Failed to sync profile: ${dbResult.error}`);
-        setFormError(`Authentication successful, but failed to sync user data: ${dbResult.error}`);
+        setFormError(
+          `Authentication successful, but failed to sync user data: ${dbResult.error}`
+        );
         return; // Don't proceed if DB sync fails
       }
 
-      console.log('✅ User synced successfully to database:', dbResult.userId);
+      console.log("✅ User synced successfully to database:", dbResult.userId);
       toast.success("Welcome back! 🎉");
 
       if (onGoogleLogin) onGoogleLogin();
     } catch (err) {
       toast.dismiss();
-      const errorMessage = err instanceof Error
-        ? err.message
-        : "Failed to sign in with Google. Please try again.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to sign in with Google. Please try again.";
       toast.error(errorMessage);
       setFormError(errorMessage);
     }

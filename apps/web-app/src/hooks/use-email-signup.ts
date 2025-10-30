@@ -49,7 +49,7 @@ export function useEmailSignup(options?: UseEmailSignupOptions) {
       const lastName = nameParts.slice(1).join(" ") || nameParts[0] || "";
 
       // Step 3: Create user in PostgreSQL database as 'customer'
-      console.log('🔄 Creating user in database...', {
+      console.log("🔄 Creating user in database...", {
         uid: firebaseUser.uid,
         email: firebaseUser.email || data.email,
         firstName,
@@ -67,14 +67,14 @@ export function useEmailSignup(options?: UseEmailSignupOptions) {
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error('❌ Failed to create user in database:', dbResult.error);
+        console.error("❌ Failed to create user in database:", dbResult.error);
         toast.error(`Failed to save profile: ${dbResult.error}`);
         setError(`Account created but profile save failed: ${dbResult.error}`);
         setLoading(false);
         return { success: false, error: dbResult.error };
       }
 
-      console.log('✅ User created successfully in database:', dbResult.userId);
+      console.log("✅ User created successfully in database:", dbResult.userId);
       toast.success("Account created successfully! 🎉");
 
       setLoading(false);
@@ -82,9 +82,10 @@ export function useEmailSignup(options?: UseEmailSignupOptions) {
       return { success: true };
     } catch (err) {
       toast.dismiss();
-      const errorMessage = err instanceof Error
-        ? err.message
-        : "Failed to create account. Please try again.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to create account. Please try again.";
       toast.error(errorMessage);
       setError(errorMessage);
       setLoading(false);

@@ -36,10 +36,8 @@ type GetUserResult =
  * }
  * ```
  */
-export async function getUserById(
-  firebaseUid: string
-): Promise<GetUserResult> {
-  console.log('[SERVER ACTION] 🔍 Getting user from database:', firebaseUid);
+export async function getUserById(firebaseUid: string): Promise<GetUserResult> {
+  console.log("[SERVER ACTION] 🔍 Getting user from database:", firebaseUid);
 
   try {
     const user = await prisma.user.findUnique({
@@ -47,21 +45,24 @@ export async function getUserById(
     });
 
     if (!user) {
-      console.log('[SERVER ACTION] ❌ User not found in database');
+      console.log("[SERVER ACTION] ❌ User not found in database");
       return {
         success: false,
         error: "User not found in database",
       };
     }
 
-    console.log('[SERVER ACTION] ✅ User found:', user.email);
+    console.log("[SERVER ACTION] ✅ User found:", user.email);
 
     return {
       success: true,
       user,
     };
   } catch (error) {
-    console.error("[SERVER ACTION] 💥 Error fetching user from database:", error);
+    console.error(
+      "[SERVER ACTION] 💥 Error fetching user from database:",
+      error
+    );
     return {
       success: false,
       error: "Failed to fetch user data. Please try again.",

@@ -60,7 +60,9 @@ export interface IAuthService {
    * Sign up with email and password
    * Returns Firebase user data only
    */
-  signUpWithEmailAndPassword(credentials: SignUpCredentials): Promise<FirebaseUserData>;
+  signUpWithEmailAndPassword(
+    credentials: SignUpCredentials
+  ): Promise<FirebaseUserData>;
 
   /**
    * Sign in with Google
@@ -83,7 +85,9 @@ export interface IAuthService {
    * Subscribe to Firebase authentication state changes
    * Callback receives Firebase user data only
    */
-  onAuthStateChanged(callback: (user: FirebaseUserData | null) => void): () => void;
+  onAuthStateChanged(
+    callback: (user: FirebaseUserData | null) => void
+  ): () => void;
 
   /**
    * Send password reset email
