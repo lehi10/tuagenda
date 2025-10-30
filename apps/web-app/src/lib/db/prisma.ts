@@ -8,8 +8,8 @@
  * @see https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-articles/nextjs-prisma-client-dev-practices
  */
 
-// Import from the generated Prisma client in the db package
-import { PrismaClient } from "../../../../../packages/db/generated/prisma";
+// Import from the standard Prisma client
+import { PrismaClient } from "@prisma/client";
 
 /**
  * Global type declaration for Prisma Client instance
@@ -43,11 +43,11 @@ if (process.env.NODE_ENV !== "production") {
  * Export Prisma types for use throughout the application
  * These types are automatically generated from your Prisma schema
  */
-// Export types from the generated Prisma client
+// Export types from the standard Prisma client
 export type {
   User,
   Business,
   UserStatus,
   UserType,
   BusinessStatus,
-} from "../../../../../packages/db/generated/prisma";
+} from "@prisma/client";

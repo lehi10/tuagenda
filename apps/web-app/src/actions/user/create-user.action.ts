@@ -15,7 +15,7 @@ import {
   createUserFromAuthSchema,
   type CreateUserFromAuthInput,
 } from "@/lib/validations/user.schema";
-import { Prisma } from "../../../../../packages/db/generated/prisma";
+import { Prisma } from "@prisma/client";
 import { logger } from "@/lib/logger";
 
 /**

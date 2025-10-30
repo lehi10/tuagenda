@@ -22,8 +22,10 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../../"),
   // Explicitly include Prisma engine files in the bundle
   outputFileTracingIncludes: {
-    "/api/**/*": ["../../packages/db/generated/prisma/**/*"],
-    "/(public)/**/*": ["../../packages/db/generated/prisma/**/*"],
+    "/**/*": [
+      "../../node_modules/.pnpm/@prisma+client*/node_modules/.prisma/client/**/*",
+      "../../node_modules/.pnpm/prisma*/node_modules/prisma/**/*.node",
+    ],
   },
 };
 
