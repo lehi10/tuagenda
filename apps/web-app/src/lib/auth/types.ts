@@ -1,7 +1,16 @@
+import type { User } from "@/lib/db/prisma";
+
 /**
- * User authentication data
+ * User authentication data from database
+ * This is the user object we use throughout the app after authentication
  */
-export interface AuthUser {
+export type AuthUser = User;
+
+/**
+ * Firebase user data (internal use only)
+ * Used internally by auth service, not exposed to the app
+ */
+export interface FirebaseUserData {
   uid: string;
   email: string | null;
   displayName: string | null;
@@ -36,24 +45,28 @@ export interface AuthState {
 /**
  * Abstract authentication service interface
  * This allows us to swap implementations (Firebase, Auth0, custom, etc.)
+ * Returns Firebase user data (not full app user data)
  */
 export interface IAuthService {
   /**
    * Sign in with email and password
+   * Returns Firebase user data only
    */
   signInWithEmailAndPassword(
     credentials: EmailPasswordCredentials
-  ): Promise<AuthUser>;
+  ): Promise<FirebaseUserData>;
 
   /**
    * Sign up with email and password
+   * Returns Firebase user data only
    */
-  signUpWithEmailAndPassword(credentials: SignUpCredentials): Promise<AuthUser>;
+  signUpWithEmailAndPassword(credentials: SignUpCredentials): Promise<FirebaseUserData>;
 
   /**
    * Sign in with Google
+   * Returns Firebase user data only
    */
-  signInWithGoogle(): Promise<AuthUser>;
+  signInWithGoogle(): Promise<FirebaseUserData>;
 
   /**
    * Sign out current user
@@ -61,14 +74,16 @@ export interface IAuthService {
   signOut(): Promise<void>;
 
   /**
-   * Get current authenticated user
+   * Get current authenticated user from Firebase
+   * Returns Firebase user data only
    */
-  getCurrentUser(): AuthUser | null;
+  getCurrentUser(): FirebaseUserData | null;
 
   /**
-   * Subscribe to authentication state changes
+   * Subscribe to Firebase authentication state changes
+   * Callback receives Firebase user data only
    */
-  onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void;
+  onAuthStateChanged(callback: (user: FirebaseUserData | null) => void): () => void;
 
   /**
    * Send password reset email
@@ -76,7 +91,7 @@ export interface IAuthService {
   sendPasswordResetEmail(email: string): Promise<void>;
 
   /**
-   * Update user profile
+   * Update user profile in Firebase
    */
   updateProfile(data: {
     displayName?: string;

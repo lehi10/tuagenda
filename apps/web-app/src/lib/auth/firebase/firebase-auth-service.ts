@@ -12,7 +12,7 @@ import {
 import { getFirebaseAuth } from "./config";
 import {
   IAuthService,
-  AuthUser,
+  FirebaseUserData,
   EmailPasswordCredentials,
   SignUpCredentials,
 } from "../types";
@@ -25,9 +25,9 @@ export class FirebaseAuthService implements IAuthService {
   private auth = getFirebaseAuth();
 
   /**
-   * Convert Firebase User to our AuthUser type
+   * Convert Firebase User to our FirebaseUserData type
    */
-  private mapUser(user: User | null): AuthUser | null {
+  private mapUser(user: User | null): FirebaseUserData | null {
     if (!user) return null;
 
     return {
@@ -41,7 +41,7 @@ export class FirebaseAuthService implements IAuthService {
 
   async signInWithEmailAndPassword(
     credentials: EmailPasswordCredentials
-  ): Promise<AuthUser> {
+  ): Promise<FirebaseUserData> {
     try {
       const userCredential = await firebaseSignIn(
         this.auth,
@@ -63,7 +63,7 @@ export class FirebaseAuthService implements IAuthService {
 
   async signUpWithEmailAndPassword(
     credentials: SignUpCredentials
-  ): Promise<AuthUser> {
+  ): Promise<FirebaseUserData> {
     try {
       const userCredential = await firebaseSignUp(
         this.auth,
@@ -91,7 +91,7 @@ export class FirebaseAuthService implements IAuthService {
     }
   }
 
-  async signInWithGoogle(): Promise<AuthUser> {
+  async signInWithGoogle(): Promise<FirebaseUserData> {
     try {
       const provider = new GoogleAuthProvider();
       // Optional: Add custom parameters
@@ -124,11 +124,11 @@ export class FirebaseAuthService implements IAuthService {
     }
   }
 
-  getCurrentUser(): AuthUser | null {
+  getCurrentUser(): FirebaseUserData | null {
     return this.mapUser(this.auth.currentUser);
   }
 
-  onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void {
+  onAuthStateChanged(callback: (user: FirebaseUserData | null) => void): () => void {
     const unsubscribe = firebaseOnAuthStateChanged(this.auth, (user) => {
       callback(this.mapUser(user));
     });

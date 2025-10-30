@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { createUserInDatabase } from "@/actions/user";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -88,14 +90,55 @@ export function LoginForm({
   const handleGoogleSignIn = async () => {
     setFormError(null);
     try {
-      await signInWithGoogle();
+      // Step 1: Authenticate with Google (Firebase)
+      toast.loading("Signing in with Google...");
+      const firebaseUser = await signInWithGoogle();
+      toast.dismiss();
+      toast.success("Google authentication successful");
+
+      // Step 2: Extract first and last name from displayName
+      const displayName = firebaseUser.displayName || '';
+      const nameParts = displayName.trim().split(/\s+/);
+      const firstName = nameParts[0] || 'User';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      // Step 3: Create/update user in PostgreSQL database as 'customer'
+      // This handles both first-time login (creates user) and returning users (no-op)
+      console.log('🔄 Attempting to sync user with database...', {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        firstName,
+        lastName,
+      });
+
+      toast.loading("Syncing profile...");
+      const dbResult = await createUserInDatabase({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        firstName,
+        lastName,
+        pictureFullPath: firebaseUser.photoURL,
+      });
+      toast.dismiss();
+
+      if (!dbResult.success) {
+        console.error('❌ Failed to sync user with database:', dbResult.error);
+        toast.error(`Failed to sync profile: ${dbResult.error}`);
+        setFormError(`Authentication successful, but failed to sync user data: ${dbResult.error}`);
+        return; // Don't proceed if DB sync fails
+      }
+
+      console.log('✅ User synced successfully to database:', dbResult.userId);
+      toast.success("Welcome back! 🎉");
+
       if (onGoogleLogin) onGoogleLogin();
     } catch (err) {
-      setFormError(
-        err instanceof Error
-          ? err.message
-          : "Failed to sign in with Google. Please try again."
-      );
+      toast.dismiss();
+      const errorMessage = err instanceof Error
+        ? err.message
+        : "Failed to sign in with Google. Please try again.";
+      toast.error(errorMessage);
+      setFormError(errorMessage);
     }
   };
 

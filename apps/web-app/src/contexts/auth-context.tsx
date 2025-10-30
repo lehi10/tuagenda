@@ -12,17 +12,19 @@ interface AuthContextValue extends AuthState {
 
   /**
    * Sign up with email and password
+   * Returns the created user data
    */
   signUp: (credentials: {
     email: string;
     password: string;
     displayName?: string;
-  }) => Promise<void>;
+  }) => Promise<AuthUser>;
 
   /**
    * Sign in with Google
+   * Returns the authenticated user data
    */
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<AuthUser>;
 
   /**
    * Sign out current user
@@ -94,11 +96,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     email: string;
     password: string;
     displayName?: string;
-  }): Promise<void> => {
+  }): Promise<AuthUser> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      await authService.signUpWithEmailAndPassword(credentials);
+      const user = await authService.signUpWithEmailAndPassword(credentials);
       // User state will be updated by onAuthStateChanged
+      return user;
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -109,11 +112,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const signInWithGoogle = async (): Promise<void> => {
+  const signInWithGoogle = async (): Promise<AuthUser> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      await authService.signInWithGoogle();
+      const user = await authService.signInWithGoogle();
       // User state will be updated by onAuthStateChanged
+      return user;
     } catch (error) {
       setState((prev) => ({
         ...prev,

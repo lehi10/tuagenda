@@ -88,7 +88,10 @@ export default function Home() {
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-primary/10 blur-3xl" />
-          <div className="absolute -right-1/4 top-1/3 h-96 w-96 animate-pulse rounded-full bg-secondary/10 blur-3xl" style={{ animationDelay: '1s' }} />
+          <div
+            className="absolute -right-1/4 top-1/3 h-96 w-96 animate-pulse rounded-full bg-secondary/10 blur-3xl"
+            style={{ animationDelay: "1s" }}
+          />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM0QzNERkYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0tMTYgMGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptLTE2IDBjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bTE2IDE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0xNiAwYzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0tMTYgMTZjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bTE2IDBjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bTM2IDBjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bS0xNi0xNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
         </div>
 
@@ -100,7 +103,9 @@ export default function Home() {
                 {/* Badge */}
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-6 sm:px-4 sm:py-2 sm:text-sm">
                   <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Plataforma profesional de gestión</span>
+                  <span className="hidden sm:inline">
+                    Plataforma profesional de gestión
+                  </span>
                   <span className="sm:hidden">Software profesional</span>
                 </div>
 
@@ -112,7 +117,8 @@ export default function Home() {
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
                   Optimiza la gestión de citas, clientes y pagos de tu negocio.
-                  Ahorra tiempo, aumenta tus ingresos y ofrece una experiencia excepcional a tus clientes.
+                  Ahorra tiempo, aumenta tus ingresos y ofrece una experiencia
+                  excepcional a tus clientes.
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4 lg:justify-start">
@@ -222,9 +228,10 @@ export default function Home() {
                 La solución completa para tu negocio
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
-                Diseñado específicamente para salones de belleza, spas, clínicas,
-                gimnasios y cualquier negocio basado en citas. Potencia tu productividad
-                y mejora la satisfacción de tus clientes.
+                Diseñado específicamente para salones de belleza, spas,
+                clínicas, gimnasios y cualquier negocio basado en citas.
+                Potencia tu productividad y mejora la satisfacción de tus
+                clientes.
               </p>
             </div>
           </ScrollReveal>
@@ -234,37 +241,45 @@ export default function Home() {
               {
                 icon: Zap,
                 title: "Rápido y fácil",
-                description: "Configura tu cuenta en minutos. Interfaz intuitiva que no requiere capacitación.",
-                color: "text-yellow-500"
+                description:
+                  "Configura tu cuenta en minutos. Interfaz intuitiva que no requiere capacitación.",
+                color: "text-yellow-500",
               },
               {
                 icon: Shield,
                 title: "Datos seguros",
-                description: "Encriptación de nivel empresarial. Tus datos y los de tus clientes están protegidos.",
-                color: "text-blue-500"
+                description:
+                  "Encriptación de nivel empresarial. Tus datos y los de tus clientes están protegidos.",
+                color: "text-blue-500",
               },
               {
                 icon: TrendingUp,
                 title: "Crece más rápido",
-                description: "Analíticas en tiempo real para tomar mejores decisiones y aumentar tus ingresos.",
-                color: "text-green-500"
+                description:
+                  "Analíticas en tiempo real para tomar mejores decisiones y aumentar tus ingresos.",
+                color: "text-green-500",
               },
               {
                 icon: Clock,
                 title: "Ahorra tiempo",
-                description: "Automatiza recordatorios, pagos y confirmaciones. Enfócate en lo importante.",
-                color: "text-purple-500"
-              }
+                description:
+                  "Automatiza recordatorios, pagos y confirmaciones. Enfócate en lo importante.",
+                color: "text-purple-500",
+              },
             ].map((item, index) => (
               <ScrollReveal key={index} delay={index * 100}>
                 <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                   <div className="relative">
-                    <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 transition-transform group-hover:scale-110 ${item.color}`}>
+                    <div
+                      className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 transition-transform group-hover:scale-110 ${item.color}`}
+                    >
                       <item.icon className="h-6 w-6" />
                     </div>
                     <h3 className="mb-2 text-lg font-bold">{item.title}</h3>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
                   </div>
                 </div>
               </ScrollReveal>
@@ -316,7 +331,9 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <h3 className="mb-2 text-lg font-bold sm:mb-3 sm:text-xl">{feature.title}</h3>
+                    <h3 className="mb-2 text-lg font-bold sm:mb-3 sm:text-xl">
+                      {feature.title}
+                    </h3>
                     <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
                       {feature.description}
                     </p>
@@ -340,8 +357,9 @@ export default function Home() {
                 Cómo funciona
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
-                Comienza en minutos con nuestro proceso simple y guiado.
-                No necesitas conocimientos técnicos, todo es intuitivo y fácil de usar.
+                Comienza en minutos con nuestro proceso simple y guiado. No
+                necesitas conocimientos técnicos, todo es intuitivo y fácil de
+                usar.
               </p>
             </div>
           </ScrollReveal>
@@ -500,7 +518,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
         <div className="absolute inset-0">
           <div className="absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-primary/20 blur-3xl" />
-          <div className="absolute right-1/4 bottom-0 h-96 w-96 animate-pulse rounded-full bg-secondary/20 blur-3xl" style={{ animationDelay: '1.5s' }} />
+          <div
+            className="absolute right-1/4 bottom-0 h-96 w-96 animate-pulse rounded-full bg-secondary/20 blur-3xl"
+            style={{ animationDelay: "1.5s" }}
+          />
         </div>
 
         <div className="container relative mx-auto px-4">

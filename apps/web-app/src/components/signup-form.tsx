@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { createUserInDatabase } from "@/actions/user";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -31,7 +33,6 @@ interface SignupFormProps extends React.ComponentProps<"div"> {
   passwordLabel?: string;
   confirmPasswordLabel?: string;
   fullNameLabel?: string;
-  companyNameLabel?: string;
   signupButtonText?: string;
   googleButtonText?: string;
   orContinueText?: string;
@@ -54,7 +55,6 @@ export function SignupForm({
   passwordLabel = "Password",
   confirmPasswordLabel = "Confirm Password",
   fullNameLabel = "Full Name",
-  companyNameLabel = "Company Name",
   signupButtonText = "Create account",
   googleButtonText = "Sign up with Google",
   orContinueText = "Or continue with",
@@ -71,7 +71,6 @@ export function SignupForm({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -91,32 +90,111 @@ export function SignupForm({
     }
 
     try {
-      await signUp({
+      // Step 1: Create user in Firebase Auth
+      toast.loading("Creating your account...");
+      const firebaseUser = await signUp({
         email,
         password,
         displayName: fullName,
       });
+      toast.dismiss();
+      toast.success("Account created in Firebase");
+
+      // Step 2: Split full name into first and last name
+      const nameParts = fullName.trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || nameParts[0] || "";
+
+      // Step 3: Create user in PostgreSQL database as 'customer'
+      console.log('🔄 Creating user in database...', {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || email,
+        firstName,
+        lastName,
+      });
+
+      toast.loading("Saving your profile...");
+      const dbResult = await createUserInDatabase({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || email,
+        firstName,
+        lastName,
+        pictureFullPath: firebaseUser.photoURL,
+      });
+      toast.dismiss();
+
+      if (!dbResult.success) {
+        console.error('❌ Failed to create user in database:', dbResult.error);
+        toast.error(`Failed to save profile: ${dbResult.error}`);
+        setFormError(`Account created but profile save failed: ${dbResult.error}`);
+        return; // Don't proceed if DB creation fails
+      }
+
+      console.log('✅ User created successfully in database:', dbResult.userId);
+      toast.success("Account created successfully! 🎉");
+
       if (onSignupSuccess) onSignupSuccess();
     } catch (err) {
-      setFormError(
-        err instanceof Error
-          ? err.message
-          : "Failed to create account. Please try again."
-      );
+      toast.dismiss();
+      const errorMessage = err instanceof Error
+        ? err.message
+        : "Failed to create account. Please try again.";
+      toast.error(errorMessage);
+      setFormError(errorMessage);
     }
   };
 
   const handleGoogleSignUp = async () => {
     setFormError(null);
     try {
-      await signInWithGoogle();
+      // Step 1: Sign in with Google (Firebase)
+      toast.loading("Signing in with Google...");
+      const firebaseUser = await signInWithGoogle();
+      toast.dismiss();
+      toast.success("Google authentication successful");
+
+      // Step 2: Extract first and last name from displayName
+      const displayName = firebaseUser.displayName || "";
+      const nameParts = displayName.trim().split(/\s+/);
+      const firstName = nameParts[0] || "User";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Step 3: Create user in PostgreSQL database as 'customer'
+      console.log('🔄 Creating user in database (Google signup)...', {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        firstName,
+        lastName,
+      });
+
+      toast.loading("Saving your profile...");
+      const dbResult = await createUserInDatabase({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        firstName,
+        lastName,
+        pictureFullPath: firebaseUser.photoURL,
+      });
+      toast.dismiss();
+
+      if (!dbResult.success) {
+        console.error('❌ Failed to create user in database:', dbResult.error);
+        toast.error(`Failed to save profile: ${dbResult.error}`);
+        setFormError(`Google signup successful, but failed to save profile: ${dbResult.error}`);
+        return; // Don't proceed if DB creation fails
+      }
+
+      console.log('✅ User created successfully in database:', dbResult.userId);
+      toast.success("Account created successfully! 🎉");
+
       if (onGoogleSignup) onGoogleSignup();
     } catch (err) {
-      setFormError(
-        err instanceof Error
-          ? err.message
-          : "Failed to sign up with Google. Please try again."
-      );
+      toast.dismiss();
+      const errorMessage = err instanceof Error
+        ? err.message
+        : "Failed to sign up with Google. Please try again.";
+      toast.error(errorMessage);
+      setFormError(errorMessage);
     }
   };
 
@@ -162,20 +240,6 @@ export function SignupForm({
                   placeholder="John Doe"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="companyName">
-                  {companyNameLabel}
-                </FieldLabel>
-                <Input
-                  id="companyName"
-                  type="text"
-                  placeholder="My Salon"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
                   required
                   disabled={loading}
                 />

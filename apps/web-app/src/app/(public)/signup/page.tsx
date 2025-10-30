@@ -40,7 +40,6 @@ export default function SignupPage() {
               passwordLabel={t.auth.password}
               confirmPasswordLabel={t.auth.confirmPassword}
               fullNameLabel={t.auth.fullName}
-              companyNameLabel={t.auth.companyName}
               signupButtonText={t.auth.createAccount}
               googleButtonText={t.auth.signUpWithGoogle}
               orContinueText={t.auth.orContinueWith}
