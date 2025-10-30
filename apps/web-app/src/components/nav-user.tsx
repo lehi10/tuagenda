@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User2Icon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -119,19 +120,23 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* 
+              <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            */}
+
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem onClick={() => router.push("/profile")}>
+                <User2Icon />
+                My profile
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              {/*
+                <DropdownMenuItem>
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
@@ -139,6 +144,7 @@ export function NavUser({
                 <Bell />
                 Notifications
               </DropdownMenuItem>
+              */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
