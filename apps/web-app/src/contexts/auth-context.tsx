@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
+import { getUserById } from "@/actions/user/get-user.action";
 
 interface AuthContextValue extends AuthState {
   /**
@@ -62,12 +63,52 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     // Subscribe to auth state changes
-    const unsubscribe = authService.onAuthStateChanged((user) => {
-      setState((prev) => ({
-        ...prev,
-        user: user as FirebaseUserData | null,
-        loading: false,
-      }));
+    const unsubscribe = authService.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is authenticated, load data from database
+        setState((prev) => ({ ...prev, loading: true }));
+
+        try {
+          const result = await getUserById(firebaseUser.uid);
+
+          if (result.success) {
+            // Successfully loaded user data from database
+            setState({
+              user: result.user,
+              loading: false,
+              error: null,
+            });
+          } else {
+            // User not found in database - this shouldn't happen in normal flow
+            console.error(
+              "User authenticated in Firebase but not found in database:",
+              result.error
+            );
+            setState({
+              user: null,
+              loading: false,
+              error: new Error("User data not found in database"),
+            });
+          }
+        } catch (error) {
+          console.error("Error loading user data from database:", error);
+          setState({
+            user: null,
+            loading: false,
+            error:
+              error instanceof Error
+                ? error
+                : new Error("Failed to load user data"),
+          });
+        }
+      } else {
+        // User is signed out or session expired - clear user data
+        setState({
+          user: null,
+          loading: false,
+          error: null,
+        });
+      }
     });
 
     // Cleanup subscription on unmount
@@ -165,9 +206,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prev) => ({ ...prev, error: null }));
       await authService.updateProfile(data);
-      // Refresh user data
-      const updatedUser = authService.getCurrentUser();
-      setState((prev) => ({ ...prev, user: updatedUser }));
+
+      // Reload user data from database to get updated information
+      const firebaseUser = authService.getCurrentUser();
+      if (firebaseUser) {
+        const result = await getUserById(firebaseUser.uid);
+        if (result.success) {
+          setState((prev) => ({ ...prev, user: result.user }));
+        }
+      }
     } catch (error) {
       setState((prev) => ({
         ...prev,

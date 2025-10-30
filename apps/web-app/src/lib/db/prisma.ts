@@ -16,7 +16,6 @@ import { PrismaClient } from "../../../../../packages/db/generated/prisma";
  * This allows us to store the instance on the global object
  */
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 

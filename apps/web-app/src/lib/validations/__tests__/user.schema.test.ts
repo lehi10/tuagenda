@@ -1,89 +1,95 @@
-import { createUserSchema, createUserFromAuthSchema } from '../user.schema'
+import { createUserSchema, createUserFromAuthSchema } from "../user.schema";
 
-describe('User Validation Schemas', () => {
-  describe('createUserSchema', () => {
+describe("User Validation Schemas", () => {
+  describe("createUserSchema", () => {
     const validUserData = {
-      id: 'firebase-uid-123',
-      email: 'user@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-    }
+      id: "firebase-uid-123",
+      email: "user@example.com",
+      firstName: "John",
+      lastName: "Doe",
+    };
 
-    it('valida correctamente datos de usuario completos', () => {
-      const result = createUserSchema.safeParse(validUserData)
-      expect(result.success).toBe(true)
-    })
+    it("validates complete user data correctly", () => {
+      const result = createUserSchema.safeParse(validUserData);
+      expect(result.success).toBe(true);
+    });
 
-    it('valida con campos opcionales', () => {
+    it("validates with optional fields", () => {
       const userData = {
         ...validUserData,
-        phone: '+1234567890',
-        birthday: new Date('1990-01-01'),
-        note: 'Some note',
-        description: 'User description',
-        pictureFullPath: 'https://example.com/picture.jpg',
-        timeZone: 'America/New_York',
-        status: 'visible' as const,
-        type: 'customer' as const,
-      }
+        phone: "+1234567890",
+        birthday: new Date("1990-01-01"),
+        note: "Some note",
+        description: "User description",
+        pictureFullPath: "https://example.com/picture.jpg",
+        timeZone: "America/New_York",
+        status: "visible" as const,
+        type: "customer" as const,
+      };
 
-      const result = createUserSchema.safeParse(userData)
-      expect(result.success).toBe(true)
-    })
+      const result = createUserSchema.safeParse(userData);
+      expect(result.success).toBe(true);
+    });
 
-    it('falla cuando el email es inválido', () => {
+    it("fails when email is invalid", () => {
       const invalidData = {
         ...validUserData,
-        email: 'invalid-email',
-      }
+        email: "invalid-email",
+      };
 
-      const result = createUserSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
+      const result = createUserSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Invalid email format')
+        expect(result.error.issues[0].message).toContain(
+          "Invalid email format"
+        );
       }
-    })
+    });
 
-    it('falla cuando el ID está vacío', () => {
+    it("fails when ID is empty", () => {
       const invalidData = {
         ...validUserData,
-        id: '',
-      }
+        id: "",
+      };
 
-      const result = createUserSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
+      const result = createUserSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('User ID is required')
+        expect(result.error.issues[0].message).toContain("User ID is required");
       }
-    })
+    });
 
-    it('falla cuando firstName está vacío', () => {
+    it("fails when firstName is empty", () => {
       const invalidData = {
         ...validUserData,
-        firstName: '',
-      }
+        firstName: "",
+      };
 
-      const result = createUserSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
+      const result = createUserSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('First name is required')
+        expect(result.error.issues[0].message).toContain(
+          "First name is required"
+        );
       }
-    })
+    });
 
-    it('falla cuando lastName está vacío', () => {
+    it("fails when lastName is empty", () => {
       const invalidData = {
         ...validUserData,
-        lastName: '',
-      }
+        lastName: "",
+      };
 
-      const result = createUserSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
+      const result = createUserSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Last name is required')
+        expect(result.error.issues[0].message).toContain(
+          "Last name is required"
+        );
       }
-    })
+    });
 
-    it('acepta valores null para campos opcionales', () => {
+    it("accepts null values for optional fields", () => {
       const userData = {
         ...validUserData,
         phone: null,
@@ -92,102 +98,102 @@ describe('User Validation Schemas', () => {
         description: null,
         pictureFullPath: null,
         timeZone: null,
-      }
+      };
 
-      const result = createUserSchema.safeParse(userData)
-      expect(result.success).toBe(true)
-    })
+      const result = createUserSchema.safeParse(userData);
+      expect(result.success).toBe(true);
+    });
 
-    it('valida enumeraciones de status correctamente', () => {
-      const statuses = ['hidden', 'visible', 'disabled', 'blocked']
+    it("validates status enums correctly", () => {
+      const statuses = ["hidden", "visible", "disabled", "blocked"];
 
-      statuses.forEach(status => {
+      statuses.forEach((status) => {
         const result = createUserSchema.safeParse({
           ...validUserData,
           status,
-        })
-        expect(result.success).toBe(true)
-      })
-    })
+        });
+        expect(result.success).toBe(true);
+      });
+    });
 
-    it('falla con status inválido', () => {
+    it("fails with invalid status", () => {
       const invalidData = {
         ...validUserData,
-        status: 'invalid-status',
-      }
+        status: "invalid-status",
+      };
 
-      const result = createUserSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
+      const result = createUserSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
+    });
 
-    it('valida enumeraciones de type correctamente', () => {
-      const types = ['customer', 'provider', 'manager', 'admin']
+    it("validates type enums correctly", () => {
+      const types = ["customer", "provider", "manager", "admin"];
 
-      types.forEach(type => {
+      types.forEach((type) => {
         const result = createUserSchema.safeParse({
           ...validUserData,
           type,
-        })
-        expect(result.success).toBe(true)
-      })
-    })
-  })
+        });
+        expect(result.success).toBe(true);
+      });
+    });
+  });
 
-  describe('createUserFromAuthSchema', () => {
+  describe("createUserFromAuthSchema", () => {
     const validAuthData = {
-      id: 'firebase-uid-123',
-      email: 'user@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-    }
+      id: "firebase-uid-123",
+      email: "user@example.com",
+      firstName: "John",
+      lastName: "Doe",
+    };
 
-    it('valida correctamente datos mínimos de autenticación', () => {
-      const result = createUserFromAuthSchema.safeParse(validAuthData)
-      expect(result.success).toBe(true)
-    })
+    it("validates minimal authentication data correctly", () => {
+      const result = createUserFromAuthSchema.safeParse(validAuthData);
+      expect(result.success).toBe(true);
+    });
 
-    it('valida con pictureFullPath como URL', () => {
+    it("validates with pictureFullPath as URL", () => {
       const userData = {
         ...validAuthData,
-        pictureFullPath: 'https://example.com/avatar.jpg',
-      }
+        pictureFullPath: "https://example.com/avatar.jpg",
+      };
 
-      const result = createUserFromAuthSchema.safeParse(userData)
-      expect(result.success).toBe(true)
-    })
+      const result = createUserFromAuthSchema.safeParse(userData);
+      expect(result.success).toBe(true);
+    });
 
-    it('acepta pictureFullPath como null', () => {
+    it("accepts pictureFullPath as null", () => {
       const userData = {
         ...validAuthData,
         pictureFullPath: null,
-      }
+      };
 
-      const result = createUserFromAuthSchema.safeParse(userData)
-      expect(result.success).toBe(true)
-    })
+      const result = createUserFromAuthSchema.safeParse(userData);
+      expect(result.success).toBe(true);
+    });
 
-    it('falla cuando pictureFullPath no es una URL válida', () => {
+    it("fails when pictureFullPath is not a valid URL", () => {
       const invalidData = {
         ...validAuthData,
-        pictureFullPath: 'not-a-url',
-      }
+        pictureFullPath: "not-a-url",
+      };
 
-      const result = createUserFromAuthSchema.safeParse(invalidData)
-      expect(result.success).toBe(false)
-    })
+      const result = createUserFromAuthSchema.safeParse(invalidData);
+      expect(result.success).toBe(false);
+    });
 
-    it('requiere todos los campos obligatorios', () => {
+    it("requires all mandatory fields", () => {
       const missingFields = [
         { ...validAuthData, id: undefined },
         { ...validAuthData, email: undefined },
         { ...validAuthData, firstName: undefined },
         { ...validAuthData, lastName: undefined },
-      ]
+      ];
 
-      missingFields.forEach(data => {
-        const result = createUserFromAuthSchema.safeParse(data)
-        expect(result.success).toBe(false)
-      })
-    })
-  })
-})
+      missingFields.forEach((data) => {
+        const result = createUserFromAuthSchema.safeParse(data);
+        expect(result.success).toBe(false);
+      });
+    });
+  });
+});

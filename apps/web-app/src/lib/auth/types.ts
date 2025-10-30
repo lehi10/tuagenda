@@ -35,9 +35,10 @@ export interface SignUpCredentials extends EmailPasswordCredentials {
 
 /**
  * Authentication state
+ * Uses database User type instead of Firebase user
  */
 export interface AuthState {
-  user: FirebaseUserData | null;
+  user: User | null;
   loading: boolean;
   error: Error | null;
 }
