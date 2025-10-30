@@ -14,8 +14,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserStatus {
+  hidden
+  visible
+  disabled
+  blocked
+}
+
+enum UserType {
+  customer
+  provider
+  manager
+  admin
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum BusinessStatus {
+  active
+  inactive
+  suspended
+}
+
+model Business {
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(255)
+  slug        String         @unique @db.VarChar(255)
+  domain      String?        @db.VarChar(255)
+  description String?        @db.Text
+  logo        String?        @db.VarChar(767)
+  coverImage  String?        @db.VarChar(767)
+  timeZone    String         @db.VarChar(255)
+  locale      String         @db.VarChar(10)
+  currency    String         @db.VarChar(3)
+  status      BusinessStatus @default(active)
+  email       String         @db.VarChar(255)
+  phone       String         @db.VarChar(63)
+  website     String?        @db.VarChar(255)
+  address     String         @db.VarChar(500)
+  city        String         @db.VarChar(255)
+  state       String?        @db.VarChar(255)
+  country     String         @db.VarChar(255)
+  postalCode  String?        @db.VarChar(20)
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("business")
+}
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id              String     @id // Firebase UID
+  status          UserStatus @default(visible)
+  type            UserType   @default(customer)
+  firstName       String     @db.VarChar(255)
+  lastName        String     @db.VarChar(255)
+  email           String     @unique @db.VarChar(255)
+  birthday        DateTime?  @db.Date
+  phone           String?    @db.VarChar(63)
+  gender          Gender
+  note            String?    @db.Text
+  description     String?    @db.Text
+  pictureFullPath String?    @db.VarChar(767)
+  timeZone        String?    @db.VarChar(255)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@map("users")
 }
