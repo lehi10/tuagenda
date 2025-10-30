@@ -101,7 +101,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 firebaseUser.uid,
                 `User not found, retrying (${attempts}/${maxAttempts})...`
               );
-              await new Promise(resolve => setTimeout(resolve, delayMs));
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
             }
           }
 
@@ -127,7 +127,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setState({
               user: null,
               loading: false,
-              error: new Error("User data not found in database. Please try logging in again."),
+              error: new Error(
+                "User data not found in database. Please try logging in again."
+              ),
             });
           }
         } catch (error) {

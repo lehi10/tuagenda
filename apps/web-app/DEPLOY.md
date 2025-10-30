@@ -20,6 +20,7 @@ tuagenda/
 ```
 
 **Ventajas:**
+
 - ✅ El paquete `db` es compartido entre todas las apps
 - ✅ Prisma Client se genera automáticamente durante `pnpm install`
 - ✅ Fácil de escalar agregando nuevas apps que usen la misma DB
@@ -49,6 +50,7 @@ git push origin main
 Vercel Postgres es un servicio PostgreSQL totalmente gestionado basado en Neon.
 
 **Pasos:**
+
 1. Ve a tu dashboard de Vercel
 2. Selecciona tu proyecto o crea uno nuevo
 3. Ve a la pestaña **Storage**
@@ -59,6 +61,7 @@ Vercel Postgres es un servicio PostgreSQL totalmente gestionado basado en Neon.
 8. Haz clic en **Create**
 
 **¿Qué incluye?**
+
 - ✅ PostgreSQL totalmente gestionado
 - ✅ Backup automático
 - ✅ Escalado automático
@@ -66,12 +69,14 @@ Vercel Postgres es un servicio PostgreSQL totalmente gestionado basado en Neon.
 - ✅ Plan gratuito disponible (con límites)
 
 Vercel automáticamente creará estas variables de entorno:
+
 - `POSTGRES_URL` - URL completa de conexión
 - `POSTGRES_PRISMA_URL` - URL optimizada para Prisma (usa esta)
 - `POSTGRES_URL_NON_POOLING` - URL directa sin pooling
 - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_DATABASE`
 
 **Límites del plan gratuito:**
+
 - 256 MB de almacenamiento
 - 60 horas de compute time/mes
 - Ideal para desarrollo y proyectos pequeños
@@ -81,6 +86,7 @@ Vercel automáticamente creará estas variables de entorno:
 Neon es el mismo servicio que usa Vercel Postgres internamente, pero con mejor plan gratuito.
 
 **Pasos:**
+
 1. Ve a [neon.tech](https://neon.tech) y crea una cuenta
 2. Crea un nuevo proyecto llamado "tuagenda"
 3. Selecciona la región más cercana
@@ -91,6 +97,7 @@ Neon es el mismo servicio que usa Vercel Postgres internamente, pero con mejor p
    ```
 
 **Límites del plan gratuito:**
+
 - 512 MB de almacenamiento (el doble que Vercel)
 - 3 GB de transferencia/mes
 - 1 base de datos
@@ -101,6 +108,7 @@ Neon es el mismo servicio que usa Vercel Postgres internamente, pero con mejor p
 Supabase incluye PostgreSQL + Auth + Storage + Realtime.
 
 **Pasos:**
+
 1. Ve a [supabase.com](https://supabase.com) y crea una cuenta
 2. Crea un nuevo proyecto
 3. Espera a que se provisione (~2 minutos)
@@ -112,6 +120,7 @@ Supabase incluye PostgreSQL + Auth + Storage + Realtime.
    ```
 
 **Límites del plan gratuito:**
+
 - 500 MB de almacenamiento
 - 2 GB de transferencia/mes
 - 50,000 autenticaciones/mes
@@ -120,6 +129,7 @@ Supabase incluye PostgreSQL + Auth + Storage + Realtime.
 ### Opción D: Railway (Fácil y generoso)
 
 **Pasos:**
+
 1. Ve a [railway.app](https://railway.app)
 2. Crea un nuevo proyecto
 3. Agrega PostgreSQL desde el dashboard
@@ -130,30 +140,34 @@ Supabase incluye PostgreSQL + Auth + Storage + Realtime.
    ```
 
 **Límites del plan gratuito:**
+
 - $5 USD de crédito/mes
 - Suficiente para desarrollo
 
 ### ¿Cuál elegir?
 
-| Proveedor | Mejor para | Storage | Pros |
-|-----------|-----------|---------|------|
-| **Vercel Postgres** | Integración simple | 256 MB | Auto-configurado, mismo dashboard |
-| **Neon** | Mejor plan gratuito | 512 MB | Database branching, más storage |
-| **Supabase** | Necesitas Auth+DB | 500 MB | Incluye muchos servicios extras |
-| **Railway** | Desarrollo rápido | Variable | Muy fácil de usar |
+| Proveedor           | Mejor para          | Storage  | Pros                              |
+| ------------------- | ------------------- | -------- | --------------------------------- |
+| **Vercel Postgres** | Integración simple  | 256 MB   | Auto-configurado, mismo dashboard |
+| **Neon**            | Mejor plan gratuito | 512 MB   | Database branching, más storage   |
+| **Supabase**        | Necesitas Auth+DB   | 500 MB   | Incluye muchos servicios extras   |
+| **Railway**         | Desarrollo rápido   | Variable | Muy fácil de usar                 |
 
 **Mi recomendación:**
+
 - Para empezar rápido: **Vercel Postgres**
 - Para producción seria: **Neon** o **Supabase**
 
 ## Paso 3: Verificar que la Base de Datos Existe
 
 ### Si usaste Vercel Postgres:
+
 La base de datos ya está creada y lista. Las variables de entorno se inyectaron automáticamente.
 
 ### Si usaste un proveedor externo (Neon, Supabase, etc.):
 
 1. **Verifica la conexión desde tu máquina local:**
+
    ```bash
    # Copia la DATABASE_URL de producción
    export DATABASE_URL="postgresql://user:pass@host:5432/db?sslmode=require"
@@ -164,6 +178,7 @@ La base de datos ya está creada y lista. Las variables de entorno se inyectaron
    ```
 
 2. **Verifica que las tablas NO existen aún:**
+
    ```bash
    # Lista las tablas
    npx prisma db execute --stdin <<< "SELECT tablename FROM pg_tables WHERE schemaname = 'public'"
@@ -179,17 +194,20 @@ La base de datos ya está creada y lista. Las variables de entorno se inyectaron
 ### Database
 
 **Si usas Vercel Postgres:**
+
 ```
 # La variable ya existe automáticamente
 DATABASE_URL = ${POSTGRES_PRISMA_URL}
 ```
 
 **Si usas un proveedor externo:**
+
 ```
 DATABASE_URL = postgresql://user:password@host:5432/database?sslmode=require
 ```
 
 ### Firebase (obligatorio)
+
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY = <tu-api-key>
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = <tu-proyecto>.firebaseapp.com
@@ -214,6 +232,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID = <tu-app-id>
 4. Haz clic en **Deploy**
 
 **Nota:** El proyecto usa un monorepo con pnpm. El `vercel.json` en `apps/web-app` ya está configurado para:
+
 - Instalar todas las dependencias del monorepo (incluyendo el paquete `db` con Prisma)
 - Generar el cliente de Prisma automáticamente durante la instalación
 - Construir solo la aplicación web-app
@@ -236,6 +255,7 @@ Después del primer deploy, necesitas ejecutar las migraciones de Prisma.
    - Copia el valor completo
 
 2. **Exporta la variable y ejecuta las migraciones:**
+
    ```bash
    # Exporta la DATABASE_URL de producción
    export DATABASE_URL="postgresql://user:pass@host:5432/db?sslmode=require"
@@ -246,6 +266,7 @@ Después del primer deploy, necesitas ejecutar las migraciones de Prisma.
    ```
 
 3. **Verifica que se aplicaron correctamente:**
+
    ```bash
    # Lista las tablas creadas
    npx prisma db execute --stdin <<< "SELECT tablename FROM pg_tables WHERE schemaname = 'public'"
@@ -273,11 +294,13 @@ npx prisma migrate deploy
 ### ⚠️ Método 3: Build Hook (No recomendado)
 
 **ADVERTENCIA:** No se recomienda ejecutar migraciones automáticamente en cada deploy porque:
+
 - Múltiples deployments simultáneos pueden causar conflictos
 - Las migraciones fallidas pueden bloquear tu deploy
 - Es mejor tener control manual sobre cuándo se ejecutan las migraciones
 
 Si aún así quieres hacerlo, puedes agregar un script de build en `packages/db/package.json`:
+
 ```json
 {
   "scripts": {
@@ -289,10 +312,12 @@ Si aún así quieres hacerlo, puedes agregar un script de build en `packages/db/
 ## Paso 7: Verificar el Deploy
 
 ### 1. Verifica que el deploy fue exitoso
+
 - Ve a Vercel Dashboard → Deployments
 - Verifica que el status sea "Ready"
 
 ### 2. Verifica que la aplicación funcione
+
 - Abre la URL de tu deployment (ej: `https://tu-app.vercel.app`)
 - La aplicación debería cargar
 
@@ -301,6 +326,7 @@ Si aún así quieres hacerlo, puedes agregar un script de build en `packages/db/
 **Opción A: Crear una página de verificación (temporal)**
 
 Crea `apps/web-app/src/app/api/health/route.ts`:
+
 ```typescript
 import { prisma } from "db";
 import { NextResponse } from "next/server";
@@ -335,6 +361,7 @@ export async function GET() {
 Luego visita: `https://tu-app.vercel.app/api/health`
 
 **Respuesta esperada:**
+
 ```json
 {
   "status": "ok",
@@ -347,12 +374,14 @@ Luego visita: `https://tu-app.vercel.app/api/health`
 ```
 
 **Opción B: Revisar los logs**
+
 - Ve a Vercel → Deployments → tu deploy → Function Logs
 - Busca errores relacionados con la base de datos
 
 ### 4. Si hay errores de base de datos
 
 **Error común:** `Can't reach database server`
+
 ```
 Solución:
 1. Verifica que DATABASE_URL esté configurada en Vercel
@@ -361,6 +390,7 @@ Solución:
 ```
 
 **Error común:** `The table 'users' does not exist`
+
 ```
 Solución:
 Ejecuta las migraciones (vuelve al Paso 6)
@@ -377,6 +407,7 @@ Ejecuta las migraciones (vuelve al Paso 6)
 ### Variables de Firebase para producción
 
 Asegúrate de configurar tus dominios autorizados en Firebase Console:
+
 1. Ve a Firebase Console → Authentication → Settings
 2. En **Authorized domains**, agrega:
    - Tu dominio de Vercel (ej: `tu-proyecto.vercel.app`)
@@ -385,21 +416,25 @@ Asegúrate de configurar tus dominios autorizados en Firebase Console:
 ## Troubleshooting
 
 ### Error: "Can't reach database server"
+
 - Verifica que `DATABASE_URL` esté configurada correctamente
 - Si usas Vercel Postgres, usa `POSTGRES_PRISMA_URL` en lugar de `POSTGRES_URL`
 
 ### Error: "Prisma Client not generated"
+
 - El script `postinstall` está en `packages/db/package.json` y se ejecuta automáticamente
 - Si el error persiste, verifica que `pnpm install` se esté ejecutando desde la raíz del monorepo
 - Verifica que el paquete `db` esté listado en las dependencias de `web-app/package.json`
 
 ### Error: Build fails en Vercel
+
 - Revisa los **Build Logs** completos
 - Verifica que todas las variables de entorno estén configuradas
 - Asegúrate de que el **Root Directory** esté configurado como `apps/web-app`
 - Verifica que los comandos en `vercel.json` apunten a la raíz del monorepo (`cd ../..`)
 
 ### Base de datos vacía
+
 - Recuerda ejecutar `prisma migrate deploy` después del primer deploy
 - Verifica que las migraciones se hayan aplicado correctamente
 
