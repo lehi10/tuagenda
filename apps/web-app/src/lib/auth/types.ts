@@ -102,4 +102,10 @@ export interface IAuthService {
     displayName?: string;
     photoURL?: string;
   }): Promise<void>;
+
+  /**
+   * Change user password
+   * Requires re-authentication with current password
+   */
+  changePassword?(currentPassword: string, newPassword: string): Promise<void>;
 }

@@ -86,9 +86,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Prepare user data for NavUser component
   const userData = {
-    name: user?.displayName || user?.email?.split("@")[0] || "User",
+    name: user ? `${user.firstName} ${user.lastName}`.trim() : "User",
     email: user?.email || "",
-    avatar: user?.photoURL || "",
+    avatar: user?.pictureFullPath || "",
   };
 
   return (

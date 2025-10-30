@@ -26,6 +26,7 @@ export const createUserSchema = z.object({
 
   // Optional fields
   phone: z.string().max(63).nullable().optional(),
+  countryCode: z.string().max(10).nullable().optional(),
   birthday: z.date().nullable().optional(),
   note: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
@@ -53,8 +54,46 @@ export const createUserFromAuthSchema = z.object({
 });
 
 /**
+ * Schema for updating user profile personal information
+ */
+export const updateProfilePersonalInfoSchema = z.object({
+  firstName: z.string().min(1, "First name is required").max(255),
+  lastName: z.string().min(1, "Last name is required").max(255),
+  birthday: z.date().nullable().optional(),
+  countryCode: z.string().max(10).nullable().optional(),
+  phone: z
+    .string()
+    .regex(/^\d{9}$/, "Phone must be exactly 9 digits")
+    .nullable()
+    .optional()
+    .or(z.literal("")),
+  timeZone: z.string().max(255).nullable().optional(),
+});
+
+/**
+ * Schema for changing password
+ */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(100, "Password is too long"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+/**
  * Type inference from the schemas
  * Use these types throughout your application for type safety
  */
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type CreateUserFromAuthInput = z.infer<typeof createUserFromAuthSchema>;
+export type UpdateProfilePersonalInfoInput = z.infer<
+  typeof updateProfilePersonalInfoSchema
+>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
