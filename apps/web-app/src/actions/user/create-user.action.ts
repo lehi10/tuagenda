@@ -16,6 +16,7 @@ import {
   type CreateUserFromAuthInput,
 } from "@/lib/validations/user.schema";
 import { Prisma } from "../../../../../packages/db/generated/prisma";
+import { logger } from "@/lib/logger";
 
 /**
  * Result type for the create user action
@@ -54,31 +55,36 @@ type CreateUserResult =
 export async function createUserInDatabase(
   data: CreateUserFromAuthInput
 ): Promise<CreateUserResult> {
-  console.log(
-    "[SERVER ACTION] 🚀 createUserInDatabase called with data:",
-    JSON.stringify(data, null, 2)
+  logger.info(
+    "createUserInDatabase",
+    data.id,
+    `Server action called with email: ${data.email}, firstName: ${data.firstName}, lastName: ${data.lastName}`
   );
 
   try {
     // Validate input data with Zod schema
-    console.log("[SERVER ACTION] 📋 Validating data with Zod...");
+    logger.info(
+      "createUserInDatabase",
+      data.id,
+      "Validating data with Zod schema"
+    );
     const validatedData = createUserFromAuthSchema.parse(data);
-    console.log("[SERVER ACTION] ✅ Data validated successfully");
+    logger.info("createUserInDatabase", data.id, "Data validated successfully");
 
     // Truncate values to prevent database errors
     const firstName = validatedData.firstName.substring(0, 255);
     const lastName = validatedData.lastName.substring(0, 255);
-    console.log(
-      "[SERVER ACTION] 📏 Truncated names if needed - firstName:",
-      firstName.length,
-      "lastName:",
-      lastName.length
+    logger.info(
+      "createUserInDatabase",
+      data.id,
+      `Truncated names if needed - firstName length: ${firstName.length}, lastName length: ${lastName.length}`
     );
 
     // Check if user already exists
-    console.log(
-      "[SERVER ACTION] 🔍 Checking if user exists with ID:",
-      validatedData.id
+    logger.info(
+      "createUserInDatabase",
+      validatedData.id,
+      "Checking if user already exists in database"
     );
     const existingUser = await prisma.user.findUnique({
       where: { id: validatedData.id },
@@ -86,9 +92,10 @@ export async function createUserInDatabase(
 
     if (existingUser) {
       // User already exists, return success
-      console.log(
-        "[SERVER ACTION] ℹ️  User already exists, returning existing user:",
-        existingUser.id
+      logger.info(
+        "createUserInDatabase",
+        existingUser.id,
+        "User already exists, returning existing user"
       );
       return {
         success: true,
@@ -96,7 +103,11 @@ export async function createUserInDatabase(
       };
     }
 
-    console.log("[SERVER ACTION] 🆕 User does not exist, creating new user...");
+    logger.info(
+      "createUserInDatabase",
+      validatedData.id,
+      "User does not exist, creating new user in database"
+    );
 
     // Create new user in database
     // Type is automatically set to 'customer' via Prisma schema default
@@ -113,18 +124,30 @@ export async function createUserInDatabase(
       },
     });
 
-    console.log("[SERVER ACTION] 🎉 User created successfully:", user.id);
+    logger.info(
+      "createUserInDatabase",
+      user.id,
+      "User created successfully in database"
+    );
 
     return {
       success: true,
       userId: user.id,
     };
   } catch (error) {
-    console.error("[SERVER ACTION] ❌ Error occurred:", error);
+    logger.error(
+      "createUserInDatabase",
+      data.id,
+      `Error occurred: ${error instanceof Error ? error.message : String(error)}`
+    );
 
     // Handle Zod validation errors
     if (error instanceof Error && error.name === "ZodError") {
-      console.error("[SERVER ACTION] 📛 Zod validation error");
+      logger.error(
+        "createUserInDatabase",
+        data.id,
+        "Zod validation error: Invalid user data provided"
+      );
       return {
         success: false,
         error: "Invalid user data provided",
@@ -133,7 +156,11 @@ export async function createUserInDatabase(
 
     // Handle Prisma unique constraint violations
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error("[SERVER ACTION] 🔒 Prisma error code:", error.code);
+      logger.error(
+        "createUserInDatabase",
+        data.id,
+        `Prisma error code: ${error.code}`
+      );
       if (error.code === "P2002") {
         return {
           success: false,
@@ -143,9 +170,10 @@ export async function createUserInDatabase(
     }
 
     // Handle other errors
-    console.error(
-      "[SERVER ACTION] 💥 Unexpected error creating user in database:",
-      error
+    logger.fatal(
+      "createUserInDatabase",
+      data.id,
+      `Unexpected error creating user in database: ${error instanceof Error ? error.message : String(error)}`
     );
     return {
       success: false,

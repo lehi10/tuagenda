@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useAuth } from "@/contexts";
 import { useTranslation } from "@/i18n";
+import { logger } from "@/lib/logger";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   onLoginSuccess?: () => void;
@@ -78,12 +79,11 @@ export function LoginForm({
 
       // Step 3: Create/update user in PostgreSQL database as 'customer'
       // This handles both first-time login (creates user) and returning users (no-op)
-      console.log("🔄 Attempting to sync user with database...", {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        firstName,
-        lastName,
-      });
+      logger.info(
+        "LoginForm.handleGoogleSignIn",
+        firebaseUser.uid,
+        `Attempting to sync user with database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
+      );
 
       toast.loading("Syncing profile...");
       const dbResult = await createUserInDatabase({
@@ -96,7 +96,11 @@ export function LoginForm({
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error("❌ Failed to sync user with database:", dbResult.error);
+        logger.error(
+          "LoginForm.handleGoogleSignIn",
+          firebaseUser.uid,
+          `Failed to sync user with database: ${dbResult.error}`
+        );
         toast.error(`Failed to sync profile: ${dbResult.error}`);
         setFormError(
           `Authentication successful, but failed to sync user data: ${dbResult.error}`
@@ -104,7 +108,11 @@ export function LoginForm({
         return; // Don't proceed if DB sync fails
       }
 
-      console.log("✅ User synced successfully to database:", dbResult.userId);
+      logger.info(
+        "LoginForm.handleGoogleSignIn",
+        dbResult.userId,
+        "User synced successfully to database"
+      );
       toast.success("Welcome back! 🎉");
 
       if (onGoogleLogin) onGoogleLogin();

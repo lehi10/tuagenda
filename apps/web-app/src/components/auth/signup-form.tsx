@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useAuth } from "@/contexts";
 import { useTranslation } from "@/i18n";
+import { logger } from "@/lib/logger";
 
 interface SignupFormProps extends React.ComponentProps<"div"> {
   onSignupSuccess?: () => void;
@@ -78,12 +79,11 @@ export function SignupForm({
       const lastName = nameParts.slice(1).join(" ") || nameParts[0] || "";
 
       // Step 3: Create user in PostgreSQL database as 'customer'
-      console.log("🔄 Creating user in database...", {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email || email,
-        firstName,
-        lastName,
-      });
+      logger.info(
+        "SignupForm.handleSubmit",
+        firebaseUser.uid,
+        `Creating user in database - Email: ${firebaseUser.email || email}, Name: ${firstName} ${lastName}`
+      );
 
       toast.loading("Saving your profile...");
       const dbResult = await createUserInDatabase({
@@ -96,7 +96,11 @@ export function SignupForm({
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error("❌ Failed to create user in database:", dbResult.error);
+        logger.error(
+          "SignupForm.handleSubmit",
+          firebaseUser.uid,
+          `Failed to create user in database: ${dbResult.error}`
+        );
         toast.error(`Failed to save profile: ${dbResult.error}`);
         setFormError(
           `Account created but profile save failed: ${dbResult.error}`
@@ -104,7 +108,11 @@ export function SignupForm({
         return; // Don't proceed if DB creation fails
       }
 
-      console.log("✅ User created successfully in database:", dbResult.userId);
+      logger.info(
+        "SignupForm.handleSubmit",
+        dbResult.userId,
+        "User created successfully in database"
+      );
       toast.success("Account created successfully! 🎉");
 
       if (onSignupSuccess) onSignupSuccess();
@@ -135,12 +143,11 @@ export function SignupForm({
       const lastName = nameParts.slice(1).join(" ") || "";
 
       // Step 3: Create user in PostgreSQL database as 'customer'
-      console.log("🔄 Creating user in database (Google signup)...", {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        firstName,
-        lastName,
-      });
+      logger.info(
+        "SignupForm.handleGoogleSignUp",
+        firebaseUser.uid,
+        `Creating user in database (Google signup) - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
+      );
 
       toast.loading("Saving your profile...");
       const dbResult = await createUserInDatabase({
@@ -153,7 +160,11 @@ export function SignupForm({
       toast.dismiss();
 
       if (!dbResult.success) {
-        console.error("❌ Failed to create user in database:", dbResult.error);
+        logger.error(
+          "SignupForm.handleGoogleSignUp",
+          firebaseUser.uid,
+          `Failed to create user in database: ${dbResult.error}`
+        );
         toast.error(`Failed to save profile: ${dbResult.error}`);
         setFormError(
           `Google signup successful, but failed to save profile: ${dbResult.error}`
@@ -161,7 +172,11 @@ export function SignupForm({
         return; // Don't proceed if DB creation fails
       }
 
-      console.log("✅ User created successfully in database:", dbResult.userId);
+      logger.info(
+        "SignupForm.handleGoogleSignUp",
+        dbResult.userId,
+        "User created successfully in database"
+      );
       toast.success("Account created successfully! 🎉");
 
       if (onGoogleSignup) onGoogleSignup();
