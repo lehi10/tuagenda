@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-  User2Icon,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, User2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -129,11 +121,10 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             */}
-
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => router.push("/profile")}>
                 <User2Icon />
-                My profile
+                Mi perfil
               </DropdownMenuItem>
               {/*
                 <DropdownMenuItem>

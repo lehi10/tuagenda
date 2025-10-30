@@ -7,19 +7,10 @@ import { ProfilePhotoSection } from "@/features/profile/components/profile-photo
 import { SecuritySection } from "@/features/profile/components/security-section";
 import { Skeleton } from "@/components/ui/skeleton";
 import { logger } from "@/lib/logger";
-import { useEffect } from "react";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const { t } = useTranslation();
-
-  useEffect(() => {
-    logger.info(
-      "PROFILE_PAGE",
-      user?.id || "anonymous",
-      `Page loaded - loading: ${loading}`
-    );
-  }, [user, loading]);
 
   if (loading) {
     return (
@@ -50,8 +41,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  logger.info("PROFILE_PAGE", user.id, "Rendering profile");
 
   const handleUpdate = () => {
     // This will trigger a re-render when user data is updated

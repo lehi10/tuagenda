@@ -32,13 +32,13 @@ export class FirebaseAuthService implements IAuthService {
    */
   private mapUser(user: User | null): FirebaseUserData | null {
     if (!user) return null;
-
     return {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
+      providerData: user.providerData?.map((provider) => provider.providerId),
     };
   }
 

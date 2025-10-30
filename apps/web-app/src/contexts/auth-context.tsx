@@ -44,6 +44,7 @@ interface AuthContextValue extends AuthState {
     displayName?: string;
     photoURL?: string;
   }) => Promise<void>;
+  getUserAuthProviders: () => string[] | undefined;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -225,6 +226,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const getUserAuthProviders = (): string[] | undefined => {
+    const firebaseUser = authService.getCurrentUser();
+    return firebaseUser?.providerData;
+  };
+
   const value: AuthContextValue = {
     ...state,
     signIn,
@@ -233,6 +239,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signOut,
     sendPasswordResetEmail,
     updateProfile,
+    getUserAuthProviders,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

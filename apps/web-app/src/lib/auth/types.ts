@@ -16,6 +16,7 @@ export interface FirebaseUserData {
   displayName: string | null;
   photoURL: string | null;
   emailVerified: boolean;
+  providerData?: string[];
 }
 
 /**

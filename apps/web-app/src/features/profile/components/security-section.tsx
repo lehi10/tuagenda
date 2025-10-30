@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, LogIn } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +29,7 @@ import {
 } from "@/lib/validations/user.schema";
 import { changePassword } from "@/actions/user/change-password.action";
 import { logger } from "@/lib/logger";
+import { authService } from "@/lib/auth/auth-service";
 
 export function SecuritySection() {
   const { t } = useTranslation();
@@ -81,6 +82,50 @@ export function SecuritySection() {
       setIsLoading(false);
     }
   };
+  const authProviders = authService.getCurrentUser()?.providerData;
+
+  // Memoize provider parsing to avoid recalculating on every render
+  const { providerIds, primaryProvider, providerName } = useMemo(() => {
+    const ids = (authProviders || [])
+      .map((p: any) =>
+        typeof p === "string" ? p : p?.providerId || p?.provider || ""
+      )
+      .filter(Boolean) as string[];
+
+    const primary = ids[0] ?? "";
+
+    const getProviderFriendlyName = (id: string) => {
+      const v = id.toLowerCase();
+      if (v.includes("google")) return "Google";
+      if (v.includes("facebook")) return "Facebook";
+      if (v.includes("github")) return "GitHub";
+      if (v.includes("apple")) return "Apple";
+      if (v === "password") return "Contraseña";
+      return id;
+    };
+
+    const name = primary ? getProviderFriendlyName(primary) : "";
+
+    return { providerIds: ids, primaryProvider: primary, providerName: name };
+  }, [authProviders]);
+
+  if (providerIds.length > 0 && primaryProvider !== "password") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>{t.pages.profile.sections.security}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-start gap-3">
+            <p className="text-sm text-muted-foreground">
+              No puedes modificar la contraseña porque inicias sesión con{" "}
+              <span className="font-bold">{providerName}</span>.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
