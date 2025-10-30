@@ -10,7 +10,6 @@ import { Suspense } from "react";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { t } = useTranslation();
 
   return (
     <Suspense>
@@ -34,21 +33,6 @@ export default function SignupPage() {
               />
             </Link>
             <SignupForm
-              title={t.auth.createAccount}
-              description={t.auth.signUpWith}
-              emailLabel={t.auth.email}
-              passwordLabel={t.auth.password}
-              confirmPasswordLabel={t.auth.confirmPassword}
-              fullNameLabel={t.auth.fullName}
-              signupButtonText={t.auth.createAccount}
-              googleButtonText={t.auth.signUpWithGoogle}
-              orContinueText={t.auth.orContinueWith}
-              alreadyHaveAccountText={t.auth.alreadyHaveAccount}
-              loginText={t.auth.login}
-              termsText={t.auth.termsAndPrivacy}
-              termsOfServiceText={t.legal.termsOfService}
-              privacyPolicyText={t.legal.privacyPolicy}
-              andText={t.auth.and}
               onSignupSuccess={() => router.push("/dashboard")}
               onGoogleSignup={() => router.push("/dashboard")}
               onLogin={() => router.push("/login")}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthUser, AuthState } from "@/lib/auth/types";
+import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
 
 interface AuthContextValue extends AuthState {
@@ -18,13 +18,13 @@ interface AuthContextValue extends AuthState {
     email: string;
     password: string;
     displayName?: string;
-  }) => Promise<AuthUser>;
+  }) => Promise<FirebaseUserData>;
 
   /**
    * Sign in with Google
    * Returns the authenticated user data
    */
-  signInWithGoogle: () => Promise<AuthUser>;
+  signInWithGoogle: () => Promise<FirebaseUserData>;
 
   /**
    * Sign out current user
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const unsubscribe = authService.onAuthStateChanged((user) => {
       setState((prev) => ({
         ...prev,
-        user: user as AuthUser | null,
+        user: user as FirebaseUserData | null,
         loading: false,
       }));
     });
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     email: string;
     password: string;
     displayName?: string;
-  }): Promise<AuthUser> => {
+  }): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const user = await authService.signUpWithEmailAndPassword(credentials);
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const signInWithGoogle = async (): Promise<AuthUser> => {
+  const signInWithGoogle = async (): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const user = await authService.signInWithGoogle();

@@ -39,6 +39,7 @@ export const es: Translations = {
     alreadyHaveAccount: "¿Ya tienes una cuenta?",
     signUp: "Regístrate",
     createAccount: "Crear una cuenta",
+    creatingAccount: "Creando cuenta...",
     getStarted: "Comienza con TuAgenda",
     welcomeBack: "Bienvenido de vuelta",
     loginWith: "Inicia sesión con tu cuenta de Apple o Google",

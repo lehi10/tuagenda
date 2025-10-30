@@ -1,10 +1,10 @@
-import type { User } from "@/lib/db/prisma";
+import type { User as DBUser } from "@/lib/db/prisma";
 
 /**
  * User authentication data from database
  * This is the user object we use throughout the app after authentication
  */
-export type AuthUser = User;
+export type User = DBUser;
 
 /**
  * Firebase user data (internal use only)
@@ -37,7 +37,7 @@ export interface SignUpCredentials extends EmailPasswordCredentials {
  * Authentication state
  */
 export interface AuthState {
-  user: AuthUser | null;
+  user: FirebaseUserData | null;
   loading: boolean;
   error: Error | null;
 }

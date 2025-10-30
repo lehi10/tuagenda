@@ -22,26 +22,12 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useAuth } from "@/contexts";
+import { useTranslation } from "@/i18n";
 
 interface SignupFormProps extends React.ComponentProps<"div"> {
   onSignupSuccess?: () => void;
   onGoogleSignup?: () => void;
   onLogin?: () => void;
-  title?: string;
-  description?: string;
-  emailLabel?: string;
-  passwordLabel?: string;
-  confirmPasswordLabel?: string;
-  fullNameLabel?: string;
-  signupButtonText?: string;
-  googleButtonText?: string;
-  orContinueText?: string;
-  alreadyHaveAccountText?: string;
-  loginText?: string;
-  termsText?: string;
-  termsOfServiceText?: string;
-  privacyPolicyText?: string;
-  andText?: string;
 }
 
 export function SignupForm({
@@ -49,23 +35,9 @@ export function SignupForm({
   onSignupSuccess,
   onGoogleSignup,
   onLogin,
-  title = "Create an account",
-  description = "Sign up with your Google account",
-  emailLabel = "Email",
-  passwordLabel = "Password",
-  confirmPasswordLabel = "Confirm Password",
-  fullNameLabel = "Full Name",
-  signupButtonText = "Create account",
-  googleButtonText = "Sign up with Google",
-  orContinueText = "Or continue with",
-  alreadyHaveAccountText = "Already have an account?",
-  loginText = "Login",
-  termsText = "By clicking continue, you agree to our",
-  termsOfServiceText = "Terms of Service",
-  privacyPolicyText = "Privacy Policy",
-  andText = "and",
   ...props
 }: SignupFormProps) {
+  const { t } = useTranslation();
   const { signUp, signInWithGoogle, loading, error } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -208,8 +180,8 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-xl">{t.auth.createAccount}</CardTitle>
+          <CardDescription>{t.auth.signUpWith}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -227,11 +199,11 @@ export function SignupForm({
                       fill="currentColor"
                     />
                   </svg>
-                  {googleButtonText}
+                  {t.auth.signUpWithGoogle}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                {orContinueText}
+                {t.auth.orContinueWith}
               </FieldSeparator>
               {(formError || error) && (
                 <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
@@ -239,7 +211,7 @@ export function SignupForm({
                 </div>
               )}
               <Field>
-                <FieldLabel htmlFor="fullName">{fullNameLabel}</FieldLabel>
+                <FieldLabel htmlFor="fullName">{t.auth.fullName}</FieldLabel>
                 <Input
                   id="fullName"
                   type="text"
@@ -251,7 +223,7 @@ export function SignupForm({
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="email">{emailLabel}</FieldLabel>
+                <FieldLabel htmlFor="email">{t.auth.email}</FieldLabel>
                 <Input
                   id="email"
                   type="email"
@@ -263,7 +235,7 @@ export function SignupForm({
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="password">{passwordLabel}</FieldLabel>
+                <FieldLabel htmlFor="password">{t.auth.password}</FieldLabel>
                 <Input
                   id="password"
                   type="password"
@@ -275,7 +247,7 @@ export function SignupForm({
               </Field>
               <Field>
                 <FieldLabel htmlFor="confirmPassword">
-                  {confirmPasswordLabel}
+                  {t.auth.confirmPassword}
                 </FieldLabel>
                 <Input
                   id="confirmPassword"
@@ -288,10 +260,10 @@ export function SignupForm({
               </Field>
               <Field>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Creating account..." : signupButtonText}
+                  {loading ? t.auth.creatingAccount : t.auth.createAccount}
                 </Button>
                 <FieldDescription className="text-center">
-                  {alreadyHaveAccountText}{" "}
+                  {t.auth.alreadyHaveAccount}{" "}
                   <Link
                     href="#"
                     onClick={(e) => {
@@ -299,7 +271,7 @@ export function SignupForm({
                       if (onLogin) onLogin();
                     }}
                   >
-                    {loginText}
+                    {t.auth.login}
                   </Link>
                 </FieldDescription>
               </Field>
@@ -308,13 +280,13 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        {termsText}{" "}
+        {t.auth.termsAndPrivacy}{" "}
         <Link href="/terms-of-service" className="underline">
-          {termsOfServiceText}
+          {t.legal.termsOfService}
         </Link>{" "}
-        {andText}{" "}
+        {t.auth.and}{" "}
         <Link href="/privacy-policy" className="underline">
-          {privacyPolicyText}
+          {t.legal.privacyPolicy}
         </Link>
         .
       </FieldDescription>

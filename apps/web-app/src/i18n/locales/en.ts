@@ -37,6 +37,7 @@ export const en = {
     alreadyHaveAccount: "Already have an account?",
     signUp: "Sign up",
     createAccount: "Create an account",
+    creatingAccount: "Creating account...",
     getStarted: "Get started with TuAgenda",
     welcomeBack: "Welcome back",
     loginWith: "Login with your Apple or Google account",
