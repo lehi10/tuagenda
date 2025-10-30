@@ -1,1 +1,1 @@
-export { QueryProvider, getGlobalQueryClient } from "./query-provider";
+export { QueryProvider } from "./query-provider";

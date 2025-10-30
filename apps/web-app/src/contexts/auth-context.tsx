@@ -1,9 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
 import { getUserById } from "@/actions/user/get-user.action";
+import { logger } from "@/lib/logger";
 
 interface AuthContextValue extends AuthState {
   /**
@@ -61,12 +63,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   const authService = getAuthService();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // Subscribe to auth state changes
     const unsubscribe = authService.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser) {
-        // User is authenticated, load data from database
+        // User is authenticated - clear all queries before loading new data
+        logger.info(
+          "AUTH_CONTEXT",
+          firebaseUser.uid,
+          "User authenticated, clearing query cache"
+        );
+        queryClient.clear();
+
+        // Load data from database
         setState((prev) => ({ ...prev, loading: true }));
 
         try {
@@ -74,6 +85,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           if (result.success) {
             // Successfully loaded user data from database
+            logger.info(
+              "AUTH_CONTEXT",
+              firebaseUser.uid,
+              "User data loaded from database"
+            );
             setState({
               user: result.user,
               loading: false,
@@ -81,9 +97,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
             });
           } else {
             // User not found in database - this shouldn't happen in normal flow
-            console.error(
-              "User authenticated in Firebase but not found in database:",
-              result.error
+            logger.error(
+              "AUTH_CONTEXT",
+              firebaseUser.uid,
+              `User not found in database: ${result.error}`
             );
             setState({
               user: null,
@@ -92,7 +109,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
             });
           }
         } catch (error) {
-          console.error("Error loading user data from database:", error);
+          logger.error(
+            "AUTH_CONTEXT",
+            firebaseUser.uid,
+            `Error loading user data: ${error instanceof Error ? error.message : String(error)}`
+          );
           setState({
             user: null,
             loading: false,
@@ -103,7 +124,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
           });
         }
       } else {
-        // User is signed out or session expired - clear user data
+        // User is signed out or session expired - clear all queries and user data
+        logger.info(
+          "AUTH_CONTEXT",
+          "anonymous",
+          "User signed out, clearing query cache"
+        );
+        queryClient.clear();
         setState({
           user: null,
           loading: false,
@@ -114,7 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, [authService]);
+  }, [authService, queryClient]);
 
   const signIn = async (credentials: {
     email: string;
@@ -174,6 +201,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = async (): Promise<void> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
+
+      // Clear all queries before signing out
+      logger.info(
+        "AUTH_CONTEXT",
+        state.user?.id || "anonymous",
+        "Clearing query cache before sign out"
+      );
+      queryClient.clear();
+
       await authService.signOut();
       // User state will be updated by onAuthStateChanged
     } catch (error) {

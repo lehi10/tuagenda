@@ -9,8 +9,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Disable automatic refetching by default
-            // We'll manage this manually based on our needs
+            // Configure default query options
             staleTime: 1000 * 60 * 5, // 5 minutes
             refetchOnWindowFocus: false,
             refetchOnMount: true,
@@ -26,16 +25,4 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
-}
-
-// Export a function to get the query client instance
-// This will be used by the auth context to clear cache
-let globalQueryClient: QueryClient | null = null;
-
-export function setGlobalQueryClient(client: QueryClient) {
-  globalQueryClient = client;
-}
-
-export function getGlobalQueryClient(): QueryClient | null {
-  return globalQueryClient;
 }
