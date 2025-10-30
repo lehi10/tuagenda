@@ -4,18 +4,18 @@ import { useAuth } from "@/contexts";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-interface ProtectedRouteProps {
+interface ClientRouteProps {
   children: React.ReactNode;
 }
 
 /**
- * ProtectedRoute component
- * Only allows access to users with type "provider", "manager", or "admin"
+ * ClientRoute component
+ * Only allows access to users with type "customer"
  * - Redirects to /login if user is not authenticated
- * - Redirects to /profile if user is a customer
+ * - Redirects to /dashboard if user is provider, manager, or admin
  * Shows loading state while checking authentication
  */
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function ClientRoute({ children }: ClientRouteProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -24,11 +24,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     if (!loading) {
       if (!user) {
         // Not authenticated - redirect to login
-        const redirectUrl = pathname || "/dashboard";
+        const redirectUrl = pathname || "/u/profile";
         router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
-      } else if (user.type === "customer") {
-        // User is authenticated but is a customer - redirect to client profile
-        router.push("/u/profile");
+      } else if (user.type !== "customer") {
+        // User is authenticated but not a customer - redirect to dashboard
+        router.push("/dashboard");
       }
     }
   }, [user, loading, router, pathname]);
@@ -45,11 +45,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // Don't render children if not authenticated or is a customer
-  if (!user || user.type === "customer") {
+  // Don't render children if not authenticated or not a customer
+  if (!user || user.type !== "customer") {
     return null;
   }
 
-  // User is authenticated and is provider/manager/admin, render children
+  // User is authenticated and is a customer, render children
   return <>{children}</>;
 }

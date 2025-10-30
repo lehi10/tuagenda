@@ -32,8 +32,6 @@ export default function LoginPage() {
               />
             </Link>
             <LoginForm
-              onLoginSuccess={() => router.push("/dashboard")}
-              onGoogleLogin={() => router.push("/dashboard")}
               onForgotPassword={() => router.push("/forgot-password")}
               onSignup={() => router.push("/signup")}
             />
