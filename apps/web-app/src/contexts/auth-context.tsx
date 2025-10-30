@@ -81,9 +81,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setState((prev) => ({ ...prev, loading: true }));
 
         try {
-          const result = await getUserById(firebaseUser.uid);
+          // Retry logic to handle race condition where user is being created
+          let result;
+          let attempts = 0;
+          const maxAttempts = 3;
+          const delayMs = 1000; // 1 second between retries
 
-          if (result.success) {
+          while (attempts < maxAttempts) {
+            result = await getUserById(firebaseUser.uid);
+
+            if (result.success) {
+              break; // User found, exit retry loop
+            }
+
+            attempts++;
+            if (attempts < maxAttempts) {
+              logger.info(
+                "AUTH_CONTEXT",
+                firebaseUser.uid,
+                `User not found, retrying (${attempts}/${maxAttempts})...`
+              );
+              await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
+          }
+
+          if (result?.success) {
             // Successfully loaded user data from database
             logger.info(
               "AUTH_CONTEXT",
@@ -96,16 +118,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
               error: null,
             });
           } else {
-            // User not found in database - this shouldn't happen in normal flow
+            // User not found in database after retries
             logger.error(
               "AUTH_CONTEXT",
               firebaseUser.uid,
-              `User not found in database: ${result.error}`
+              `User not found in database after ${maxAttempts} attempts: ${result?.error}`
             );
             setState({
               user: null,
               loading: false,
-              error: new Error("User data not found in database"),
+              error: new Error("User data not found in database. Please try logging in again."),
             });
           }
         } catch (error) {
