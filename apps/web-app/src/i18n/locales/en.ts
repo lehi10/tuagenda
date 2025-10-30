@@ -323,6 +323,42 @@ export const en = {
       notifications: "Notifications",
       account: "Account",
     },
+    profile: {
+      title: "Profile Settings",
+      subtitle: "Manage your account settings and preferences",
+      sections: {
+        photo: "Profile Photo",
+        photoDescription: "Your profile photo is displayed across TuAgenda",
+        personalInfo: "Personal Information",
+        personalInfoDescription:
+          "Update your personal information and contact details",
+        security: "Change Password",
+        securityDescription: "Update your password to keep your account secure",
+      },
+      fields: {
+        firstName: "First Name",
+        lastName: "Last Name",
+        email: "Email",
+        emailReadonly: "Email cannot be changed",
+        phone: "Phone Number",
+        phoneHelp: "Enter 9 digits without spaces",
+        birthday: "Birthday",
+        birthdayHelp: "You must be at least 16 years old",
+        timezone: "Timezone",
+        currentPassword: "Current Password",
+        newPassword: "New Password",
+        newPasswordHelp: "Must be at least 8 characters",
+        confirmPassword: "Confirm New Password",
+      },
+      actions: {
+        saveChanges: "Save Changes",
+        changePassword: "Change Password",
+      },
+      messages: {
+        profileUpdated: "Profile updated successfully",
+        passwordChanged: "Password changed successfully",
+      },
+    },
   },
 };
 

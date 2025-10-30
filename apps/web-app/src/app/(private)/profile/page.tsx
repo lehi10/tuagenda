@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/contexts/auth-context";
+import { useTranslation } from "@/i18n";
 import { PersonalInfoSection } from "@/features/profile/components/personal-info-section";
 import { ProfilePhotoSection } from "@/features/profile/components/profile-photo-section";
 import { SecuritySection } from "@/features/profile/components/security-section";
@@ -10,6 +11,7 @@ import { useEffect } from "react";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     logger.info(
@@ -21,17 +23,15 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 lg:p-8">
-        <div className="mx-auto w-full max-w-4xl space-y-8">
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-4 w-96" />
-          </div>
-          <div className="grid gap-6">
-            <Skeleton className="h-96 w-full" />
-            <Skeleton className="h-64 w-full" />
-            <Skeleton className="h-96 w-full" />
-          </div>
+      <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid gap-6">
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-96 w-full" />
         </div>
       </div>
     );
@@ -40,14 +40,12 @@ export default function ProfilePage() {
   if (!user) {
     logger.error("PROFILE_PAGE", "anonymous", "No user found");
     return (
-      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 lg:p-8">
-        <div className="mx-auto w-full max-w-4xl">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold">Not authenticated</h1>
-            <p className="text-muted-foreground mt-2">
-              Please sign in to view your profile
-            </p>
-          </div>
+      <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">Not authenticated</h1>
+          <p className="text-muted-foreground mt-2">
+            Please sign in to view your profile
+          </p>
         </div>
       </div>
     );
@@ -62,27 +60,25 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 lg:p-8">
-      <div className="mx-auto w-full max-w-4xl space-y-8">
-        {/* Page Header */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Profile Settings</h1>
-          <p className="text-muted-foreground">
-            Manage your account settings and preferences
-          </p>
-        </div>
+    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+      {/* Page Header */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">
+          {t.pages.profile.title}
+        </h1>
+        <p className="text-muted-foreground">{t.pages.profile.subtitle}</p>
+      </div>
 
-        {/* Profile Sections */}
-        <div className="grid gap-6">
-          {/* Profile Photo Section */}
-          <ProfilePhotoSection user={user} />
+      {/* Profile Sections */}
+      <div className="grid gap-6">
+        {/* Profile Photo Section */}
+        <ProfilePhotoSection user={user} />
 
-          {/* Personal Information Section */}
-          <PersonalInfoSection user={user} onUpdate={handleUpdate} />
+        {/* Personal Information Section */}
+        <PersonalInfoSection user={user} onUpdate={handleUpdate} />
 
-          {/* Security Section */}
-          <SecuritySection />
-        </div>
+        {/* Security Section */}
+        <SecuritySection />
       </div>
     </div>
   );

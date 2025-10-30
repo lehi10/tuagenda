@@ -21,6 +21,7 @@ import {
   FieldError,
   FieldDescription,
 } from "@/components/ui/field";
+import { useTranslation } from "@/i18n";
 
 import {
   changePasswordSchema,
@@ -30,6 +31,7 @@ import { changePassword } from "@/actions/user/change-password.action";
 import { logger } from "@/lib/logger";
 
 export function SecuritySection() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -57,7 +59,7 @@ export function SecuritySection() {
       const result = await changePassword(data);
 
       if (result.success) {
-        toast.success("Password changed successfully");
+        toast.success(t.pages.profile.messages.passwordChanged);
         logger.info("SECURITY", "anonymous", "Password changed successfully");
         reset(); // Clear form on success
       } else {
@@ -83,9 +85,9 @@ export function SecuritySection() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Change Password</CardTitle>
+        <CardTitle>{t.pages.profile.sections.security}</CardTitle>
         <CardDescription>
-          Update your password to keep your account secure
+          {t.pages.profile.sections.securityDescription}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -93,7 +95,8 @@ export function SecuritySection() {
           {/* Current Password */}
           <Field>
             <FieldLabel>
-              Current Password <span className="text-destructive">*</span>
+              {t.pages.profile.fields.currentPassword}{" "}
+              <span className="text-destructive">*</span>
             </FieldLabel>
             <div className="relative">
               <Input
@@ -123,7 +126,8 @@ export function SecuritySection() {
           {/* New Password */}
           <Field>
             <FieldLabel>
-              New Password <span className="text-destructive">*</span>
+              {t.pages.profile.fields.newPassword}{" "}
+              <span className="text-destructive">*</span>
             </FieldLabel>
             <div className="relative">
               <Input
@@ -147,14 +151,17 @@ export function SecuritySection() {
                 )}
               </Button>
             </div>
-            <FieldDescription>Must be at least 8 characters</FieldDescription>
+            <FieldDescription>
+              {t.pages.profile.fields.newPasswordHelp}
+            </FieldDescription>
             <FieldError>{errors.newPassword?.message}</FieldError>
           </Field>
 
           {/* Confirm Password */}
           <Field>
             <FieldLabel>
-              Confirm New Password <span className="text-destructive">*</span>
+              {t.pages.profile.fields.confirmPassword}{" "}
+              <span className="text-destructive">*</span>
             </FieldLabel>
             <div className="relative">
               <Input
@@ -188,7 +195,7 @@ export function SecuritySection() {
             className="w-full sm:w-auto"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Change Password
+            {t.pages.profile.actions.changePassword}
           </Button>
         </form>
       </CardContent>

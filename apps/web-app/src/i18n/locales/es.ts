@@ -327,5 +327,42 @@ export const es: Translations = {
       notifications: "Notificaciones",
       account: "Cuenta",
     },
+    profile: {
+      title: "Configuración de Perfil",
+      subtitle: "Administra la configuración y preferencias de tu cuenta",
+      sections: {
+        photo: "Foto de Perfil",
+        photoDescription: "Tu foto de perfil se muestra en toda TuAgenda",
+        personalInfo: "Información Personal",
+        personalInfoDescription:
+          "Actualiza tu información personal y datos de contacto",
+        security: "Cambiar Contraseña",
+        securityDescription:
+          "Actualiza tu contraseña para mantener tu cuenta segura",
+      },
+      fields: {
+        firstName: "Nombre",
+        lastName: "Apellido",
+        email: "Correo Electrónico",
+        emailReadonly: "El correo no se puede cambiar",
+        phone: "Número de Teléfono",
+        phoneHelp: "Ingresa 9 dígitos sin espacios",
+        birthday: "Fecha de Nacimiento",
+        birthdayHelp: "Debes tener al menos 16 años",
+        timezone: "Zona Horaria",
+        currentPassword: "Contraseña Actual",
+        newPassword: "Nueva Contraseña",
+        newPasswordHelp: "Debe tener al menos 8 caracteres",
+        confirmPassword: "Confirmar Nueva Contraseña",
+      },
+      actions: {
+        saveChanges: "Guardar Cambios",
+        changePassword: "Cambiar Contraseña",
+      },
+      messages: {
+        profileUpdated: "Perfil actualizado exitosamente",
+        passwordChanged: "Contraseña cambiada exitosamente",
+      },
+    },
   },
 };

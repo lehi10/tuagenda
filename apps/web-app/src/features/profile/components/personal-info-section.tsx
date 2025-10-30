@@ -28,6 +28,7 @@ import {
   FieldError,
   FieldDescription,
 } from "@/components/ui/field";
+import { useTranslation } from "@/i18n";
 
 import {
   updateProfilePersonalInfoSchema,
@@ -46,6 +47,7 @@ export function PersonalInfoSection({
   user,
   onUpdate,
 }: PersonalInfoSectionProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -77,7 +79,7 @@ export function PersonalInfoSection({
       const result = await updateUserProfile(user.id, data);
 
       if (result.success) {
-        toast.success("Profile updated successfully");
+        toast.success(t.pages.profile.messages.profileUpdated);
         logger.info("PERSONAL_INFO", user.id, "Profile updated successfully");
         onUpdate?.();
       } else {
@@ -103,9 +105,9 @@ export function PersonalInfoSection({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal Information</CardTitle>
+        <CardTitle>{t.pages.profile.sections.personalInfo}</CardTitle>
         <CardDescription>
-          Update your personal information and contact details
+          {t.pages.profile.sections.personalInfoDescription}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -114,7 +116,8 @@ export function PersonalInfoSection({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field>
               <FieldLabel>
-                First Name <span className="text-destructive">*</span>
+                {t.pages.profile.fields.firstName}{" "}
+                <span className="text-destructive">*</span>
               </FieldLabel>
               <Input
                 {...register("firstName")}
@@ -126,7 +129,8 @@ export function PersonalInfoSection({
 
             <Field>
               <FieldLabel>
-                Last Name <span className="text-destructive">*</span>
+                {t.pages.profile.fields.lastName}{" "}
+                <span className="text-destructive">*</span>
               </FieldLabel>
               <Input
                 {...register("lastName")}
@@ -139,14 +143,16 @@ export function PersonalInfoSection({
 
           {/* Email (readonly) */}
           <Field>
-            <FieldLabel>Email</FieldLabel>
+            <FieldLabel>{t.pages.profile.fields.email}</FieldLabel>
             <Input value={user.email} disabled readOnly />
-            <FieldDescription>Email cannot be changed</FieldDescription>
+            <FieldDescription>
+              {t.pages.profile.fields.emailReadonly}
+            </FieldDescription>
           </Field>
 
           {/* Phone Number with Country Code */}
           <Field>
-            <FieldLabel>Phone Number</FieldLabel>
+            <FieldLabel>{t.pages.profile.fields.phone}</FieldLabel>
             <div className="flex gap-2">
               <div className="w-32">
                 <Select
@@ -171,13 +177,15 @@ export function PersonalInfoSection({
                 className="flex-1"
               />
             </div>
-            <FieldDescription>Enter 9 digits without spaces</FieldDescription>
+            <FieldDescription>
+              {t.pages.profile.fields.phoneHelp}
+            </FieldDescription>
             <FieldError>{errors.phone?.message}</FieldError>
           </Field>
 
           {/* Birthday */}
           <Field>
-            <FieldLabel>Birthday</FieldLabel>
+            <FieldLabel>{t.pages.profile.fields.birthday}</FieldLabel>
             <Input
               type="date"
               max={
@@ -197,14 +205,14 @@ export function PersonalInfoSection({
               disabled={isLoading}
             />
             <FieldDescription>
-              You must be at least 16 years old
+              {t.pages.profile.fields.birthdayHelp}
             </FieldDescription>
             <FieldError>{errors.birthday?.message}</FieldError>
           </Field>
 
           {/* Timezone */}
           <Field>
-            <FieldLabel>Timezone</FieldLabel>
+            <FieldLabel>{t.pages.profile.fields.timezone}</FieldLabel>
             <Select
               value={timeZone || "America/Lima"}
               onValueChange={(value) => setValue("timeZone", value)}
@@ -229,7 +237,7 @@ export function PersonalInfoSection({
             className="w-full sm:w-auto"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
+            {t.pages.profile.actions.saveChanges}
           </Button>
         </form>
       </CardContent>

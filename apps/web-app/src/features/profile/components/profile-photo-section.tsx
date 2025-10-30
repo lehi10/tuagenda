@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslation } from "@/i18n";
 import type { User } from "@/lib/db/prisma";
 
 interface ProfilePhotoSectionProps {
@@ -15,6 +16,8 @@ interface ProfilePhotoSectionProps {
 }
 
 export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
+  const { t } = useTranslation();
+
   // Get initials from first and last name
   const getInitials = () => {
     const firstInitial = user.firstName?.[0] || "";
@@ -25,24 +28,19 @@ export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Photo</CardTitle>
+        <CardTitle>{t.pages.profile.sections.photo}</CardTitle>
         <CardDescription>
-          Your profile photo is displayed across TuAgenda
+          {t.pages.profile.sections.photoDescription}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center space-y-4">
-        <Avatar className="h-32 w-32">
+        <Avatar className="h-20 w-20">
           <AvatarImage
             src={user.pictureFullPath || undefined}
             alt={`${user.firstName} ${user.lastName}`}
           />
-          <AvatarFallback className="text-4xl">{getInitials()}</AvatarFallback>
+          <AvatarFallback className="text-2xl">{getInitials()}</AvatarFallback>
         </Avatar>
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Photo management will be available soon
-          </p>
-        </div>
       </CardContent>
     </Card>
   );
