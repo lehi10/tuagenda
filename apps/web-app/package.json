@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack -p 3001",
     "build": "next build",
     "start": "next start",
+    "postinstall": "cd ../../packages/db && npx prisma generate",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
