@@ -1,74 +1,75 @@
 "use client";
 
-import { useAuth } from "@/contexts";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { PersonalInfoSection } from "@/features/profile/components/personal-info-section";
+import { ProfilePhotoSection } from "@/features/profile/components/profile-photo-section";
+import { SecuritySection } from "@/features/profile/components/security-section";
+import { Skeleton } from "@/components/ui/skeleton";
+import { logger } from "@/lib/logger";
 
 export default function ClientProfilePage() {
-  const { user, signOut } = useAuth();
-  const router = useRouter();
+  const { user, loading } = useAuth();
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      router.push("/login");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  if (loading) {
+    return (
+      <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid gap-6">
+          <Skeleton className="h-96 w-full" />
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    logger.error("CLIENT_PROFILE_PAGE", "anonymous", "No user found");
+    return (
+      <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">No autenticado</h1>
+          <p className="text-muted-foreground mt-2">
+            Por favor inicia sesión para ver tu perfil
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleUpdate = () => {
+    // This will trigger a re-render when user data is updated
+    // The context will automatically refresh from the database
+    logger.info(
+      "CLIENT_PROFILE_PAGE",
+      user.id,
+      "Profile updated, refreshing data"
+    );
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Perfil del Cliente
-            </h1>
-            <p className="text-muted-foreground">
-              Bienvenido a tu área de cliente
-            </p>
-          </div>
-          <Button variant="outline" onClick={handleSignOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Cerrar Sesión
-          </Button>
-        </div>
+    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+      {/* Page Header */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Mi Perfil</h1>
+        <p className="text-muted-foreground">
+          Gestiona tu información personal y configuración de cuenta
+        </p>
+      </div>
 
-        {user && (
-          <div className="rounded-lg border bg-card p-6">
-            <div className="space-y-4">
-              <div>
-                <h2 className="text-lg font-semibold">Información Personal</h2>
-              </div>
-              <div className="grid gap-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Nombre
-                    </p>
-                    <p className="text-base">
-                      {user.firstName} {user.lastName}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Email
-                    </p>
-                    <p className="text-base">{user.email}</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
-                    Tipo de Usuario
-                  </p>
-                  <p className="text-base capitalize">{user.type}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+      {/* Profile Sections */}
+      <div className="grid gap-6">
+        {/* Profile Photo Section */}
+        <ProfilePhotoSection user={user} />
+
+        {/* Personal Information Section */}
+        <PersonalInfoSection user={user} onUpdate={handleUpdate} />
+
+        {/* Security Section */}
+        <SecuritySection />
       </div>
     </div>
   );

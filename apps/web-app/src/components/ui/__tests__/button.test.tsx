@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Button } from "../button";
+import Link from "next/link";
 
 describe("Button", () => {
   it("renders correctly with text", () => {
@@ -46,7 +47,7 @@ describe("Button", () => {
   it("renders as child using asChild", () => {
     render(
       <Button asChild>
-        <a href="/test">Link Button</a>
+        <Link href="/test">Link Button</Link>
       </Button>
     );
 

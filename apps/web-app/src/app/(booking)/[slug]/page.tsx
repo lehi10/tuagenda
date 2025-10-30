@@ -153,7 +153,7 @@ interface BookingData {
 
 interface PageProps {
   params: Promise<{
-    username: string;
+    slug: string;
   }>;
 }
 
@@ -166,7 +166,7 @@ export default function BookingPage({ params }: PageProps) {
   // Access the username parameter
   useEffect(() => {
     params.then((resolvedParams) => {
-      console.log("Booking page for:", resolvedParams.username);
+      console.log("Booking page for:", resolvedParams.slug);
       // TODO: Fetch business data based on resolvedParams.username
     });
   }, [params]);
