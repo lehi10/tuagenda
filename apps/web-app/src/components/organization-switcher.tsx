@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronsUpDown, Building2 } from "lucide-react";
+import { Check, ChevronsUpDown, Building2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,34 @@ import { useOrganization } from "@/contexts/organization-context";
 import { cn } from "@/lib/utils";
 
 export function OrganizationSwitcher() {
-  const { currentOrg, organizations, setCurrentOrg, isSuperAdmin } =
+  const { currentOrg, organizations, setCurrentOrg, isSuperAdmin, isLoading } =
     useOrganization();
   const [open, setOpen] = useState(false);
 
-  if (!isSuperAdmin) {
-    // Si no es super admin, solo muestra la organización actual sin selector
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2 px-2 py-1.5">
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!currentOrg) {
+    return (
+      <div className="flex items-center gap-2 px-2 py-1.5">
+        <div className="bg-muted p-1.5 rounded">
+          <Building2 className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <p className="text-sm text-muted-foreground">No organization</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSuperAdmin && organizations.length <= 1) {
+    // Si no es super admin y solo tiene una organización, solo muestra la organización actual sin selector
     return (
       <div className="flex items-center gap-2 px-2 py-1.5">
         <div className="bg-primary/10 p-1.5 rounded">
@@ -68,9 +90,8 @@ export function OrganizationSwitcher() {
             </div>
             <div className="flex-1 text-left overflow-hidden">
               <p className="text-sm font-medium truncate">{currentOrg?.name}</p>
-              <p className="text-xs text-muted-foreground">
-                {currentOrg?.employees} employees • {currentOrg?.locations}{" "}
-                locations
+              <p className="text-xs text-muted-foreground capitalize">
+                {currentOrg?.slug}
               </p>
             </div>
           </div>
@@ -103,7 +124,7 @@ export function OrganizationSwitcher() {
                     <div className="flex-1 overflow-hidden">
                       <p className="text-sm font-medium truncate">{org.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {org.employees} employees • {org.locations} locations
+                        {org.slug}
                       </p>
                     </div>
                   </div>

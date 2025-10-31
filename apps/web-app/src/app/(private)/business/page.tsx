@@ -4,12 +4,24 @@ import { useTranslation } from "@/i18n";
 import { BusinessList } from "@/features/business/components/business-list";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { BusinessFormDialog } from "@/features/business/components/business-form-dialog";
+import { useOrganization } from "@/contexts/organization-context";
 
 export default function BusinessPage() {
   const { t } = useTranslation();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const businessListRef = useRef<{ refresh: () => void }>(null);
+  const { refreshOrganizations } = useOrganization();
+
+  const handleCreateSuccess = async () => {
+    // Trigger refresh of the business list
+    if (businessListRef.current) {
+      businessListRef.current.refresh();
+    }
+    // Also refresh the organization switcher
+    await refreshOrganizations();
+  };
 
   return (
     <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
@@ -31,11 +43,12 @@ export default function BusinessPage() {
         </Button>
       </div>
 
-      <BusinessList />
+      <BusinessList ref={businessListRef} />
 
       <BusinessFormDialog
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
+        onSuccess={handleCreateSuccess}
       />
     </div>
   );

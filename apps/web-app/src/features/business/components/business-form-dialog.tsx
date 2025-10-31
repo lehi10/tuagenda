@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslation } from "@/i18n";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -47,6 +48,7 @@ interface BusinessFormDialogProps {
   onOpenChange: (open: boolean) => void;
   business?: Business | null;
   onClose?: () => void;
+  onSuccess?: () => void;
 }
 
 export function BusinessFormDialog({
@@ -54,6 +56,7 @@ export function BusinessFormDialog({
   onOpenChange,
   business,
   onClose,
+  onSuccess,
 }: BusinessFormDialogProps) {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -76,10 +79,7 @@ export function BusinessFormDialog({
     status: business?.status || "active",
   });
 
-  const handleChange = (
-    field: string,
-    value: string
-  ) => {
+  const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     // Auto-generate slug from title
@@ -99,16 +99,35 @@ export function BusinessFormDialog({
     setIsLoading(true);
 
     try {
-      // TODO: Implement API call
-      console.log("Saving business:", formData);
+      const url = business ? `/api/business/${business.id}` : "/api/business";
+      const method = business ? "PUT" : "POST";
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to save business");
+      }
+
+      const successMessage = business
+        ? "Negocio actualizado exitosamente"
+        : "Negocio creado exitosamente";
+
+      toast.success(successMessage);
       onOpenChange(false);
       if (onClose) onClose();
+      if (onSuccess) onSuccess();
     } catch (error) {
       console.error("Error saving business:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Error al guardar el negocio"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -139,9 +158,7 @@ export function BusinessFormDialog({
               </h3>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="title">
-                    {t.pages.business.form.title} *
-                  </Label>
+                  <Label htmlFor="title">{t.pages.business.form.title} *</Label>
                   <Input
                     id="title"
                     value={formData.title}
@@ -150,9 +167,7 @@ export function BusinessFormDialog({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="slug">
-                    {t.pages.business.form.slug} *
-                  </Label>
+                  <Label htmlFor="slug">{t.pages.business.form.slug} *</Label>
                   <Input
                     id="slug"
                     value={formData.slug}
@@ -184,9 +199,7 @@ export function BusinessFormDialog({
               </h3>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="email">
-                    {t.pages.business.form.email} *
-                  </Label>
+                  <Label htmlFor="email">{t.pages.business.form.email} *</Label>
                   <Input
                     id="email"
                     type="email"
@@ -196,9 +209,7 @@ export function BusinessFormDialog({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">
-                    {t.pages.business.form.phone} *
-                  </Label>
+                  <Label htmlFor="phone">{t.pages.business.form.phone} *</Label>
                   <Input
                     id="phone"
                     value={formData.phone}
@@ -208,9 +219,7 @@ export function BusinessFormDialog({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="website">
-                  {t.pages.business.form.website}
-                </Label>
+                <Label htmlFor="website">{t.pages.business.form.website}</Label>
                 <Input
                   id="website"
                   type="url"
@@ -240,9 +249,7 @@ export function BusinessFormDialog({
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="city">
-                    {t.pages.business.form.city} *
-                  </Label>
+                  <Label htmlFor="city">{t.pages.business.form.city} *</Label>
                   <Input
                     id="city"
                     value={formData.city}
@@ -251,9 +258,7 @@ export function BusinessFormDialog({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="state">
-                    {t.pages.business.form.state}
-                  </Label>
+                  <Label htmlFor="state">{t.pages.business.form.state}</Label>
                   <Input
                     id="state"
                     value={formData.state}
@@ -306,19 +311,29 @@ export function BusinessFormDialog({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="America/New_York">EST (New York)</SelectItem>
-                      <SelectItem value="America/Chicago">CST (Chicago)</SelectItem>
-                      <SelectItem value="America/Denver">MST (Denver)</SelectItem>
-                      <SelectItem value="America/Los_Angeles">PST (Los Angeles)</SelectItem>
-                      <SelectItem value="Europe/Madrid">CET (Madrid)</SelectItem>
-                      <SelectItem value="Europe/London">GMT (London)</SelectItem>
+                      <SelectItem value="America/New_York">
+                        EST (New York)
+                      </SelectItem>
+                      <SelectItem value="America/Chicago">
+                        CST (Chicago)
+                      </SelectItem>
+                      <SelectItem value="America/Denver">
+                        MST (Denver)
+                      </SelectItem>
+                      <SelectItem value="America/Los_Angeles">
+                        PST (Los Angeles)
+                      </SelectItem>
+                      <SelectItem value="Europe/Madrid">
+                        CET (Madrid)
+                      </SelectItem>
+                      <SelectItem value="Europe/London">
+                        GMT (London)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="locale">
-                    {t.pages.business.form.locale}
-                  </Label>
+                  <Label htmlFor="locale">{t.pages.business.form.locale}</Label>
                   <Select
                     value={formData.locale}
                     onValueChange={(value) => handleChange("locale", value)}
@@ -353,12 +368,12 @@ export function BusinessFormDialog({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="status">
-                  {t.pages.business.form.status}
-                </Label>
+                <Label htmlFor="status">{t.pages.business.form.status}</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value) => handleChange("status", value as any)}
+                  onValueChange={(value) =>
+                    handleChange("status", value as any)
+                  }
                 >
                   <SelectTrigger id="status">
                     <SelectValue />
