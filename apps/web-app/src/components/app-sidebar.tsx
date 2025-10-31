@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   Bell,
   Briefcase,
+  Building2,
   Calendar,
   Clock,
   CreditCard,
@@ -36,6 +37,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t.navigation.dashboard,
       url: "/dashboard",
       icon: LayoutDashboard,
+    },
+    {
+      title: t.navigation.business,
+      url: "/business",
+      icon: Building2,
     },
     {
       title: t.navigation.employees,
