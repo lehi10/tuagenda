@@ -23,15 +23,19 @@ enum UserStatus {
 
 enum UserType {
   customer
-  provider
-  manager
   admin
+  superadmin
 }
 
 enum BusinessStatus {
   active
   inactive
   suspended
+}
+
+enum BusinessRole {
+  MANAGER
+  EMPLOYEE
 }
 
 model Business {
@@ -59,6 +63,9 @@ model Business {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
+  // Relación 1:N con BusinessUser
+  businessUsers BusinessUser[]
+
   @@map("business")
 }
 
@@ -79,5 +86,26 @@ model User {
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
+  // Relación 1:N con BusinessUser
+  businessUsers BusinessUser[]
+
   @@map("users")
+}
+
+// Tabla intermedia para la relación N:N entre User y Business
+model BusinessUser {
+  id         Int          @id @default(autoincrement())
+  userId     String       @map("user_id")
+  businessId Int          @map("business_id")
+  role       BusinessRole
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  // Relaciones N:1 hacia User y Business
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  // Índice único: un usuario solo puede tener un rol por negocio
+  @@unique([userId, businessId])
+  @@map("business_users")
 }
