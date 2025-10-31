@@ -23,26 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-
-interface Business {
-  id: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  email: string;
-  phone: string;
-  website?: string | null;
-  address: string;
-  city: string;
-  state?: string | null;
-  country: string;
-  postalCode?: string | null;
-  timeZone: string;
-  locale: string;
-  currency: string;
-  status: "active" | "inactive" | "suspended";
-}
-
+import { Business } from "db";
 interface BusinessFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

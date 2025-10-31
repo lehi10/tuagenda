@@ -21,19 +21,7 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
 import { useOrganization } from "@/contexts/organization-context";
-
-interface Business {
-  id: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  country: string;
-  status: "active" | "inactive" | "suspended";
-}
+import { Business } from "db";
 
 export const BusinessList = forwardRef<{ refresh: () => void }>(
   (props, ref) => {

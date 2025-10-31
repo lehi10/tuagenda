@@ -1,4 +1,4 @@
-import { prisma } from "db";
+import { Business, prisma, UserType } from "db";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/business/user - Get businesses for the current user
@@ -33,10 +33,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    let businesses;
+    let businesses: Business[];
 
     // SuperAdmin: can see all businesses
-    if (user.type === "superadmin") {
+    if (user.type === UserType.superadmin) {
       businesses = await prisma.business.findMany({
         orderBy: {
           createdAt: "desc",
@@ -57,7 +57,6 @@ export async function GET(request: NextRequest) {
       return {
         ...business,
         userRole: businessUser?.role || null,
-        isSuperAdmin: user.type === "superadmin",
       };
     });
 

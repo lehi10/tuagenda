@@ -2,13 +2,16 @@ import { prisma } from "db";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/business/[id] - Get a single business
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const id = parseInt(params.id);
+    const params = request.nextUrl.searchParams;
+    const idParam = params.get("id");
 
+    if (!idParam) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const id = parseInt(idParam, 10);
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
@@ -35,13 +38,16 @@ export async function GET(
 }
 
 // PUT /api/business/[id] - Update a business
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest) {
   try {
-    const id = parseInt(params.id);
+    const params = request.nextUrl.searchParams;
+    const idParam = params.get("id");
 
+    if (!idParam) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const id = parseInt(idParam, 10);
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
@@ -112,12 +118,19 @@ export async function PUT(
 }
 
 // DELETE /api/business/[id] - Delete a business
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
-    const id = parseInt(params.id);
+    const params = request.nextUrl.searchParams;
+    const idParam = params.get("id");
+
+    if (!idParam) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const id = parseInt(idParam, 10);
+    if (isNaN(id)) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
 
     if (isNaN(id)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
