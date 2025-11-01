@@ -5,18 +5,16 @@
  * after they successfully authenticate with Firebase. All new users are
  * created with the 'customer' type by default.
  *
+ * REFACTORED: Now uses hexagonal architecture with use cases.
+ *
  * @module actions/user
  */
 
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
-import {
-  createUserFromAuthSchema,
-  type CreateUserFromAuthInput,
-} from "@/lib/validations/user.schema";
-import { Prisma } from "@prisma/client";
-import { logger } from "@/lib/logger";
+import { type CreateUserFromAuthInput } from "@/lib/validations/user.schema";
+import { CreateUserUseCase } from "@/core/application/use-cases/user";
+import { PrismaUserRepository } from "@/infrastructure/repositories";
 
 /**
  * Result type for the create user action
@@ -55,129 +53,30 @@ type CreateUserResult =
 export async function createUserInDatabase(
   data: CreateUserFromAuthInput
 ): Promise<CreateUserResult> {
-  logger.info(
-    "createUserInDatabase",
-    data.id,
-    `Server action called with email: ${data.email}, firstName: ${data.firstName}, lastName: ${data.lastName}`
-  );
+  // Dependency injection: Create repository and use case
+  const userRepository = new PrismaUserRepository();
+  const createUserUseCase = new CreateUserUseCase(userRepository);
 
-  try {
-    // Validate input data with Zod schema
-    logger.info(
-      "createUserInDatabase",
-      data.id,
-      "Validating data with Zod schema"
-    );
-    const validatedData = createUserFromAuthSchema.parse(data);
-    logger.info("createUserInDatabase", data.id, "Data validated successfully");
+  // Truncate names to prevent database errors
+  const truncatedData = {
+    ...data,
+    firstName: data.firstName.substring(0, 255),
+    lastName: data.lastName.substring(0, 255),
+  };
 
-    // Truncate values to prevent database errors
-    const firstName = validatedData.firstName.substring(0, 255);
-    const lastName = validatedData.lastName.substring(0, 255);
-    logger.info(
-      "createUserInDatabase",
-      data.id,
-      `Truncated names if needed - firstName length: ${firstName.length}, lastName length: ${lastName.length}`
-    );
+  // Execute use case
+  const result = await createUserUseCase.execute(truncatedData);
 
-    // Check if user already exists
-    logger.info(
-      "createUserInDatabase",
-      validatedData.id,
-      "Checking if user already exists in database"
-    );
-    const existingUser = await prisma.user.findUnique({
-      where: { id: validatedData.id },
-    });
-
-    if (existingUser) {
-      // User already exists, return success
-      logger.info(
-        "createUserInDatabase",
-        existingUser.id,
-        "User already exists, returning existing user"
-      );
-      return {
-        success: true,
-        userId: existingUser.id,
-      };
-    }
-
-    logger.info(
-      "createUserInDatabase",
-      validatedData.id,
-      "User does not exist, creating new user in database"
-    );
-
-    // Create new user in database
-    // Type is automatically set to 'customer' via Prisma schema default
-    // Status is automatically set to 'visible' via Prisma schema default
-    const user = await prisma.user.create({
-      data: {
-        id: validatedData.id,
-        email: validatedData.email,
-        firstName,
-        lastName,
-        pictureFullPath: validatedData.pictureFullPath,
-        // type: 'customer' <- Not needed, it's the default in schema
-        // status: 'visible' <- Not needed, it's the default in schema
-      },
-    });
-
-    logger.info(
-      "createUserInDatabase",
-      user.id,
-      "User created successfully in database"
-    );
-
+  // Map domain result to action result
+  if (result.success && result.user) {
     return {
       success: true,
-      userId: user.id,
-    };
-  } catch (error) {
-    logger.error(
-      "createUserInDatabase",
-      data.id,
-      `Error occurred: ${error instanceof Error ? error.message : String(error)}`
-    );
-
-    // Handle Zod validation errors
-    if (error instanceof Error && error.name === "ZodError") {
-      logger.error(
-        "createUserInDatabase",
-        data.id,
-        "Zod validation error: Invalid user data provided"
-      );
-      return {
-        success: false,
-        error: "Invalid user data provided",
-      };
-    }
-
-    // Handle Prisma unique constraint violations
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      logger.error(
-        "createUserInDatabase",
-        data.id,
-        `Prisma error code: ${error.code}`
-      );
-      if (error.code === "P2002") {
-        return {
-          success: false,
-          error: "A user with this email already exists",
-        };
-      }
-    }
-
-    // Handle other errors
-    logger.fatal(
-      "createUserInDatabase",
-      data.id,
-      `Unexpected error creating user in database: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return {
-      success: false,
-      error: "Failed to create user. Please try again later.",
+      userId: result.user.id,
     };
   }
+
+  return {
+    success: false,
+    error: result.error || "Failed to create user",
+  };
 }
