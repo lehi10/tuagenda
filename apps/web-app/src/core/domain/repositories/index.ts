@@ -5,3 +5,7 @@
  */
 
 export type { IUserRepository, UserRepositoryFilters } from "./IUserRepository";
+export type {
+  IBusinessRepository,
+  BusinessRepositoryFilters,
+} from "./IBusinessRepository";

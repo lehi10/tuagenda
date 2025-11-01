@@ -5,3 +5,4 @@
  */
 
 export { User, UserStatus, UserType, type UserProps } from "./User";
+export { Business, BusinessStatus, type BusinessProps } from "./Business";

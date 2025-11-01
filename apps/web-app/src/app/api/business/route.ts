@@ -1,16 +1,48 @@
-import { prisma } from "db";
+/**
+ * Business API Routes
+ *
+ * REFACTORED: Now uses hexagonal architecture with use cases.
+ *
+ * @module app/api/business
+ */
+
 import { NextRequest, NextResponse } from "next/server";
+import {
+  ListBusinessesUseCase,
+  CreateBusinessUseCase,
+} from "@/core/application/use-cases/business";
+import { PrismaBusinessRepository } from "@/infrastructure/repositories";
 
 // GET /api/business - List all businesses
 export async function GET(request: NextRequest) {
   try {
-    const businesses = await prisma.business.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const businessRepository = new PrismaBusinessRepository();
+    const listBusinessesUseCase = new ListBusinessesUseCase(businessRepository);
 
-    return NextResponse.json(businesses);
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams;
+    const filters = {
+      search: searchParams.get("search") || undefined,
+      city: searchParams.get("city") || undefined,
+      country: searchParams.get("country") || undefined,
+      limit: searchParams.get("limit")
+        ? parseInt(searchParams.get("limit")!)
+        : undefined,
+      offset: searchParams.get("offset")
+        ? parseInt(searchParams.get("offset")!)
+        : undefined,
+    };
+
+    const result = await listBusinessesUseCase.execute(filters);
+
+    if (result.success) {
+      return NextResponse.json({
+        businesses: result.businesses?.map((b) => b.toObject()),
+        total: result.total,
+      });
+    }
+
+    return NextResponse.json({ error: result.error }, { status: 500 });
   } catch (error) {
     console.error("Error fetching businesses:", error);
     return NextResponse.json(
@@ -25,68 +57,19 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate required fields
-    const requiredFields = [
-      "title",
-      "slug",
-      "email",
-      "phone",
-      "address",
-      "city",
-      "country",
-      "timeZone",
-      "locale",
-      "currency",
-    ];
+    const businessRepository = new PrismaBusinessRepository();
+    const createBusinessUseCase = new CreateBusinessUseCase(businessRepository);
 
-    for (const field of requiredFields) {
-      if (!body[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
-      }
+    const result = await createBusinessUseCase.execute(body);
+
+    if (result.success && result.business) {
+      return NextResponse.json(result.business.toObject(), { status: 201 });
     }
 
-    // Check if slug already exists
-    const existingBusiness = await prisma.business.findUnique({
-      where: { slug: body.slug },
-    });
-
-    if (existingBusiness) {
-      return NextResponse.json(
-        { error: "A business with this slug already exists" },
-        { status: 409 }
-      );
-    }
-
-    // Create the business
-    const business = await prisma.business.create({
-      data: {
-        title: body.title,
-        slug: body.slug,
-        description: body.description || null,
-        domain: body.domain || null,
-        logo: body.logo || null,
-        coverImage: body.coverImage || null,
-        timeZone: body.timeZone,
-        locale: body.locale,
-        currency: body.currency,
-        status: body.status || "active",
-        email: body.email,
-        phone: body.phone,
-        website: body.website || null,
-        address: body.address,
-        city: body.city,
-        state: body.state || null,
-        country: body.country,
-        postalCode: body.postalCode || null,
-        latitude: body.latitude || null,
-        longitude: body.longitude || null,
-      },
-    });
-
-    return NextResponse.json(business, { status: 201 });
+    return NextResponse.json(
+      { error: result.error },
+      { status: result.error?.includes("already exists") ? 409 : 400 }
+    );
   } catch (error) {
     console.error("Error creating business:", error);
     return NextResponse.json(

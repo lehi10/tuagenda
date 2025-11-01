@@ -54,7 +54,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
         }
 
         const data = await response.json();
-        setBusinesses(data);
+        setBusinesses(data.businesses || data);
         // Refresh organization switcher in case names changed
         await refreshOrganizations();
       } catch (error) {
