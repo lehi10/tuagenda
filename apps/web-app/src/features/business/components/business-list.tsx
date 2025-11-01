@@ -21,17 +21,17 @@ import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
 import { useOrganization } from "@/contexts/organization-context";
-import { Business } from "db";
+import { BusinessProps } from "@/core/domain/entities/Business";
+import { listBusinesses, deleteBusiness } from "@/actions/business";
 
 export const BusinessList = forwardRef<{ refresh: () => void }>(
   (props, ref) => {
     const { t } = useTranslation();
     const { refreshOrganizations } = useOrganization();
-    const [editingBusiness, setEditingBusiness] = useState<Business | null>(
-      null
-    );
+    const [editingBusiness, setEditingBusiness] =
+      useState<BusinessProps | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [businesses, setBusinesses] = useState<Business[]>([]);
+    const [businesses, setBusinesses] = useState<BusinessProps[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     // Expose refresh method to parent
@@ -47,16 +47,15 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
     const fetchBusinesses = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/business");
+        const result = await listBusinesses();
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch businesses");
+        if (result.success) {
+          setBusinesses(result.businesses);
+          // Refresh organization switcher in case names changed
+          await refreshOrganizations();
+        } else {
+          toast.error(result.error || "Error al cargar los negocios");
         }
-
-        const data = await response.json();
-        setBusinesses(data.businesses || data);
-        // Refresh organization switcher in case names changed
-        await refreshOrganizations();
       } catch (error) {
         console.error("Error fetching businesses:", error);
         toast.error("Error al cargar los negocios");
@@ -65,7 +64,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
       }
     };
 
-    const handleEdit = (business: Business) => {
+    const handleEdit = (business: BusinessProps) => {
       setEditingBusiness(business);
       setIsEditDialogOpen(true);
     };
@@ -76,17 +75,15 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
       }
 
       try {
-        const response = await fetch(`/api/business/${id}`, {
-          method: "DELETE",
-        });
+        const result = await deleteBusiness(id);
 
-        if (!response.ok) {
-          throw new Error("Failed to delete business");
+        if (result.success) {
+          toast.success("Negocio eliminado exitosamente");
+          fetchBusinesses(); // Refresh the list
+          await refreshOrganizations(); // Refresh organization switcher
+        } else {
+          toast.error(result.error || "Error al eliminar el negocio");
         }
-
-        toast.success("Negocio eliminado exitosamente");
-        fetchBusinesses(); // Refresh the list
-        await refreshOrganizations(); // Refresh organization switcher
       } catch (error) {
         console.error("Error deleting business:", error);
         toast.error("Error al eliminar el negocio");
@@ -159,7 +156,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-destructive"
-                        onClick={() => handleDelete(business.id)}
+                        onClick={() => business.id && handleDelete(business.id)}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
                         {t.common.delete}
@@ -191,8 +188,11 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                   </div>
                 </div>
                 <div className="pt-2">
-                  <Badge variant={getStatusVariant(business.status)}>
-                    {t.pages.business.status[business.status]}
+                  <Badge
+                    variant={getStatusVariant(business.status || "active")}
+                  >
+                    {business.status &&
+                      t.pages.business.status[business.status]}
                   </Badge>
                 </div>
               </CardContent>

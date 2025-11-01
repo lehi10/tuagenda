@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./auth-context";
+import { listBusinesses } from "@/actions/business";
 
 export interface Organization {
   id: string;
@@ -77,31 +78,27 @@ export function OrganizationProvider({
     try {
       setIsLoading(true);
 
-      const response = await fetch("/api/business/user", {
-        headers: {
-          "x-user-id": user?.id || "",
-        },
-      });
+      // Use server action instead of fetch
+      const result = await listBusinesses();
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch organizations");
+      if (result.success) {
+        // Transform business data to organization format
+        const orgs: Organization[] = result.businesses.map((business) => ({
+          id: String(business.id),
+          name: business.title,
+          slug: business.slug,
+          logo: business.logo || undefined,
+          plan: "pro" as const, // TODO: Add plan field to business table
+          employees: 0, // TODO: Count from business_users
+          locations: 1, // TODO: Add locations count
+          userRole: undefined, // TODO: Add userRole from business_users
+        }));
+
+        setOrganizations(orgs);
+      } else {
+        console.error("Error fetching organizations:", result.error);
+        setOrganizations([]);
       }
-
-      const businesses = await response.json();
-
-      // Transform business data to organization format
-      const orgs: Organization[] = businesses.map((business: any) => ({
-        id: String(business.id),
-        name: business.title,
-        slug: business.slug,
-        logo: business.logo || undefined,
-        plan: "pro" as const, // TODO: Add plan field to business table
-        employees: 0, // TODO: Count from business_users
-        locations: 1, // TODO: Add locations count
-        userRole: business.userRole,
-      }));
-
-      setOrganizations(orgs);
     } catch (error) {
       console.error("Error fetching organizations:", error);
       setOrganizations([]);

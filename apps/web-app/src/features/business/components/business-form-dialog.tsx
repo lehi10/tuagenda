@@ -23,11 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Business } from "db";
+import { BusinessProps } from "@/core/domain/entities/Business";
+import { createBusiness, updateBusiness } from "@/actions/business";
+
 interface BusinessFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  business?: Business | null;
+  business?: BusinessProps | null;
   onClose?: () => void;
   onSuccess?: () => void;
 }
@@ -42,7 +44,23 @@ export function BusinessFormDialog({
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    slug: string;
+    description: string;
+    email: string;
+    phone: string;
+    website: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    timeZone: string;
+    locale: string;
+    currency: string;
+    status: "active" | "inactive" | "suspended";
+  }>({
     title: business?.title || "",
     slug: business?.slug || "",
     description: business?.description || "",
@@ -57,7 +75,8 @@ export function BusinessFormDialog({
     timeZone: business?.timeZone || "America/New_York",
     locale: business?.locale || "en",
     currency: business?.currency || "USD",
-    status: business?.status || "active",
+    status:
+      (business?.status as "active" | "inactive" | "suspended") || "active",
   });
 
   const handleChange = (field: string, value: string) => {
@@ -80,35 +99,34 @@ export function BusinessFormDialog({
     setIsLoading(true);
 
     try {
-      const url = business ? `/api/business/${business.id}` : "/api/business";
-      const method = business ? "PUT" : "POST";
+      let result;
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to save business");
+      if (business && business.id) {
+        // Update existing business
+        result = await updateBusiness({
+          id: business.id,
+          ...formData,
+        });
+      } else {
+        // Create new business
+        result = await createBusiness(formData);
       }
 
-      const successMessage = business
-        ? "Negocio actualizado exitosamente"
-        : "Negocio creado exitosamente";
+      if (result.success) {
+        const successMessage = business
+          ? "Negocio actualizado exitosamente"
+          : "Negocio creado exitosamente";
 
-      toast.success(successMessage);
-      onOpenChange(false);
-      if (onClose) onClose();
-      if (onSuccess) onSuccess();
+        toast.success(successMessage);
+        onOpenChange(false);
+        if (onClose) onClose();
+        if (onSuccess) onSuccess();
+      } else {
+        toast.error(result.error || "Error al guardar el negocio");
+      }
     } catch (error) {
       console.error("Error saving business:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Error al guardar el negocio"
-      );
+      toast.error("Error al guardar el negocio");
     } finally {
       setIsLoading(false);
     }
