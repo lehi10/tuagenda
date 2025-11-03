@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { createUserInDatabase } from "@/actions/user";
 import { toast } from "sonner";
 import {
   Card,
@@ -23,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useAuth } from "@/contexts";
 import { useTranslation } from "@/i18n";
-import { logger } from "@/lib/logger";
 
 interface SignupFormProps extends React.ComponentProps<"div"> {
   onSignupSuccess?: () => void;
@@ -63,56 +61,15 @@ export function SignupForm({
     }
 
     try {
-      // Step 1: Create user in Firebase Auth
+      // Create user in Firebase and database
+      // All database operations are handled by auth context using hexagonal architecture
       toast.loading("Creating your account...");
-      const firebaseUser = await signUp({
+      await signUp({
         email,
         password,
         displayName: fullName,
       });
       toast.dismiss();
-      toast.success("Account created in Firebase");
-
-      // Step 2: Split full name into first and last name
-      const nameParts = fullName.trim().split(/\s+/);
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.slice(1).join(" ") || nameParts[0] || "";
-
-      // Step 3: Create user in PostgreSQL database as 'customer'
-      logger.info(
-        "SignupForm.handleSubmit",
-        firebaseUser.uid,
-        `Creating user in database - Email: ${firebaseUser.email || email}, Name: ${firstName} ${lastName}`
-      );
-
-      toast.loading("Saving your profile...");
-      const dbResult = await createUserInDatabase({
-        id: firebaseUser.uid,
-        email: firebaseUser.email || email,
-        firstName,
-        lastName,
-        pictureFullPath: firebaseUser.photoURL,
-      });
-      toast.dismiss();
-
-      if (!dbResult.success) {
-        logger.error(
-          "SignupForm.handleSubmit",
-          firebaseUser.uid,
-          `Failed to create user in database: ${dbResult.error}`
-        );
-        toast.error(`Failed to save profile: ${dbResult.error}`);
-        setFormError(
-          `Account created but profile save failed: ${dbResult.error}`
-        );
-        return; // Don't proceed if DB creation fails
-      }
-
-      logger.info(
-        "SignupForm.handleSubmit",
-        dbResult.userId,
-        "User created successfully in database"
-      );
       toast.success("Account created successfully! 🎉");
 
       if (onSignupSuccess) onSignupSuccess();
@@ -130,53 +87,11 @@ export function SignupForm({
   const handleGoogleSignUp = async () => {
     setFormError(null);
     try {
-      // Step 1: Sign in with Google (Firebase)
-      toast.loading("Signing in with Google...");
-      const firebaseUser = await signInWithGoogle();
+      // Sign up with Google and sync with database
+      // All database operations are handled by auth context using hexagonal architecture
+      toast.loading("Signing up with Google...");
+      await signInWithGoogle();
       toast.dismiss();
-      toast.success("Google authentication successful");
-
-      // Step 2: Extract first and last name from displayName
-      const displayName = firebaseUser.displayName || "";
-      const nameParts = displayName.trim().split(/\s+/);
-      const firstName = nameParts[0] || "User";
-      const lastName = nameParts.slice(1).join(" ") || "";
-
-      // Step 3: Create user in PostgreSQL database as 'customer'
-      logger.info(
-        "SignupForm.handleGoogleSignUp",
-        firebaseUser.uid,
-        `Creating user in database (Google signup) - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
-      );
-
-      toast.loading("Saving your profile...");
-      const dbResult = await createUserInDatabase({
-        id: firebaseUser.uid,
-        email: firebaseUser.email || "",
-        firstName,
-        lastName,
-        pictureFullPath: firebaseUser.photoURL,
-      });
-      toast.dismiss();
-
-      if (!dbResult.success) {
-        logger.error(
-          "SignupForm.handleGoogleSignUp",
-          firebaseUser.uid,
-          `Failed to create user in database: ${dbResult.error}`
-        );
-        toast.error(`Failed to save profile: ${dbResult.error}`);
-        setFormError(
-          `Google signup successful, but failed to save profile: ${dbResult.error}`
-        );
-        return; // Don't proceed if DB creation fails
-      }
-
-      logger.info(
-        "SignupForm.handleGoogleSignUp",
-        dbResult.userId,
-        "User created successfully in database"
-      );
       toast.success("Account created successfully! 🎉");
 
       if (onGoogleSignup) onGoogleSignup();

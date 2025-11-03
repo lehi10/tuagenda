@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { createUserInDatabase } from "@/actions/user";
 import { toast } from "sonner";
 import {
   Card,
@@ -23,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useAuth } from "@/contexts";
 import { useTranslation } from "@/i18n";
-import { logger } from "@/lib/logger";
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   onLoginSuccess?: () => void;
@@ -65,55 +63,12 @@ export function LoginForm({
   const handleGoogleSignIn = async () => {
     setFormError(null);
     try {
-      // Step 1: Authenticate with Google (Firebase)
+      // Authenticate with Google and sync with database
+      // All database operations are handled by auth context using hexagonal architecture
       toast.loading("Signing in with Google...");
-      const firebaseUser = await signInWithGoogle();
+      await signInWithGoogle();
       toast.dismiss();
-      toast.success("Google authentication successful");
-
-      // Step 2: Extract first and last name from displayName
-      const displayName = firebaseUser.displayName || "";
-      const nameParts = displayName.trim().split(/\s+/);
-      const firstName = nameParts[0] || "User";
-      const lastName = nameParts.slice(1).join(" ") || "";
-
-      // Step 3: Create/update user in PostgreSQL database as 'customer'
-      // This handles both first-time login (creates user) and returning users (no-op)
-      logger.info(
-        "LoginForm.handleGoogleSignIn",
-        firebaseUser.uid,
-        `Attempting to sync user with database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
-      );
-
-      toast.loading("Syncing profile...");
-      const dbResult = await createUserInDatabase({
-        id: firebaseUser.uid,
-        email: firebaseUser.email || "",
-        firstName,
-        lastName,
-        pictureFullPath: firebaseUser.photoURL,
-      });
-      toast.dismiss();
-
-      if (!dbResult.success) {
-        logger.error(
-          "LoginForm.handleGoogleSignIn",
-          firebaseUser.uid,
-          `Failed to sync user with database: ${dbResult.error}`
-        );
-        toast.error(`Failed to sync profile: ${dbResult.error}`);
-        setFormError(
-          `Authentication successful, but failed to sync user data: ${dbResult.error}`
-        );
-        return; // Don't proceed if DB sync fails
-      }
-
-      logger.info(
-        "LoginForm.handleGoogleSignIn",
-        dbResult.userId,
-        "User synced successfully to database"
-      );
-      toast.success("Welcome back! 🎉");
+      toast.success("Welcome! 🎉");
 
       if (onGoogleLogin) onGoogleLogin();
     } catch (err) {

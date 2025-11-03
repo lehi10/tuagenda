@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
 import { getUserById } from "@/actions/user/get-user.action";
+import { createUserInDatabase } from "@/actions/user/create-user.action";
 import { logger } from "@/lib/logger";
 
 interface AuthContextValue extends AuthState {
@@ -81,31 +82,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setState((prev) => ({ ...prev, loading: true }));
 
         try {
-          // Retry logic to handle race condition where user is being created
-          let result;
-          let attempts = 0;
-          const maxAttempts = 3;
-          const delayMs = 1000; // 1 second between retries
+          // Try to get user from database using hexagonal architecture
+          const result = await getUserById(firebaseUser.uid);
 
-          while (attempts < maxAttempts) {
-            result = await getUserById(firebaseUser.uid);
-
-            if (result.success) {
-              break; // User found, exit retry loop
-            }
-
-            attempts++;
-            if (attempts < maxAttempts) {
-              logger.info(
-                "AUTH_CONTEXT",
-                firebaseUser.uid,
-                `User not found, retrying (${attempts}/${maxAttempts})...`
-              );
-              await new Promise((resolve) => setTimeout(resolve, delayMs));
-            }
-          }
-
-          if (result?.success) {
+          if (result.success) {
             // Successfully loaded user data from database
             logger.info(
               "AUTH_CONTEXT",
@@ -122,7 +102,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             logger.error(
               "AUTH_CONTEXT",
               firebaseUser.uid,
-              `User not found in database after ${maxAttempts} attempts: ${result?.error}`
+              `User not found in database: ${result.error}`
             );
             setState({
               user: null,
@@ -192,9 +172,48 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const user = await authService.signUpWithEmailAndPassword(credentials);
+
+      // Step 1: Create user in Firebase
+      const firebaseUser = await authService.signUpWithEmailAndPassword(credentials);
+
+      // Step 2: Extract first and last name from displayName
+      const displayName = credentials.displayName || "";
+      const nameParts = displayName.trim().split(/\s+/);
+      const firstName = nameParts[0] || "User";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Step 3: Create user in database using hexagonal architecture
+      logger.info(
+        "AUTH_CONTEXT.signUp",
+        firebaseUser.uid,
+        `Creating user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
+      );
+
+      const dbResult = await createUserInDatabase({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        firstName,
+        lastName,
+        pictureFullPath: firebaseUser.photoURL,
+      });
+
+      if (!dbResult.success) {
+        logger.error(
+          "AUTH_CONTEXT.signUp",
+          firebaseUser.uid,
+          `Failed to create user in database: ${dbResult.error}`
+        );
+        throw new Error(`Failed to sync user data: ${dbResult.error}`);
+      }
+
+      logger.info(
+        "AUTH_CONTEXT.signUp",
+        dbResult.userId,
+        "User created successfully in database"
+      );
+
       // User state will be updated by onAuthStateChanged
-      return user;
+      return firebaseUser;
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -208,9 +227,58 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signInWithGoogle = async (): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const user = await authService.signInWithGoogle();
+
+      // Step 1: Authenticate with Google (Firebase)
+      const firebaseUser = await authService.signInWithGoogle();
+
+      // Step 2: Check if user exists in database
+      const existingUser = await getUserById(firebaseUser.uid);
+
+      if (!existingUser.success) {
+        // Step 3: User doesn't exist, create in database using hexagonal architecture
+        const displayName = firebaseUser.displayName || "";
+        const nameParts = displayName.trim().split(/\s+/);
+        const firstName = nameParts[0] || "User";
+        const lastName = nameParts.slice(1).join(" ") || "";
+
+        logger.info(
+          "AUTH_CONTEXT.signInWithGoogle",
+          firebaseUser.uid,
+          `Creating new user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
+        );
+
+        const dbResult = await createUserInDatabase({
+          id: firebaseUser.uid,
+          email: firebaseUser.email || "",
+          firstName,
+          lastName,
+          pictureFullPath: firebaseUser.photoURL,
+        });
+
+        if (!dbResult.success) {
+          logger.error(
+            "AUTH_CONTEXT.signInWithGoogle",
+            firebaseUser.uid,
+            `Failed to create user in database: ${dbResult.error}`
+          );
+          throw new Error(`Failed to sync user data: ${dbResult.error}`);
+        }
+
+        logger.info(
+          "AUTH_CONTEXT.signInWithGoogle",
+          dbResult.userId,
+          "New user created successfully in database"
+        );
+      } else {
+        logger.info(
+          "AUTH_CONTEXT.signInWithGoogle",
+          firebaseUser.uid,
+          "Existing user found in database"
+        );
+      }
+
       // User state will be updated by onAuthStateChanged
-      return user;
+      return firebaseUser;
     } catch (error) {
       setState((prev) => ({
         ...prev,
