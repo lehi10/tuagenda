@@ -46,7 +46,7 @@ interface EmployeeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: FormValues) => Promise<void>;
-  editData?: { id: number; userId: string; role: BusinessRole };
+  editData?: { id: number; userId: string; role: BusinessRole; firstName: string; lastName: string };
 }
 
 export function EmployeeDialog({
@@ -170,6 +170,15 @@ export function EmployeeDialog({
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {editData && (
+              <div className="p-3 bg-muted rounded-md">
+                <p className="text-sm text-muted-foreground">Editing role for:</p>
+                <p className="text-sm font-medium">
+                  {editData.firstName} {editData.lastName}
+                </p>
               </div>
             )}
 
