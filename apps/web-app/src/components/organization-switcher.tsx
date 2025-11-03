@@ -21,8 +21,13 @@ import { useBusiness } from "@/contexts";
 import { cn } from "@/lib/utils";
 
 export function OrganizationSwitcher() {
-  const { currentBusiness, businesses, setCurrentBusiness, isSuperAdmin, loading } =
-    useBusiness();
+  const {
+    currentBusiness,
+    businesses,
+    setCurrentBusiness,
+    isSuperAdmin,
+    loading,
+  } = useBusiness();
   const [open, setOpen] = useState(false);
 
   if (loading) {
@@ -55,7 +60,9 @@ export function OrganizationSwitcher() {
           <Building2 className="h-4 w-4 text-primary" />
         </div>
         <div className="flex-1 overflow-hidden">
-          <p className="text-sm font-medium truncate">{currentBusiness.title}</p>
+          <p className="text-sm font-medium truncate">
+            {currentBusiness.title}
+          </p>
           <p className="text-xs text-muted-foreground capitalize">
             {currentBusiness.slug}
           </p>
@@ -78,7 +85,9 @@ export function OrganizationSwitcher() {
               <Building2 className="h-4 w-4 text-primary" />
             </div>
             <div className="flex-1 text-left overflow-hidden">
-              <p className="text-sm font-medium truncate">{currentBusiness.title}</p>
+              <p className="text-sm font-medium truncate">
+                {currentBusiness.title}
+              </p>
               <p className="text-xs text-muted-foreground capitalize">
                 {currentBusiness.slug}
               </p>
@@ -107,11 +116,15 @@ export function OrganizationSwitcher() {
                     <Check
                       className={cn(
                         "h-4 w-4 flex-shrink-0",
-                        currentBusiness?.id === business.id ? "opacity-100" : "opacity-0"
+                        currentBusiness?.id === business.id
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                     <div className="flex-1 overflow-hidden">
-                      <p className="text-sm font-medium truncate">{business.title}</p>
+                      <p className="text-sm font-medium truncate">
+                        {business.title}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         {business.slug}
                       </p>

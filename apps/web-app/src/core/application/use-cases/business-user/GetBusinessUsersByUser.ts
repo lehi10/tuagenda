@@ -8,7 +8,10 @@
  */
 
 import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUserRepository";
-import { BusinessUser, BusinessRole } from "@/core/domain/entities/BusinessUser";
+import {
+  BusinessUser,
+  BusinessRole,
+} from "@/core/domain/entities/BusinessUser";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -83,7 +86,7 @@ export class GetBusinessUsersByUserUseCase {
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors.map((e) => e.message).join(", ");
+        const errorMessage = error.issues.map((e) => e.message).join(", ");
         logger.error(
           "GetBusinessUsersByUserUseCase",
           "system",

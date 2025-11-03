@@ -8,7 +8,10 @@
  */
 
 import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUserRepository";
-import { BusinessUser, BusinessRole } from "@/core/domain/entities/BusinessUser";
+import {
+  BusinessUser,
+  BusinessRole,
+} from "@/core/domain/entities/BusinessUser";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -17,7 +20,9 @@ import { logger } from "@/lib/logger";
  */
 const updateBusinessUserSchema = z.object({
   id: z.number().int().positive("BusinessUser ID must be a positive integer"),
-  role: z.nativeEnum(BusinessRole, { errorMap: () => ({ message: "Invalid role" }) }),
+  role: z.enum([BusinessRole.MANAGER, BusinessRole.EMPLOYEE], {
+    message: "Invalid role",
+  }),
 });
 
 export type UpdateBusinessUserInput = z.infer<typeof updateBusinessUserSchema>;
@@ -45,7 +50,11 @@ export class UpdateBusinessUserUseCase {
   async execute(input: unknown): Promise<UpdateBusinessUserResult> {
     try {
       // 1. Validate input
-      logger.info("UpdateBusinessUserUseCase", "system", "Validating input data");
+      logger.info(
+        "UpdateBusinessUserUseCase",
+        "system",
+        "Validating input data"
+      );
       const validatedData = updateBusinessUserSchema.parse(input);
 
       logger.info(
@@ -87,9 +96,8 @@ export class UpdateBusinessUserUseCase {
         "Persisting changes to database"
       );
 
-      const updatedBusinessUser = await this.businessUserRepository.update(
-        existingBusinessUser
-      );
+      const updatedBusinessUser =
+        await this.businessUserRepository.update(existingBusinessUser);
 
       logger.info(
         "UpdateBusinessUserUseCase",
@@ -103,7 +111,7 @@ export class UpdateBusinessUserUseCase {
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors.map((e) => e.message).join(", ");
+        const errorMessage = error.issues.map((e) => e.message).join(", ");
         logger.error(
           "UpdateBusinessUserUseCase",
           "system",

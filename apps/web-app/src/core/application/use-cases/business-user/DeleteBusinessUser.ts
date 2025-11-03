@@ -41,7 +41,11 @@ export class DeleteBusinessUserUseCase {
   async execute(input: unknown): Promise<DeleteBusinessUserResult> {
     try {
       // 1. Validate input
-      logger.info("DeleteBusinessUserUseCase", "system", "Validating input data");
+      logger.info(
+        "DeleteBusinessUserUseCase",
+        "system",
+        "Validating input data"
+      );
       const validatedData = deleteBusinessUserSchema.parse(input);
 
       logger.info(
@@ -87,7 +91,7 @@ export class DeleteBusinessUserUseCase {
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors.map((e) => e.message).join(", ");
+        const errorMessage = error.issues.map((e) => e.message).join(", ");
         logger.error(
           "DeleteBusinessUserUseCase",
           "system",

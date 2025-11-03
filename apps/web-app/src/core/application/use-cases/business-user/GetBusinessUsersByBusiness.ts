@@ -8,7 +8,10 @@
  */
 
 import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUserRepository";
-import { BusinessUser, BusinessRole } from "@/core/domain/entities/BusinessUser";
+import {
+  BusinessUser,
+  BusinessRole,
+} from "@/core/domain/entities/BusinessUser";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -16,7 +19,10 @@ import { logger } from "@/lib/logger";
  * Input schema for getting business users
  */
 const getBusinessUsersByBusinessSchema = z.object({
-  businessId: z.number().int().positive("Business ID must be a positive integer"),
+  businessId: z
+    .number()
+    .int()
+    .positive("Business ID must be a positive integer"),
   role: z.nativeEnum(BusinessRole).optional(),
   limit: z.number().int().positive().optional(),
   offset: z.number().int().nonnegative().optional(),
@@ -83,7 +89,7 @@ export class GetBusinessUsersByBusinessUseCase {
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors.map((e) => e.message).join(", ");
+        const errorMessage = error.issues.map((e) => e.message).join(", ");
         logger.error(
           "GetBusinessUsersByBusinessUseCase",
           "system",

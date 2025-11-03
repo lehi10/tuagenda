@@ -9,7 +9,10 @@
  */
 
 import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUserRepository";
-import { BusinessUser, BusinessRole } from "@/core/domain/entities/BusinessUser";
+import {
+  BusinessUser,
+  BusinessRole,
+} from "@/core/domain/entities/BusinessUser";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -18,8 +21,13 @@ import { logger } from "@/lib/logger";
  */
 const createBusinessUserSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
-  businessId: z.number().int().positive("Business ID must be a positive integer"),
-  role: z.nativeEnum(BusinessRole, { errorMap: () => ({ message: "Invalid role" }) }),
+  businessId: z
+    .number()
+    .int()
+    .positive("Business ID must be a positive integer"),
+  role: z.enum([BusinessRole.MANAGER, BusinessRole.EMPLOYEE], {
+    message: "Invalid role",
+  }),
 });
 
 export type CreateBusinessUserInput = z.infer<typeof createBusinessUserSchema>;
@@ -47,7 +55,11 @@ export class CreateBusinessUserUseCase {
   async execute(input: unknown): Promise<CreateBusinessUserResult> {
     try {
       // 1. Validate input
-      logger.info("CreateBusinessUserUseCase", "system", "Validating input data");
+      logger.info(
+        "CreateBusinessUserUseCase",
+        "system",
+        "Validating input data"
+      );
       const validatedData = createBusinessUserSchema.parse(input);
 
       logger.info(
@@ -95,9 +107,8 @@ export class CreateBusinessUserUseCase {
         "Persisting BusinessUser to database"
       );
 
-      const createdBusinessUser = await this.businessUserRepository.create(
-        businessUser
-      );
+      const createdBusinessUser =
+        await this.businessUserRepository.create(businessUser);
 
       logger.info(
         "CreateBusinessUserUseCase",
@@ -111,7 +122,7 @@ export class CreateBusinessUserUseCase {
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors.map((e) => e.message).join(", ");
+        const errorMessage = error.issues.map((e) => e.message).join(", ");
         logger.error(
           "CreateBusinessUserUseCase",
           "system",

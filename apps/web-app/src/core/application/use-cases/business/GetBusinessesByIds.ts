@@ -16,7 +16,9 @@ import { logger } from "@/lib/logger";
  * Input schema for getting businesses by IDs
  */
 const getBusinessesByIdsSchema = z.object({
-  ids: z.array(z.number().int().positive("Business ID must be a positive integer")),
+  ids: z.array(
+    z.number().int().positive("Business ID must be a positive integer")
+  ),
 });
 
 export type GetBusinessesByIdsInput = z.infer<typeof getBusinessesByIdsSchema>;
@@ -41,7 +43,11 @@ export class GetBusinessesByIdsUseCase {
   async execute(input: unknown): Promise<GetBusinessesByIdsResult> {
     try {
       // 1. Validate input
-      logger.info("GetBusinessesByIdsUseCase", "system", "Validating input data");
+      logger.info(
+        "GetBusinessesByIdsUseCase",
+        "system",
+        "Validating input data"
+      );
       const validatedData = getBusinessesByIdsSchema.parse(input);
 
       if (validatedData.ids.length === 0) {
@@ -79,7 +85,7 @@ export class GetBusinessesByIdsUseCase {
       };
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors.map((e) => e.message).join(", ");
+        const errorMessage = error.issues.map((e) => e.message).join(", ");
         logger.error(
           "GetBusinessesByIdsUseCase",
           "system",

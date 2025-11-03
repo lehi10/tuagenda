@@ -174,7 +174,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
       // Step 1: Create user in Firebase
-      const firebaseUser = await authService.signUpWithEmailAndPassword(credentials);
+      const firebaseUser =
+        await authService.signUpWithEmailAndPassword(credentials);
 
       // Step 2: Extract first and last name from displayName
       const displayName = credentials.displayName || "";

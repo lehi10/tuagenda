@@ -13,7 +13,10 @@ import {
   IBusinessUserRepository,
   BusinessUserRepositoryFilters,
 } from "@/core/domain/repositories/IBusinessUserRepository";
-import { BusinessUser, BusinessRole } from "@/core/domain/entities/BusinessUser";
+import {
+  BusinessUser,
+  BusinessRole,
+} from "@/core/domain/entities/BusinessUser";
 import { BusinessUserMapper } from "../mappers/BusinessUserMapper";
 import { Prisma, BusinessRole as PrismaBusinessRole } from "@prisma/client";
 
