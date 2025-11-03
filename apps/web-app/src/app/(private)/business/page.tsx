@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState, useRef } from "react";
 import { BusinessFormDialog } from "@/features/business/components/business-form-dialog";
-import { useOrganization } from "@/contexts/organization-context";
+import { useBusiness } from "@/contexts";
 
 export default function BusinessPage() {
   const { t } = useTranslation();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const businessListRef = useRef<{ refresh: () => void }>(null);
-  const { refreshOrganizations } = useOrganization();
+  const { refreshBusinesses } = useBusiness();
 
   const handleCreateSuccess = async () => {
     // Trigger refresh of the business list
@@ -20,7 +20,7 @@ export default function BusinessPage() {
       businessListRef.current.refresh();
     }
     // Also refresh the organization switcher
-    await refreshOrganizations();
+    await refreshBusinesses();
   };
 
   return (

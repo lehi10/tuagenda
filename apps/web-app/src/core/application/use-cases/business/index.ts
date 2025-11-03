@@ -17,6 +17,12 @@ export {
 } from "./GetBusiness";
 
 export {
+  GetBusinessesByIdsUseCase,
+  type GetBusinessesByIdsInput,
+  type GetBusinessesByIdsResult,
+} from "./GetBusinessesByIds";
+
+export {
   UpdateBusinessUseCase,
   type UpdateBusinessInput,
   type UpdateBusinessResult,

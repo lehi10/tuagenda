@@ -20,14 +20,14 @@ import { useTranslation } from "@/i18n";
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
-import { useOrganization } from "@/contexts/organization-context";
 import { BusinessProps } from "@/core/domain/entities/Business";
 import { listBusinesses, deleteBusiness } from "@/actions/business";
+import { useBusiness } from "@/contexts";
 
 export const BusinessList = forwardRef<{ refresh: () => void }>(
   (props, ref) => {
     const { t } = useTranslation();
-    const { refreshOrganizations } = useOrganization();
+    const { refreshBusinesses } = useBusiness();
     const [editingBusiness, setEditingBusiness] =
       useState<BusinessProps | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -52,7 +52,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
         if (result.success) {
           setBusinesses(result.businesses);
           // Refresh organization switcher in case names changed
-          await refreshOrganizations();
+          await refreshBusinesses();
         } else {
           toast.error(result.error || "Error al cargar los negocios");
         }
@@ -80,7 +80,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
         if (result.success) {
           toast.success("Negocio eliminado exitosamente");
           fetchBusinesses(); // Refresh the list
-          await refreshOrganizations(); // Refresh organization switcher
+          await refreshBusinesses(); // Refresh organization switcher
         } else {
           toast.error(result.error || "Error al eliminar el negocio");
         }

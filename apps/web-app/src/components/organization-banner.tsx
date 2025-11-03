@@ -3,23 +3,12 @@
 import { Building2, MapPin, Users, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useOrganization } from "@/contexts/organization-context";
+import { useBusiness } from "@/contexts";
 
 export function OrganizationBanner() {
-  const { currentOrg, isSuperAdmin } = useOrganization();
+  const { currentBusiness, isSuperAdmin } = useBusiness();
 
-  if (!currentOrg) return null;
-
-  const getPlanColor = (plan: string) => {
-    switch (plan) {
-      case "enterprise":
-        return "bg-purple-100 text-purple-700 border-purple-200";
-      case "pro":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
-    }
-  };
+  if (!currentBusiness) return null;
 
   return (
     <Card className="border-2 border-dashed">
@@ -32,23 +21,19 @@ export function OrganizationBanner() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <h3 className="font-semibold text-base sm:text-lg truncate">
-                  {currentOrg.name}
+                  {currentBusiness.title}
                 </h3>
                 <Badge
                   variant="outline"
-                  className={`${getPlanColor(currentOrg.plan)} text-xs flex-shrink-0`}
+                  className="bg-blue-100 text-blue-700 border-blue-200 text-xs flex-shrink-0"
                 >
-                  {currentOrg.plan.toUpperCase()}
+                  {currentBusiness.status.toUpperCase()}
                 </Badge>
               </div>
               <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
-                  <Users className="h-3 w-3" />
-                  <span>{currentOrg.employees} employees</span>
-                </div>
-                <div className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  <span>{currentOrg.locations} locations</span>
+                  <span>{currentBusiness.city}, {currentBusiness.country}</span>
                 </div>
               </div>
             </div>
