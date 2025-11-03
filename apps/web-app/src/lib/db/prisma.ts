@@ -50,4 +50,6 @@ export type {
   UserStatus,
   UserType,
   BusinessStatus,
+  BusinessUser,
+  BusinessRole,
 } from "@prisma/client";

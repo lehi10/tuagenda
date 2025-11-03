@@ -48,7 +48,14 @@ export function EmployeeList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editData, setEditData] = useState<
-    { id: number; userId: string; role: BusinessRole; firstName: string; lastName: string } | undefined
+    | {
+        id: number;
+        userId: string;
+        role: BusinessRole;
+        firstName: string;
+        lastName: string;
+      }
+    | undefined
   >();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
