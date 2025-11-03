@@ -6,3 +6,4 @@
 
 export { PrismaUserRepository } from "./PrismaUserRepository";
 export { PrismaBusinessRepository } from "./PrismaBusinessRepository";
+export { PrismaBusinessUserRepository } from "./PrismaBusinessUserRepository";

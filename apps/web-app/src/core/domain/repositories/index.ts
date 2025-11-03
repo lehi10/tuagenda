@@ -9,3 +9,7 @@ export type {
   IBusinessRepository,
   BusinessRepositoryFilters,
 } from "./IBusinessRepository";
+export type {
+  IBusinessUserRepository,
+  BusinessUserRepositoryFilters,
+} from "./IBusinessUserRepository";
