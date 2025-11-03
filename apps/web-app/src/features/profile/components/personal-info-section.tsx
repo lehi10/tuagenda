@@ -36,10 +36,10 @@ import {
 } from "@/lib/validations/user.schema";
 import { updateUserProfile } from "@/actions/user/update-user.action";
 import { logger } from "@/lib/logger";
-import type { User } from "@/lib/db/prisma";
+import type { UserProps } from "@/core/domain/entities/User";
 
 interface PersonalInfoSectionProps {
-  user: User;
+  user: UserProps;
   onUpdate?: () => void;
 }
 

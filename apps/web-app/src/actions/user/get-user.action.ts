@@ -11,16 +11,15 @@
 
 "use server";
 
-import type { User } from "@/lib/db/prisma";
+import { UserProps } from "@/core/domain/entities/User";
 import { GetUserUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { UserToPrismaType } from "@/infrastructure/mappers/UserToPrismaType";
 
 /**
  * Result type for the get user action
  */
 type GetUserResult =
-  | { success: true; user: User }
+  | { success: true; user: UserProps }
   | { success: false; error: string };
 
 /**
@@ -50,11 +49,11 @@ export async function getUserById(firebaseUid: string): Promise<GetUserResult> {
 
   console.log("GetUserById Result:", result);
 
-  // Map domain result to action result (backward compatible with Prisma type)
+  // Return domain result directly
   if (result.success && result.user) {
     return {
       success: true,
-      user: UserToPrismaType.toPrismaType(result.user),
+      user: result.user.toObject(),
     };
   }
 

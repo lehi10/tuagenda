@@ -15,3 +15,9 @@ export {
   type GetUserInput,
   type GetUserResult,
 } from "./GetUser";
+
+export {
+  UpdateUserUseCase,
+  type UpdateUserInput,
+  type UpdateUserResult,
+} from "./UpdateUser";

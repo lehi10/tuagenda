@@ -9,10 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
-import type { User } from "@/lib/db/prisma";
+import type { UserProps } from "@/core/domain/entities/User";
 
 interface ProfilePhotoSectionProps {
-  user: User;
+  user: UserProps;
 }
 
 export function ProfilePhotoSection({ user }: ProfilePhotoSectionProps) {

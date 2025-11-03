@@ -1,10 +1,10 @@
-import type { User as DBUser } from "@/lib/db/prisma";
+import type { UserProps } from "@/core/domain/entities/User";
 
 /**
  * User authentication data from database
  * This is the user object we use throughout the app after authentication
  */
-export type User = DBUser;
+export type User = UserProps;
 
 /**
  * Firebase user data (internal use only)

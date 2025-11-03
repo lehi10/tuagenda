@@ -4,17 +4,20 @@
  * Updates user profile information in PostgreSQL database.
  * Used for updating personal information from the profile page.
  *
+ * REFACTORED: Now uses hexagonal architecture with use cases.
+ *
  * @module actions/user
  */
 
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
 import {
   updateProfilePersonalInfoSchema,
   type UpdateProfilePersonalInfoInput,
 } from "@/lib/validations/user.schema";
 import { logger } from "@/lib/logger";
+import { UpdateUserUseCase } from "@/core/application/use-cases/user";
+import { PrismaUserRepository } from "@/infrastructure/repositories";
 
 /**
  * Result type for the update user action
@@ -57,8 +60,13 @@ export async function updateUserProfile(
     const validatedData = updateProfilePersonalInfoSchema.parse(data);
     logger.info("UPDATE_USER", userId, "Data validated successfully");
 
+    // Dependency injection: Create repository and use case
+    const userRepository = new PrismaUserRepository();
+    const updateUserUseCase = new UpdateUserUseCase(userRepository);
+
     // Convert empty strings to null for optional fields
-    const updateData = {
+    const updateInput = {
+      id: userId,
       firstName: validatedData.firstName,
       lastName: validatedData.lastName,
       birthday: validatedData.birthday || null,
@@ -67,21 +75,26 @@ export async function updateUserProfile(
       timeZone: validatedData.timeZone || null,
     };
 
-    // Update user in database
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: updateData,
-    });
+    // Execute use case
+    const result = await updateUserUseCase.execute(updateInput);
 
-    logger.info(
-      "UPDATE_USER",
-      userId,
-      `Profile updated successfully - ${updatedUser.email}`
-    );
+    if (result.success) {
+      logger.info(
+        "UPDATE_USER",
+        userId,
+        `Profile updated successfully - ${result.user.email}`
+      );
 
+      return {
+        success: true,
+        message: "Profile updated successfully",
+      };
+    }
+
+    logger.error("UPDATE_USER", userId, `Update failed: ${result.error}`);
     return {
-      success: true,
-      message: "Profile updated successfully",
+      success: false,
+      error: result.error,
     };
   } catch (error) {
     if (error instanceof Error && error.name === "ZodError") {
