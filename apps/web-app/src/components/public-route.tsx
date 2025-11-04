@@ -10,7 +10,9 @@ interface PublicRouteProps {
 
 /**
  * PublicRoute component
- * Redirects to dashboard (or redirect URL) if user is already authenticated
+ * Redirects authenticated users based on their type:
+ * - customer → /profile
+ * - provider/manager/admin → /dashboard (or redirect URL)
  * Useful for login/signup pages
  */
 export function PublicRoute({ children }: PublicRouteProps) {
@@ -20,8 +22,21 @@ export function PublicRoute({ children }: PublicRouteProps) {
 
   useEffect(() => {
     if (!loading && user) {
-      // Get redirect URL from query params or default to dashboard
-      const redirectUrl = searchParams.get("redirect") || "/dashboard";
+      const redirectParam = searchParams.get("redirect");
+
+      // Determine redirect URL based on user type
+      let redirectUrl: string;
+      if (user.type === "customer") {
+        // Customers go to their profile page
+        redirectUrl =
+          redirectParam && redirectParam.startsWith("/u/profile")
+            ? redirectParam
+            : "/u/profile";
+      } else {
+        // Providers, managers, and admins go to dashboard
+        redirectUrl = redirectParam || "/dashboard";
+      }
+
       router.push(redirectUrl);
     }
   }, [user, loading, router, searchParams]);

@@ -10,7 +10,9 @@ interface ProtectedRouteProps {
 
 /**
  * ProtectedRoute component
- * Redirects to /login if user is not authenticated
+ * Only allows access to users with type "provider", "manager", or "admin"
+ * - Redirects to /login if user is not authenticated
+ * - Redirects to /profile if user is a customer
  * Shows loading state while checking authentication
  */
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
@@ -19,10 +21,15 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!loading && !user) {
-      // Store the attempted URL to redirect back after login
-      const redirectUrl = pathname || "/dashboard";
-      router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+    if (!loading) {
+      if (!user) {
+        // Not authenticated - redirect to login
+        const redirectUrl = pathname || "/dashboard";
+        router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+      } else if (user.type === "customer") {
+        // User is authenticated but is a customer - redirect to client profile
+        router.push("/u/profile");
+      }
     }
   }, [user, loading, router, pathname]);
 
@@ -38,11 +45,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // Don't render children if not authenticated
-  if (!user) {
+  // Don't render children if not authenticated or is a customer
+  if (!user || user.type === "customer") {
     return null;
   }
 
-  // User is authenticated, render children
+  // User is authenticated and is provider/manager/admin, render children
   return <>{children}</>;
 }

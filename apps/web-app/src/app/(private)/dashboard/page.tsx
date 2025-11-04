@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/i18n";
-import { OrganizationBanner } from "@/components/organization-banner";
+import { BusinessBanner } from "@/components/business-banner";
 import { DashboardStats } from "@/features/dashboard/components/dashboard-stats";
 import { RecentAppointments } from "@/features/dashboard/components/recent-appointments";
 
@@ -18,7 +18,7 @@ export default function DashboardPage() {
           {t.pages.dashboard.welcome}
         </p>
       </div>
-      <OrganizationBanner />
+      <BusinessBanner />
       <DashboardStats />
       <RecentAppointments />
     </div>

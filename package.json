@@ -5,7 +5,21 @@
   "scripts": {
     "dev": "pnpm --filter ./apps/web-app dev",
     "dev:all": "pnpm -r --parallel run dev",
-    "build": "pnpm --filter ./apps/web-app build"
+    "build": "pnpm --filter ./apps/web-app build",
+    "lint": "pnpm -r --filter './apps/*' run lint",
+    "lint:fix": "pnpm -r --filter './apps/*' run lint:fix",
+    "format": "pnpm -r run format",
+    "db:start": "docker compose up -d",
+    "db:stop": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d && pnpm db:migrate",
+    "db:check": "node packages/db/check-db.js",
+    "db:migrate": "cd packages/db && npx prisma migrate deploy",
+    "db:migrate:dev": "cd packages/db && npx prisma migrate dev",
+    "db:migrate:status": "cd packages/db && npx prisma migrate status",
+    "db:push": "cd packages/db && npx prisma db push",
+    "db:studio": "cd packages/db && npx prisma studio",
+    "db:seed": "cd packages/db && npx prisma db seed",
+    "db:generate": "cd packages/db && npx prisma generate"
   },
   "engines": {
     "node": ">=20.0.0"

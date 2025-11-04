@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -14,8 +14,115 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserStatus {
+  hidden
+  visible
+  disabled
+  blocked
+}
+
+enum UserType {
+  customer
+  admin
+  superadmin
+}
+
+enum BusinessStatus {
+  active
+  inactive
+  suspended
+}
+
+enum BusinessRole {
+  MANAGER
+  EMPLOYEE
+}
+
+model Business {
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(255)
+  slug        String         @unique @db.VarChar(255)
+  domain      String?        @db.VarChar(255)
+  description String?        @db.Text
+  logo        String?        @db.VarChar(767)
+  coverImage  String?        @db.VarChar(767)
+  timeZone    String         @db.VarChar(255)
+  locale      String         @db.VarChar(10)
+  currency    String         @db.VarChar(3)
+  status      BusinessStatus @default(active)
+  email       String         @db.VarChar(255)
+  phone       String         @db.VarChar(63)
+  website     String?        @db.VarChar(255)
+  address     String         @db.VarChar(500)
+  city        String         @db.VarChar(255)
+  state       String?        @db.VarChar(255)
+  country     String         @db.VarChar(255)
+  postalCode  String?        @db.VarChar(20)
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relación 1:N con BusinessUser
+  businessUsers BusinessUser[]
+
+  @@map("business")
+}
+
 model User {
+  id              String     @id // Firebase UID
+  status          UserStatus @default(visible)
+  type            UserType   @default(customer)
+  firstName       String     @db.VarChar(255)
+  lastName        String     @db.VarChar(255)
+  email           String     @unique @db.VarChar(255)
+  birthday        DateTime?  @db.Date
+  phone           String?    @db.VarChar(63)
+  countryCode     String?    @db.VarChar(10)
+  note            String?    @db.Text
+  description     String?    @db.Text
+  pictureFullPath String?    @db.Text
+  timeZone        String?    @db.VarChar(255)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relación 1:N con BusinessUser
+  businessUsers BusinessUser[]
+
+  @@map("users")
+}
+
+// Tabla intermedia para la relación N:N entre User y Business
+model BusinessUser {
+  id         Int          @id @default(autoincrement())
+  userId     String       @map("user_id")
+  businessId Int          @map("business_id")
+  role       BusinessRole
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  // Relaciones N:1 hacia User y Business
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  // Índice único: un usuario solo puede tener un rol por negocio
+  @@unique([userId, businessId])
+  @@map("business_users")
+}
+
+// Casbin Policy Rules
+// Stores the policy rules for Casbin (p, p2, p3, etc.)
+model CasbinRule {
   id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  ptype String  @db.VarChar(100) // Policy type: p, g, g2, etc.
+  v0    String? @db.VarChar(100) // Subject (user ID or role)
+  v1    String? @db.VarChar(100) // Domain (business ID)
+  v2    String? @db.VarChar(100) // Object (resource)
+  v3    String? @db.VarChar(100) // Action (read, write, delete, etc.)
+  v4    String? @db.VarChar(100) // Additional field
+  v5    String? @db.VarChar(100) // Additional field
+
+  @@map("casbin_rule")
+  @@index([ptype])
+  @@index([v0, v1])
 }

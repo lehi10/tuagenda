@@ -1,28 +1,34 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthUser, AuthState } from "@/lib/auth/types";
+import { useQueryClient } from "@tanstack/react-query";
+import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
+import { getUserById } from "@/actions/user/get-user.action";
+import { createUserInDatabase } from "@/actions/user/create-user.action";
+import { logger } from "@/lib/logger";
 
 interface AuthContextValue extends AuthState {
   /**
    * Sign in with email and password
    */
-  signIn: (credentials: { email: string; password: string }) => Promise<void>;
+  signIn: (_credentials: { email: string; password: string }) => Promise<void>;
 
   /**
    * Sign up with email and password
+   * Returns the created user data
    */
-  signUp: (credentials: {
+  signUp: (_credentials: {
     email: string;
     password: string;
     displayName?: string;
-  }) => Promise<void>;
+  }) => Promise<FirebaseUserData>;
 
   /**
    * Sign in with Google
+   * Returns the authenticated user data
    */
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<FirebaseUserData>;
 
   /**
    * Sign out current user
@@ -32,15 +38,16 @@ interface AuthContextValue extends AuthState {
   /**
    * Send password reset email
    */
-  sendPasswordResetEmail: (email: string) => Promise<void>;
+  sendPasswordResetEmail: (_email: string) => Promise<void>;
 
   /**
    * Update user profile
    */
-  updateProfile: (data: {
+  updateProfile: (_data: {
     displayName?: string;
     photoURL?: string;
   }) => Promise<void>;
+  getUserAuthProviders: () => string[] | undefined;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -57,20 +64,88 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   const authService = getAuthService();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // Subscribe to auth state changes
-    const unsubscribe = authService.onAuthStateChanged((user) => {
-      setState((prev) => ({
-        ...prev,
-        user: user as AuthUser | null,
-        loading: false,
-      }));
+    const unsubscribe = authService.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is authenticated - clear all queries before loading new data
+        logger.info(
+          "AUTH_CONTEXT",
+          firebaseUser.uid,
+          "User authenticated, clearing query cache"
+        );
+        queryClient.clear();
+
+        // Load data from database
+        setState((prev) => ({ ...prev, loading: true }));
+
+        try {
+          // Try to get user from database using hexagonal architecture
+          const result = await getUserById(firebaseUser.uid);
+
+          if (result.success) {
+            // Successfully loaded user data from database
+            logger.info(
+              "AUTH_CONTEXT",
+              firebaseUser.uid,
+              "User data loaded from database"
+            );
+            setState({
+              user: result.user,
+              loading: false,
+              error: null,
+            });
+          } else {
+            // User not found in database after retries
+            logger.error(
+              "AUTH_CONTEXT",
+              firebaseUser.uid,
+              `User not found in database: ${result.error}`
+            );
+            setState({
+              user: null,
+              loading: false,
+              error: new Error(
+                "User data not found in database. Please try logging in again."
+              ),
+            });
+          }
+        } catch (error) {
+          logger.error(
+            "AUTH_CONTEXT",
+            firebaseUser.uid,
+            `Error loading user data: ${error instanceof Error ? error.message : String(error)}`
+          );
+          setState({
+            user: null,
+            loading: false,
+            error:
+              error instanceof Error
+                ? error
+                : new Error("Failed to load user data"),
+          });
+        }
+      } else {
+        // User is signed out or session expired - clear all queries and user data
+        logger.info(
+          "AUTH_CONTEXT",
+          "anonymous",
+          "User signed out, clearing query cache"
+        );
+        queryClient.clear();
+        setState({
+          user: null,
+          loading: false,
+          error: null,
+        });
+      }
     });
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, [authService]);
+  }, [authService, queryClient]);
 
   const signIn = async (credentials: {
     email: string;
@@ -94,11 +169,52 @@ export function AuthProvider({ children }: AuthProviderProps) {
     email: string;
     password: string;
     displayName?: string;
-  }): Promise<void> => {
+  }): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      await authService.signUpWithEmailAndPassword(credentials);
+
+      // Step 1: Create user in Firebase
+      const firebaseUser =
+        await authService.signUpWithEmailAndPassword(credentials);
+
+      // Step 2: Extract first and last name from displayName
+      const displayName = credentials.displayName || "";
+      const nameParts = displayName.trim().split(/\s+/);
+      const firstName = nameParts[0] || "User";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Step 3: Create user in database using hexagonal architecture
+      logger.info(
+        "AUTH_CONTEXT.signUp",
+        firebaseUser.uid,
+        `Creating user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
+      );
+
+      const dbResult = await createUserInDatabase({
+        id: firebaseUser.uid,
+        email: firebaseUser.email || "",
+        firstName,
+        lastName,
+        pictureFullPath: firebaseUser.photoURL,
+      });
+
+      if (!dbResult.success) {
+        logger.error(
+          "AUTH_CONTEXT.signUp",
+          firebaseUser.uid,
+          `Failed to create user in database: ${dbResult.error}`
+        );
+        throw new Error(`Failed to sync user data: ${dbResult.error}`);
+      }
+
+      logger.info(
+        "AUTH_CONTEXT.signUp",
+        dbResult.userId,
+        "User created successfully in database"
+      );
+
       // User state will be updated by onAuthStateChanged
+      return firebaseUser;
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -109,11 +225,61 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const signInWithGoogle = async (): Promise<void> => {
+  const signInWithGoogle = async (): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      await authService.signInWithGoogle();
+
+      // Step 1: Authenticate with Google (Firebase)
+      const firebaseUser = await authService.signInWithGoogle();
+
+      // Step 2: Check if user exists in database
+      const existingUser = await getUserById(firebaseUser.uid);
+
+      if (!existingUser.success) {
+        // Step 3: User doesn't exist, create in database using hexagonal architecture
+        const displayName = firebaseUser.displayName || "";
+        const nameParts = displayName.trim().split(/\s+/);
+        const firstName = nameParts[0] || "User";
+        const lastName = nameParts.slice(1).join(" ") || "";
+
+        logger.info(
+          "AUTH_CONTEXT.signInWithGoogle",
+          firebaseUser.uid,
+          `Creating new user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
+        );
+
+        const dbResult = await createUserInDatabase({
+          id: firebaseUser.uid,
+          email: firebaseUser.email || "",
+          firstName,
+          lastName,
+          pictureFullPath: firebaseUser.photoURL,
+        });
+
+        if (!dbResult.success) {
+          logger.error(
+            "AUTH_CONTEXT.signInWithGoogle",
+            firebaseUser.uid,
+            `Failed to create user in database: ${dbResult.error}`
+          );
+          throw new Error(`Failed to sync user data: ${dbResult.error}`);
+        }
+
+        logger.info(
+          "AUTH_CONTEXT.signInWithGoogle",
+          dbResult.userId,
+          "New user created successfully in database"
+        );
+      } else {
+        logger.info(
+          "AUTH_CONTEXT.signInWithGoogle",
+          firebaseUser.uid,
+          "Existing user found in database"
+        );
+      }
+
       // User state will be updated by onAuthStateChanged
+      return firebaseUser;
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -128,6 +294,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = async (): Promise<void> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
+
+      // Clear all queries before signing out
+      logger.info(
+        "AUTH_CONTEXT",
+        state.user?.id || "anonymous",
+        "Clearing query cache before sign out"
+      );
+      queryClient.clear();
+
       await authService.signOut();
       // User state will be updated by onAuthStateChanged
     } catch (error) {
@@ -161,9 +336,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prev) => ({ ...prev, error: null }));
       await authService.updateProfile(data);
-      // Refresh user data
-      const updatedUser = authService.getCurrentUser();
-      setState((prev) => ({ ...prev, user: updatedUser }));
+
+      // Reload user data from database to get updated information
+      const firebaseUser = authService.getCurrentUser();
+      if (firebaseUser) {
+        const result = await getUserById(firebaseUser.uid);
+        if (result.success) {
+          setState((prev) => ({ ...prev, user: result.user }));
+        }
+      }
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -174,6 +355,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const getUserAuthProviders = (): string[] | undefined => {
+    const firebaseUser = authService.getCurrentUser();
+    return firebaseUser?.providerData;
+  };
+
   const value: AuthContextValue = {
     ...state,
     signIn,
@@ -182,6 +368,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signOut,
     sendPasswordResetEmail,
     updateProfile,
+    getUserAuthProviders,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

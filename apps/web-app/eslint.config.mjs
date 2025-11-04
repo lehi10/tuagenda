@@ -37,13 +37,17 @@ export default [
       "prettier/prettier": "error",
       quotes: ["error", "double"],
       semi: ["error", "always"],
-      "no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-      ],
+      "no-unused-vars": "off", // Desactivar la regla de JS base
       "@typescript-eslint/no-unused-vars": [
         "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
     },

@@ -2,15 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { SignupForm } from "@/components/signup-form";
+import { SignupForm } from "@/components/auth/signup-form";
 import { PublicRoute } from "@/components/public-route";
-import { useTranslation } from "@/i18n";
 import Link from "next/link";
 import { Suspense } from "react";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { t } = useTranslation();
 
   return (
     <Suspense>
@@ -34,22 +32,6 @@ export default function SignupPage() {
               />
             </Link>
             <SignupForm
-              title={t.auth.createAccount}
-              description={t.auth.signUpWith}
-              emailLabel={t.auth.email}
-              passwordLabel={t.auth.password}
-              confirmPasswordLabel={t.auth.confirmPassword}
-              fullNameLabel={t.auth.fullName}
-              companyNameLabel={t.auth.companyName}
-              signupButtonText={t.auth.createAccount}
-              googleButtonText={t.auth.signUpWithGoogle}
-              orContinueText={t.auth.orContinueWith}
-              alreadyHaveAccountText={t.auth.alreadyHaveAccount}
-              loginText={t.auth.login}
-              termsText={t.auth.termsAndPrivacy}
-              termsOfServiceText={t.legal.termsOfService}
-              privacyPolicyText={t.legal.privacyPolicy}
-              andText={t.auth.and}
               onSignupSuccess={() => router.push("/dashboard")}
               onGoogleSignup={() => router.push("/dashboard")}
               onLogin={() => router.push("/login")}

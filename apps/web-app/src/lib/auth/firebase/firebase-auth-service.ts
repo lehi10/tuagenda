@@ -7,12 +7,15 @@ import {
   sendPasswordResetEmail as firebaseSendPasswordReset,
   updateProfile as firebaseUpdateProfile,
   onAuthStateChanged as firebaseOnAuthStateChanged,
+  updatePassword as firebaseUpdatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   User,
 } from "firebase/auth";
 import { getFirebaseAuth } from "./config";
 import {
   IAuthService,
-  AuthUser,
+  FirebaseUserData,
   EmailPasswordCredentials,
   SignUpCredentials,
 } from "../types";
@@ -25,23 +28,23 @@ export class FirebaseAuthService implements IAuthService {
   private auth = getFirebaseAuth();
 
   /**
-   * Convert Firebase User to our AuthUser type
+   * Convert Firebase User to our FirebaseUserData type
    */
-  private mapUser(user: User | null): AuthUser | null {
+  private mapUser(user: User | null): FirebaseUserData | null {
     if (!user) return null;
-
     return {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
+      providerData: user.providerData?.map((provider) => provider.providerId),
     };
   }
 
   async signInWithEmailAndPassword(
     credentials: EmailPasswordCredentials
-  ): Promise<AuthUser> {
+  ): Promise<FirebaseUserData> {
     try {
       const userCredential = await firebaseSignIn(
         this.auth,
@@ -63,7 +66,7 @@ export class FirebaseAuthService implements IAuthService {
 
   async signUpWithEmailAndPassword(
     credentials: SignUpCredentials
-  ): Promise<AuthUser> {
+  ): Promise<FirebaseUserData> {
     try {
       const userCredential = await firebaseSignUp(
         this.auth,
@@ -91,7 +94,7 @@ export class FirebaseAuthService implements IAuthService {
     }
   }
 
-  async signInWithGoogle(): Promise<AuthUser> {
+  async signInWithGoogle(): Promise<FirebaseUserData> {
     try {
       const provider = new GoogleAuthProvider();
       // Optional: Add custom parameters
@@ -124,11 +127,13 @@ export class FirebaseAuthService implements IAuthService {
     }
   }
 
-  getCurrentUser(): AuthUser | null {
+  getCurrentUser(): FirebaseUserData | null {
     return this.mapUser(this.auth.currentUser);
   }
 
-  onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void {
+  onAuthStateChanged(
+    callback: (_user: FirebaseUserData | null) => void
+  ): () => void {
     const unsubscribe = firebaseOnAuthStateChanged(this.auth, (user) => {
       callback(this.mapUser(user));
     });
@@ -161,6 +166,44 @@ export class FirebaseAuthService implements IAuthService {
         throw new Error(`Profile update failed: ${error.message}`);
       }
       throw new Error("Profile update failed: Unknown error");
+    }
+  }
+
+  /**
+   * Change user password
+   * Requires re-authentication with current password
+   */
+  async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    try {
+      const user = this.auth.currentUser;
+      if (!user || !user.email) {
+        throw new Error("No user is currently signed in");
+      }
+
+      // Re-authenticate user with current password
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await firebaseUpdatePassword(user, newPassword);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        // Handle specific Firebase errors
+        if (error.message.includes("wrong-password")) {
+          throw new Error("Current password is incorrect");
+        }
+        if (error.message.includes("weak-password")) {
+          throw new Error("New password is too weak");
+        }
+        throw new Error(`Password change failed: ${error.message}`);
+      }
+      throw new Error("Password change failed: Unknown error");
     }
   }
 }

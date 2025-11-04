@@ -1,0 +1,42 @@
+/**
+ * Prisma Client Singleton
+ *
+ * This module ensures only one instance of Prisma Client is created throughout
+ * the application lifecycle. This is especially important in development to avoid
+ * hitting connection limits during hot reloading.
+ *
+ * @see https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-articles/nextjs-prisma-client-dev-practices
+ */
+
+import { PrismaClient } from '@prisma/client';
+
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
+}
+
+/**
+ * Singleton instance of Prisma Client
+ *
+ * In development: Uses global object to persist instance across hot reloads
+ * In production: Creates a single instance
+ */
+export const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error'],
+  });
+
+// Store instance in global object during development
+if (process.env.NODE_ENV !== 'production') {
+  global.prisma = prisma;
+}
+
+/**
+ * Export all Prisma types for use throughout the application
+ * These types are automatically generated from your Prisma schema
+ */
+export * from '@prisma/client';

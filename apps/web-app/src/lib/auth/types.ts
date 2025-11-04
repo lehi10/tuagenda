@@ -1,12 +1,22 @@
+import type { UserProps } from "@/core/domain/entities/User";
+
 /**
- * User authentication data
+ * User authentication data from database
+ * This is the user object we use throughout the app after authentication
  */
-export interface AuthUser {
+export type User = UserProps;
+
+/**
+ * Firebase user data (internal use only)
+ * Used internally by auth service, not exposed to the app
+ */
+export interface FirebaseUserData {
   uid: string;
   email: string | null;
   displayName: string | null;
   photoURL: string | null;
   emailVerified: boolean;
+  providerData?: string[];
 }
 
 /**
@@ -26,9 +36,10 @@ export interface SignUpCredentials extends EmailPasswordCredentials {
 
 /**
  * Authentication state
+ * Uses database User type instead of Firebase user
  */
 export interface AuthState {
-  user: AuthUser | null;
+  user: User | null;
   loading: boolean;
   error: Error | null;
 }
@@ -36,24 +47,30 @@ export interface AuthState {
 /**
  * Abstract authentication service interface
  * This allows us to swap implementations (Firebase, Auth0, custom, etc.)
+ * Returns Firebase user data (not full app user data)
  */
 export interface IAuthService {
   /**
    * Sign in with email and password
+   * Returns Firebase user data only
    */
   signInWithEmailAndPassword(
-    credentials: EmailPasswordCredentials
-  ): Promise<AuthUser>;
+    _credentials: EmailPasswordCredentials
+  ): Promise<FirebaseUserData>;
 
   /**
    * Sign up with email and password
+   * Returns Firebase user data only
    */
-  signUpWithEmailAndPassword(credentials: SignUpCredentials): Promise<AuthUser>;
+  signUpWithEmailAndPassword(
+    _credentials: SignUpCredentials
+  ): Promise<FirebaseUserData>;
 
   /**
    * Sign in with Google
+   * Returns Firebase user data only
    */
-  signInWithGoogle(): Promise<AuthUser>;
+  signInWithGoogle(): Promise<FirebaseUserData>;
 
   /**
    * Sign out current user
@@ -61,25 +78,38 @@ export interface IAuthService {
   signOut(): Promise<void>;
 
   /**
-   * Get current authenticated user
+   * Get current authenticated user from Firebase
+   * Returns Firebase user data only
    */
-  getCurrentUser(): AuthUser | null;
+  getCurrentUser(): FirebaseUserData | null;
 
   /**
-   * Subscribe to authentication state changes
+   * Subscribe to Firebase authentication state changes
+   * Callback receives Firebase user data only
    */
-  onAuthStateChanged(callback: (user: AuthUser | null) => void): () => void;
+  onAuthStateChanged(
+    _callback: (_user: FirebaseUserData | null) => void
+  ): () => void;
 
   /**
    * Send password reset email
    */
-  sendPasswordResetEmail(email: string): Promise<void>;
+  sendPasswordResetEmail(_email: string): Promise<void>;
 
   /**
-   * Update user profile
+   * Update user profile in Firebase
    */
-  updateProfile(data: {
+  updateProfile(_data: {
     displayName?: string;
     photoURL?: string;
   }): Promise<void>;
+
+  /**
+   * Change user password
+   * Requires re-authentication with current password
+   */
+  changePassword?(
+    _currentPassword: string,
+    _newPassword: string
+  ): Promise<void>;
 }

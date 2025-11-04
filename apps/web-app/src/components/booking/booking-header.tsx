@@ -37,9 +37,9 @@ export function BookingHeader() {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
-  const userName = user?.displayName || user?.email?.split("@")[0] || "User";
+  const userName = user ? `${user.firstName} ${user.lastName}`.trim() : "User";
   const userEmail = user?.email || "";
-  const userAvatar = user?.photoURL || "";
+  const userAvatar = user?.pictureFullPath || "";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

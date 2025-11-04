@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   Bell,
   Briefcase,
+  Building2,
   Calendar,
   Clock,
   CreditCard,
@@ -12,12 +13,13 @@ import {
   Settings,
   UserCheck,
   Users,
+  UsersRound,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { LanguageSelector } from "@/components/language-selector";
-import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { BusinessSwitcher } from "@/components/business-switcher";
 import { useTranslation } from "@/i18n";
 import { useAuth } from "@/contexts";
 import {
@@ -38,9 +40,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: LayoutDashboard,
     },
     {
+      title: t.navigation.business,
+      url: "/business",
+      icon: Building2,
+    },
+    {
       title: t.navigation.employees,
       url: "/employees",
       icon: Users,
+    },
+    {
+      title: t.navigation.users,
+      url: "/users",
+      icon: UsersRound,
     },
     {
       title: t.navigation.calendar,
@@ -86,15 +98,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Prepare user data for NavUser component
   const userData = {
-    name: user?.displayName || user?.email?.split("@")[0] || "User",
+    name: user ? `${user.firstName} ${user.lastName}`.trim() : "User",
     email: user?.email || "",
-    avatar: user?.photoURL || "",
+    avatar: user?.pictureFullPath || "",
   };
 
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <OrganizationSwitcher />
+        <BusinessSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
