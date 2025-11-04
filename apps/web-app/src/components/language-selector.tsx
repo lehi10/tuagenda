@@ -15,6 +15,7 @@ import { Languages, Check } from "lucide-react";
 const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
   { code: "pt", name: "Português", flag: "🇧🇷" },
   { code: "qu", name: "Qhichwa", flag: "🇵🇪" },
 ] as const;
