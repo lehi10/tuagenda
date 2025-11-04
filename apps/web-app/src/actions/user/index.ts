@@ -10,3 +10,5 @@ export { searchUsers } from "./search-users.action";
 export { changePassword } from "./change-password.action";
 export { updateUserProfile } from "./update-user.action";
 export { getAllUsers } from "./get-all-users.action";
+export { updateUserAdmin } from "./update-user-admin.action";
+export { deleteUser } from "./delete-user.action";

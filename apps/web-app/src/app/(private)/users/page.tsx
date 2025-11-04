@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getAllUsers } from "@/actions/user";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getAllUsers, updateUserAdmin, deleteUser } from "@/actions/user";
+import type { UserListItem } from "@/actions/user/get-all-users.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,12 +20,28 @@ import {
   USER_STATUS_FILTERS,
 } from "./constants";
 import { UsersTable } from "./components/users-table";
+import { EditUserDialog } from "./components/edit-user-dialog";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
   const debouncedSearch = useDebounce(search, 300);
+  const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["users", debouncedSearch, typeFilter, statusFilter],
@@ -42,6 +59,81 @@ export default function UsersPage() {
       return result;
     },
   });
+
+  // Update user mutation
+  const updateMutation = useMutation({
+    mutationFn: async ({
+      userId,
+      data,
+    }: {
+      userId: string;
+      data: { type: string; status: string };
+    }) => {
+      const result = await updateUserAdmin({
+        userId,
+        type: data.type as any,
+        status: data.status as any,
+      });
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update user");
+      }
+
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User updated successfully");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update user");
+    },
+  });
+
+  // Delete user mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const result = await deleteUser({ userId });
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to delete user");
+      }
+
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User deleted successfully");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete user");
+    },
+  });
+
+  const handleEdit = (user: UserListItem) => {
+    setSelectedUser(user);
+    setEditDialogOpen(true);
+  };
+
+  const handleDelete = (user: UserListItem) => {
+    setSelectedUser(user);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleUpdateSubmit = async (
+    userId: string,
+    data: { type: string; status: string }
+  ) => {
+    await updateMutation.mutateAsync({ userId, data });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (selectedUser) {
+      await deleteMutation.mutateAsync(selectedUser.id);
+      setDeleteDialogOpen(false);
+      setSelectedUser(null);
+    }
+  };
 
 
   return (
@@ -139,10 +231,47 @@ export default function UsersPage() {
               No users found
             </div>
           ) : (
-            <UsersTable users={data.users} />
+            <UsersTable
+              users={data.users}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      <EditUserDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        user={selectedUser}
+        onSubmit={handleUpdateSubmit}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the user{" "}
+              <strong>
+                {selectedUser?.firstName} {selectedUser?.lastName}
+              </strong>{" "}
+              ({selectedUser?.email}). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
