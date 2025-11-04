@@ -3,13 +3,15 @@
 import React, { createContext, useContext, useState } from "react";
 import { en } from "./locales/en";
 import { es } from "./locales/es";
+import { pt } from "./locales/pt";
 import type { Translations } from "./locales/en";
 
-export type Locale = "en" | "es";
+export type Locale = "en" | "es" | "pt";
 
 const translations: Record<Locale, Translations> = {
   en,
   es,
+  pt,
 };
 
 interface I18nContextType {
