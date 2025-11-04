@@ -7,6 +7,7 @@ import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { LanguageSelector } from "@/components/language-selector";
 import { useAuth } from "@/contexts";
+import { useTranslation } from "@/i18n";
 import {
   Sidebar,
   SidebarContent,
@@ -20,17 +21,18 @@ export function ClientSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const navMain = [
     {
       id: "appointments",
-      title: "Mis Citas",
+      title: t.navigation.appointments,
       url: "/u/appointments",
       icon: Calendar,
     },
     {
       id: "profile",
-      title: "Mi Perfil",
+      title: t.common.myProfile,
       url: "/u/profile",
       icon: User,
     },
@@ -38,7 +40,7 @@ export function ClientSidebar({
 
   // Prepare user data for NavUser component
   const userData = {
-    name: user ? `${user.firstName} ${user.lastName}`.trim() : "Cliente",
+    name: user ? `${user.firstName} ${user.lastName}`.trim() : t.common.client,
     email: user?.email || "",
     avatar: user?.pictureFullPath || "",
   };

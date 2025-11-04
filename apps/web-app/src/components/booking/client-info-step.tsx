@@ -54,9 +54,9 @@ export function ClientInfoStep({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">Información de Contacto</h2>
+        <h2 className="text-2xl font-bold">{t.booking.contact.title}</h2>
         <p className="mt-2 text-muted-foreground">
-          Completa tus datos para confirmar la reserva
+          {t.booking.contact.description}
         </p>
       </div>
 
@@ -73,7 +73,7 @@ export function ClientInfoStep({
            */}
           <div className="mx-auto max-w-md rounded-lg border bg-muted/50 p-4">
             <p className="mb-3 text-center text-sm font-medium">
-              ¿Ya tienes una cuenta?
+              {t.booking.contact.alreadyHaveAccount}
             </p>
             <div className="flex flex-col gap-2">
               <Button
@@ -139,11 +139,11 @@ export function ClientInfoStep({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="fullName">Nombre Completo *</Label>
+            <Label htmlFor="fullName">{t.booking.contact.fullName}</Label>
             <Input
               id="fullName"
               type="text"
-              placeholder="Juan Pérez"
+              placeholder={t.booking.contact.placeholders.fullName}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -151,11 +151,11 @@ export function ClientInfoStep({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Teléfono *</Label>
+            <Label htmlFor="phone">{t.booking.contact.phoneNumber}</Label>
             <Input
               id="phone"
               type="tel"
-              placeholder="+51 999 888 777"
+              placeholder={t.booking.contact.placeholders.phone}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
@@ -163,11 +163,11 @@ export function ClientInfoStep({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Correo Electrónico *</Label>
+            <Label htmlFor="email">{t.booking.contact.emailAddress}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="correo@ejemplo.com"
+              placeholder={t.booking.contact.placeholders.email}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -203,35 +203,35 @@ export function ClientInfoStep({
                 htmlFor="createAccount"
                 className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Crear una cuenta para futuras reservas
+                {t.booking.contact.createAccountOption}
               </Label>
             </div>
 
             {createAccount && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="password">Contraseña *</Label>
+                  <Label htmlFor="password">{t.booking.contact.currentPassword}</Label>
                   <Input
                     id="password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t.booking.contact.placeholders.password}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required={createAccount}
                     minLength={6}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Mínimo 6 caracteres
+                    {t.booking.contact.passwordHelp}
                   </p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">
-                    Confirmar Contraseña *
+                    {t.booking.contact.confirmPassword}
                   </Label>
                   <Input
                     id="confirmPassword"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t.booking.contact.placeholders.password}
                     required={createAccount}
                     minLength={6}
                   />
@@ -242,7 +242,7 @@ export function ClientInfoStep({
         )}
 
         <Button type="submit" className="w-full" size="lg">
-          Continuar
+          {t.booking.summary.continue}
         </Button>
       </form>
     </div>

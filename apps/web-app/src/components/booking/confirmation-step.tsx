@@ -54,9 +54,9 @@ export function ConfirmationStep({
   const dateLocale = locale === "es" ? es : enUS;
 
   const paymentMethodLabels: Record<string, string> = {
-    card: "Tarjeta de Crédito/Débito",
-    onsite: "Pago en el Local",
-    "digital-wallet": "Billetera Digital (Yape/Plin)",
+    card: t.booking.payment.methods.card,
+    onsite: t.booking.payment.methods.cash,
+    "digital-wallet": t.booking.payment.methods.wallet,
   };
 
   // Generate Google Maps URL
@@ -85,10 +85,10 @@ export function ConfirmationStep({
           </div>
         </div>
         <h2 className="text-2xl font-bold text-green-600 dark:text-green-400">
-          ¡Reserva Confirmada!
+          {t.booking.confirmation.title}
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Tu cita ha sido agendada exitosamente
+          {t.booking.confirmation.subtitle}
         </p>
       </div>
 
@@ -99,7 +99,7 @@ export function ConfirmationStep({
           <Card>
             <CardContent className="p-6">
               <h3 className="mb-4 text-lg font-semibold">
-                Detalles de tu Reserva
+                {t.booking.confirmation.detailsTitle}
               </h3>
 
               <div className="space-y-3">
@@ -168,7 +168,7 @@ export function ConfirmationStep({
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-muted-foreground">
-                      Método de pago
+                      {t.booking.confirmation.paymentMethod}
                     </p>
                     <p className="font-medium text-sm">
                       {paymentMethodLabels[bookingSummary.paymentMethod] ||
@@ -187,25 +187,23 @@ export function ConfirmationStep({
                 <Mail className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
                 <div>
                   <p className="font-medium text-sm text-blue-900 dark:text-blue-100">
-                    Confirmación enviada
+                    {t.booking.confirmation.confirmationSent}
                   </p>
                   <p className="text-xs text-blue-700 dark:text-blue-300">
                     {isInPerson ? (
                       <>
-                        Hemos enviado un correo con todos los detalles de tu
-                        reserva a{" "}
+                        {t.booking.confirmation.confirmationEmail}{" "}
                         <span className="font-medium">
                           {bookingSummary.clientInfo.email}
                         </span>
                       </>
                     ) : (
                       <>
-                        Hemos enviado un correo a{" "}
+                        {t.booking.confirmation.confirmationEmail}{" "}
                         <span className="font-medium">
                           {bookingSummary.clientInfo.email}
                         </span>{" "}
-                        con la invitación para la videollamada. Puedes aceptar
-                        la invitación para que aparezca en tu calendario.
+                        {t.booking.confirmation.calendarInvitation}
                       </>
                     )}
                   </p>
@@ -224,7 +222,7 @@ export function ConfirmationStep({
                   <MapPin className="h-4 w-4 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm mb-1">Ubicación</h3>
+                  <h3 className="font-semibold text-sm mb-1">{t.booking.confirmation.locationTitle}</h3>
                   <p className="text-xs text-muted-foreground">
                     {bookingSummary?.businessLocation?.address}
                   </p>
@@ -253,7 +251,7 @@ export function ConfirmationStep({
                 className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
               >
                 <MapPin className="h-4 w-4" />
-                Cómo llegar (Google Maps)
+                {t.booking.confirmation.howToGetThere}
               </a>
             </CardContent>
           </Card>
@@ -264,7 +262,7 @@ export function ConfirmationStep({
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-sm mb-2 text-purple-900 dark:text-purple-100">
-                    Información importante para tu cita virtual
+                    {t.booking.confirmation.importantInfo}
                   </h3>
                 </div>
 
@@ -272,16 +270,14 @@ export function ConfirmationStep({
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Ingresa puntualmente:</strong> Las citas virtuales
-                      no pueden extenderse más allá del tiempo programado.
+                      <strong>{t.booking.confirmation.virtualInfo.punctuality}</strong> {t.booking.confirmation.virtualInfo.punctualityDescription}
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Duración:</strong> El profesional estará
-                      disponible únicamente durante los{" "}
+                      <strong>{t.booking.confirmation.virtualInfo.duration}</strong> {t.booking.confirmation.virtualInfo.durationDescription}{" "}
                       {bookingSummary.service.duration} minutos reservados.
                     </p>
                   </div>
@@ -289,16 +285,14 @@ export function ConfirmationStep({
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Enlace de videollamada:</strong> Revisa tu correo
-                      electrónico para acceder al enlace de la videollamada.
+                      <strong>{t.booking.confirmation.virtualInfo.videoCallLink}</strong> {t.booking.confirmation.virtualInfo.videoCallDescription}
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>Calendario:</strong> Acepta la invitación del
-                      calendario para recibir recordatorios automáticos.
+                      <strong>{t.booking.confirmation.virtualInfo.calendar}</strong> {t.booking.confirmation.virtualInfo.calendarDescription}
                     </p>
                   </div>
                 </div>
@@ -307,10 +301,10 @@ export function ConfirmationStep({
 
                 <div className="text-xs text-purple-800 dark:text-purple-200">
                   <p className="font-medium mb-1">
-                    ¿Necesitas reagendar o cancelar?
+                    {t.booking.confirmation.needToReschedule}
                   </p>
                   <p>
-                    Contáctanos al{" "}
+                    {t.booking.confirmation.contactUs}{" "}
                     <a
                       href={`tel:${bookingSummary.businessLocation?.address || ""}`}
                       className="font-semibold underline"
@@ -329,17 +323,17 @@ export function ConfirmationStep({
       {/* Actions */}
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
         <Button onClick={onBackToHome} size="lg" className="sm:min-w-[200px]">
-          Hacer otra Reserva
+          {t.booking.confirmation.makeAnotherBooking}
         </Button>
         <Button variant="outline" size="lg" className="sm:min-w-[200px]">
-          Ver mis Reservas
+          {t.booking.confirmation.viewMyBookings}
         </Button>
       </div>
 
       {/* Additional Info */}
       <div className="rounded-lg border bg-muted/50 p-3 text-center text-xs text-muted-foreground">
         <p>
-          ¿Necesitas cancelar o modificar tu cita? Contáctanos al{" "}
+          {t.booking.confirmation.needToCancelOrModify}{" "}
           <span className="font-medium">{bookingSummary.clientInfo.phone}</span>
         </p>
       </div>
