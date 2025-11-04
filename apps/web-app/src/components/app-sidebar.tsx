@@ -35,61 +35,73 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const navMain = [
     {
+      id: "dashboard",
       title: t.navigation.dashboard,
       url: "/dashboard",
       icon: LayoutDashboard,
     },
     {
+      id: "business",
       title: t.navigation.business,
       url: "/business",
       icon: Building2,
     },
     {
+      id: "employees",
       title: t.navigation.employees,
       url: "/employees",
       icon: Users,
     },
     {
+      id: "users",
       title: t.navigation.users,
       url: "/users",
       icon: UsersRound,
     },
     {
+      id: "calendar",
       title: t.navigation.calendar,
       url: "/calendar",
       icon: Calendar,
     },
     {
+      id: "appointments",
       title: t.navigation.appointments,
       url: "/appointments",
       icon: Clock,
     },
     {
+      id: "services",
       title: t.navigation.services,
       url: "/services",
       icon: Briefcase,
     },
     {
+      id: "locations",
       title: t.navigation.locations,
       url: "/locations",
       icon: MapPin,
     },
     {
+      id: "clients",
       title: t.navigation.clients,
       url: "/clients",
       icon: UserCheck,
     },
     {
+      id: "payments",
       title: t.navigation.payments,
       url: "/payments",
       icon: CreditCard,
     },
     {
+      id: "notifications",
       title: t.navigation.notifications,
       url: "/notifications",
       icon: Bell,
     },
     {
+      id: "settings",
       title: t.navigation.settings,
       url: "/settings",
       icon: Settings,
