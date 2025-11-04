@@ -45,17 +45,35 @@ export const USER_STATUS_CONFIG = {
 // Filter Options
 export const USER_TYPE_FILTERS = [
   { value: "all", label: "All Types" },
-  { value: UserType.SUPERADMIN, label: USER_TYPE_CONFIG[UserType.SUPERADMIN].label },
+  {
+    value: UserType.SUPERADMIN,
+    label: USER_TYPE_CONFIG[UserType.SUPERADMIN].label,
+  },
   { value: UserType.ADMIN, label: USER_TYPE_CONFIG[UserType.ADMIN].label },
-  { value: UserType.CUSTOMER, label: USER_TYPE_CONFIG[UserType.CUSTOMER].label },
+  {
+    value: UserType.CUSTOMER,
+    label: USER_TYPE_CONFIG[UserType.CUSTOMER].label,
+  },
 ] as const;
 
 export const USER_STATUS_FILTERS = [
   { value: "all", label: "All Status" },
-  { value: UserStatus.VISIBLE, label: USER_STATUS_CONFIG[UserStatus.VISIBLE].label },
-  { value: UserStatus.HIDDEN, label: USER_STATUS_CONFIG[UserStatus.HIDDEN].label },
-  { value: UserStatus.DISABLED, label: USER_STATUS_CONFIG[UserStatus.DISABLED].label },
-  { value: UserStatus.BLOCKED, label: USER_STATUS_CONFIG[UserStatus.BLOCKED].label },
+  {
+    value: UserStatus.VISIBLE,
+    label: USER_STATUS_CONFIG[UserStatus.VISIBLE].label,
+  },
+  {
+    value: UserStatus.HIDDEN,
+    label: USER_STATUS_CONFIG[UserStatus.HIDDEN].label,
+  },
+  {
+    value: UserStatus.DISABLED,
+    label: USER_STATUS_CONFIG[UserStatus.DISABLED].label,
+  },
+  {
+    value: UserStatus.BLOCKED,
+    label: USER_STATUS_CONFIG[UserStatus.BLOCKED].label,
+  },
 ] as const;
 
 // Default pagination

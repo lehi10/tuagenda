@@ -15,10 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Search, Users as UsersIcon, Loader2 } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  USER_TYPE_FILTERS,
-  USER_STATUS_FILTERS,
-} from "./constants";
+import { USER_TYPE_FILTERS, USER_STATUS_FILTERS } from "./constants";
 import { UsersTable } from "./components/users-table";
 import { EditUserDialog } from "./components/edit-user-dialog";
 import { toast } from "sonner";
@@ -136,7 +133,6 @@ export default function UsersPage() {
     }
   };
 
-
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -145,9 +141,7 @@ export default function UsersPage() {
           <UsersIcon className="h-8 w-8 text-primary" />
           <h1 className="text-3xl font-bold">Users</h1>
         </div>
-        <p className="text-muted-foreground">
-          Manage all users in the system
-        </p>
+        <p className="text-muted-foreground">Manage all users in the system</p>
       </div>
 
       {/* Stats */}
@@ -225,7 +219,8 @@ export default function UsersPage() {
             </div>
           ) : error ? (
             <div className="text-center py-8 text-red-600">
-              Error loading users: {error instanceof Error ? error.message : "Unknown error"}
+              Error loading users:{" "}
+              {error instanceof Error ? error.message : "Unknown error"}
             </div>
           ) : !data?.users || data.users.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">

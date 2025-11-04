@@ -148,7 +148,7 @@ export function EditUserDialog({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    Determines the user's access level in the system
+                    Determines the user&apos;s access level in the system
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -179,7 +179,7 @@ export function EditUserDialog({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    Controls the user's account state
+                    Controls the user&apos;s account state
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

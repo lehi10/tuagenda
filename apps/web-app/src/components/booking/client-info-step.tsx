@@ -210,7 +210,9 @@ export function ClientInfoStep({
             {createAccount && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="password">{t.booking.contact.currentPassword}</Label>
+                  <Label htmlFor="password">
+                    {t.booking.contact.currentPassword}
+                  </Label>
                   <Input
                     id="password"
                     type="password"

@@ -222,7 +222,9 @@ export function ConfirmationStep({
                   <MapPin className="h-4 w-4 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-sm mb-1">{t.booking.confirmation.locationTitle}</h3>
+                  <h3 className="font-semibold text-sm mb-1">
+                    {t.booking.confirmation.locationTitle}
+                  </h3>
                   <p className="text-xs text-muted-foreground">
                     {bookingSummary?.businessLocation?.address}
                   </p>
@@ -270,14 +272,23 @@ export function ConfirmationStep({
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>{t.booking.confirmation.virtualInfo.punctuality}</strong> {t.booking.confirmation.virtualInfo.punctualityDescription}
+                      <strong>
+                        {t.booking.confirmation.virtualInfo.punctuality}
+                      </strong>{" "}
+                      {
+                        t.booking.confirmation.virtualInfo
+                          .punctualityDescription
+                      }
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>{t.booking.confirmation.virtualInfo.duration}</strong> {t.booking.confirmation.virtualInfo.durationDescription}{" "}
+                      <strong>
+                        {t.booking.confirmation.virtualInfo.duration}
+                      </strong>{" "}
+                      {t.booking.confirmation.virtualInfo.durationDescription}{" "}
                       {bookingSummary.service.duration} minutos reservados.
                     </p>
                   </div>
@@ -285,14 +296,20 @@ export function ConfirmationStep({
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>{t.booking.confirmation.virtualInfo.videoCallLink}</strong> {t.booking.confirmation.virtualInfo.videoCallDescription}
+                      <strong>
+                        {t.booking.confirmation.virtualInfo.videoCallLink}
+                      </strong>{" "}
+                      {t.booking.confirmation.virtualInfo.videoCallDescription}
                     </p>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-600 dark:bg-purple-400" />
                     <p>
-                      <strong>{t.booking.confirmation.virtualInfo.calendar}</strong> {t.booking.confirmation.virtualInfo.calendarDescription}
+                      <strong>
+                        {t.booking.confirmation.virtualInfo.calendar}
+                      </strong>{" "}
+                      {t.booking.confirmation.virtualInfo.calendarDescription}
                     </p>
                   </div>
                 </div>

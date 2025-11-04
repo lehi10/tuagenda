@@ -87,7 +87,10 @@ export async function updateUserAdmin(
     });
 
     // Sync user type with authorization system if type changed
-    if (validatedData.type !== undefined && oldUserType !== validatedData.type) {
+    if (
+      validatedData.type !== undefined &&
+      oldUserType !== validatedData.type
+    ) {
       logger.info(
         "UpdateUserAdminAction",
         validatedData.userId,
