@@ -98,11 +98,11 @@ export async function syncUserRole(
 
 /**
  * Sync user type with authorization service
- * Called when promoting users to admin
+ * Called when promoting users to admin or superadmin
  */
 export async function syncUserType(
   userId: string,
-  userType: "admin" | "customer",
+  userType: "admin" | "customer" | "superadmin",
   operation: "add" | "remove"
 ): Promise<boolean> {
   const service = getAuthorizationService();

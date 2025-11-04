@@ -5,9 +5,8 @@
  * Provides methods to check permissions, manage roles, and policies.
  */
 
-import { newEnforcer, Enforcer } from "casbin";
+import { newEnforcer, Enforcer, newModel } from "casbin";
 import { PrismaClient } from "db";
-import path from "path";
 import { PrismaAdapter } from "./casbin/prisma-adapter";
 import {
   AuthorizationRequest,
@@ -17,6 +16,25 @@ import {
   Resource,
   Action,
 } from "./types";
+
+// Casbin model configuration as string (more reliable than file path)
+const CASBIN_MODEL = `
+[request_definition]
+r = sub, dom, obj, act
+
+[policy_definition]
+p = sub, dom, obj, act
+
+[role_definition]
+g = _, _, _
+g2 = _, _
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && r.dom == p.dom && r.obj == p.obj && r.act == p.act)
+`;
 
 export class AuthorizationService {
   private static instance: AuthorizationService;
@@ -42,9 +60,10 @@ export class AuthorizationService {
    */
   private async getEnforcer(): Promise<Enforcer> {
     if (!this.enforcer) {
-      const modelPath = path.join(__dirname, "casbin", "model.conf");
+      const model = newModel();
+      model.loadModelFromText(CASBIN_MODEL);
       const adapter = new PrismaAdapter(this.prisma);
-      this.enforcer = await newEnforcer(modelPath, adapter);
+      this.enforcer = await newEnforcer(model, adapter);
     }
     return this.enforcer;
   }
@@ -130,11 +149,18 @@ export class AuthorizationService {
   async assignUserType(userId: string, userType: UserType): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
+    console.log(`[Casbin] assignUserType: ${userId} -> ${userType}`);
+
     // Add grouping policy g2: user, userType
     const added = await enforcer.addNamedGroupingPolicy("g2", userId, userType);
 
+    console.log(`[Casbin] addNamedGroupingPolicy result: ${added}`);
+
     if (added) {
       await enforcer.savePolicy();
+      console.log(`[Casbin] Policy saved successfully`);
+    } else {
+      console.log(`[Casbin] Policy NOT added (might already exist)`);
     }
 
     return added;
@@ -146,13 +172,32 @@ export class AuthorizationService {
   async removeUserType(userId: string, userType: UserType): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
+    console.log(`[Casbin] removeUserType: ${userId} from ${userType}`);
+
     const removed = await enforcer.removeNamedGroupingPolicy("g2", userId, userType);
+
+    console.log(`[Casbin] removeNamedGroupingPolicy result: ${removed}`);
 
     if (removed) {
       await enforcer.savePolicy();
+      console.log(`[Casbin] Policy removal saved successfully`);
+    } else {
+      console.log(`[Casbin] Policy NOT removed (might not exist)`);
     }
 
     return removed;
+  }
+
+  /**
+   * Get user types for a user
+   */
+  async getUserTypes(userId: string): Promise<string[]> {
+    const enforcer = await this.getEnforcer();
+
+    // Get all g2 policies for this user
+    const policies = await enforcer.getFilteredNamedGroupingPolicy("g2", 0, userId);
+
+    return policies.map((policy) => policy[1]);
   }
 
   /**

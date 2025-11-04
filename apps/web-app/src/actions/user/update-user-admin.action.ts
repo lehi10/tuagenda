@@ -12,6 +12,7 @@
 import { prisma } from "db";
 import { logger } from "@/lib/logger";
 import { UserType, UserStatus } from "@/core/domain/entities/User";
+import { syncUserType } from "@/lib/auth/authorization";
 import { z } from "zod";
 
 const updateUserAdminSchema = z.object({
@@ -37,8 +38,12 @@ export async function updateUserAdmin(
   input: UpdateUserAdminInput
 ): Promise<UpdateUserAdminResult> {
   try {
+    console.log("updateUserAdmin called with:", input);
+
     // Validate input
     const validatedData = updateUserAdminSchema.parse(input);
+
+    console.log("Validated data:", validatedData);
 
     logger.info(
       "UpdateUserAdminAction",
@@ -65,11 +70,60 @@ export async function updateUserAdmin(
       };
     }
 
-    // Update user
+    // Get current user data if type is being updated
+    let oldUserType: UserType | undefined;
+    if (validatedData.type !== undefined) {
+      const currentUser = await prisma.user.findUnique({
+        where: { id: validatedData.userId },
+        select: { type: true },
+      });
+      oldUserType = currentUser?.type as UserType;
+    }
+
+    // Update user in database
     await prisma.user.update({
       where: { id: validatedData.userId },
       data: updateData,
     });
+
+    // Sync user type with authorization system if type changed
+    if (validatedData.type !== undefined && oldUserType !== validatedData.type) {
+      logger.info(
+        "UpdateUserAdminAction",
+        validatedData.userId,
+        `Syncing user type change: ${oldUserType} -> ${validatedData.type}`
+      );
+
+      // Remove old user type from authorization system (if not customer)
+      if (oldUserType && oldUserType !== UserType.CUSTOMER) {
+        console.log(`Removing old user type: ${oldUserType}`);
+        const removed = await syncUserType(
+          validatedData.userId,
+          oldUserType === UserType.ADMIN ? "admin" : "superadmin",
+          "remove"
+        );
+        console.log(`Old user type removed: ${removed}`);
+      }
+
+      // Add new user type to authorization system (if not customer)
+      if (validatedData.type !== UserType.CUSTOMER) {
+        console.log(`Adding new user type: ${validatedData.type}`);
+        const synced = await syncUserType(
+          validatedData.userId,
+          validatedData.type === UserType.ADMIN ? "admin" : "superadmin",
+          "add"
+        );
+        console.log(`New user type synced: ${synced}`);
+
+        if (!synced) {
+          logger.error(
+            "UpdateUserAdminAction",
+            validatedData.userId,
+            "Failed to sync user type with authorization service"
+          );
+        }
+      }
+    }
 
     logger.info(
       "UpdateUserAdminAction",

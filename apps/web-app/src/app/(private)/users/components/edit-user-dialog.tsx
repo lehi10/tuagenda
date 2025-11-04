@@ -6,7 +6,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -76,14 +76,14 @@ export function EditUserDialog({
   });
 
   // Reset form when user changes
-  useState(() => {
+  useEffect(() => {
     if (user) {
       form.reset({
         type: user.type as UserType,
         status: user.status as UserStatus,
       });
     }
-  });
+  }, [user, form]);
 
   const handleSubmit = async (values: EditUserFormValues) => {
     if (!user) return;

@@ -124,6 +124,7 @@ export default function UsersPage() {
     userId: string,
     data: { type: string; status: string }
   ) => {
+    console.log("Submitting update:", { userId, data });
     await updateMutation.mutateAsync({ userId, data });
   };
 

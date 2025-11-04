@@ -1,31 +1,78 @@
 /**
- * DEMO ONLY - User Permissions Viewer
+ * User Claims (Permissions) Viewer
  *
- * This is a POC/Demo page to visualize user permissions.
- * This file is isolated and can be safely deleted without affecting other code.
- *
- * To remove this demo:
- * 1. Delete this file: apps/web-app/src/app/(private)/demo-permissions/page.tsx
- * 2. Delete the action: apps/web-app/src/actions/demo/get-user-permissions.action.ts
+ * Page to visualize user permissions and claims in the system.
  */
 
-import { getUserPermissions } from "@/actions/demo/get-user-permissions.action";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts";
+import { getUserClaims } from "@/actions/demo/get-user-claims.action";
+import type { UserPermissionInfo } from "@/actions/demo/get-user-claims.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, User, Building2, Shield } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  User,
+  Building2,
+  Shield,
+  Loader2,
+} from "lucide-react";
 
-export default async function DemoPermissionsPage() {
-  const userInfo = await getUserPermissions();
+export default function ClaimsPage() {
+  const { user } = useAuth();
+  const [userInfo, setUserInfo] = useState<UserPermissionInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!userInfo) {
+  useEffect(() => {
+    async function loadClaims() {
+      if (!user?.id) {
+        setLoading(false);
+        setError("No user logged in");
+        return;
+      }
+      try {
+        const info = await getUserClaims(user);
+        setUserInfo(info);
+      } catch (err) {
+        console.error("[ClaimsPage] Failed to load claims:", err);
+        setError(err instanceof Error ? err.message : "Failed to load claims");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadClaims();
+  }, [user]);
+
+  if (loading) {
     return (
-      <div className="container mx-auto py-8">
+      <div className="p-6 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error || !userInfo) {
+    return (
+      <div className="p-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-red-600">No User Found</CardTitle>
+            <CardTitle className="text-red-600">
+              {error ? "Error" : "No User Found"}
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Could not load user permissions. Please make sure you are logged in.</p>
+            <p>
+              {error ||
+                "Could not load user permissions. Please make sure you are logged in."}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              User ID: {user?.id || "Not available"}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -33,7 +80,7 @@ export default async function DemoPermissionsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-2">
@@ -41,7 +88,8 @@ export default async function DemoPermissionsPage() {
           <h1 className="text-3xl font-bold">User Permissions Demo</h1>
         </div>
         <p className="text-muted-foreground">
-          This is a proof-of-concept page showing all permissions for the current user.
+          This is a proof-of-concept page showing all permissions for the
+          current user.
         </p>
         <Badge variant="outline" className="text-xs">
           DEMO ONLY - Safe to delete
@@ -59,7 +107,9 @@ export default async function DemoPermissionsPage() {
         <CardContent className="space-y-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">User ID</p>
+              <p className="text-sm font-medium text-muted-foreground">
+                User ID
+              </p>
               <p className="font-mono text-sm">{userInfo.userId}</p>
             </div>
             <div>
@@ -67,12 +117,16 @@ export default async function DemoPermissionsPage() {
               <p className="text-sm">{userInfo.email || "N/A"}</p>
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Display Name</p>
+              <p className="text-sm font-medium text-muted-foreground">
+                Display Name
+              </p>
               <p className="text-sm">{userInfo.displayName || "N/A"}</p>
             </div>
             {userInfo.userType && (
               <div>
-                <p className="text-sm font-medium text-muted-foreground">User Type</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  User Type
+                </p>
                 <Badge variant="secondary">{userInfo.userType}</Badge>
               </div>
             )}
@@ -113,16 +167,21 @@ export default async function DemoPermissionsPage() {
 
                   {/* Group permissions by resource */}
                   {Object.entries(
-                    business.permissions.reduce((acc, perm) => {
-                      if (!acc[perm.resource]) {
-                        acc[perm.resource] = [];
-                      }
-                      acc[perm.resource].push(perm);
-                      return acc;
-                    }, {} as Record<string, typeof business.permissions>)
+                    business.permissions.reduce(
+                      (acc, perm) => {
+                        if (!acc[perm.resource]) {
+                          acc[perm.resource] = [];
+                        }
+                        acc[perm.resource].push(perm);
+                        return acc;
+                      },
+                      {} as Record<string, typeof business.permissions>
+                    )
                   ).map(([resource, perms]) => (
                     <div key={resource} className="border rounded-lg p-4">
-                      <h5 className="font-medium mb-3 capitalize">{resource}</h5>
+                      <h5 className="font-medium mb-3 capitalize">
+                        {resource}
+                      </h5>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                         {perms.map((perm) => (
                           <div
@@ -157,12 +216,22 @@ export default async function DemoPermissionsPage() {
       <Card className="border-dashed">
         <CardContent className="py-4">
           <p className="text-sm text-muted-foreground">
-            <strong>Note:</strong> This is a demo page for testing and visualization purposes only.
-            To remove this feature:
+            <strong>Note:</strong> This is a demo page for testing and
+            visualization purposes only. To remove this feature:
           </p>
           <ol className="text-sm text-muted-foreground list-decimal list-inside mt-2 space-y-1">
-            <li>Delete: <code className="text-xs bg-muted px-1 py-0.5 rounded">apps/web-app/src/app/(private)/demo-permissions/page.tsx</code></li>
-            <li>Delete: <code className="text-xs bg-muted px-1 py-0.5 rounded">apps/web-app/src/actions/demo/get-user-permissions.action.ts</code></li>
+            <li>
+              Delete:{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                apps/web-app/src/app/(private)/demo-permissions/page.tsx
+              </code>
+            </li>
+            <li>
+              Delete:{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">
+                apps/web-app/src/actions/demo/get-user-permissions.action.ts
+              </code>
+            </li>
           </ol>
         </CardContent>
       </Card>
