@@ -89,8 +89,10 @@ export const es: Translations = {
     errors: {
       signInFailed: "Error al iniciar sesión. Por favor intenta de nuevo.",
       signUpFailed: "Error al crear cuenta. Por favor intenta de nuevo.",
-      googleSignInFailed: "Error al iniciar sesión con Google. Por favor intenta de nuevo.",
-      googleSignUpFailed: "Error al registrarse con Google. Por favor intenta de nuevo.",
+      googleSignInFailed:
+        "Error al iniciar sesión con Google. Por favor intenta de nuevo.",
+      googleSignUpFailed:
+        "Error al registrarse con Google. Por favor intenta de nuevo.",
       passwordsDoNotMatch: "Las contraseñas no coinciden",
       passwordTooShort: "La contraseña debe tener al menos 6 caracteres",
     },
@@ -195,8 +197,10 @@ export const es: Translations = {
       detailsTitle: "Detalles de tu Reserva",
       paymentMethod: "Método de pago",
       confirmationSent: "Confirmación enviada",
-      confirmationEmail: "Hemos enviado un correo con todos los detalles de tu reserva a",
-      calendarInvitation: "con la invitación para la videollamada. Puedes aceptar la invitación para que aparezca en tu calendario.",
+      confirmationEmail:
+        "Hemos enviado un correo con todos los detalles de tu reserva a",
+      calendarInvitation:
+        "con la invitación para la videollamada. Puedes aceptar la invitación para que aparezca en tu calendario.",
       importantInfo: "Información importante para tu cita virtual",
       locationTitle: "Ubicación",
       howToGetThere: "Cómo llegar (Google Maps)",
@@ -204,16 +208,21 @@ export const es: Translations = {
       contactUs: "Contáctanos al",
       makeAnotherBooking: "Hacer otra Reserva",
       viewMyBookings: "Ver mis Reservas",
-      needToCancelOrModify: "¿Necesitas cancelar o modificar tu cita? Contáctanos al",
+      needToCancelOrModify:
+        "¿Necesitas cancelar o modificar tu cita? Contáctanos al",
       virtualInfo: {
         punctuality: "Ingresa puntualmente:",
-        punctualityDescription: "Las citas virtuales no pueden extenderse más allá del tiempo programado.",
+        punctualityDescription:
+          "Las citas virtuales no pueden extenderse más allá del tiempo programado.",
         duration: "Duración:",
-        durationDescription: "El profesional estará disponible únicamente durante los",
+        durationDescription:
+          "El profesional estará disponible únicamente durante los",
         videoCallLink: "Enlace de videollamada:",
-        videoCallDescription: "Revisa tu correo electrónico para acceder al enlace de la videollamada.",
+        videoCallDescription:
+          "Revisa tu correo electrónico para acceder al enlace de la videollamada.",
         calendar: "Calendario:",
-        calendarDescription: "Acepta la invitación del calendario para recibir recordatorios automáticos.",
+        calendarDescription:
+          "Acepta la invitación del calendario para recibir recordatorios automáticos.",
       },
     },
   },
@@ -283,11 +292,14 @@ export const es: Translations = {
         fast: "Rápido y fácil",
         fastDescription: "Interfaz intuitiva que puedes aprender en minutos",
         secure: "Datos seguros",
-        secureDescription: "Tu información está protegida con los más altos estándares de seguridad",
+        secureDescription:
+          "Tu información está protegida con los más altos estándares de seguridad",
         grow: "Crece más rápido",
-        growDescription: "Herramientas diseñadas para ayudarte a escalar tu negocio",
+        growDescription:
+          "Herramientas diseñadas para ayudarte a escalar tu negocio",
         saveTime: "Ahorra tiempo",
-        saveTimeDescription: "Automatiza tareas repetitivas y concéntrate en lo importante",
+        saveTimeDescription:
+          "Automatiza tareas repetitivas y concéntrate en lo importante",
       },
       powerfullBadge: "Características poderosas",
     },
@@ -299,15 +311,18 @@ export const es: Translations = {
       steps: {
         createAccount: {
           title: "Crea tu cuenta",
-          description: "Regístrate gratis y comienza a configurar tu negocio en minutos",
+          description:
+            "Regístrate gratis y comienza a configurar tu negocio en minutos",
         },
         setupBusiness: {
           title: "Configura tu negocio",
-          description: "Agrega tus servicios, equipo y horarios de disponibilidad",
+          description:
+            "Agrega tus servicios, equipo y horarios de disponibilidad",
         },
         startManaging: {
           title: "Comienza a gestionar",
-          description: "Recibe reservas y gestiona tu negocio desde cualquier lugar",
+          description:
+            "Recibe reservas y gestiona tu negocio desde cualquier lugar",
         },
       },
     },

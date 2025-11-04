@@ -89,8 +89,10 @@ export const pt: Translations = {
     errors: {
       signInFailed: "Falha ao entrar. Por favor, tente novamente.",
       signUpFailed: "Falha ao criar conta. Por favor, tente novamente.",
-      googleSignInFailed: "Falha ao entrar com Google. Por favor, tente novamente.",
-      googleSignUpFailed: "Falha ao cadastrar com Google. Por favor, tente novamente.",
+      googleSignInFailed:
+        "Falha ao entrar com Google. Por favor, tente novamente.",
+      googleSignUpFailed:
+        "Falha ao cadastrar com Google. Por favor, tente novamente.",
       passwordsDoNotMatch: "As senhas não coincidem",
       passwordTooShort: "A senha deve ter pelo menos 6 caracteres",
     },
@@ -195,8 +197,10 @@ export const pt: Translations = {
       detailsTitle: "Detalhes da sua Reserva",
       paymentMethod: "Método de pagamento",
       confirmationSent: "Confirmação enviada",
-      confirmationEmail: "Enviamos um e-mail com todos os detalhes da sua reserva para",
-      calendarInvitation: "com o convite para a videochamada. Você pode aceitar o convite para que apareça no seu calendário.",
+      confirmationEmail:
+        "Enviamos um e-mail com todos os detalhes da sua reserva para",
+      calendarInvitation:
+        "com o convite para a videochamada. Você pode aceitar o convite para que apareça no seu calendário.",
       importantInfo: "Informações importantes sobre seu agendamento virtual",
       locationTitle: "Localização",
       howToGetThere: "Como chegar (Google Maps)",
@@ -204,16 +208,21 @@ export const pt: Translations = {
       contactUs: "Entre em contato conosco em",
       makeAnotherBooking: "Fazer Outra Reserva",
       viewMyBookings: "Ver Minhas Reservas",
-      needToCancelOrModify: "Precisa cancelar ou modificar seu agendamento? Entre em contato conosco em",
+      needToCancelOrModify:
+        "Precisa cancelar ou modificar seu agendamento? Entre em contato conosco em",
       virtualInfo: {
         punctuality: "Entre pontualmente:",
-        punctualityDescription: "Agendamentos virtuais não podem ser estendidos além do horário programado.",
+        punctualityDescription:
+          "Agendamentos virtuais não podem ser estendidos além do horário programado.",
         duration: "Duração:",
-        durationDescription: "O profissional estará disponível apenas durante o",
+        durationDescription:
+          "O profissional estará disponível apenas durante o",
         videoCallLink: "Link da videochamada:",
-        videoCallDescription: "Verifique seu e-mail para acessar o link da videochamada.",
+        videoCallDescription:
+          "Verifique seu e-mail para acessar o link da videochamada.",
         calendar: "Calendário:",
-        calendarDescription: "Aceite o convite do calendário para receber lembretes automáticos.",
+        calendarDescription:
+          "Aceite o convite do calendário para receber lembretes automáticos.",
       },
     },
   },
@@ -281,13 +290,17 @@ export const pt: Translations = {
       },
       quickFeatures: {
         fast: "Rápido e fácil",
-        fastDescription: "Interface intuitiva que você pode aprender em minutos",
+        fastDescription:
+          "Interface intuitiva que você pode aprender em minutos",
         secure: "Dados seguros",
-        secureDescription: "Suas informações estão protegidas com os mais altos padrões de segurança",
+        secureDescription:
+          "Suas informações estão protegidas com os mais altos padrões de segurança",
         grow: "Cresça mais rápido",
-        growDescription: "Ferramentas projetadas para ajudá-lo a escalar seu negócio",
+        growDescription:
+          "Ferramentas projetadas para ajudá-lo a escalar seu negócio",
         saveTime: "Economize tempo",
-        saveTimeDescription: "Automatize tarefas repetitivas e foque no que importa",
+        saveTimeDescription:
+          "Automatize tarefas repetitivas e foque no que importa",
       },
       powerfullBadge: "Recursos poderosos",
     },
@@ -299,15 +312,18 @@ export const pt: Translations = {
       steps: {
         createAccount: {
           title: "Crie sua conta",
-          description: "Cadastre-se gratuitamente e comece a configurar seu negócio em minutos",
+          description:
+            "Cadastre-se gratuitamente e comece a configurar seu negócio em minutos",
         },
         setupBusiness: {
           title: "Configure seu negócio",
-          description: "Adicione seus serviços, equipe e horários de disponibilidade",
+          description:
+            "Adicione seus serviços, equipe e horários de disponibilidade",
         },
         startManaging: {
           title: "Comece a gerenciar",
-          description: "Receba reservas e gerencie seu negócio de qualquer lugar",
+          description:
+            "Receba reservas e gerencie seu negócio de qualquer lugar",
         },
       },
     },
@@ -365,7 +381,8 @@ export const pt: Translations = {
         title: "Nossos Valores",
         value1: {
           title: "Simplicidade",
-          description: "Acreditamos que o software deve ser intuitivo e fácil de usar.",
+          description:
+            "Acreditamos que o software deve ser intuitivo e fácil de usar.",
         },
         value2: {
           title: "Inovação",
