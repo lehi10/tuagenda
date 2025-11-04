@@ -23,11 +23,13 @@ export function ClientSidebar({
 
   const navMain = [
     {
+      id: "appointments",
       title: "Mis Citas",
       url: "/u/appointments",
       icon: Calendar,
     },
     {
+      id: "profile",
       title: "Mi Perfil",
       url: "/u/profile",
       icon: User,

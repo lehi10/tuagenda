@@ -87,9 +87,12 @@ export const qu: Translations = {
       "Correoykiman kachaykuykiku yaykuna rimayta musuqmanta churanaykipaq.",
     errors: {
       signInFailed: "Mana atinichu yaykuyta. Ama hina kaspa, wakmanta ruwakuy.",
-      signUpFailed: "Mana atinichu cuentata ruwwyta. Ama hina kaspa, wakmanta ruwakuy.",
-      googleSignInFailed: "Mana atinichu Googlewan yaykuyta. Ama hina kaspa, wakmanta ruwakuy.",
-      googleSignUpFailed: "Mana atinichu Googlewan qillqakuyta. Ama hina kaspa, wakmanta ruwakuy.",
+      signUpFailed:
+        "Mana atinichu cuentata ruwwyta. Ama hina kaspa, wakmanta ruwakuy.",
+      googleSignInFailed:
+        "Mana atinichu Googlewan yaykuyta. Ama hina kaspa, wakmanta ruwakuy.",
+      googleSignUpFailed:
+        "Mana atinichu Googlewan qillqakuyta. Ama hina kaspa, wakmanta ruwakuy.",
       passwordsDoNotMatch: "Yaykuna rimaykuna mana tupanqachu",
       passwordTooShort: "Yaykuna rimayqa suqta letraswan kanman tiyan",
     },
@@ -202,7 +205,8 @@ export const qu: Translations = {
       contactUs: "Kaywan willaway",
       makeAnotherBooking: "Huk Reservata Ruway",
       viewMyBookings: "Reservasniyta Qaway",
-      needToCancelOrModify: "¿Citaykita qichuyta utaq allichayta munanayachu? Kaywan willaway",
+      needToCancelOrModify:
+        "¿Citaykita qichuyta utaq allichayta munanayachu? Kaywan willaway",
     },
   },
   landing: {
@@ -271,11 +275,13 @@ export const qu: Translations = {
         fast: "Utqaylla chaymanta facil",
         fastDescription: "Interfaz intuitiva minutuskunapi yachayta atiwaq",
         secure: "Willaykuna allchasqa",
-        secureDescription: "Willayniykikunaqa aswan hatun seguridadpa estandarkunawan waqaychasqa",
+        secureDescription:
+          "Willayniykikunaqa aswan hatun seguridadpa estandarkunawan waqaychasqa",
         grow: "Aswan utqaylla wiñay",
         growDescription: "Yaramientokuna negocioykita aswan hatun ruwanapaq",
         saveTime: "Pachata waqaychay",
-        saveTimeDescription: "Kuti ruwaykuna automatizay chaymanta importanteman qhaway",
+        saveTimeDescription:
+          "Kuti ruwaykuna automatizay chaymanta importanteman qhaway",
       },
       powerfullBadge: "Kallpasapa ruwanakuna",
     },
@@ -287,15 +293,18 @@ export const qu: Translations = {
       steps: {
         createAccount: {
           title: "Cuentaykita ruway",
-          description: "Mana qullqiyuq qillqakuy chaymanta minutuskunapi negocioykita allichay qallariy",
+          description:
+            "Mana qullqiyuq qillqakuy chaymanta minutuskunapi negocioykita allichay qallariy",
         },
         setupBusiness: {
           title: "Negocioykita allichay",
-          description: "Yanapakuykunaykita, equipoykita chaymanta kashaypa horariokunata yapay",
+          description:
+            "Yanapakuykunaykita, equipoykita chaymanta kashaypa horariokunata yapay",
         },
         startManaging: {
           title: "Kamachiy qallariy",
-          description: "Reservakuna chaskiy chaymanta maymantataq negocioykita kamachiy",
+          description:
+            "Reservakuna chaskiy chaymanta maymantataq negocioykita kamachiy",
         },
       },
     },
@@ -363,7 +372,8 @@ export const qu: Translations = {
         },
         value3: {
           title: "Yanapakuy",
-          description: "Equiponchikqa sapa kuti listo allin ruwanaykipaq yanapanaykipaq.",
+          description:
+            "Equiponchikqa sapa kuti listo allin ruwanaykipaq yanapanaykipaq.",
         },
       },
     },
@@ -525,7 +535,8 @@ export const qu: Translations = {
         personalInfoDescription:
           "Personal willakuyniykita chaymanta willay willaykunaykita musuqchay",
         security: "Yaykuna Rimayta Tikray",
-        securityDescription: "Yaykuna rimayniykita musuqchay cuentaykita allin waqaychanaykipaq",
+        securityDescription:
+          "Yaykuna rimayniykita musuqchay cuentaykita allin waqaychanaykipaq",
       },
       fields: {
         firstName: "Ñawpaq Suti",
