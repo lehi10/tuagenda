@@ -156,14 +156,19 @@ export function SettingsTabs() {
               <Label htmlFor="language">{t.pages.settings.language}</Label>
               <Select
                 value={locale}
-                onValueChange={(value) => setLocale(value as "en" | "es")}
+                onValueChange={(value) =>
+                  setLocale(value as "en" | "es" | "fr" | "pt" | "qu" | "gn")
+                }
               >
                 <SelectTrigger id="language">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Español</SelectItem>
+                  <SelectItem value="en">English 🇺🇸</SelectItem>
+                  <SelectItem value="es">Español 🇪🇸</SelectItem>
+                  <SelectItem value="fr">Français 🇫🇷</SelectItem>
+                  <SelectItem value="pt">Português 🇧🇷</SelectItem>
+                  <SelectItem value="qu">Qhichwa 🇵🇪</SelectItem>
                 </SelectContent>
               </Select>
             </div>

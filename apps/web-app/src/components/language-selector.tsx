@@ -15,6 +15,7 @@ import { Languages, Check } from "lucide-react";
 const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "es", name: "Español", flag: "🇪🇸" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
   { code: "pt", name: "Português", flag: "🇧🇷" },
   { code: "qu", name: "Qhichwa", flag: "🇵🇪" },
 ] as const;
@@ -22,7 +23,8 @@ const languages = [
 export function LanguageSelector() {
   const { locale, setLocale } = useTranslation();
 
-  const currentLanguage = languages.find((lang) => lang.code === locale) || languages[1];
+  const currentLanguage =
+    languages.find((lang) => lang.code === locale) || languages[1];
 
   return (
     <DropdownMenu>

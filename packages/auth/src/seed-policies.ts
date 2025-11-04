@@ -31,7 +31,6 @@ async function seedPolicies() {
     console.log("  - Read access to employees");
     console.log("  - Create, read, update appointments");
     console.log("  - Read access to settings");
-
   } catch (error) {
     console.error("❌ Error seeding policies:", error);
     throw error;

@@ -86,7 +86,7 @@ export class AuthorizationService {
   async assignRole(
     userId: string,
     role: Role,
-    businessId: string
+    businessId: string,
   ): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
@@ -106,11 +106,15 @@ export class AuthorizationService {
   async removeRole(
     userId: string,
     role: Role,
-    businessId: string
+    businessId: string,
   ): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
-    const removed = await enforcer.removeGroupingPolicy(userId, role, businessId);
+    const removed = await enforcer.removeGroupingPolicy(
+      userId,
+      role,
+      businessId,
+    );
 
     if (removed) {
       await enforcer.savePolicy();
@@ -126,7 +130,7 @@ export class AuthorizationService {
     userId: string,
     oldRole: Role,
     newRole: Role,
-    businessId: string
+    businessId: string,
   ): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
@@ -174,7 +178,11 @@ export class AuthorizationService {
 
     console.log(`[Casbin] removeUserType: ${userId} from ${userType}`);
 
-    const removed = await enforcer.removeNamedGroupingPolicy("g2", userId, userType);
+    const removed = await enforcer.removeNamedGroupingPolicy(
+      "g2",
+      userId,
+      userType,
+    );
 
     console.log(`[Casbin] removeNamedGroupingPolicy result: ${removed}`);
 
@@ -195,7 +203,11 @@ export class AuthorizationService {
     const enforcer = await this.getEnforcer();
 
     // Get all g2 policies for this user
-    const policies = await enforcer.getFilteredNamedGroupingPolicy("g2", 0, userId);
+    const policies = await enforcer.getFilteredNamedGroupingPolicy(
+      "g2",
+      0,
+      userId,
+    );
 
     return policies.map((policy) => policy[1]);
   }
@@ -225,7 +237,12 @@ export class AuthorizationService {
 
     const { role, businessId, resource, action } = policy;
 
-    const removed = await enforcer.removePolicy(role, businessId, resource, action);
+    const removed = await enforcer.removePolicy(
+      role,
+      businessId,
+      resource,
+      action,
+    );
 
     if (removed) {
       await enforcer.savePolicy();
@@ -239,7 +256,7 @@ export class AuthorizationService {
    */
   async getRolesForUserInBusiness(
     userId: string,
-    businessId: string
+    businessId: string,
   ): Promise<string[]> {
     const enforcer = await this.getEnforcer();
 
@@ -254,7 +271,7 @@ export class AuthorizationService {
    */
   async getUsersForRoleInBusiness(
     role: Role,
-    businessId: string
+    businessId: string,
   ): Promise<string[]> {
     const enforcer = await this.getEnforcer();
 
@@ -268,7 +285,7 @@ export class AuthorizationService {
    */
   async removeUserFromBusiness(
     userId: string,
-    businessId: string
+    businessId: string,
   ): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
@@ -277,7 +294,7 @@ export class AuthorizationService {
       0,
       userId,
       "",
-      businessId
+      businessId,
     );
 
     if (removed) {

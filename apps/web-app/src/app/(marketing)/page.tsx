@@ -254,7 +254,8 @@ export default function Home() {
               {
                 icon: Clock,
                 title: t.landing.features.quickFeatures.saveTime,
-                description: t.landing.features.quickFeatures.saveTimeDescription,
+                description:
+                  t.landing.features.quickFeatures.saveTimeDescription,
                 color: "text-purple-500",
               },
             ].map((item, index) => (
@@ -359,17 +360,20 @@ export default function Home() {
                 {
                   step: "01",
                   title: t.landing.howItWorks.steps.createAccount.title,
-                  description: t.landing.howItWorks.steps.createAccount.description,
+                  description:
+                    t.landing.howItWorks.steps.createAccount.description,
                 },
                 {
                   step: "02",
                   title: t.landing.howItWorks.steps.setupBusiness.title,
-                  description: t.landing.howItWorks.steps.setupBusiness.description,
+                  description:
+                    t.landing.howItWorks.steps.setupBusiness.description,
                 },
                 {
                   step: "03",
                   title: t.landing.howItWorks.steps.startManaging.title,
-                  description: t.landing.howItWorks.steps.startManaging.description,
+                  description:
+                    t.landing.howItWorks.steps.startManaging.description,
                 },
               ].map((item, index) => (
                 <ScrollReveal key={index} delay={index * 150}>
@@ -399,7 +403,8 @@ export default function Home() {
                                 </span>
                               </div>
                               <p className="text-xs text-muted-foreground sm:text-sm">
-                                {t.landing.howItWorks.illustrationPlaceholder} {item.step}
+                                {t.landing.howItWorks.illustrationPlaceholder}{" "}
+                                {item.step}
                               </p>
                             </div>
                           </div>
