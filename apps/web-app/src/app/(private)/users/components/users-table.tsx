@@ -57,7 +57,7 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
 
   const formatPhone = (phone: string | null, countryCode: string | null) => {
     if (!phone) return null;
-    return countryCode ? `+${countryCode} ${phone}` : phone;
+    return countryCode ? `${countryCode} ${phone}` : phone;
   };
 
   const formatDate = (date: Date) => {
@@ -69,77 +69,96 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-lg border overflow-hidden">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Joined</TableHead>
-            <TableHead className="w-[70px]">Actions</TableHead>
+        <TableHeader className="bg-muted/50">
+          <TableRow className="hover:bg-muted/50">
+            <TableHead className="font-semibold">User</TableHead>
+            <TableHead className="font-semibold">Email</TableHead>
+            <TableHead className="font-semibold">Phone</TableHead>
+            <TableHead className="font-semibold">Type</TableHead>
+            <TableHead className="font-semibold">Status</TableHead>
+            <TableHead className="font-semibold">Joined</TableHead>
+            <TableHead className="w-[70px] text-right font-semibold">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow key={user.id}>
+            <TableRow
+              key={user.id}
+              className="hover:bg-muted/50 transition-colors"
+            >
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="h-10 w-10 ring-2 ring-background">
                     <AvatarImage src={user.pictureFullPath || undefined} />
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                       {getInitials(user.firstName, user.lastName)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">
+                    <p className="font-medium leading-tight">
                       {user.firstName} {user.lastName}
                     </p>
-                    <p className="text-xs text-muted-foreground font-mono">
-                      {user.id.slice(0, 8)}...
+                    <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                      ID: {user.id.slice(0, 8)}...
                     </p>
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{user.email}</TableCell>
               <TableCell>
-                {formatPhone(user.phone, user.countryCode) || (
-                  <span className="text-muted-foreground">N/A</span>
+                <div className="flex flex-col">
+                  <span className="text-sm">{user.email}</span>
+                </div>
+              </TableCell>
+              <TableCell>
+                {formatPhone(user.phone, user.countryCode) ? (
+                  <span className="text-sm font-mono">
+                    {formatPhone(user.phone, user.countryCode)}
+                  </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground italic">Not provided</span>
                 )}
               </TableCell>
               <TableCell>
-                <Badge variant={getTypeBadgeVariant(user.type)}>
+                <Badge variant={getTypeBadgeVariant(user.type)} className="font-medium">
                   {formatType(user.type)}
                 </Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={getStatusBadgeVariant(user.status)}>
+                <Badge variant={getStatusBadgeVariant(user.status)} className="font-medium">
                   {formatStatus(user.status)}
                 </Badge>
               </TableCell>
-              <TableCell className="text-muted-foreground">
-                {formatDate(user.createdAt)}
-              </TableCell>
               <TableCell>
+                <span className="text-sm text-muted-foreground">
+                  {formatDate(user.createdAt)}
+                </span>
+              </TableCell>
+              <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button
+                      variant="ghost"
+                      className="h-8 w-8 p-0 hover:bg-muted transition-colors"
+                    >
                       <span className="sr-only">Open menu</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuContent align="end" className="w-40">
+                    <DropdownMenuLabel className="text-xs font-semibold">Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onEdit(user)}>
+                    <DropdownMenuItem
+                      onClick={() => onEdit(user)}
+                      className="cursor-pointer"
+                    >
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDelete(user)}
-                      className="text-red-600"
+                      className="text-red-600 focus:text-red-600 cursor-pointer"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete

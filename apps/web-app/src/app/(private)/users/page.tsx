@@ -6,6 +6,7 @@ import { getAllUsers, updateUserAdmin, deleteUser } from "@/actions/user";
 import type { UserListItem } from "@/actions/user/get-all-users.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Users as UsersIcon, Loader2 } from "lucide-react";
+import { Search, Users as UsersIcon, Loader2, UserCheck, UserX, Shield, Activity, UserPlus } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { USER_TYPE_FILTERS, USER_STATUS_FILTERS } from "./constants";
 import { UsersTable } from "./components/users-table";
@@ -135,31 +136,105 @@ export default function UsersPage() {
     }
   };
 
+  // Calculate stats
+  const activeUsers = data?.users?.filter(u => u.status === 'active').length || 0;
+  const inactiveUsers = data?.users?.filter(u => u.status === 'inactive').length || 0;
+  const adminUsers = data?.users?.filter(u => u.type === 'admin').length || 0;
+  const totalUsers = data?.total || 0;
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <UsersIcon className="h-8 w-8 text-primary" />
-          <h1 className="text-3xl font-bold">Users</h1>
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <UsersIcon className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+            <p className="text-muted-foreground">Manage all users in the system</p>
+          </div>
         </div>
-        <p className="text-muted-foreground">Manage all users in the system</p>
       </div>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <UsersIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {isLoading ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-              ) : (
-                data?.total || 0
-              )}
+        <Card className="border-blue-100 dark:border-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800/30 transition-colors">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Total Users</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {isLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    totalUsers
+                  )}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-blue-50 dark:bg-blue-950/30 rounded-xl flex items-center justify-center">
+                <UsersIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-green-100 dark:border-green-900/20 hover:border-green-200 dark:hover:border-green-800/30 transition-colors">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Active</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {isLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    activeUsers
+                  )}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-green-50 dark:bg-green-950/30 rounded-xl flex items-center justify-center">
+                <UserCheck className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-amber-100 dark:border-amber-900/20 hover:border-amber-200 dark:hover:border-amber-800/30 transition-colors">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Inactive</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {isLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    inactiveUsers
+                  )}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-amber-50 dark:bg-amber-950/30 rounded-xl flex items-center justify-center">
+                <UserX className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-purple-100 dark:border-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800/30 transition-colors">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Admins</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {isLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    adminUsers
+                  )}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-purple-50 dark:bg-purple-950/30 rounded-xl flex items-center justify-center">
+                <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -167,44 +242,60 @@ export default function UsersPage() {
 
       {/* Filters */}
       <Card>
-        <CardHeader>
-          <CardTitle>Filters</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name or email..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9"
-              />
+        <CardContent className="p-6">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium text-foreground">Search & Filter</h3>
+              {(search || typeFilter !== "all" || statusFilter !== "all") && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSearch("");
+                    setTypeFilter("all");
+                    setStatusFilter("all");
+                  }}
+                  className="h-8"
+                >
+                  Clear all
+                </Button>
+              )}
             </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="User Type" />
-              </SelectTrigger>
-              <SelectContent>
-                {USER_TYPE_FILTERS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                {USER_STATUS_FILTERS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="grid gap-3 md:grid-cols-[2fr_1fr_1fr]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by name or email..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All types" />
+                </SelectTrigger>
+                <SelectContent>
+                  {USER_TYPE_FILTERS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All statuses" />
+                </SelectTrigger>
+                <SelectContent>
+                  {USER_STATUS_FILTERS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -212,21 +303,50 @@ export default function UsersPage() {
       {/* Users Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Users List</CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle className="text-lg">Users List</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                {isLoading ? (
+                  "Loading users..."
+                ) : (
+                  <>
+                    Showing {data?.users?.length || 0} of {totalUsers} users
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+              <p className="text-sm text-muted-foreground">Loading users...</p>
             </div>
           ) : error ? (
-            <div className="text-center py-8 text-red-600">
-              Error loading users:{" "}
-              {error instanceof Error ? error.message : "Unknown error"}
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-full mb-4">
+                <UserX className="h-8 w-8 text-red-600 dark:text-red-400" />
+              </div>
+              <p className="text-lg font-semibold text-red-600 mb-2">
+                Error loading users
+              </p>
+              <p className="text-sm text-muted-foreground text-center max-w-md">
+                {error instanceof Error ? error.message : "Unknown error"}
+              </p>
             </div>
           ) : !data?.users || data.users.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No users found
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="p-3 bg-muted rounded-full mb-4">
+                <UserPlus className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <p className="text-lg font-semibold mb-2">No users found</p>
+              <p className="text-sm text-muted-foreground text-center max-w-md">
+                {search || typeFilter !== "all" || statusFilter !== "all"
+                  ? "Try adjusting your filters or search query to find what you're looking for."
+                  : "There are no users in the system yet."}
+              </p>
             </div>
           ) : (
             <UsersTable
