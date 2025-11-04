@@ -13,7 +13,10 @@ import {
   DeleteBusinessUserUseCase,
   DeleteBusinessUserInput,
 } from "@/core/application/use-cases/business-user";
-import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
+import {
+  PrismaBusinessUserRepository,
+  PrismaUserRepository,
+} from "@/infrastructure/repositories";
 
 /**
  * Result type for the delete business-user action
@@ -46,8 +49,10 @@ export async function deleteBusinessUser(
 ): Promise<DeleteBusinessUserResult> {
   // Dependency injection: Create repository and use case
   const businessUserRepository = new PrismaBusinessUserRepository();
+  const userRepository = new PrismaUserRepository();
   const deleteBusinessUserUseCase = new DeleteBusinessUserUseCase(
-    businessUserRepository
+    businessUserRepository,
+    userRepository
   );
 
   // Execute use case

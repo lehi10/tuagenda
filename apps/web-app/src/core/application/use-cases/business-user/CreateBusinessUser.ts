@@ -13,6 +13,7 @@ import {
   BusinessUser,
   BusinessRole,
 } from "@/core/domain/entities/BusinessUser";
+import { IUserRepository } from "@/core/domain/repositories/IUserRepository";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -46,10 +47,12 @@ export interface CreateBusinessUserResult {
  * 2. Check if relationship already exists
  * 3. Create domain entity
  * 4. Persist using repository
+ * 5. Promote user to admin if not already
  */
 export class CreateBusinessUserUseCase {
   constructor(
-    private readonly businessUserRepository: IBusinessUserRepository
+    private readonly businessUserRepository: IBusinessUserRepository,
+    private readonly userRepository: IUserRepository
   ) {}
 
   async execute(input: unknown): Promise<CreateBusinessUserResult> {
@@ -115,6 +118,45 @@ export class CreateBusinessUserUseCase {
         validatedData.userId,
         `BusinessUser created successfully with ID: ${createdBusinessUser.id}`
       );
+
+      // 5. Promote user to admin if not already
+      logger.info(
+        "CreateBusinessUserUseCase",
+        validatedData.userId,
+        "Checking user type to promote to admin if needed"
+      );
+
+      const user = await this.userRepository.findById(validatedData.userId);
+
+      if (!user) {
+        logger.error(
+          "CreateBusinessUserUseCase",
+          validatedData.userId,
+          "User not found after creating business relationship"
+        );
+        // Relationship was created but user not found - this is an inconsistency
+        // We still return success for the business relationship creation
+      } else if (!user.isAdmin()) {
+        logger.info(
+          "CreateBusinessUserUseCase",
+          validatedData.userId,
+          `Promoting user from ${user.type} to admin`
+        );
+        user.promoteToAdmin();
+        await this.userRepository.update(user);
+
+        logger.info(
+          "CreateBusinessUserUseCase",
+          validatedData.userId,
+          "User successfully promoted to admin"
+        );
+      } else {
+        logger.info(
+          "CreateBusinessUserUseCase",
+          validatedData.userId,
+          "User is already admin, no promotion needed"
+        );
+      }
 
       return {
         success: true,

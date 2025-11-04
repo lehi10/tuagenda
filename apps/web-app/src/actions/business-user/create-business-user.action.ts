@@ -9,12 +9,15 @@
 
 "use server";
 
-import { BusinessRole, BusinessUserProps } from "@/core/domain/entities";
+import { BusinessUserProps } from "@/core/domain/entities";
 import {
   CreateBusinessUserUseCase,
   CreateBusinessUserInput,
 } from "@/core/application/use-cases/business-user";
-import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
+import {
+  PrismaBusinessUserRepository,
+  PrismaUserRepository,
+} from "@/infrastructure/repositories";
 
 /**
  * Result type for the create business-user action
@@ -51,8 +54,10 @@ export async function createBusinessUser(
 ): Promise<CreateBusinessUserResult> {
   // Dependency injection: Create repository and use case
   const businessUserRepository = new PrismaBusinessUserRepository();
+  const userRepository = new PrismaUserRepository();
   const createBusinessUserUseCase = new CreateBusinessUserUseCase(
-    businessUserRepository
+    businessUserRepository,
+    userRepository
   );
 
   // Execute use case

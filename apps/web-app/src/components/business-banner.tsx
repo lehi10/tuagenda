@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useBusiness } from "@/contexts";
 
-export function OrganizationBanner() {
+export function BusinessBanner() {
   const { currentBusiness, isSuperAdmin } = useBusiness();
 
   if (!currentBusiness) return null;

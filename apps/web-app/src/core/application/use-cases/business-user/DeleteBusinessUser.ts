@@ -8,6 +8,7 @@
  */
 
 import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUserRepository";
+import { IUserRepository } from "@/core/domain/repositories/IUserRepository";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -32,10 +33,13 @@ export interface DeleteBusinessUserResult {
  * 1. Validate input data
  * 2. Check if relationship exists
  * 3. Delete using repository
+ * 4. Check if user still has other businesses
+ * 5. If no businesses remain, demote user from admin to customer
  */
 export class DeleteBusinessUserUseCase {
   constructor(
-    private readonly businessUserRepository: IBusinessUserRepository
+    private readonly businessUserRepository: IBusinessUserRepository,
+    private readonly userRepository: IUserRepository
   ) {}
 
   async execute(input: unknown): Promise<DeleteBusinessUserResult> {
@@ -78,13 +82,83 @@ export class DeleteBusinessUserUseCase {
         `Deleting relationship for business ${existingBusinessUser.businessId}`
       );
 
+      const userId = existingBusinessUser.userId;
       await this.businessUserRepository.delete(validatedData.id);
 
       logger.info(
         "DeleteBusinessUserUseCase",
-        existingBusinessUser.userId,
+        userId,
         "BusinessUser deleted successfully"
       );
+
+      // 4. Check if user still has other businesses
+      logger.info(
+        "DeleteBusinessUserUseCase",
+        userId,
+        "Checking if user has other business relationships"
+      );
+
+      const remainingBusinesses =
+        await this.businessUserRepository.findByUser(userId);
+
+      logger.info(
+        "DeleteBusinessUserUseCase",
+        userId,
+        `User has ${remainingBusinesses.length} remaining business relationship(s)`
+      );
+
+      // 5. If no businesses remain, demote user from admin to customer
+      if (remainingBusinesses.length === 0) {
+        logger.info(
+          "DeleteBusinessUserUseCase",
+          userId,
+          "No remaining businesses, checking if user should be demoted"
+        );
+
+        const user = await this.userRepository.findById(userId);
+
+        if (!user) {
+          logger.error(
+            "DeleteBusinessUserUseCase",
+            userId,
+            "User not found after deleting business relationship"
+          );
+          // Relationship was deleted but user not found - this is an inconsistency
+          // We still return success for the deletion
+        } else if (user.isAdmin() && !user.isSuperAdmin()) {
+          logger.info(
+            "DeleteBusinessUserUseCase",
+            userId,
+            `Demoting user from ${user.type} to customer`
+          );
+          user.demoteToCustomer();
+          await this.userRepository.update(user);
+
+          logger.info(
+            "DeleteBusinessUserUseCase",
+            userId,
+            "User successfully demoted to customer"
+          );
+        } else if (user.isSuperAdmin()) {
+          logger.info(
+            "DeleteBusinessUserUseCase",
+            userId,
+            "User is superadmin, no demotion performed"
+          );
+        } else {
+          logger.info(
+            "DeleteBusinessUserUseCase",
+            userId,
+            "User is not admin, no demotion needed"
+          );
+        }
+      } else {
+        logger.info(
+          "DeleteBusinessUserUseCase",
+          userId,
+          "User still has other businesses, maintaining admin status"
+        );
+      }
 
       return {
         success: true,
