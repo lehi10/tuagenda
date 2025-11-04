@@ -9,7 +9,7 @@
 
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "db";
 import { BusinessRole } from "@/core/domain/entities";
 
 export interface BusinessUserWithDetails {

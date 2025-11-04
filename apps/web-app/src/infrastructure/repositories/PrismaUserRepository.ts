@@ -8,7 +8,7 @@
  * @module infrastructure/repositories
  */
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "db";
 import {
   IUserRepository,
   UserRepositoryFilters,

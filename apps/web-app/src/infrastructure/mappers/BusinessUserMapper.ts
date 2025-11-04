@@ -7,7 +7,7 @@
  * @module infrastructure/mappers
  */
 
-import { BusinessUser as PrismaBusinessUser } from "@/lib/db/prisma";
+import { BusinessUser as PrismaBusinessUser } from "db";
 import {
   BusinessUser,
   BusinessRole,

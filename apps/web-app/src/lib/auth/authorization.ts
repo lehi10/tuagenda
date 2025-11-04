@@ -6,7 +6,7 @@
  */
 
 import { AuthorizationService, Role, UserType } from "auth";
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "db";
 
 // Create singleton instance
 let authService: AuthorizationService | null = null;

@@ -7,7 +7,7 @@
  * @module infrastructure/mappers
  */
 
-import { User as PrismaUser } from "@/lib/db/prisma";
+import { User as PrismaUser } from "db";
 import { User, UserStatus, UserType } from "@/core/domain/entities/User";
 
 export class UserMapper {

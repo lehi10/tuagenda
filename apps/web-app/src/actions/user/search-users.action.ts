@@ -9,7 +9,7 @@
 
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "db";
 
 export interface SearchUsersInput {
   search: string;

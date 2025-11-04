@@ -7,7 +7,7 @@
  * @module infrastructure/mappers
  */
 
-import { Business as PrismaBusiness } from "@/lib/db/prisma";
+import { Business as PrismaBusiness } from "db";
 import { Business, BusinessStatus } from "@/core/domain/entities/Business";
 
 export class BusinessMapper {
