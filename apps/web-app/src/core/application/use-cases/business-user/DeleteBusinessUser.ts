@@ -11,6 +11,7 @@ import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUse
 import { IUserRepository } from "@/core/domain/repositories/IUserRepository";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { syncUserRole, syncUserType } from "@/lib/auth/authorization";
 
 /**
  * Input schema for deleting a business-user relationship
@@ -45,18 +46,7 @@ export class DeleteBusinessUserUseCase {
   async execute(input: unknown): Promise<DeleteBusinessUserResult> {
     try {
       // 1. Validate input
-      logger.info(
-        "DeleteBusinessUserUseCase",
-        "system",
-        "Validating input data"
-      );
       const validatedData = deleteBusinessUserSchema.parse(input);
-
-      logger.info(
-        "DeleteBusinessUserUseCase",
-        "system",
-        `Deleting BusinessUser ${validatedData.id}`
-      );
 
       // 2. Check if relationship exists
       const existingBusinessUser = await this.businessUserRepository.findById(
@@ -64,11 +54,6 @@ export class DeleteBusinessUserUseCase {
       );
 
       if (!existingBusinessUser) {
-        logger.error(
-          "DeleteBusinessUserUseCase",
-          "system",
-          `BusinessUser with ID ${validatedData.id} not found`
-        );
         return {
           success: false,
           error: "Business-user relationship not found",
@@ -76,45 +61,37 @@ export class DeleteBusinessUserUseCase {
       }
 
       // 3. Delete using repository
-      logger.info(
-        "DeleteBusinessUserUseCase",
-        existingBusinessUser.userId,
-        `Deleting relationship for business ${existingBusinessUser.businessId}`
-      );
 
       const userId = existingBusinessUser.userId;
+      const businessId = existingBusinessUser.businessId;
+      const role = existingBusinessUser.role;
+
       await this.businessUserRepository.delete(validatedData.id);
 
-      logger.info(
-        "DeleteBusinessUserUseCase",
+      // Sync role removal with authorization service
+      const roleRemoved = await syncUserRole(
         userId,
-        "BusinessUser deleted successfully"
+        role,
+        businessId.toString(),
+        "remove"
       );
 
+      if (!roleRemoved) {
+        logger.error(
+          "DeleteBusinessUserUseCase",
+          userId,
+          "Failed to remove role from authorization service"
+        );
+        // Continue anyway - the database was updated
+      }
+
       // 4. Check if user still has other businesses
-      logger.info(
-        "DeleteBusinessUserUseCase",
-        userId,
-        "Checking if user has other business relationships"
-      );
 
       const remainingBusinesses =
         await this.businessUserRepository.findByUser(userId);
 
-      logger.info(
-        "DeleteBusinessUserUseCase",
-        userId,
-        `User has ${remainingBusinesses.length} remaining business relationship(s)`
-      );
-
       // 5. If no businesses remain, demote user from admin to customer
       if (remainingBusinesses.length === 0) {
-        logger.info(
-          "DeleteBusinessUserUseCase",
-          userId,
-          "No remaining businesses, checking if user should be demoted"
-        );
-
         const user = await this.userRepository.findById(userId);
 
         if (!user) {
@@ -126,38 +103,13 @@ export class DeleteBusinessUserUseCase {
           // Relationship was deleted but user not found - this is an inconsistency
           // We still return success for the deletion
         } else if (user.isAdmin() && !user.isSuperAdmin()) {
-          logger.info(
-            "DeleteBusinessUserUseCase",
-            userId,
-            `Demoting user from ${user.type} to customer`
-          );
           user.demoteToCustomer();
           await this.userRepository.update(user);
 
-          logger.info(
-            "DeleteBusinessUserUseCase",
-            userId,
-            "User successfully demoted to customer"
-          );
-        } else if (user.isSuperAdmin()) {
-          logger.info(
-            "DeleteBusinessUserUseCase",
-            userId,
-            "User is superadmin, no demotion performed"
-          );
-        } else {
-          logger.info(
-            "DeleteBusinessUserUseCase",
-            userId,
-            "User is not admin, no demotion needed"
-          );
+          // Sync user type removal with authorization service
+          await syncUserType(userId, "admin", "remove");
+          await syncUserType(userId, "customer", "add");
         }
-      } else {
-        logger.info(
-          "DeleteBusinessUserUseCase",
-          userId,
-          "User still has other businesses, maintaining admin status"
-        );
       }
 
       return {

@@ -16,6 +16,7 @@ import {
 import { IUserRepository } from "@/core/domain/repositories/IUserRepository";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { syncUserRole, syncUserType } from "@/lib/auth/authorization";
 
 /**
  * Input schema for creating a business-user relationship
@@ -58,18 +59,7 @@ export class CreateBusinessUserUseCase {
   async execute(input: unknown): Promise<CreateBusinessUserResult> {
     try {
       // 1. Validate input
-      logger.info(
-        "CreateBusinessUserUseCase",
-        "system",
-        "Validating input data"
-      );
       const validatedData = createBusinessUserSchema.parse(input);
-
-      logger.info(
-        "CreateBusinessUserUseCase",
-        validatedData.userId,
-        `Creating relationship for business ${validatedData.businessId} with role ${validatedData.role}`
-      );
 
       // 2. Check if relationship already exists
       const existingRelationship =
@@ -79,11 +69,6 @@ export class CreateBusinessUserUseCase {
         );
 
       if (existingRelationship) {
-        logger.info(
-          "CreateBusinessUserUseCase",
-          validatedData.userId,
-          "Relationship already exists"
-        );
         return {
           success: false,
           error: "User is already associated with this business",
@@ -91,12 +76,6 @@ export class CreateBusinessUserUseCase {
       }
 
       // 3. Create domain entity
-      logger.info(
-        "CreateBusinessUserUseCase",
-        validatedData.userId,
-        "Creating BusinessUser entity"
-      );
-
       const businessUser = new BusinessUser({
         userId: validatedData.userId,
         businessId: validatedData.businessId,
@@ -104,27 +83,27 @@ export class CreateBusinessUserUseCase {
       });
 
       // 4. Persist using repository
-      logger.info(
-        "CreateBusinessUserUseCase",
-        validatedData.userId,
-        "Persisting BusinessUser to database"
-      );
-
       const createdBusinessUser =
         await this.businessUserRepository.create(businessUser);
 
-      logger.info(
-        "CreateBusinessUserUseCase",
+      // 5. Sync role with Casbin authorization service
+      const roleSynced = await syncUserRole(
         validatedData.userId,
-        `BusinessUser created successfully with ID: ${createdBusinessUser.id}`
+        validatedData.role,
+        validatedData.businessId.toString(),
+        "add"
       );
 
-      // 5. Promote user to admin if not already
-      logger.info(
-        "CreateBusinessUserUseCase",
-        validatedData.userId,
-        "Checking user type to promote to admin if needed"
-      );
+      if (!roleSynced) {
+        logger.error(
+          "CreateBusinessUserUseCase",
+          validatedData.userId,
+          "Failed to sync role with authorization service"
+        );
+        // Continue anyway - the business relationship was created
+      }
+
+      // 6. Promote user to admin if not already
 
       const user = await this.userRepository.findById(validatedData.userId);
 
@@ -137,25 +116,11 @@ export class CreateBusinessUserUseCase {
         // Relationship was created but user not found - this is an inconsistency
         // We still return success for the business relationship creation
       } else if (!user.isAdmin()) {
-        logger.info(
-          "CreateBusinessUserUseCase",
-          validatedData.userId,
-          `Promoting user from ${user.type} to admin`
-        );
         user.promoteToAdmin();
         await this.userRepository.update(user);
 
-        logger.info(
-          "CreateBusinessUserUseCase",
-          validatedData.userId,
-          "User successfully promoted to admin"
-        );
-      } else {
-        logger.info(
-          "CreateBusinessUserUseCase",
-          validatedData.userId,
-          "User is already admin, no promotion needed"
-        );
+        // Sync admin type with authorization service
+        await syncUserType(validatedData.userId, "admin", "add");
       }
 
       return {

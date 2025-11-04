@@ -14,6 +14,7 @@ import {
 } from "@/core/domain/entities/BusinessUser";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { syncUserRole } from "@/lib/auth/authorization";
 
 /**
  * Input schema for updating a business-user relationship
@@ -50,18 +51,7 @@ export class UpdateBusinessUserUseCase {
   async execute(input: unknown): Promise<UpdateBusinessUserResult> {
     try {
       // 1. Validate input
-      logger.info(
-        "UpdateBusinessUserUseCase",
-        "system",
-        "Validating input data"
-      );
       const validatedData = updateBusinessUserSchema.parse(input);
-
-      logger.info(
-        "UpdateBusinessUserUseCase",
-        "system",
-        `Updating BusinessUser ${validatedData.id} with role ${validatedData.role}`
-      );
 
       // 2. Find existing relationship
       const existingBusinessUser = await this.businessUserRepository.findById(
@@ -69,11 +59,6 @@ export class UpdateBusinessUserUseCase {
       );
 
       if (!existingBusinessUser) {
-        logger.error(
-          "UpdateBusinessUserUseCase",
-          "system",
-          `BusinessUser with ID ${validatedData.id} not found`
-        );
         return {
           success: false,
           error: "Business-user relationship not found",
@@ -81,29 +66,31 @@ export class UpdateBusinessUserUseCase {
       }
 
       // 3. Update domain entity
-      logger.info(
-        "UpdateBusinessUserUseCase",
-        existingBusinessUser.userId,
-        `Changing role from ${existingBusinessUser.role} to ${validatedData.role}`
-      );
-
+      const oldRole = existingBusinessUser.role;
       existingBusinessUser.changeRole(validatedData.role);
 
       // 4. Persist changes using repository
-      logger.info(
-        "UpdateBusinessUserUseCase",
-        existingBusinessUser.userId,
-        "Persisting changes to database"
-      );
-
       const updatedBusinessUser =
         await this.businessUserRepository.update(existingBusinessUser);
 
-      logger.info(
-        "UpdateBusinessUserUseCase",
+      // 5. Sync role change with authorization service
+
+      const roleSynced = await syncUserRole(
         updatedBusinessUser.userId,
-        "BusinessUser updated successfully"
+        validatedData.role,
+        updatedBusinessUser.businessId.toString(),
+        "update",
+        oldRole
       );
+
+      if (!roleSynced) {
+        logger.error(
+          "UpdateBusinessUserUseCase",
+          updatedBusinessUser.userId,
+          "Failed to sync role change with authorization service"
+        );
+        // Continue anyway - the database was updated
+      }
 
       return {
         success: true,
