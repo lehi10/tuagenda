@@ -11,6 +11,7 @@ export const en = {
     actions: "Actions",
     myProfile: "My Profile",
     myDashboard: "My Dashboard",
+    client: "Client",
     platform: "Platform",
     product: "Product",
     legal: "Legal",
@@ -191,7 +192,10 @@ export const en = {
       detailsTitle: "Your Booking Details",
       paymentMethod: "Payment method",
       confirmationSent: "Confirmation sent",
-      confirmationEmail: "We've sent a confirmation email to",
+      confirmationEmail:
+        "We've sent an email with all the details of your booking to",
+      calendarInvitation:
+        "with the video call invitation. You can accept the invitation to have it appear in your calendar.",
       importantInfo: "Important information about your virtual appointment",
       locationTitle: "Location",
       howToGetThere: "How to get there (Google Maps)",
@@ -199,7 +203,21 @@ export const en = {
       contactUs: "Contact us at",
       makeAnotherBooking: "Make Another Booking",
       viewMyBookings: "View My Bookings",
-      needToCancelOrModify: "Need to cancel or modify your appointment? Contact us at",
+      needToCancelOrModify:
+        "Need to cancel or modify your appointment? Contact us at",
+      virtualInfo: {
+        punctuality: "Join on time:",
+        punctualityDescription:
+          "Virtual appointments cannot extend beyond the scheduled time.",
+        duration: "Duration:",
+        durationDescription:
+          "The professional will be available only during the",
+        videoCallLink: "Video call link:",
+        videoCallDescription: "Check your email to access the video call link.",
+        calendar: "Calendar:",
+        calendarDescription:
+          "Accept the calendar invitation to receive automatic reminders.",
+      },
     },
   },
   landing: {
@@ -268,11 +286,13 @@ export const en = {
         fast: "Fast and easy",
         fastDescription: "Intuitive interface that you can learn in minutes",
         secure: "Secure data",
-        secureDescription: "Your information is protected with the highest security standards",
+        secureDescription:
+          "Your information is protected with the highest security standards",
         grow: "Grow faster",
         growDescription: "Tools designed to help you scale your business",
         saveTime: "Save time",
-        saveTimeDescription: "Automate repetitive tasks and focus on what matters",
+        saveTimeDescription:
+          "Automate repetitive tasks and focus on what matters",
       },
       powerfullBadge: "Powerful features",
     },
@@ -284,7 +304,8 @@ export const en = {
       steps: {
         createAccount: {
           title: "Create your account",
-          description: "Sign up for free and start configuring your business in minutes",
+          description:
+            "Sign up for free and start configuring your business in minutes",
         },
         setupBusiness: {
           title: "Set up your business",
@@ -292,7 +313,8 @@ export const en = {
         },
         startManaging: {
           title: "Start managing",
-          description: "Receive bookings and manage your business from anywhere",
+          description:
+            "Receive bookings and manage your business from anywhere",
         },
       },
     },

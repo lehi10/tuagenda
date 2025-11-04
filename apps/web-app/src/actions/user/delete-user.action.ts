@@ -55,7 +55,7 @@ export async function deleteUser(
     });
 
     if (!user) {
-      logger.warn(
+      logger.warning(
         "DeleteUserAction",
         validatedData.userId,
         "User not found"

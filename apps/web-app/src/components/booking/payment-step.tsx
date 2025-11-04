@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CreditCard, Smartphone, Store, Check } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 export type PaymentMethod = "card" | "onsite" | "digital-wallet";
 
@@ -16,6 +17,7 @@ export function PaymentStep({
   onContinue,
   isInPerson = true,
 }: PaymentStepProps) {
+  const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
     null
   );
@@ -23,22 +25,22 @@ export function PaymentStep({
   const paymentMethods = [
     {
       id: "card" as PaymentMethod,
-      name: "Tarjeta de Crédito/Débito",
-      description: "Pago seguro con tu tarjeta",
+      name: t.booking.payment.methods.card,
+      description: t.booking.payment.methods.cardDescription,
       icon: CreditCard,
       available: true,
     },
     {
       id: "onsite" as PaymentMethod,
-      name: "Pago en el Local",
-      description: "Paga cuando llegues a tu cita",
+      name: t.booking.payment.methods.cash,
+      description: t.booking.payment.methods.cashDescription,
       icon: Store,
       available: isInPerson,
     },
     {
       id: "digital-wallet" as PaymentMethod,
-      name: "Billetera Digital",
-      description: "Yape, Plin u otras billeteras",
+      name: t.booking.payment.methods.wallet,
+      description: t.booking.payment.methods.walletDescription,
       icon: Smartphone,
       available: true,
     },
@@ -55,9 +57,9 @@ export function PaymentStep({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">Método de Pago</h2>
+        <h2 className="text-2xl font-bold">{t.booking.payment.title}</h2>
         <p className="mt-2 text-muted-foreground">
-          Selecciona cómo deseas realizar el pago
+          {t.booking.payment.description}
         </p>
       </div>
 
@@ -111,7 +113,7 @@ export function PaymentStep({
         className="w-full"
         size="lg"
       >
-        Continuar
+        {t.booking.summary.continue}
       </Button>
     </div>
   );

@@ -15,10 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Search, Users as UsersIcon, Loader2 } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  USER_TYPE_FILTERS,
-  USER_STATUS_FILTERS,
-} from "./constants";
+import { USER_TYPE_FILTERS, USER_STATUS_FILTERS } from "./constants";
 import { UsersTable } from "./components/users-table";
 import { EditUserDialog } from "./components/edit-user-dialog";
 import { toast } from "sonner";
@@ -32,11 +29,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { UserType, UserStatus } from "@/core/domain/entities/User";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string | UserType>("all");
+  const [statusFilter, setStatusFilter] = useState<string | UserStatus>("all");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
@@ -48,8 +46,9 @@ export default function UsersPage() {
     queryFn: async () => {
       const result = await getAllUsers({
         search: debouncedSearch || undefined,
-        type: typeFilter !== "all" ? typeFilter : undefined,
-        status: statusFilter !== "all" ? statusFilter : undefined,
+        type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
+        status:
+          statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
       });
 
       if (!result.success) {
@@ -136,7 +135,6 @@ export default function UsersPage() {
     }
   };
 
-
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -145,9 +143,7 @@ export default function UsersPage() {
           <UsersIcon className="h-8 w-8 text-primary" />
           <h1 className="text-3xl font-bold">Users</h1>
         </div>
-        <p className="text-muted-foreground">
-          Manage all users in the system
-        </p>
+        <p className="text-muted-foreground">Manage all users in the system</p>
       </div>
 
       {/* Stats */}
@@ -225,7 +221,8 @@ export default function UsersPage() {
             </div>
           ) : error ? (
             <div className="text-center py-8 text-red-600">
-              Error loading users: {error instanceof Error ? error.message : "Unknown error"}
+              Error loading users:{" "}
+              {error instanceof Error ? error.message : "Unknown error"}
             </div>
           ) : !data?.users || data.users.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">

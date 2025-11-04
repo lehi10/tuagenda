@@ -13,6 +13,7 @@ export const qu: Translations = {
     actions: "Ruwanakuna",
     myProfile: "Ñuqapa Perfilniy",
     myDashboard: "Ñuqapa Panelniy",
+    client: "Rantiq",
     platform: "Plataforma",
     product: "Ruruchiq",
     legal: "Kamachikuna",
@@ -197,7 +198,10 @@ export const qu: Translations = {
       detailsTitle: "Reservaykipa Willaykunan",
       paymentMethod: "Qullqi quypa imaynin",
       confirmationSent: "Takyachiyqa kachasqañam",
-      confirmationEmail: "Correo kachaykusqaykiku kayman",
+      confirmationEmail:
+        "Correo kachaykusqaykiku tukuy reservaykipa willaykunawan kayman",
+      calendarInvitation:
+        "videollamadapaq invitacionwan. Invitacionta awniyta atikunki calendarioykipi rikurinanpaq.",
       importantInfo: "Cita virtualpaq importante willakuykuna",
       locationTitle: "Maypi",
       howToGetThere: "Imaynatataq chayamunki (Google Maps)",
@@ -207,6 +211,19 @@ export const qu: Translations = {
       viewMyBookings: "Reservasniyta Qaway",
       needToCancelOrModify:
         "¿Citaykita qichuyta utaq allichayta munanayachu? Kaywan willaway",
+      virtualInfo: {
+        punctuality: "Pachapi yaykuy:",
+        punctualityDescription:
+          "Citas virtuales mana pachanta yapanachu atinkichu.",
+        duration: "Unay:",
+        durationDescription: "Profesionalqa kaypi kanqa pachaykilla",
+        videoCallLink: "Videollamadapa tinkin:",
+        videoCallDescription:
+          "Correoykita qaway videollamadapa tinkiman yaykuypaq.",
+        calendar: "Calendario:",
+        calendarDescription:
+          "Calendariopa invitacionta awniy automático yuyarichikuykunata chaskinaykipaq.",
+      },
     },
   },
   landing: {
