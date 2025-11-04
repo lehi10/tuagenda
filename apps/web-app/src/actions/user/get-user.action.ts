@@ -47,8 +47,6 @@ export async function getUserById(firebaseUid: string): Promise<GetUserResult> {
   // Execute use case
   const result = await getUserUseCase.execute({ id: firebaseUid });
 
-  console.log("GetUserById Result:", result);
-
   // Return domain result directly
   if (result.success && result.user) {
     return {

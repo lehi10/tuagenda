@@ -66,7 +66,7 @@ export const authService = {
   /**
    * Subscribe to auth state changes
    */
-  onAuthStateChanged: (callback: (user: unknown) => void) =>
+  onAuthStateChanged: (callback: (_user: unknown) => void) =>
     getAuthService().onAuthStateChanged(callback),
 
   /**

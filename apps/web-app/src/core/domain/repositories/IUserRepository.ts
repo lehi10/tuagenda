@@ -16,70 +16,70 @@ export interface IUserRepository {
    * @param id - User ID (Firebase UID)
    * @returns User entity or null if not found
    */
-  findById(id: string): Promise<User | null>;
+  findById(_id: string): Promise<User | null>;
 
   /**
    * Find a user by their email
    * @param email - User email
    * @returns User entity or null if not found
    */
-  findByEmail(email: string): Promise<User | null>;
+  findByEmail(_email: string): Promise<User | null>;
 
   /**
    * Find multiple users by their IDs
    * @param ids - Array of user IDs
    * @returns Array of User entities
    */
-  findByIds(ids: string[]): Promise<User[]>;
+  findByIds(_ids: string[]): Promise<User[]>;
 
   /**
    * Find all users with optional filtering
    * @param filters - Optional filters
    * @returns Array of User entities
    */
-  findAll(filters?: UserRepositoryFilters): Promise<User[]>;
+  findAll(_filters?: UserRepositoryFilters): Promise<User[]>;
 
   /**
    * Create a new user
    * @param user - User entity to create
    * @returns Created User entity
    */
-  create(user: User): Promise<User>;
+  create(_user: User): Promise<User>;
 
   /**
    * Update an existing user
    * @param user - User entity with updated data
    * @returns Updated User entity
    */
-  update(user: User): Promise<User>;
+  update(_user: User): Promise<User>;
 
   /**
    * Delete a user by ID
    * @param id - User ID to delete
    * @returns void
    */
-  delete(id: string): Promise<void>;
+  delete(_id: string): Promise<void>;
 
   /**
    * Check if a user exists by ID
    * @param id - User ID
    * @returns true if user exists, false otherwise
    */
-  exists(id: string): Promise<boolean>;
+  exists(_id: string): Promise<boolean>;
 
   /**
    * Check if an email is already taken
    * @param email - Email to check
    * @returns true if email exists, false otherwise
    */
-  emailExists(email: string): Promise<boolean>;
+  emailExists(_email: string): Promise<boolean>;
 
   /**
    * Count total users with optional filters
    * @param filters - Optional filters
    * @returns Total count of users
    */
-  count(filters?: UserRepositoryFilters): Promise<number>;
+  count(_filters?: UserRepositoryFilters): Promise<number>;
 }
 
 /**

@@ -12,13 +12,13 @@ interface AuthContextValue extends AuthState {
   /**
    * Sign in with email and password
    */
-  signIn: (credentials: { email: string; password: string }) => Promise<void>;
+  signIn: (_credentials: { email: string; password: string }) => Promise<void>;
 
   /**
    * Sign up with email and password
    * Returns the created user data
    */
-  signUp: (credentials: {
+  signUp: (_credentials: {
     email: string;
     password: string;
     displayName?: string;
@@ -38,12 +38,12 @@ interface AuthContextValue extends AuthState {
   /**
    * Send password reset email
    */
-  sendPasswordResetEmail: (email: string) => Promise<void>;
+  sendPasswordResetEmail: (_email: string) => Promise<void>;
 
   /**
    * Update user profile
    */
-  updateProfile: (data: {
+  updateProfile: (_data: {
     displayName?: string;
     photoURL?: string;
   }) => Promise<void>;

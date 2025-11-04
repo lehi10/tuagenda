@@ -4,7 +4,7 @@ import { z } from "zod";
 import { logger } from "@/lib/logger";
 
 const listBusinessesSchema = z.object({
-  status: z.nativeEnum(BusinessStatus).optional(),
+  status: z.enum(BusinessStatus).optional(),
   city: z.string().optional(),
   country: z.string().optional(),
   search: z.string().optional(),

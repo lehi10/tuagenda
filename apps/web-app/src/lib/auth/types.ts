@@ -55,7 +55,7 @@ export interface IAuthService {
    * Returns Firebase user data only
    */
   signInWithEmailAndPassword(
-    credentials: EmailPasswordCredentials
+    _credentials: EmailPasswordCredentials
   ): Promise<FirebaseUserData>;
 
   /**
@@ -63,7 +63,7 @@ export interface IAuthService {
    * Returns Firebase user data only
    */
   signUpWithEmailAndPassword(
-    credentials: SignUpCredentials
+    _credentials: SignUpCredentials
   ): Promise<FirebaseUserData>;
 
   /**
@@ -88,18 +88,18 @@ export interface IAuthService {
    * Callback receives Firebase user data only
    */
   onAuthStateChanged(
-    callback: (user: FirebaseUserData | null) => void
+    _callback: (_user: FirebaseUserData | null) => void
   ): () => void;
 
   /**
    * Send password reset email
    */
-  sendPasswordResetEmail(email: string): Promise<void>;
+  sendPasswordResetEmail(_email: string): Promise<void>;
 
   /**
    * Update user profile in Firebase
    */
-  updateProfile(data: {
+  updateProfile(_data: {
     displayName?: string;
     photoURL?: string;
   }): Promise<void>;
@@ -108,5 +108,8 @@ export interface IAuthService {
    * Change user password
    * Requires re-authentication with current password
    */
-  changePassword?(currentPassword: string, newPassword: string): Promise<void>;
+  changePassword?(
+    _currentPassword: string,
+    _newPassword: string
+  ): Promise<void>;
 }

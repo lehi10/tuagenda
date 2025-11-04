@@ -20,7 +20,7 @@ import { logger } from "@/lib/logger";
  */
 const getBusinessUsersByUserSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
-  role: z.nativeEnum(BusinessRole).optional(),
+  role: z.enum(BusinessRole).optional(),
   limit: z.number().int().positive().optional(),
   offset: z.number().int().nonnegative().optional(),
 });

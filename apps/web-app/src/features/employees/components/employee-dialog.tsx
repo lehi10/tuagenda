@@ -37,7 +37,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 
 const formSchema = z.object({
   userId: z.string().min(1, "User is required"),
-  role: z.nativeEnum(BusinessRole),
+  role: z.enum(BusinessRole),
 });
 
 type FormValues = z.infer<typeof formSchema>;

@@ -15,8 +15,8 @@ import { logger } from "@/lib/logger";
 
 const checkPermissionSchema = z.object({
   businessId: z.union([z.string().min(1), z.number().int().positive()]),
-  resource: z.nativeEnum(Resource),
-  action: z.nativeEnum(Action),
+  resource: z.enum(Resource),
+  action: z.enum(Action),
   userId: z.string().min(1).optional(), // Optional - defaults to current user
 });
 

@@ -23,7 +23,7 @@ const getBusinessUsersByBusinessSchema = z.object({
     .number()
     .int()
     .positive("Business ID must be a positive integer"),
-  role: z.nativeEnum(BusinessRole).optional(),
+  role: z.enum(BusinessRole).optional(),
   limit: z.number().int().positive().optional(),
   offset: z.number().int().nonnegative().optional(),
 });

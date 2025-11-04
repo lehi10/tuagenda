@@ -132,7 +132,7 @@ export class FirebaseAuthService implements IAuthService {
   }
 
   onAuthStateChanged(
-    callback: (user: FirebaseUserData | null) => void
+    callback: (_user: FirebaseUserData | null) => void
   ): () => void {
     const unsubscribe = firebaseOnAuthStateChanged(this.auth, (user) => {
       callback(this.mapUser(user));

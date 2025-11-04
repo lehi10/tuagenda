@@ -34,7 +34,7 @@ import {
   updateProfilePersonalInfoSchema,
   type UpdateProfilePersonalInfoInput,
 } from "@/lib/validations/user.schema";
-import { updateUserProfile } from "@/actions/user/update-user.action";
+import { updateUserProfile } from "@/actions/user";
 import { logger } from "@/lib/logger";
 import type { UserProps } from "@/core/domain/entities/User";
 
