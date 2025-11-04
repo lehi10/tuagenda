@@ -78,7 +78,11 @@ export function PublicFooter() {
             </h3>
             <select
               value={locale}
-              onChange={(e) => setLocale(e.target.value as "en" | "es" | "fr" | "pt" | "qu" | "gn")}
+              onChange={(e) =>
+                setLocale(
+                  e.target.value as "en" | "es" | "fr" | "pt" | "qu" | "gn"
+                )
+              }
               className="h-9 w-full max-w-[140px] rounded-lg border border-input bg-background px-3 py-1 text-xs shadow-sm transition-all hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:text-sm"
             >
               <option value="en">🇺🇸 English</option>

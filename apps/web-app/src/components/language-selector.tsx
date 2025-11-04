@@ -23,7 +23,8 @@ const languages = [
 export function LanguageSelector() {
   const { locale, setLocale } = useTranslation();
 
-  const currentLanguage = languages.find((lang) => lang.code === locale) || languages[1];
+  const currentLanguage =
+    languages.find((lang) => lang.code === locale) || languages[1];
 
   return (
     <DropdownMenu>
