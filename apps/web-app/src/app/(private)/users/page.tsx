@@ -171,7 +171,7 @@ export default function UsersPage() {
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-blue-100 dark:border-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800/30 transition-colors">
+        <Card className="py-0 border-blue-100 dark:border-blue-900/20 hover:border-blue-200 dark:hover:border-blue-800/30 transition-colors">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -191,7 +191,7 @@ export default function UsersPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-green-100 dark:border-green-900/20 hover:border-green-200 dark:hover:border-green-800/30 transition-colors">
+        <Card className="py-0 border-green-100 dark:border-green-900/20 hover:border-green-200 dark:hover:border-green-800/30 transition-colors">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -211,7 +211,7 @@ export default function UsersPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-100 dark:border-amber-900/20 hover:border-amber-200 dark:hover:border-amber-800/30 transition-colors">
+        <Card className="py-0 border-amber-100 dark:border-amber-900/20 hover:border-amber-200 dark:hover:border-amber-800/30 transition-colors">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -231,7 +231,7 @@ export default function UsersPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-purple-100 dark:border-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800/30 transition-colors">
+        <Card className="py-0 border-purple-100 dark:border-purple-900/20 hover:border-purple-200 dark:hover:border-purple-800/30 transition-colors">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
