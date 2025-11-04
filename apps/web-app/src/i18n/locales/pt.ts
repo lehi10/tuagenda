@@ -291,41 +291,50 @@ export const pt: Translations = {
       quickFeatures: {
         fast: "Rápido e fácil",
         fastDescription:
-          "Interface intuitiva que você pode aprender em minutos",
+          "Configure sua conta em minutos. Interface intuitiva que não requer treinamento.",
         secure: "Dados seguros",
         secureDescription:
-          "Suas informações estão protegidas com os mais altos padrões de segurança",
+          "Criptografia de nível empresarial. Seus dados e os de seus clientes estão protegidos.",
         grow: "Cresça mais rápido",
         growDescription:
-          "Ferramentas projetadas para ajudá-lo a escalar seu negócio",
+          "Análises em tempo real para tomar melhores decisões e aumentar sua receita.",
         saveTime: "Economize tempo",
         saveTimeDescription:
-          "Automatize tarefas repetitivas e foque no que importa",
+          "Automatize lembretes, pagamentos e confirmações. Foque no que importa.",
       },
       powerfullBadge: "Recursos poderosos",
+      whyChooseUs: {
+        badge: "Por que nos escolher?",
+        title: "A solução completa para seu negócio",
+        description:
+          "Projetado especificamente para salões de beleza, spas, clínicas, academias e qualquer negócio baseado em agendamentos. Aumente sua produtividade e melhore a satisfação do cliente.",
+      },
+      heroDescription:
+        "Otimize o gerenciamento de agendamentos, clientes e pagamentos do seu negócio. Economize tempo, aumente sua receita e ofereça uma experiência excepcional aos seus clientes.",
     },
     howItWorks: {
       badge: "Processo simples",
       title: "Como funciona",
       description:
-        "Comece em minutos com nosso simples processo de três etapas. Não é necessário conhecimento técnico.",
+        "Comece em minutos com nosso processo simples e guiado. Não precisa de conhecimento técnico, tudo é intuitivo e fácil de usar.",
       steps: {
         createAccount: {
           title: "Crie sua conta",
           description:
-            "Cadastre-se gratuitamente e comece a configurar seu negócio em minutos",
+            "Cadastre-se gratuitamente em menos de 2 minutos. Sem necessidade de cartão de crédito. Acesse imediatamente todos os recursos premium durante seu teste gratuito.",
         },
         setupBusiness: {
           title: "Configure seu negócio",
           description:
-            "Adicione seus serviços, equipe e horários de disponibilidade",
+            "Personalize serviços, horários e equipe de acordo com suas necessidades. Configure seus métodos de pagamento, horário de funcionamento e marca. Tudo a partir de um painel intuitivo.",
         },
         startManaging: {
           title: "Comece a gerenciar",
           description:
-            "Receba reservas e gerencie seu negócio de qualquer lugar",
+            "Receba reservas, gerencie clientes e faça seu negócio crescer. Compartilhe seu link de reservas com seus clientes e deixe o sistema trabalhar por você.",
         },
       },
+      illustrationPlaceholder: "Ilustração passo",
     },
     cta: {
       badge: "Comece hoje",

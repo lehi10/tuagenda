@@ -3,7 +3,7 @@
 import * as React from "react";
 import {
   Bell,
-  Briefcase,
+  BriefcaseBusiness,
   Building2,
   Calendar,
   Clock,
@@ -11,9 +11,9 @@ import {
   LayoutDashboard,
   MapPin,
   Settings,
+  Sparkles,
   UserCheck,
-  Users,
-  UsersRound,
+  UserCog,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -50,13 +50,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       id: "employees",
       title: t.navigation.employees,
       url: "/employees",
-      icon: Users,
+      icon: BriefcaseBusiness,
     },
     {
       id: "users",
       title: t.navigation.users,
       url: "/users",
-      icon: UsersRound,
+      icon: UserCog,
     },
     {
       id: "calendar",
@@ -74,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       id: "services",
       title: t.navigation.services,
       url: "/services",
-      icon: Briefcase,
+      icon: Sparkles,
     },
     {
       id: "locations",

@@ -104,9 +104,9 @@ export default function Home() {
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-6 sm:px-4 sm:py-2 sm:text-sm">
                   <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">
-                    Plataforma profesional de gestión
+                    {t.landing.hero.badge}
                   </span>
-                  <span className="sm:hidden">Software profesional</span>
+                  <span className="sm:hidden">{t.landing.hero.badgeAlt}</span>
                 </div>
 
                 <h1 className="bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
@@ -116,9 +116,7 @@ export default function Home() {
                   {t.landing.hero.subtitle}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
-                  Optimiza la gestión de citas, clientes y pagos de tu negocio.
-                  Ahorra tiempo, aumenta tus ingresos y ofrece una experiencia
-                  excepcional a tus clientes.
+                  {t.landing.features.heroDescription}
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4 lg:justify-start">
@@ -146,15 +144,15 @@ export default function Home() {
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-6 lg:justify-start">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
                     <Check className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                    <span>14 días gratis</span>
+                    <span>{t.landing.hero.trustBadges.freeTrial}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
                     <Check className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                    <span>Sin tarjeta</span>
+                    <span>{t.landing.hero.trustBadges.noCard}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
                     <Check className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                    <span>Cancela cuando quieras</span>
+                    <span>{t.landing.hero.trustBadges.cancelAnytime}</span>
                   </div>
                 </div>
               </div>
@@ -191,7 +189,7 @@ export default function Home() {
                   10K+
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm md:text-base">
-                  Usuarios activos
+                  {t.landing.hero.stats.activeUsers}
                 </div>
               </div>
               <div className="text-center transition-transform hover:scale-105">
@@ -199,7 +197,7 @@ export default function Home() {
                   99.9%
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm md:text-base">
-                  Tiempo activo
+                  {t.landing.hero.stats.uptime}
                 </div>
               </div>
               <div className="text-center transition-transform hover:scale-105">
@@ -207,7 +205,7 @@ export default function Home() {
                   24/7
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm md:text-base">
-                  Soporte
+                  {t.landing.hero.stats.support}
                 </div>
               </div>
             </div>
@@ -222,16 +220,13 @@ export default function Home() {
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
                 <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-                ¿Por qué elegirnos?
+                {t.landing.features.whyChooseUs.badge}
               </div>
               <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl">
-                La solución completa para tu negocio
+                {t.landing.features.whyChooseUs.title}
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
-                Diseñado específicamente para salones de belleza, spas,
-                clínicas, gimnasios y cualquier negocio basado en citas.
-                Potencia tu productividad y mejora la satisfacción de tus
-                clientes.
+                {t.landing.features.whyChooseUs.description}
               </p>
             </div>
           </ScrollReveal>
@@ -240,30 +235,26 @@ export default function Home() {
             {[
               {
                 icon: Zap,
-                title: "Rápido y fácil",
-                description:
-                  "Configura tu cuenta en minutos. Interfaz intuitiva que no requiere capacitación.",
+                title: t.landing.features.quickFeatures.fast,
+                description: t.landing.features.quickFeatures.fastDescription,
                 color: "text-yellow-500",
               },
               {
                 icon: Shield,
-                title: "Datos seguros",
-                description:
-                  "Encriptación de nivel empresarial. Tus datos y los de tus clientes están protegidos.",
+                title: t.landing.features.quickFeatures.secure,
+                description: t.landing.features.quickFeatures.secureDescription,
                 color: "text-blue-500",
               },
               {
                 icon: TrendingUp,
-                title: "Crece más rápido",
-                description:
-                  "Analíticas en tiempo real para tomar mejores decisiones y aumentar tus ingresos.",
+                title: t.landing.features.quickFeatures.grow,
+                description: t.landing.features.quickFeatures.growDescription,
                 color: "text-green-500",
               },
               {
                 icon: Clock,
-                title: "Ahorra tiempo",
-                description:
-                  "Automatiza recordatorios, pagos y confirmaciones. Enfócate en lo importante.",
+                title: t.landing.features.quickFeatures.saveTime,
+                description: t.landing.features.quickFeatures.saveTimeDescription,
                 color: "text-purple-500",
               },
             ].map((item, index) => (
@@ -302,7 +293,7 @@ export default function Home() {
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                Características poderosas
+                {t.landing.features.powerfullBadge}
               </div>
               <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.landing.features.title}
@@ -351,15 +342,13 @@ export default function Home() {
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/5 px-3 py-1.5 text-xs font-medium text-secondary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
-                Proceso simple
+                {t.landing.howItWorks.badge}
               </div>
               <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
-                Cómo funciona
+                {t.landing.howItWorks.title}
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
-                Comienza en minutos con nuestro proceso simple y guiado. No
-                necesitas conocimientos técnicos, todo es intuitivo y fácil de
-                usar.
+                {t.landing.howItWorks.description}
               </p>
             </div>
           </ScrollReveal>
@@ -369,21 +358,18 @@ export default function Home() {
               {[
                 {
                   step: "01",
-                  title: "Crea tu cuenta",
-                  description:
-                    "Regístrate gratis en menos de 2 minutos. Sin tarjeta de crédito requerida. Accede inmediatamente a todas las funciones premium durante tu prueba gratuita.",
+                  title: t.landing.howItWorks.steps.createAccount.title,
+                  description: t.landing.howItWorks.steps.createAccount.description,
                 },
                 {
                   step: "02",
-                  title: "Configura tu negocio",
-                  description:
-                    "Personaliza servicios, horarios y equipo según tus necesidades. Configura tus métodos de pago, horarios de atención y branding. Todo desde un panel intuitivo.",
+                  title: t.landing.howItWorks.steps.setupBusiness.title,
+                  description: t.landing.howItWorks.steps.setupBusiness.description,
                 },
                 {
                   step: "03",
-                  title: "Comienza a gestionar",
-                  description:
-                    "Recibe reservas, gestiona clientes y haz crecer tu negocio. Comparte tu link de reservas con tus clientes y deja que el sistema trabaje por ti.",
+                  title: t.landing.howItWorks.steps.startManaging.title,
+                  description: t.landing.howItWorks.steps.startManaging.description,
                 },
               ].map((item, index) => (
                 <ScrollReveal key={index} delay={index * 150}>
@@ -413,7 +399,7 @@ export default function Home() {
                                 </span>
                               </div>
                               <p className="text-xs text-muted-foreground sm:text-sm">
-                                Ilustración paso {item.step}
+                                {t.landing.howItWorks.illustrationPlaceholder} {item.step}
                               </p>
                             </div>
                           </div>
@@ -438,7 +424,7 @@ export default function Home() {
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/5 px-3 py-1.5 text-xs font-medium text-secondary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                Testimonios
+                {t.landing.testimonials.badge}
               </div>
               <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.landing.testimonials.title}
@@ -537,7 +523,7 @@ export default function Home() {
               <div className="relative px-6 py-12 text-center text-primary-foreground sm:px-8 sm:py-16 md:px-12 md:py-20 lg:px-16 lg:py-24">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1.5 text-xs font-medium backdrop-blur-sm sm:mb-6 sm:px-4 sm:py-2 sm:text-sm">
                   <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>Comienza hoy</span>
+                  <span>{t.landing.cta.badge}</span>
                 </div>
 
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
@@ -564,15 +550,15 @@ export default function Home() {
                 <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs opacity-90 sm:mt-8 sm:gap-6 sm:text-sm md:mt-10">
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Check className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
-                    <span>Sin tarjeta de crédito</span>
+                    <span>{t.landing.cta.trustIndicators.noCard}</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Check className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
-                    <span>Prueba gratuita 14 días</span>
+                    <span>{t.landing.cta.trustIndicators.freeTrial}</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <Check className="h-4 w-4 flex-shrink-0 sm:h-5 sm:w-5" />
-                    <span>Cancela cuando quieras</span>
+                    <span>{t.landing.cta.trustIndicators.cancelAnytime}</span>
                   </div>
                 </div>
               </div>

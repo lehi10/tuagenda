@@ -2,13 +2,14 @@
 
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LanguageSelector } from "@/components/language-selector";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
 export function PublicHeader() {
-  const { t, locale, setLocale } = useTranslation();
+  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -43,14 +44,7 @@ export function PublicHeader() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-2 lg:flex lg:gap-3">
-          <select
-            value={locale}
-            onChange={(e) => setLocale(e.target.value as "en" | "es")}
-            className="h-9 rounded-lg border border-input bg-background px-3 py-1 text-sm shadow-sm transition-all hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <option value="es">ES</option>
-            <option value="en">EN</option>
-          </select>
+          <LanguageSelector />
 
           <Link href="/login">
             <Button variant="ghost" size="sm" className="font-medium">
@@ -104,14 +98,7 @@ export function PublicHeader() {
               <div className="my-2 border-t border-border" />
 
               <div className="flex flex-col gap-2">
-                <select
-                  value={locale}
-                  onChange={(e) => setLocale(e.target.value as "en" | "es")}
-                  className="h-9 rounded-lg border border-input bg-background px-3 py-1 text-sm shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  <option value="es">Español</option>
-                  <option value="en">English</option>
-                </select>
+                <LanguageSelector />
 
                 <Link
                   href="/login"

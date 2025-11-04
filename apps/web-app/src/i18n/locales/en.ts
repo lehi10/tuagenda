@@ -284,39 +284,51 @@ export const en = {
       },
       quickFeatures: {
         fast: "Fast and easy",
-        fastDescription: "Intuitive interface that you can learn in minutes",
+        fastDescription:
+          "Set up your account in minutes. Intuitive interface that requires no training.",
         secure: "Secure data",
         secureDescription:
-          "Your information is protected with the highest security standards",
+          "Enterprise-level encryption. Your data and your clients' data are protected.",
         grow: "Grow faster",
-        growDescription: "Tools designed to help you scale your business",
+        growDescription:
+          "Real-time analytics to make better decisions and increase your revenue.",
         saveTime: "Save time",
         saveTimeDescription:
-          "Automate repetitive tasks and focus on what matters",
+          "Automate reminders, payments, and confirmations. Focus on what matters.",
       },
       powerfullBadge: "Powerful features",
+      whyChooseUs: {
+        badge: "Why choose us?",
+        title: "The complete solution for your business",
+        description:
+          "Specifically designed for beauty salons, spas, clinics, gyms, and any appointment-based business. Boost your productivity and improve customer satisfaction.",
+      },
+      heroDescription:
+        "Optimize the management of appointments, clients, and payments for your business. Save time, increase your revenue, and offer an exceptional experience to your clients.",
     },
     howItWorks: {
       badge: "Simple process",
       title: "How it works",
       description:
-        "Get started in minutes with our simple three-step process. No technical knowledge required.",
+        "Get started in minutes with our simple and guided process. No technical knowledge needed, everything is intuitive and easy to use.",
       steps: {
         createAccount: {
           title: "Create your account",
           description:
-            "Sign up for free and start configuring your business in minutes",
+            "Sign up for free in less than 2 minutes. No credit card required. Get immediate access to all premium features during your free trial.",
         },
         setupBusiness: {
           title: "Set up your business",
-          description: "Add your services, team, and availability schedule",
+          description:
+            "Customize services, schedules, and team according to your needs. Configure your payment methods, business hours, and branding. All from an intuitive panel.",
         },
         startManaging: {
           title: "Start managing",
           description:
-            "Receive bookings and manage your business from anywhere",
+            "Receive bookings, manage clients, and grow your business. Share your booking link with your clients and let the system work for you.",
         },
       },
+      illustrationPlaceholder: "Step illustration",
     },
     cta: {
       badge: "Start today",

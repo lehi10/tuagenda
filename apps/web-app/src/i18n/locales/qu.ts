@@ -290,40 +290,51 @@ export const qu: Translations = {
       },
       quickFeatures: {
         fast: "Utqaylla chaymanta facil",
-        fastDescription: "Interfaz intuitiva minutuskunapi yachayta atiwaq",
+        fastDescription:
+          "Cuentaykita minutuskunapi allichay. Interfaz intuitiva mana yachachiy necesitakun.",
         secure: "Willaykuna allchasqa",
         secureDescription:
-          "Willayniykikunaqa aswan hatun seguridadpa estandarkunawan waqaychasqa",
+          "Empresarial nivel cifrado. Willayniykikunapas rantiqniykikunapa willayninkunapas waqaychasqa.",
         grow: "Aswan utqaylla wiñay",
-        growDescription: "Yaramientokuna negocioykita aswan hatun ruwanapaq",
+        growDescription:
+          "Pacha análisis aswan allin tanteasqakuna ruwanapaq chaymanta qullqiykita yapanapaq.",
         saveTime: "Pachata waqaychay",
         saveTimeDescription:
-          "Kuti ruwaykuna automatizay chaymanta importanteman qhaway",
+          "Yuyarichiqkuna, qullqikuna chaymanta confirmacionkunata automatizay. Importanteman qhaway.",
       },
       powerfullBadge: "Kallpasapa ruwanakuna",
+      whyChooseUs: {
+        badge: "¿Imarayku ñuqanchikta akllawanayki?",
+        title: "Hunt'a allichay negocioykipaq",
+        description:
+          "Específicamente salonkuna sumaq kaypaq, spas, clínicas, gimnasios chaymanta ima negocio citaspi basasqa. Negocioykipa productividadta kallpachay chaymanta rantiqkunapa satisfaccionta mejorarchay.",
+      },
+      heroDescription:
+        "Citakuna, rantiqkuna chaymanta qullqikuna kamachiyta allinchay negocioykipaq. Pachata waqaychay, qullqiykita yapay chaymanta rantiqniykikunaman allin experienciata quy.",
     },
     howItWorks: {
       badge: "Facil ruway",
       title: "Imaynatataq llamk'an",
       description:
-        "Minutuskunapi qallariy facil kimsa pasokunaykuwan. Mana técnico yachaykuna necesitakunchu.",
+        "Minutuskunapi qallariy facil chaymanta pusasqa ruwaywanwan. Mana técnico yachaykuna necesitakunchu, tukuynin intuitivo chaymanta facil llamk'anaykipaq.",
       steps: {
         createAccount: {
           title: "Cuentaykita ruway",
           description:
-            "Mana qullqiyuq qillqakuy chaymanta minutuskunapi negocioykita allichay qallariy",
+            "Mana qullqiyuq qillqakuy pisi iskay minutuskunapi. Mana tarjeta de crédito necesitakunchu. Tukuy premium ruwanakuna chaskiy mana qullqiyuq pruebaykipaq.",
         },
         setupBusiness: {
           title: "Negocioykita allichay",
           description:
-            "Yanapakuykunaykita, equipoykita chaymanta kashaypa horariokunata yapay",
+            "Yanapakuykuna, horariokuna chaymanta equipo personalizay necesidadesniykiman hina. Qullqi ruwaykuna, horario de atención chaymanta branding allichay. Tukuynin intuitivo panelmanta.",
         },
         startManaging: {
           title: "Kamachiy qallariy",
           description:
-            "Reservakuna chaskiy chaymanta maymantataq negocioykita kamachiy",
+            "Reservakuna chaskiy, rantiqkunata kamachiy chaymanta negocioykita wiñachiy. Reservakuna linkniykita rantiqniykikunawan rakiy chaymanta sistemata llamk'achiy.",
         },
       },
+      illustrationPlaceholder: "Paso ilustración",
     },
     cta: {
       badge: "Kunan qallariy",
