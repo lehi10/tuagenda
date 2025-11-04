@@ -13,6 +13,7 @@ import {
   Settings,
   UserCheck,
   Users,
+  UsersRound,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -47,6 +48,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t.navigation.employees,
       url: "/employees",
       icon: Users,
+    },
+    {
+      title: t.navigation.users,
+      url: "/users",
+      icon: UsersRound,
     },
     {
       title: t.navigation.calendar,

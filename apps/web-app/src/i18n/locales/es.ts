@@ -24,6 +24,7 @@ export const es: Translations = {
     notifications: "Notificaciones",
     settings: "Configuración",
     business: "Negocios",
+    users: "Usuarios",
     aboutUs: "Nosotros",
     pricing: "Precios",
   },

@@ -22,6 +22,7 @@ export const en = {
     notifications: "Notifications",
     settings: "Settings",
     business: "Business",
+    users: "Users",
     aboutUs: "About Us",
     pricing: "Pricing",
   },

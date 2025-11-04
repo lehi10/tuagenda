@@ -9,3 +9,4 @@ export { getUserById } from "./get-user.action";
 export { searchUsers } from "./search-users.action";
 export { changePassword } from "./change-password.action";
 export { updateUserProfile } from "./update-user.action";
+export { getAllUsers } from "./get-all-users.action";
