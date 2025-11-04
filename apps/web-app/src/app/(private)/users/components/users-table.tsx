@@ -79,7 +79,9 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
             <TableHead className="font-semibold">Type</TableHead>
             <TableHead className="font-semibold">Status</TableHead>
             <TableHead className="font-semibold">Joined</TableHead>
-            <TableHead className="w-[70px] text-right font-semibold">Actions</TableHead>
+            <TableHead className="w-[70px] text-right font-semibold">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -117,16 +119,24 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
                     {formatPhone(user.phone, user.countryCode)}
                   </span>
                 ) : (
-                  <span className="text-xs text-muted-foreground italic">Not provided</span>
+                  <span className="text-xs text-muted-foreground italic">
+                    Not provided
+                  </span>
                 )}
               </TableCell>
               <TableCell>
-                <Badge variant={getTypeBadgeVariant(user.type)} className="font-medium">
+                <Badge
+                  variant={getTypeBadgeVariant(user.type)}
+                  className="font-medium"
+                >
                   {formatType(user.type)}
                 </Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={getStatusBadgeVariant(user.status)} className="font-medium">
+                <Badge
+                  variant={getStatusBadgeVariant(user.status)}
+                  className="font-medium"
+                >
                   {formatStatus(user.status)}
                 </Badge>
               </TableCell>
@@ -147,7 +157,9 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuLabel className="text-xs font-semibold">Actions</DropdownMenuLabel>
+                    <DropdownMenuLabel className="text-xs font-semibold">
+                      Actions
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => onEdit(user)}

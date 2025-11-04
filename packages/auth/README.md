@@ -64,7 +64,7 @@ await authService.updateRole(
   "firebase-uid-123",
   Role.EMPLOYEE,
   Role.MANAGER,
-  "1"
+  "1",
 );
 ```
 
@@ -82,12 +82,14 @@ await authService.assignUserType("firebase-uid-admin", UserType.SUPERADMIN);
 ### Roles y Permisos por Defecto
 
 **MANAGER**:
+
 - Business: read, update
 - Employee: create, read, update, delete
 - Appointment: create, read, update, delete
 - Settings: read, update
 
 **EMPLOYEE**:
+
 - Business: read
 - Employee: read
 - Appointment: create, read, update
@@ -117,12 +119,14 @@ pnpm tsx src/seed-policies.ts
 ## Recursos y Acciones
 
 ### Recursos (`Resource`)
+
 - `BUSINESS`: Negocio/Organización
 - `EMPLOYEE`: Empleados
 - `APPOINTMENT`: Citas/Reservas
 - `SETTINGS`: Configuración
 
 ### Acciones (`Action`)
+
 - `CREATE`: Crear recurso
 - `READ`: Leer/Ver recurso
 - `UPDATE`: Actualizar recurso

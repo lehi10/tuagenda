@@ -133,7 +133,7 @@ export class PrismaAdapter implements Adapter {
   async removePolicy(
     sec: string,
     ptype: string,
-    rule: string[]
+    rule: string[],
   ): Promise<void> {
     const line = this.savePolicyLine(ptype, rule);
     await this.prisma.casbinRule.deleteMany({

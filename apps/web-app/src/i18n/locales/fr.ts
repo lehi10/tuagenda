@@ -339,7 +339,8 @@ export const fr: Translations = {
     cta: {
       badge: "Commencez aujourd'hui",
       title: "Prêt à transformer votre entreprise ?",
-      subtitle: "Rejoignez des milliers d'entreprises qui font déjà confiance à TuAgenda",
+      subtitle:
+        "Rejoignez des milliers d'entreprises qui font déjà confiance à TuAgenda",
       button: "Commencer maintenant",
       trustIndicators: {
         noCard: "Sans carte de crédit",
@@ -558,7 +559,8 @@ export const fr: Translations = {
       subtitle: "Gérez les paramètres et préférences de votre compte",
       sections: {
         photo: "Photo de profil",
-        photoDescription: "Votre photo de profil s'affiche partout dans TuAgenda",
+        photoDescription:
+          "Votre photo de profil s'affiche partout dans TuAgenda",
         personalInfo: "Informations personnelles",
         personalInfoDescription:
           "Mettez à jour vos informations personnelles et coordonnées",

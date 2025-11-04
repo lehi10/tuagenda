@@ -14,7 +14,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Users as UsersIcon, Loader2, UserCheck, UserX, Shield, Activity, UserPlus } from "lucide-react";
+import {
+  Search,
+  Users as UsersIcon,
+  Loader2,
+  UserCheck,
+  UserX,
+  Shield,
+  UserPlus,
+} from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { USER_TYPE_FILTERS, USER_STATUS_FILTERS } from "./constants";
 import { UsersTable } from "./components/users-table";
@@ -137,9 +145,11 @@ export default function UsersPage() {
   };
 
   // Calculate stats
-  const activeUsers = data?.users?.filter(u => u.status === 'active').length || 0;
-  const inactiveUsers = data?.users?.filter(u => u.status === 'inactive').length || 0;
-  const adminUsers = data?.users?.filter(u => u.type === 'admin').length || 0;
+  const activeUsers =
+    data?.users?.filter((u) => u.status === "active").length || 0;
+  const inactiveUsers =
+    data?.users?.filter((u) => u.status === "inactive").length || 0;
+  const adminUsers = data?.users?.filter((u) => u.type === "admin").length || 0;
   const totalUsers = data?.total || 0;
 
   return (
@@ -152,7 +162,9 @@ export default function UsersPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Users</h1>
-            <p className="text-muted-foreground">Manage all users in the system</p>
+            <p className="text-muted-foreground">
+              Manage all users in the system
+            </p>
           </div>
         </div>
       </div>
@@ -245,7 +257,9 @@ export default function UsersPage() {
         <CardContent className="p-6">
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium text-foreground">Search & Filter</h3>
+              <h3 className="text-sm font-medium text-foreground">
+                Search & Filter
+              </h3>
               {(search || typeFilter !== "all" || statusFilter !== "all") && (
                 <Button
                   variant="outline"

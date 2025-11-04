@@ -156,7 +156,9 @@ export function SettingsTabs() {
               <Label htmlFor="language">{t.pages.settings.language}</Label>
               <Select
                 value={locale}
-                onValueChange={(value) => setLocale(value as "en" | "es" | "fr" | "pt" | "qu" | "gn")}
+                onValueChange={(value) =>
+                  setLocale(value as "en" | "es" | "fr" | "pt" | "qu" | "gn")
+                }
               >
                 <SelectTrigger id="language">
                   <SelectValue />
