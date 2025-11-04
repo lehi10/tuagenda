@@ -4,14 +4,16 @@ import React, { createContext, useContext, useState } from "react";
 import { en } from "./locales/en";
 import { es } from "./locales/es";
 import { pt } from "./locales/pt";
+import { qu } from "./locales/qu";
 import type { Translations } from "./locales/en";
 
-export type Locale = "en" | "es" | "pt";
+export type Locale = "en" | "es" | "pt" | "qu";
 
 const translations: Record<Locale, Translations> = {
   en,
   es,
   pt,
+  qu,
 };
 
 interface I18nContextType {
