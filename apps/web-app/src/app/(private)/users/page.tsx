@@ -29,11 +29,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { UserType, UserStatus } from "@/core/domain/entities/User";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string | UserType>("all");
+  const [statusFilter, setStatusFilter] = useState<string | UserStatus>("all");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
@@ -45,8 +46,9 @@ export default function UsersPage() {
     queryFn: async () => {
       const result = await getAllUsers({
         search: debouncedSearch || undefined,
-        type: typeFilter !== "all" ? typeFilter : undefined,
-        status: statusFilter !== "all" ? statusFilter : undefined,
+        type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
+        status:
+          statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
       });
 
       if (!result.success) {
