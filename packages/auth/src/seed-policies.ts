@@ -5,7 +5,7 @@
  * Run this after migrations to set up the authorization system.
  */
 
-import { PrismaClient } from "db";
+import { PrismaClient } from "@prisma/client";
 import { AuthorizationService } from "./authorization-service";
 
 async function seedPolicies() {
