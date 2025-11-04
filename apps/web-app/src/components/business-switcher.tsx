@@ -20,7 +20,7 @@ import {
 import { useBusiness } from "@/contexts";
 import { cn } from "@/lib/utils";
 
-export function OrganizationSwitcher() {
+export function BusinessSwitcher() {
   const {
     currentBusiness,
     businesses,

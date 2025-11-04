@@ -19,7 +19,7 @@ export default function BusinessPage() {
     if (businessListRef.current) {
       businessListRef.current.refresh();
     }
-    // Also refresh the organization switcher
+    // Also refresh the business switcher
     await refreshBusinesses();
   };
 

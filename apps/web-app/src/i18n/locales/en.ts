@@ -247,7 +247,7 @@ export const en = {
       enterprise: {
         name: "Enterprise",
         price: "99",
-        description: "For large organizations",
+        description: "For large businesses",
         feature1: "Everything in Pro",
         feature2: "Unlimited locations",
         feature3: "Dedicated account manager",

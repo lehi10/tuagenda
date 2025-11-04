@@ -51,7 +51,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
 
         if (result.success) {
           setBusinesses(result.businesses);
-          // Refresh organization switcher in case names changed
+          // Refresh business switcher in case names changed
           await refreshBusinesses();
         } else {
           toast.error(result.error || "Error al cargar los negocios");
@@ -80,7 +80,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
         if (result.success) {
           toast.success("Negocio eliminado exitosamente");
           fetchBusinesses(); // Refresh the list
-          await refreshBusinesses(); // Refresh organization switcher
+          await refreshBusinesses(); // Refresh business switcher
         } else {
           toast.error(result.error || "Error al eliminar el negocio");
         }

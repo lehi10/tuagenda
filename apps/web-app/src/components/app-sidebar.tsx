@@ -18,7 +18,7 @@ import {
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { LanguageSelector } from "@/components/language-selector";
-import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { BusinessSwitcher } from "@/components/business-switcher";
 import { useTranslation } from "@/i18n";
 import { useAuth } from "@/contexts";
 import {
@@ -100,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <OrganizationSwitcher />
+        <BusinessSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
