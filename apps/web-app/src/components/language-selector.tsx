@@ -33,6 +33,15 @@ export function LanguageSelector() {
       >
         PT
       </button>
+      <span className="text-muted-foreground/50">•</span>
+      <button
+        onClick={() => setLocale("qu")}
+        className={`hover:text-foreground transition-colors ${
+          locale === "qu" ? "text-foreground font-medium" : ""
+        }`}
+      >
+        QU
+      </button>
     </div>
   );
 }
