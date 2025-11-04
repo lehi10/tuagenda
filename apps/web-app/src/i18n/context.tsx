@@ -5,6 +5,7 @@ import { en } from "./locales/en";
 import { es } from "./locales/es";
 import { pt } from "./locales/pt";
 import { qu } from "./locales/qu";
+import { fr } from "./locales/fr";
 import type { Translations } from "./locales/en";
 
 export type Locale = "en" | "es" | "pt" | "qu" | "fr" | "gn";
@@ -14,7 +15,7 @@ const translations: Record<Locale, Translations> = {
   es,
   pt,
   qu,
-  fr: es, // Temporal hasta crear el archivo
+  fr,
   gn: es, // Temporal hasta crear el archivo
 };
 
