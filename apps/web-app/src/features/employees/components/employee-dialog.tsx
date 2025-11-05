@@ -7,12 +7,12 @@ import * as z from "zod";
 import { Loader2, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import {
   Form,
   FormControl,
@@ -110,23 +110,24 @@ export function EmployeeDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="sm:max-w-[500px] p-0 flex flex-col">
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle className="text-xl">
             {editData ? "Edit Employee" : "Add Employee"}
-          </DialogTitle>
-          <DialogDescription>
+          </SheetTitle>
+          <SheetDescription>
             {editData
               ? "Update the employee role"
               : "Search for a user by email or name and assign them a role"}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
+            className="flex flex-col flex-1 overflow-hidden"
           >
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
             {!editData && (
               <div className="space-y-2">
                 <FormLabel>Search User</FormLabel>
@@ -218,8 +219,9 @@ export function EmployeeDialog({
                 </FormItem>
               )}
             />
+            </div>
 
-            <div className="flex justify-end gap-2 pt-4">
+            <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
               <Button
                 type="button"
                 variant="outline"
@@ -229,12 +231,14 @@ export function EmployeeDialog({
                   onOpenChange(false);
                 }}
                 disabled={submitting}
+                className="flex-1"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={submitting || !form.watch("userId")}
+                className="flex-1"
               >
                 {submitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -244,7 +248,7 @@ export function EmployeeDialog({
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
