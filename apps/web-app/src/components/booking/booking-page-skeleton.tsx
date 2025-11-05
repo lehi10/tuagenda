@@ -35,7 +35,10 @@ export function BookingPageSkeleton() {
             {/* Service Cards Skeleton */}
             <div className="grid gap-4 sm:grid-cols-2">
               {[1, 2, 3, 4].map((i) => (
-                <Card key={i} className="overflow-hidden hover:shadow-md transition-shadow">
+                <Card
+                  key={i}
+                  className="overflow-hidden hover:shadow-md transition-shadow"
+                >
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-2 flex-1">

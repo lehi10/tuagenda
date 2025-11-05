@@ -27,8 +27,11 @@ async function BookingContent({ slug }: { slug: string }) {
   // Map business data to the expected format for BusinessProfile component
   const businessProfile = {
     name: business.title,
-    description: business.description || "Tu destino para servicios profesionales",
-    avatar: business.pictureFullPath || `https://api.dicebear.com/7.x/initials/svg?seed=${business.title}`,
+    description:
+      business.description || "Tu destino para servicios profesionales",
+    avatar:
+      business.pictureFullPath ||
+      `https://api.dicebear.com/7.x/initials/svg?seed=${business.title}`,
     email: business.email,
     phone: business.cellphone || business.phone || "",
     location: [business.address, business.city, business.country]

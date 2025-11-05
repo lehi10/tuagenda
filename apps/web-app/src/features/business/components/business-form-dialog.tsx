@@ -4,13 +4,12 @@ import { useState } from "react";
 import { useTranslation } from "@/i18n";
 import { toast } from "sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -133,23 +132,24 @@ export function BusinessFormDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>
-              {business
-                ? t.pages.business.editBusiness
-                : t.pages.business.addBusiness}
-            </DialogTitle>
-            <DialogDescription>
-              {business
-                ? "Actualiza la información de tu negocio"
-                : "Completa la información para crear un nuevo negocio"}
-            </DialogDescription>
-          </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="sm:max-w-2xl p-0 flex flex-col">
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle className="text-xl">
+            {business
+              ? t.pages.business.editBusiness
+              : t.pages.business.addBusiness}
+          </SheetTitle>
+          <SheetDescription>
+            {business
+              ? "Actualiza la información de tu negocio"
+              : "Completa la información para crear un nuevo negocio"}
+          </SheetDescription>
+        </SheetHeader>
 
-          <div className="space-y-6 py-4">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            <div className="space-y-6">
             {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold">
@@ -391,9 +391,10 @@ export function BusinessFormDialog({
                 </Select>
               </div>
             </div>
+            </div>
           </div>
 
-          <DialogFooter>
+          <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
             <Button
               type="button"
               variant="outline"
@@ -402,15 +403,16 @@ export function BusinessFormDialog({
                 if (onClose) onClose();
               }}
               disabled={isLoading}
+              className="flex-1"
             >
               {t.pages.business.actions.cancel}
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="flex-1">
               {isLoading ? "Guardando..." : t.pages.business.actions.save}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

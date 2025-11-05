@@ -76,20 +76,11 @@ export default function Error({
 
         {/* Actions */}
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button
-            onClick={reset}
-            size="lg"
-            className="min-w-[160px]"
-          >
+          <Button onClick={reset} size="lg" className="min-w-[160px]">
             <RefreshCcw className="mr-2 h-4 w-4" />
             Intentar de nuevo
           </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="min-w-[160px]"
-          >
+          <Button asChild variant="outline" size="lg" className="min-w-[160px]">
             <Link href="/">
               <Home className="mr-2 h-4 w-4" />
               Ir al inicio

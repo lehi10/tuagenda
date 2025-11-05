@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2, Loader2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Loader2, MapPin, Mail, Phone, Globe, Building2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslation } from "@/i18n";
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
@@ -134,66 +135,97 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
       <>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {businesses.map((business) => (
-            <Card key={business.id} className="overflow-hidden">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg">{business.title}</CardTitle>
-                    <CardDescription className="text-xs mt-1">
-                      {business.slug}
-                    </CardDescription>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleEdit(business)}>
-                        <Pencil className="mr-2 h-4 w-4" />
-                        {t.common.edit}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={() => business.id && handleDelete(business.id)}
+            <Card
+              key={business.id}
+              className="group overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/20"
+            >
+              <CardHeader className="pb-4 space-y-0">
+                <div className="flex items-start gap-3">
+                  <Avatar className="h-12 w-12 shrink-0 ring-2 ring-primary/10">
+                    <AvatarImage
+                      src={business.pictureFullPath || undefined}
+                      alt={business.title}
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20">
+                      <Building2 className="h-5 w-5 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-base font-semibold truncate group-hover:text-primary transition-colors">
+                          {business.title}
+                        </CardTitle>
+                        <CardDescription className="text-xs mt-0.5">
+                          /{business.slug}
+                        </CardDescription>
+                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEdit(business)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            {t.common.edit}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => business.id && handleDelete(business.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {t.common.delete}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+
+                    <div className="mt-2">
+                      <Badge
+                        variant={getStatusVariant(business.status || "active")}
+                        className="text-xs"
                       >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        {t.common.delete}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        {business.status && t.pages.business.status[business.status]}
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3">
+
+              <CardContent className="space-y-3 pt-0">
                 {business.description && (
                   <p className="text-sm text-muted-foreground line-clamp-2">
                     {business.description}
                   </p>
                 )}
-                <div className="space-y-1 text-sm">
-                  <div className="flex items-center text-muted-foreground">
-                    <span className="font-medium min-w-[4rem]">Email:</span>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Mail className="h-3.5 w-3.5 shrink-0" />
                     <span className="truncate">{business.email}</span>
                   </div>
-                  <div className="flex items-center text-muted-foreground">
-                    <span className="font-medium min-w-[4rem]">Tel:</span>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Phone className="h-3.5 w-3.5 shrink-0" />
                     <span>{business.phone}</span>
                   </div>
-                  <div className="flex items-center text-muted-foreground">
-                    <span className="font-medium min-w-[4rem]">Ciudad:</span>
-                    <span>
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">
                       {business.city}, {business.country}
                     </span>
                   </div>
-                </div>
-                <div className="pt-2">
-                  <Badge
-                    variant={getStatusVariant(business.status || "active")}
-                  >
-                    {business.status &&
-                      t.pages.business.status[business.status]}
-                  </Badge>
+                  {business.website && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Globe className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">{business.website}</span>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

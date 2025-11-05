@@ -75,13 +75,17 @@ export function BusinessProfile({ business }: BusinessProfileProps) {
               {business.email && (
                 <div className="flex items-center gap-1.5">
                   <Mail className="h-4 w-4" />
-                  <span className="truncate max-w-[200px]">{business.email}</span>
+                  <span className="truncate max-w-[200px]">
+                    {business.email}
+                  </span>
                 </div>
               )}
               {business.location && (
                 <div className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
-                  <span className="truncate max-w-[250px]">{business.location}</span>
+                  <span className="truncate max-w-[250px]">
+                    {business.location}
+                  </span>
                 </div>
               )}
             </div>

@@ -358,10 +358,7 @@ export function BookingFlow({ business }: BookingFlowProps) {
           {/* Booking Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <BookingSummary
-                bookingData={bookingData}
-                onClear={handleClear}
-              />
+              <BookingSummary bookingData={bookingData} onClear={handleClear} />
             </div>
           </div>
         </div>
