@@ -34,6 +34,7 @@ async function BookingContent({ slug }: { slug: string }) {
     location: [business.address, business.city, business.country]
       .filter(Boolean)
       .join(", "),
+    website: business.website || undefined,
   };
 
   return (
