@@ -7,202 +7,103 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useTranslation } from "@/i18n";
+  Settings,
+  Building2,
+  Bell,
+  Clock,
+  CreditCard,
+  Plug,
+  Shield,
+} from "lucide-react";
 
 export function SettingsTabs() {
-  const { t, locale, setLocale } = useTranslation();
+  const settingsSections = [
+    {
+      icon: Settings,
+      title: "General",
+      description:
+        "Usa estos ajustes para definir la configuración general del plugin y la configuración predeterminada para tus servicios y citas",
+      action: "Ver ajustes",
+    },
+    {
+      icon: Building2,
+      title: "Empresa",
+      description:
+        "Utilice estos ajustes para configurar la imagen, el nombre, la dirección, el teléfono y el sitio web de su empresa",
+      action: "Ver ajustes",
+    },
+    {
+      icon: Bell,
+      title: "Notificaciones",
+      description:
+        "Use esta configuración para establecer tus ajustes de correo que se utilizarán para notificar a tus clientes y empleados",
+      action: "Ver ajustes",
+    },
+    {
+      icon: Clock,
+      title: "Horas laborales y días de descanso",
+      description:
+        "Utilice estos ajustes para establecer las horas de trabajo y los días libres de la empresa que se aplicarán a cada empleado",
+      action: "Ver ajustes",
+    },
+    {
+      icon: CreditCard,
+      title: "Pagos",
+      description:
+        "Usa esta opción de configuración para las opciones y métodos de pago, así como el formato de precio",
+      action: "Ver ajustes",
+    },
+    {
+      icon: Plug,
+      title: "Integraciones",
+      description:
+        "Maneje la integración del calendario de Google, la integración del calendario de Outlook, la integración de Zoom y los Web Hooks",
+      action: "Ver ajustes",
+    },
+    {
+      icon: Shield,
+      title: "Configuración de roles",
+      description:
+        "Utilice esta configuración para definir los ajustes que se aplicarán a las funciones específicas de Amelia",
+      action: "Ver ajustes",
+    },
+  ];
 
   return (
-    <Tabs defaultValue="general" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="general">{t.pages.settings.general}</TabsTrigger>
-        <TabsTrigger value="profile">{t.pages.settings.profile}</TabsTrigger>
-        <TabsTrigger value="notifications">
-          {t.pages.settings.notifications}
-        </TabsTrigger>
-        <TabsTrigger value="preferences">
-          {t.pages.settings.preferences}
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="general" className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.pages.settings.general}</CardTitle>
-            <CardDescription>
-              Manage your business information and settings
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="business-name">Business Name</Label>
-              <Input id="business-name" defaultValue="Acme Inc" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="business-email">Business Email</Label>
-              <Input
-                id="business-email"
-                type="email"
-                defaultValue="contact@acme.com"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="business-phone">Business Phone</Label>
-              <Input
-                id="business-phone"
-                type="tel"
-                defaultValue="(555) 123-4567"
-              />
-            </div>
-            <Button>{t.common.save}</Button>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="profile" className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.pages.settings.profile}</CardTitle>
-            <CardDescription>Update your personal information</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" defaultValue="Admin User" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" defaultValue="admin@example.com" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Input id="role" defaultValue="Administrator" disabled />
-            </div>
-            <Button>{t.common.save}</Button>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="notifications" className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.pages.settings.notifications}</CardTitle>
-            <CardDescription>
-              Configure how you receive notifications
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Email Notifications</Label>
-                <p className="text-sm text-muted-foreground">
-                  Receive notifications via email
-                </p>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {settingsSections.map((section, index) => {
+        const Icon = section.icon;
+        return (
+          <Card
+            key={index}
+            className="hover:shadow-lg transition-all hover:scale-[1.02] flex flex-col overflow-hidden"
+          >
+            <CardHeader className="pb-0 pt-0 px-4">
+              <div className="flex flex-col items-center text-center gap-1.5">
+                <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
+                  <Icon className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-base font-semibold break-words">
+                  {section.title}
+                </CardTitle>
               </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>New Appointments</Label>
-                <p className="text-sm text-muted-foreground">
-                  Get notified when new appointments are booked
-                </p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Payment Alerts</Label>
-                <p className="text-sm text-muted-foreground">
-                  Receive alerts for new payments
-                </p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>New Clients</Label>
-                <p className="text-sm text-muted-foreground">
-                  Get notified when new clients register
-                </p>
-              </div>
-              <Switch />
-            </div>
-            <Button>{t.common.save}</Button>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="preferences" className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t.pages.settings.preferences}</CardTitle>
-            <CardDescription>Customize your experience</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="language">{t.pages.settings.language}</Label>
-              <Select
-                value={locale}
-                onValueChange={(value) =>
-                  setLocale(value as "en" | "es" | "fr" | "pt" | "qu" | "gn")
-                }
+            </CardHeader>
+            <CardContent className="space-y-2 flex flex-col flex-1 overflow-hidden pt-0 px-4 pb-3">
+              <CardDescription className="text-xs leading-snug text-center flex-1 break-words">
+                {section.description}
+              </CardDescription>
+              <Button
+                variant="outline"
+                className="w-full hover:bg-primary hover:text-primary-foreground shrink-0 text-sm h-9"
               >
-                <SelectTrigger id="language">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English 🇺🇸</SelectItem>
-                  <SelectItem value="es">Español 🇪🇸</SelectItem>
-                  <SelectItem value="fr">Français 🇫🇷</SelectItem>
-                  <SelectItem value="pt">Português 🇧🇷</SelectItem>
-                  <SelectItem value="qu">Qhichwa 🇵🇪</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
-              <Select defaultValue="utc-5">
-                <SelectTrigger id="timezone">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="utc-5">UTC-5 (Eastern Time)</SelectItem>
-                  <SelectItem value="utc-6">UTC-6 (Central Time)</SelectItem>
-                  <SelectItem value="utc-7">UTC-7 (Mountain Time)</SelectItem>
-                  <SelectItem value="utc-8">UTC-8 (Pacific Time)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="date-format">Date Format</Label>
-              <Select defaultValue="mdy">
-                <SelectTrigger id="date-format">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="mdy">MM/DD/YYYY</SelectItem>
-                  <SelectItem value="dmy">DD/MM/YYYY</SelectItem>
-                  <SelectItem value="ymd">YYYY-MM-DD</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Button>{t.common.save}</Button>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
+                {section.action}
+              </Button>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
   );
 }
