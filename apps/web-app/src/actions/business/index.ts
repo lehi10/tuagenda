@@ -12,6 +12,8 @@ export type { ListBusinessesFilters } from "./list-businesses.action";
 
 export { getBusiness } from "./get-business.action";
 
+export { getBusinessBySlug } from "./get-business-by-slug.action";
+
 export { getBusinessesByIds } from "./get-businesses-by-ids.action";
 
 export { createBusiness } from "./create-business.action";
