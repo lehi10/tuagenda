@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { BusinessProfile } from "@/components/booking/business-profile";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { ServiceSelection } from "@/components/booking/service-selection";
@@ -18,6 +19,9 @@ import {
   type StepType,
   type StepConfig,
 } from "@/lib/booking-steps";
+import { getBusinessBySlug } from "@/actions/business";
+import { BusinessProps } from "@/core/domain/entities/Business";
+import { Loader2 } from "lucide-react";
 
 // Mock data - Replace with actual data fetching based on [username]
 const mockBusiness = {
