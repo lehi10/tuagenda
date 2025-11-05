@@ -1,6 +1,16 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2, Loader2, MapPin, Mail, Phone, Globe, Building2 } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Loader2,
+  MapPin,
+  Mail,
+  Phone,
+  Globe,
+  Building2,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -171,13 +181,17 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleEdit(business)}>
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(business)}
+                          >
                             <Pencil className="mr-2 h-4 w-4" />
                             {t.common.edit}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             className="text-destructive"
-                            onClick={() => business.id && handleDelete(business.id)}
+                            onClick={() =>
+                              business.id && handleDelete(business.id)
+                            }
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             {t.common.delete}
@@ -191,7 +205,8 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                         variant={getStatusVariant(business.status || "active")}
                         className="text-xs"
                       >
-                        {business.status && t.pages.business.status[business.status]}
+                        {business.status &&
+                          t.pages.business.status[business.status]}
                       </Badge>
                     </div>
                   </div>
