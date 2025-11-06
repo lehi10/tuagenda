@@ -33,7 +33,7 @@ interface RevenueChartProps {
   period: string;
 }
 
-export function RevenueChart({ period }: RevenueChartProps) {
+export function RevenueChart({ period: _period }: RevenueChartProps) {
   return (
     <Card>
       <CardHeader>

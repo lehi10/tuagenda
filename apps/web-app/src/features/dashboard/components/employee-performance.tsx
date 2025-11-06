@@ -64,7 +64,9 @@ interface EmployeePerformanceProps {
   period: string;
 }
 
-export function EmployeePerformance({ period }: EmployeePerformanceProps) {
+export function EmployeePerformance({
+  period: _period,
+}: EmployeePerformanceProps) {
   const maxBookings = Math.max(...employees.map((e) => e.bookings));
 
   return (

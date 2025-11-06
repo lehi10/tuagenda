@@ -34,7 +34,7 @@ interface BookingsChartProps {
   period: string;
 }
 
-export function BookingsChart({ period }: BookingsChartProps) {
+export function BookingsChart({ period: _period }: BookingsChartProps) {
   return (
     <Card>
       <CardHeader>

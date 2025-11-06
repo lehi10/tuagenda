@@ -44,7 +44,7 @@ interface ServicesChartProps {
   period: string;
 }
 
-export function ServicesChart({ period }: ServicesChartProps) {
+export function ServicesChart({ period: _period }: ServicesChartProps) {
   return (
     <Card>
       <CardHeader>
