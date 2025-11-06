@@ -6,6 +6,7 @@
  */
 
 import {
+  GetBusinessUseCase,
   UpdateBusinessUseCase,
   DeleteBusinessUseCase,
 } from "@/core/application/use-cases/business";
@@ -18,22 +19,24 @@ export async function GET(
 ) {
   try {
     const businessRepository = new PrismaBusinessRepository();
-    const business = await businessRepository.findById(parseInt(params.id));
+    const getBusinessUseCase = new GetBusinessUseCase(businessRepository);
 
-    if (!business) {
-      return Response.json(
-        {
-          success: false,
-          error: "Business not found",
-        },
-        { status: 404 }
-      );
+    const result = await getBusinessUseCase.execute({ id: parseInt(params.id) });
+
+    if (result.success && result.business) {
+      return Response.json({
+        success: true,
+        business: result.business.toObject(),
+      });
     }
 
-    return Response.json({
-      success: true,
-      business: business.toObject(),
-    });
+    return Response.json(
+      {
+        success: false,
+        error: result.error || "Business not found",
+      },
+      { status: 404 }
+    );
   } catch (error) {
     logger.error("API:GET /api/business/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
     return Response.json(

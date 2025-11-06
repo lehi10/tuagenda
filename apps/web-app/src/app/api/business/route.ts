@@ -4,7 +4,10 @@
  * GET /api/business - List all businesses
  */
 
-import { CreateBusinessUseCase } from "@/core/application/use-cases/business";
+import {
+  CreateBusinessUseCase,
+  ListBusinessesUseCase,
+} from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
 import { logger } from "@/lib/logger";
 
@@ -46,12 +49,25 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     const businessRepository = new PrismaBusinessRepository();
-    const businesses = await businessRepository.findAll();
+    const listBusinessesUseCase = new ListBusinessesUseCase(businessRepository);
 
-    return Response.json({
-      success: true,
-      businesses: businesses.map(b => b.toObject()),
-    });
+    const result = await listBusinessesUseCase.execute({});
+
+    if (result.success && result.businesses) {
+      return Response.json({
+        success: true,
+        businesses: result.businesses.map(b => b.toObject()),
+        total: result.total,
+      });
+    }
+
+    return Response.json(
+      {
+        success: false,
+        error: result.error || "Failed to fetch businesses",
+      },
+      { status: 400 }
+    );
   } catch (error) {
     logger.error("API:GET /api/business", "system", `Error: ${error instanceof Error ? error.message : String(error)}`);
     return Response.json(
