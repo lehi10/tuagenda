@@ -153,7 +153,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                 <div className="flex items-start gap-3">
                   <Avatar className="h-12 w-12 shrink-0 ring-2 ring-primary/10">
                     <AvatarImage
-                      src={business.pictureFullPath || undefined}
+                      src={business.logo || undefined}
                       alt={business.title}
                     />
                     <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20">

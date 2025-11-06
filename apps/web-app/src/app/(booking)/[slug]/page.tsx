@@ -30,10 +30,10 @@ async function BookingContent({ slug }: { slug: string }) {
     description:
       business.description || "Tu destino para servicios profesionales",
     avatar:
-      business.pictureFullPath ||
+      business.logo ||
       `https://api.dicebear.com/7.x/initials/svg?seed=${business.title}`,
     email: business.email,
-    phone: business.cellphone || business.phone || "",
+    phone: business.phone || "",
     location: [business.address, business.city, business.country]
       .filter(Boolean)
       .join(", "),
