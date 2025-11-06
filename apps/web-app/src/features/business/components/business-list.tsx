@@ -30,7 +30,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "@/i18n";
-import { useState, useEffect, forwardRef, useImperativeHandle, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+} from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
 import { BusinessProps } from "@/core/domain/entities/Business";
@@ -326,29 +332,29 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                             page === totalPages ||
                             Math.abs(page - currentPage) <= 1
                         )
-                        .map((page, index, array) => (
-                          <>
-                            {index > 0 && array[index - 1] !== page - 1 && (
-                              <span
-                                key={`ellipsis-${page}`}
-                                className="px-2 text-muted-foreground"
+                        .map((page, index, array) => {
+                          const showEllipsis =
+                            index > 0 && array[index - 1] !== page - 1;
+                          return (
+                            <div key={page} className="flex items-center gap-1">
+                              {showEllipsis && (
+                                <span className="px-2 text-muted-foreground">
+                                  ...
+                                </span>
+                              )}
+                              <Button
+                                variant={
+                                  currentPage === page ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => setCurrentPage(page)}
+                                className="w-9"
                               >
-                                ...
-                              </span>
-                            )}
-                            <Button
-                              key={page}
-                              variant={
-                                currentPage === page ? "default" : "outline"
-                              }
-                              size="sm"
-                              onClick={() => setCurrentPage(page)}
-                              className="w-9"
-                            >
-                              {page}
-                            </Button>
-                          </>
-                        ))}
+                                {page}
+                              </Button>
+                            </div>
+                          );
+                        })}
                     </div>
                     <Button
                       variant="outline"

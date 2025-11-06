@@ -34,78 +34,97 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation();
   const { user } = useAuth();
 
-  const navMain = [
+  // Check if user is superadmin
+  const isSuperAdmin = user?.type === "superadmin";
+
+  const navSections = [
+    // SuperAdmin Section - Only visible for superadmin users
+    ...(isSuperAdmin
+      ? [
+          {
+            title: "SuperAdmin",
+            items: [
+              {
+                id: "users",
+                title: t.navigation.users,
+                url: "/users",
+                icon: UserCog,
+              },
+              {
+                id: "business",
+                title: t.navigation.business,
+                url: "/business",
+                icon: Building2,
+              },
+            ],
+          },
+        ]
+      : []),
+    // Platform Section - Visible for all users
     {
-      id: "dashboard",
-      title: t.navigation.dashboard,
-      url: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      id: "business",
-      title: t.navigation.business,
-      url: "/business",
-      icon: Building2,
-    },
-    {
-      id: "employees",
-      title: t.navigation.employees,
-      url: "/employees",
-      icon: BriefcaseBusiness,
-    },
-    {
-      id: "users",
-      title: t.navigation.users,
-      url: "/users",
-      icon: UserCog,
-    },
-    {
-      id: "calendar",
-      title: t.navigation.calendar,
-      url: "/calendar",
-      icon: Calendar,
-    },
-    {
-      id: "appointments",
-      title: t.navigation.appointments,
-      url: "/appointments",
-      icon: Clock,
-    },
-    {
-      id: "services",
-      title: t.navigation.services,
-      url: "/services",
-      icon: Sparkles,
-    },
-    {
-      id: "locations",
-      title: t.navigation.locations,
-      url: "/locations",
-      icon: MapPin,
-    },
-    {
-      id: "clients",
-      title: t.navigation.clients,
-      url: "/clients",
-      icon: UserCheck,
-    },
-    {
-      id: "payments",
-      title: t.navigation.payments,
-      url: "/payments",
-      icon: CreditCard,
-    },
-    {
-      id: "notifications",
-      title: t.navigation.notifications,
-      url: "/notifications",
-      icon: Bell,
-    },
-    {
-      id: "settings",
-      title: t.navigation.settings,
-      url: "/settings",
-      icon: Settings,
+      title: t.common.platform,
+      items: [
+        {
+          id: "dashboard",
+          title: t.navigation.dashboard,
+          url: "/dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          id: "employees",
+          title: t.navigation.employees,
+          url: "/employees",
+          icon: BriefcaseBusiness,
+        },
+        {
+          id: "calendar",
+          title: t.navigation.calendar,
+          url: "/calendar",
+          icon: Calendar,
+        },
+        {
+          id: "appointments",
+          title: t.navigation.appointments,
+          url: "/appointments",
+          icon: Clock,
+        },
+        {
+          id: "services",
+          title: t.navigation.services,
+          url: "/services",
+          icon: Sparkles,
+        },
+        {
+          id: "locations",
+          title: t.navigation.locations,
+          url: "/locations",
+          icon: MapPin,
+        },
+        {
+          id: "clients",
+          title: t.navigation.clients,
+          url: "/clients",
+          icon: UserCheck,
+        },
+        {
+          id: "payments",
+          title: t.navigation.payments,
+          url: "/payments",
+          icon: CreditCard,
+        },
+        {
+          id: "notifications",
+          title: t.navigation.notifications,
+          url: "/notifications",
+          icon: Bell,
+        },
+        {
+          id: "settings",
+          title: t.navigation.settings,
+          url: "/settings",
+          icon: Settings,
+        },
+      ],
     },
   ];
 
@@ -122,7 +141,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <BusinessSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
+        <NavMain sections={navSections} />
       </SidebarContent>
       <SidebarFooter>
         <LanguageSelector />

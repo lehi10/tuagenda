@@ -23,18 +23,23 @@ export function ClientSidebar({
   const { user } = useAuth();
   const { t } = useTranslation();
 
-  const navMain = [
+  const navSections = [
     {
-      id: "appointments",
-      title: t.navigation.appointments,
-      url: "/u/appointments",
-      icon: Calendar,
-    },
-    {
-      id: "profile",
-      title: t.common.myProfile,
-      url: "/u/profile",
-      icon: User,
+      title: t.common.client,
+      items: [
+        {
+          id: "appointments",
+          title: t.navigation.appointments,
+          url: "/u/appointments",
+          icon: Calendar,
+        },
+        {
+          id: "profile",
+          title: t.common.myProfile,
+          url: "/u/profile",
+          icon: User,
+        },
+      ],
     },
   ];
 
@@ -62,7 +67,7 @@ export function ClientSidebar({
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
+        <NavMain sections={navSections} />
       </SidebarContent>
       <SidebarFooter>
         <LanguageSelector />
