@@ -80,6 +80,22 @@ export interface IUserRepository {
    * @returns Total count of users
    */
   count(_filters?: UserRepositoryFilters): Promise<number>;
+
+  /**
+   * Search users by name or email
+   * @param searchTerm - Search term
+   * @param limit - Max results to return
+   * @returns Array of matching users
+   */
+  search(_searchTerm: string, _limit?: number): Promise<UserSearchResult[]>;
+
+  /**
+   * Update user admin fields (type, status)
+   * @param userId - User ID
+   * @param data - Admin data to update
+   * @returns void
+   */
+  updateAdmin(_userId: string, _data: UpdateUserAdminData): Promise<void>;
 }
 
 /**
@@ -93,4 +109,23 @@ export interface UserRepositoryFilters {
   createdBefore?: Date;
   limit?: number;
   offset?: number;
+}
+
+/**
+ * User search result (simplified for search endpoints)
+ */
+export interface UserSearchResult {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  pictureFullPath: string | null;
+}
+
+/**
+ * Update user admin data
+ */
+export interface UpdateUserAdminData {
+  type?: UserType;
+  status?: UserStatus;
 }

@@ -48,7 +48,11 @@ export async function PATCH(
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:PATCH /api/business-user/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:PATCH /api/business-user/[id]",
+      params.id,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,
@@ -87,7 +91,11 @@ export async function DELETE(
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:DELETE /api/business-user/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:DELETE /api/business-user/[id]",
+      params.id,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

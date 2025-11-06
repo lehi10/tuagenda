@@ -102,7 +102,11 @@ export async function POST(
       );
     }
 
-    logger.error("CHANGE_PASSWORD", params.id, `Unknown error: ${String(error)}`);
+    logger.error(
+      "CHANGE_PASSWORD",
+      params.id,
+      `Unknown error: ${String(error)}`
+    );
 
     return Response.json(
       {

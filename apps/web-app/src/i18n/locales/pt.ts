@@ -19,7 +19,8 @@ export const pt: Translations = {
     legal: "Legal",
     allRightsReserved: "Todos os direitos reservados",
     noOrganizationSelected: "Nenhuma organização selecionada",
-    noOrganizationMessage: "Você não tem uma organização atribuída. Por favor, entre em contato com seu administrador.",
+    noOrganizationMessage:
+      "Você não tem uma organização atribuída. Por favor, entre em contato com seu administrador.",
     placeholders: {
       search: "Buscar...",
       searchByEmail: "Buscar por e-mail ou nome...",

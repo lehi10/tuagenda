@@ -20,7 +20,9 @@ export async function GET(
       businessRepository
     );
 
-    const result = await getBusinessBySlugUseCase.execute({ slug: params.slug });
+    const result = await getBusinessBySlugUseCase.execute({
+      slug: params.slug,
+    });
 
     if (result.success && result.business) {
       return Response.json({
@@ -37,7 +39,11 @@ export async function GET(
       { status: 404 }
     );
   } catch (error) {
-    logger.error("API:GET /api/business/slug/[slug]", params.slug, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:GET /api/business/slug/[slug]",
+      params.slug,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

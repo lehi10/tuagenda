@@ -4,7 +4,10 @@
  * GET /api/users - Get all users
  */
 
-import { CreateUserUseCase } from "@/core/application/use-cases/user";
+import {
+  CreateUserUseCase,
+  GetAllUsersUseCase,
+} from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
 import { type CreateUserFromAuthInput } from "@/lib/validations/user.schema";
 import { logger } from "@/lib/logger";
@@ -42,7 +45,11 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:POST /api/users", "system", `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:POST /api/users",
+      "system",
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,
@@ -53,19 +60,55 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // TODO: Create GetAllUsersUseCase to replace this direct prisma call
-    // For now, keeping the same logic as the action
-    const userRepository = new PrismaUserRepository();
-    const users = await userRepository.findAll();
+    const { searchParams } = new URL(request.url);
 
-    return Response.json({
-      success: true,
-      users,
+    // Parse query parameters
+    const search = searchParams.get("search") || undefined;
+    const type = searchParams.get("type") || undefined;
+    const status = searchParams.get("status") || undefined;
+    const limit = searchParams.get("limit")
+      ? parseInt(searchParams.get("limit")!)
+      : undefined;
+    const offset = searchParams.get("offset")
+      ? parseInt(searchParams.get("offset")!)
+      : undefined;
+
+    // Dependency injection
+    const userRepository = new PrismaUserRepository();
+    const getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
+
+    // Execute use case
+    const result = await getAllUsersUseCase.execute({
+      search,
+      type,
+      status,
+      limit,
+      offset,
     });
+
+    if (result.success) {
+      return Response.json({
+        success: true,
+        users: result.users,
+        total: result.total,
+      });
+    }
+
+    return Response.json(
+      {
+        success: false,
+        error: result.error || "Failed to fetch users",
+      },
+      { status: 400 }
+    );
   } catch (error) {
-    logger.error("API:GET /api/users", "system", `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:GET /api/users",
+      "system",
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

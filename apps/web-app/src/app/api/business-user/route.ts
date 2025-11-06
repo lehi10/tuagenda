@@ -41,7 +41,11 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:POST /api/business-user", "system", `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:POST /api/business-user",
+      "system",
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

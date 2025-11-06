@@ -21,7 +21,9 @@ export async function GET(
     const businessRepository = new PrismaBusinessRepository();
     const getBusinessUseCase = new GetBusinessUseCase(businessRepository);
 
-    const result = await getBusinessUseCase.execute({ id: parseInt(params.id) });
+    const result = await getBusinessUseCase.execute({
+      id: parseInt(params.id),
+    });
 
     if (result.success && result.business) {
       return Response.json({
@@ -38,7 +40,11 @@ export async function GET(
       { status: 404 }
     );
   } catch (error) {
-    logger.error("API:GET /api/business/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:GET /api/business/[id]",
+      params.id,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,
@@ -79,7 +85,11 @@ export async function PATCH(
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:PATCH /api/business/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:PATCH /api/business/[id]",
+      params.id,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,
@@ -114,7 +124,11 @@ export async function DELETE(
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:DELETE /api/business/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:DELETE /api/business/[id]",
+      params.id,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

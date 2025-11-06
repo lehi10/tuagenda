@@ -93,7 +93,11 @@ export async function GET(
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:GET /api/business-user/by-business/[businessId]", params.businessId, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:GET /api/business-user/by-business/[businessId]",
+      params.businessId,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

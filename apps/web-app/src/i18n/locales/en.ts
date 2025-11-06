@@ -17,7 +17,8 @@ export const en = {
     legal: "Legal",
     allRightsReserved: "All rights reserved",
     noOrganizationSelected: "No organization selected",
-    noOrganizationMessage: "You don't have an assigned organization. Please contact your administrator.",
+    noOrganizationMessage:
+      "You don't have an assigned organization. Please contact your administrator.",
     placeholders: {
       search: "Search...",
       searchByEmail: "Search by email or name...",

@@ -5,15 +5,17 @@
  * DELETE /api/users/[id] - Delete user
  */
 
-import { GetUserUseCase, UpdateUserUseCase } from "@/core/application/use-cases/user";
+import {
+  GetUserUseCase,
+  UpdateUserUseCase,
+  DeleteUserUseCase,
+} from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
 import {
   updateProfilePersonalInfoSchema,
   type UpdateProfilePersonalInfoInput,
 } from "@/lib/validations/user.schema";
 import { logger } from "@/lib/logger";
-import { prisma } from "db";
-import { z } from "zod";
 
 export async function GET(
   request: Request,
@@ -140,32 +142,32 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Use repository directly
+    // Dependency injection
     const userRepository = new PrismaUserRepository();
+    const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 
-    // Check if user exists
-    const existingUser = await userRepository.findById(params.id);
-    if (!existingUser) {
-      logger.warning("API:DELETE /api/users/[id]", params.id, "User not found");
-      return Response.json(
-        {
-          success: false,
-          error: "User not found",
-        },
-        { status: 404 }
-      );
+    // Execute use case
+    const result = await deleteUserUseCase.execute({ id: params.id });
+
+    if (result.success) {
+      return Response.json({
+        success: true,
+      });
     }
 
-    // Delete user
-    await userRepository.delete(params.id);
-
-    logger.info("API:DELETE /api/users/[id]", params.id, "User deleted successfully");
-
-    return Response.json({
-      success: true,
-    });
+    return Response.json(
+      {
+        success: false,
+        error: result.error || "Failed to delete user",
+      },
+      { status: result.error === "User not found" ? 404 : 400 }
+    );
   } catch (error) {
-    logger.error("API:DELETE /api/users/[id]", params.id, `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:DELETE /api/users/[id]",
+      params.id,
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

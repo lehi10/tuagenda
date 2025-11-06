@@ -12,6 +12,8 @@ import { prisma } from "db";
 import {
   IUserRepository,
   UserRepositoryFilters,
+  UserSearchResult,
+  UpdateUserAdminData,
 } from "@/core/domain/repositories/IUserRepository";
 import { User } from "@/core/domain/entities/User";
 import { UserMapper } from "../mappers/UserMapper";
@@ -234,5 +236,54 @@ export class PrismaUserRepository implements IUserRepository {
     }
 
     return await prisma.user.count({ where });
+  }
+
+  /**
+   * Search users by name or email
+   */
+  async search(
+    searchTerm: string,
+    limit: number = 10
+  ): Promise<UserSearchResult[]> {
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { email: { contains: searchTerm, mode: "insensitive" } },
+          { firstName: { contains: searchTerm, mode: "insensitive" } },
+          { lastName: { contains: searchTerm, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        pictureFullPath: true,
+      },
+      take: limit,
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    });
+
+    return users;
+  }
+
+  /**
+   * Update user admin fields (type, status)
+   */
+  async updateAdmin(userId: string, data: UpdateUserAdminData): Promise<void> {
+    const updateData: Prisma.UserUpdateInput = {};
+
+    if (data.type !== undefined) {
+      updateData.type = data.type as unknown as PrismaUserType;
+    }
+
+    if (data.status !== undefined) {
+      updateData.status = data.status as unknown as PrismaUserStatus;
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+    });
   }
 }

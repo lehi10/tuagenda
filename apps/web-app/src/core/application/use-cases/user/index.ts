@@ -21,3 +21,27 @@ export {
   type UpdateUserInput,
   type UpdateUserResult,
 } from "./UpdateUser";
+
+export {
+  GetAllUsersUseCase,
+  type GetAllUsersInput,
+  type GetAllUsersResult,
+} from "./GetAllUsers";
+
+export {
+  DeleteUserUseCase,
+  type DeleteUserInput,
+  type DeleteUserResult,
+} from "./DeleteUser";
+
+export {
+  SearchUsersUseCase,
+  type SearchUsersInput,
+  type SearchUsersResult,
+} from "./SearchUsers";
+
+export {
+  UpdateUserAdminUseCase,
+  type UpdateUserAdminInput,
+  type UpdateUserAdminResult,
+} from "./UpdateUserAdmin";

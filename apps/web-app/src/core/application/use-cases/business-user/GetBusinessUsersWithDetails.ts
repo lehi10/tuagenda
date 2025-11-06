@@ -13,7 +13,10 @@ import { z } from "zod";
 import { logger } from "@/lib/logger";
 
 const getBusinessUsersWithDetailsSchema = z.object({
-  businessId: z.number().int().positive("Business ID must be a positive integer"),
+  businessId: z
+    .number()
+    .int()
+    .positive("Business ID must be a positive integer"),
   search: z.string().optional(),
 });
 
@@ -32,9 +35,7 @@ export class GetBusinessUsersWithDetailsUseCase {
     private readonly businessUserRepository: IBusinessUserRepository
   ) {}
 
-  async execute(
-    input: unknown
-  ): Promise<GetBusinessUsersWithDetailsResult> {
+  async execute(input: unknown): Promise<GetBusinessUsersWithDetailsResult> {
     try {
       const validatedData = getBusinessUsersWithDetailsSchema.parse(input);
 

@@ -35,7 +35,11 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:POST /api/business", "system", `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:POST /api/business",
+      "system",
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,
@@ -56,7 +60,7 @@ export async function GET() {
     if (result.success && result.businesses) {
       return Response.json({
         success: true,
-        businesses: result.businesses.map(b => b.toObject()),
+        businesses: result.businesses.map((b) => b.toObject()),
         total: result.total,
       });
     }
@@ -69,7 +73,11 @@ export async function GET() {
       { status: 400 }
     );
   } catch (error) {
-    logger.error("API:GET /api/business", "system", `Error: ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(
+      "API:GET /api/business",
+      "system",
+      `Error: ${error instanceof Error ? error.message : String(error)}`
+    );
     return Response.json(
       {
         success: false,

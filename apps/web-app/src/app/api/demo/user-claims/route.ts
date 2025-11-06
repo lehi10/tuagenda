@@ -18,7 +18,11 @@ export async function POST(request: Request) {
     const user: User = await request.json();
 
     if (!user.id) {
-      logger.error("API:POST /api/demo/user-claims", "system", "No userId provided");
+      logger.error(
+        "API:POST /api/demo/user-claims",
+        "system",
+        "No userId provided"
+      );
       return Response.json(
         {
           error: "User ID is required",
