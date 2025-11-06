@@ -108,6 +108,17 @@ export interface IBusinessUserRepository {
    * @returns Array of BusinessUser entities with EMPLOYEE role
    */
   findEmployeesByBusiness(_businessId: number): Promise<BusinessUser[]>;
+
+  /**
+   * Find business users with full user details (for display purposes)
+   * @param businessId - Business ID
+   * @param search - Optional search term for user name/email
+   * @returns Array of BusinessUser entities with populated user data
+   */
+  findByBusinessWithUserDetails(
+    _businessId: number,
+    _search?: string
+  ): Promise<BusinessUserWithDetails[]>;
 }
 
 /**
@@ -119,4 +130,25 @@ export interface BusinessUserRepositoryFilters {
   createdBefore?: Date;
   limit?: number;
   offset?: number;
+}
+
+/**
+ * BusinessUser with full User details
+ * Used for displaying employee lists with user information
+ */
+export interface BusinessUserWithDetails {
+  id: number;
+  userId: string;
+  businessId: number;
+  role: BusinessRole;
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    pictureFullPath: string | null;
+    phone: string | null;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }

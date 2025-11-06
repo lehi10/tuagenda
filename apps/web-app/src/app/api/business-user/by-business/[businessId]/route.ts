@@ -12,14 +12,12 @@
 import {
   GetBusinessUsersByBusinessUseCase,
   GetBusinessUsersByBusinessInput,
+  GetBusinessUsersWithDetailsUseCase,
 } from "@/core/application/use-cases/business-user";
 import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
 import { logger } from "@/lib/logger";
-import { prisma } from "db";
 import { BusinessRole } from "@/core/domain/entities";
 
-// NOTE: getBusinessUsersWithDetails action does NOT use hexagonal architecture
-// It uses Prisma directly. This should be refactored to use a Use Case.
 export async function GET(
   request: Request,
   { params }: { params: { businessId: string } }
@@ -32,42 +30,30 @@ export async function GET(
     const businessId = parseInt(params.businessId);
 
     if (includeDetails) {
-      // Using direct Prisma call (from original action)
-      // TODO: Refactor to use hexagonal architecture
-      const businessUsers = await prisma.businessUser.findMany({
-        where: {
-          businessId,
-          ...(search
-            ? {
-                user: {
-                  OR: [
-                    { firstName: { contains: search, mode: "insensitive" } },
-                    { lastName: { contains: search, mode: "insensitive" } },
-                    { email: { contains: search, mode: "insensitive" } },
-                  ],
-                },
-              }
-            : {}),
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              firstName: true,
-              lastName: true,
-              pictureFullPath: true,
-              phone: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
+      // Use hexagonal architecture with dedicated Use Case
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const getBusinessUsersWithDetailsUseCase =
+        new GetBusinessUsersWithDetailsUseCase(businessUserRepository);
+
+      const result = await getBusinessUsersWithDetailsUseCase.execute({
+        businessId,
+        search,
       });
 
-      return Response.json({
-        success: true,
-        businessUsers,
-      });
+      if (result.success && result.businessUsers) {
+        return Response.json({
+          success: true,
+          businessUsers: result.businessUsers,
+        });
+      }
+
+      return Response.json(
+        {
+          success: false,
+          error: result.error || "Failed to get business users with details",
+        },
+        { status: 400 }
+      );
     }
 
     // Use hexagonal architecture

@@ -12,6 +12,7 @@ import { prisma } from "db";
 import {
   IBusinessUserRepository,
   BusinessUserRepositoryFilters,
+  BusinessUserWithDetails,
 } from "@/core/domain/repositories/IBusinessUserRepository";
 import { BusinessUser } from "@/core/domain/entities/BusinessUser";
 import { BusinessUserMapper } from "../mappers/BusinessUserMapper";
@@ -212,6 +213,46 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
     });
 
     return BusinessUserMapper.toDomainList(prismaBusinessUsers);
+  }
+
+  /**
+   * Find business users with full user details
+   */
+  async findByBusinessWithUserDetails(
+    businessId: number,
+    search?: string
+  ): Promise<BusinessUserWithDetails[]> {
+    const businessUsers = await prisma.businessUser.findMany({
+      where: {
+        businessId,
+        ...(search
+          ? {
+              user: {
+                OR: [
+                  { firstName: { contains: search, mode: "insensitive" } },
+                  { lastName: { contains: search, mode: "insensitive" } },
+                  { email: { contains: search, mode: "insensitive" } },
+                ],
+              },
+            }
+          : {}),
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            pictureFullPath: true,
+            phone: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return businessUsers as BusinessUserWithDetails[];
   }
 
   /**

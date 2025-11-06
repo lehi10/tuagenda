@@ -33,3 +33,9 @@ export type {
   GetBusinessUsersByUserInput,
   GetBusinessUsersByUserResult,
 } from "./GetBusinessUsersByUser";
+
+export { GetBusinessUsersWithDetailsUseCase } from "./GetBusinessUsersWithDetails";
+export type {
+  GetBusinessUsersWithDetailsInput,
+  GetBusinessUsersWithDetailsResult,
+} from "./GetBusinessUsersWithDetails";
