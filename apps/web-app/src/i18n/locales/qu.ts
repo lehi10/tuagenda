@@ -18,6 +18,8 @@ export const qu: Translations = {
     product: "Ruruchiq",
     legal: "Kamachikuna",
     allRightsReserved: "Tukuy derechokuna waqaychasqa",
+    noOrganizationSelected: "Mana organizacion akllasqa",
+    noOrganizationMessage: "Mana organizacionyuq kanki. Ama hina kaspa kamachiqniykiwan rimanakuy.",
     placeholders: {
       search: "Maskay...",
       searchByEmail: "Correo utaq sutimanta maskay...",

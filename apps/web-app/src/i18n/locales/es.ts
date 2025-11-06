@@ -18,6 +18,8 @@ export const es: Translations = {
     product: "Producto",
     legal: "Legal",
     allRightsReserved: "Todos los derechos reservados",
+    noOrganizationSelected: "No hay organización seleccionada",
+    noOrganizationMessage: "No tienes una organización asignada. Por favor contacta a tu administrador.",
     placeholders: {
       search: "Buscar...",
       searchByEmail: "Buscar por correo o nombre...",

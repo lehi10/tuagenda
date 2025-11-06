@@ -18,6 +18,8 @@ export const fr: Translations = {
     product: "Produit",
     legal: "Légal",
     allRightsReserved: "Tous droits réservés",
+    noOrganizationSelected: "Aucune organisation sélectionnée",
+    noOrganizationMessage: "Vous n'avez pas d'organisation attribuée. Veuillez contacter votre administrateur.",
     placeholders: {
       search: "Rechercher...",
       searchByEmail: "Rechercher par email ou nom...",

@@ -21,7 +21,7 @@ import { NavUser } from "@/components/nav-user";
 import { LanguageSelector } from "@/components/language-selector";
 import { BusinessSwitcher } from "@/components/business-switcher";
 import { useTranslation } from "@/i18n";
-import { useAuth } from "@/contexts";
+import { useAuth, useBusiness } from "@/contexts";
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +33,7 @@ import {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { currentBusiness } = useBusiness();
 
   // Check if user is superadmin
   const isSuperAdmin = user?.type === "superadmin";
@@ -135,13 +136,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: user?.pictureFullPath || "",
   };
 
+  // Determine if navigation should be disabled
+  // Navigation is disabled when there's no current business AND user is not a superadmin
+  const isNavDisabled = !currentBusiness && !isSuperAdmin;
+
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
         <BusinessSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain sections={navSections} />
+        <NavMain sections={navSections} disabled={isNavDisabled} />
       </SidebarContent>
       <SidebarFooter>
         <LanguageSelector />

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight, type LucideIcon, AlertCircle } from "lucide-react";
 
 import {
   Collapsible,
@@ -17,11 +17,15 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useTranslation } from "@/i18n";
 
 export function NavMain({
   sections,
+  disabled = false,
+  disabledMessage,
 }: {
   sections: {
     title: string;
@@ -38,7 +42,35 @@ export function NavMain({
       }[];
     }[];
   }[];
+  disabled?: boolean;
+  disabledMessage?: string;
 }) {
+  const { t } = useTranslation();
+  const { state } = useSidebar();
+
+  // If disabled, show message instead of navigation items
+  if (disabled) {
+    const message = disabledMessage || t.common.noOrganizationMessage;
+    const isCollapsed = state === "collapsed";
+
+    return (
+      <SidebarGroup>
+        <SidebarGroupLabel>{t.common.noOrganizationSelected}</SidebarGroupLabel>
+        <div className="px-2">
+          <div
+            className="flex items-start gap-2 rounded-md px-2 py-2 text-sm opacity-50 cursor-not-allowed group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
+            title={isCollapsed ? message : undefined}
+          >
+            <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+            <span className="text-xs text-muted-foreground leading-relaxed group-data-[collapsible=icon]:hidden">
+              {message}
+            </span>
+          </div>
+        </div>
+      </SidebarGroup>
+    );
+  }
+
   return (
     <>
       {sections.map((section, index) => (
