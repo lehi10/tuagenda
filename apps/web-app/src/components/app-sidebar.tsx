@@ -1,185 +1,134 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+  Bell,
+  BriefcaseBusiness,
+  Building2,
+  Calendar,
+  Clock,
+  CreditCard,
+  LayoutDashboard,
+  MapPin,
+  Settings,
+  Sparkles,
+  UserCheck,
+  UserCog,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import { LanguageSelector } from "@/components/language-selector";
+import { BusinessSwitcher } from "@/components/business-switcher";
+import { useTranslation } from "@/i18n";
+import { useAuth } from "@/contexts";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+  SidebarRail,
+} from "@/components/ui/sidebar";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+
+  const navMain = [
+    {
+      id: "dashboard",
+      title: t.navigation.dashboard,
+      url: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      id: "business",
+      title: t.navigation.business,
+      url: "/business",
+      icon: Building2,
+    },
+    {
+      id: "employees",
+      title: t.navigation.employees,
+      url: "/employees",
+      icon: BriefcaseBusiness,
+    },
+    {
+      id: "users",
+      title: t.navigation.users,
+      url: "/users",
+      icon: UserCog,
+    },
+    {
+      id: "calendar",
+      title: t.navigation.calendar,
+      url: "/calendar",
+      icon: Calendar,
+    },
+    {
+      id: "appointments",
+      title: t.navigation.appointments,
+      url: "/appointments",
+      icon: Clock,
+    },
+    {
+      id: "services",
+      title: t.navigation.services,
+      url: "/services",
+      icon: Sparkles,
+    },
+    {
+      id: "locations",
+      title: t.navigation.locations,
+      url: "/locations",
+      icon: MapPin,
+    },
+    {
+      id: "clients",
+      title: t.navigation.clients,
+      url: "/clients",
+      icon: UserCheck,
+    },
+    {
+      id: "payments",
+      title: t.navigation.payments,
+      url: "/payments",
+      icon: CreditCard,
+    },
+    {
+      id: "notifications",
+      title: t.navigation.notifications,
+      url: "/notifications",
+      icon: Bell,
+    },
+    {
+      id: "settings",
+      title: t.navigation.settings,
+      url: "/settings",
+      icon: Settings,
+    },
+  ];
+
+  // Prepare user data for NavUser component
+  const userData = {
+    name: user ? `${user.firstName} ${user.lastName}`.trim() : "User",
+    email: user?.email || "",
+    avatar: user?.pictureFullPath || "",
+  };
+
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <BusinessSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <LanguageSelector />
+        <NavUser user={userData} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
-  )
+  );
 }

@@ -1,0 +1,594 @@
+import type { Translations } from "./en";
+
+export const qu: Translations = {
+  common: {
+    language: "Simi",
+    save: "Waqaychay",
+    cancel: "Ama",
+    delete: "Pichanay",
+    edit: "Allichay",
+    add: "Yapay",
+    search: "Maskay",
+    filter: "Llikay",
+    actions: "Ruwanakuna",
+    myProfile: "Ñuqapa Perfilniy",
+    myDashboard: "Ñuqapa Panelniy",
+    client: "Rantiq",
+    platform: "Plataforma",
+    product: "Ruruchiq",
+    legal: "Kamachikuna",
+    allRightsReserved: "Tukuy derechokuna waqaychasqa",
+    placeholders: {
+      search: "Maskay...",
+      searchByEmail: "Correo utaq sutimanta maskay...",
+      searchByNameOrEmail: "Sutimanta utaq correomanta maskay...",
+      searchBusiness: "Negociota maskay...",
+      selectRole: "Ruwanata akllay",
+      selectUserType: "Llamk'aqpa Laya",
+      selectStatus: "Imaynachus kan",
+      selectTimezone: "Pacha zonatana akllay",
+      firstName: "Ñawpaq Suti",
+      lastName: "Ayllu Suti",
+      countryCode: "Código",
+      phone: "987654321",
+      currentPassword: "Kunan yaykuna rimay",
+      newPassword: "Musuq yaykuna rimay",
+      confirmNewPassword: "Musuq yaykuna rimayta takyachiy",
+    },
+  },
+  navigation: {
+    dashboard: "Panel",
+    employees: "Llamk'aqkuna",
+    calendar: "Calendario",
+    appointments: "Citakuna",
+    services: "Yanapakuykuna",
+    locations: "Maykunapi",
+    clients: "Rantiqkuna",
+    payments: "Qullqikuna",
+    notifications: "Willakuykuna",
+    settings: "Allichaykuna",
+    business: "Negociokuna",
+    users: "Llamk'aqkuna",
+    aboutUs: "Ñuqanchikpa",
+    pricing: "Chaninkuna",
+  },
+  auth: {
+    login: "Yaykuy",
+    logout: "Lluqsiy",
+    email: "Correo electrónico",
+    password: "Yaykuna Rimay",
+    confirmPassword: "Yaykuna Rimayta Takyachiy",
+    fullName: "Hunt'a Suti",
+    companyName: "Empresapa Sutin",
+    forgotPassword: "¿Qunqarqankichu yaykuna rimayta?",
+    dontHaveAccount: "¿Manachu cuentayuq kanki?",
+    alreadyHaveAccount: "¿Cuentayuqñachu kanki?",
+    signUp: "Qillqakuy",
+    createAccount: "Cuentata ruway",
+    creatingAccount: "Cuentata ruwaspa...",
+    signingIn: "Yaykuspa...",
+    getStarted: "TuAgendawan qallariy",
+    welcomeBack: "Allinmi kutimunki",
+    loginWith: "Apple utaq Google cuentaykiwan yaykuy",
+    signUpWith: "Apple utaq Google cuentaykiwan qillqakuy",
+    orContinueWith: "Utaq kaywan puririchiy",
+    loginWithApple: "Applewan yaykuy",
+    loginWithGoogle: "Googlewan yaykuy",
+    signUpWithApple: "Applewan qillqakuy",
+    signUpWithGoogle: "Googlewan qillqakuy",
+    termsAndPrivacy: "Puririchichkaspaqa, awnikunki",
+    and: "chaymanta",
+    resetPassword: "Yaykuna rimayta musuqmanta churay",
+    resetPasswordDescription:
+      "Correo direccionniykita qillqay, chaymi kachaykusqayki musuqmanta churanaykipaq.",
+    sendResetLink: "Tinki kachay",
+    backToLogin: "Yaykuyman kutiy",
+    checkYourEmail: "Correoykita qaway",
+    resetLinkSent:
+      "Correoykiman kachaykuykiku yaykuna rimayta musuqmanta churanaykipaq.",
+    errors: {
+      signInFailed: "Mana atinichu yaykuyta. Ama hina kaspa, wakmanta ruwakuy.",
+      signUpFailed:
+        "Mana atinichu cuentata ruwwyta. Ama hina kaspa, wakmanta ruwakuy.",
+      googleSignInFailed:
+        "Mana atinichu Googlewan yaykuyta. Ama hina kaspa, wakmanta ruwakuy.",
+      googleSignUpFailed:
+        "Mana atinichu Googlewan qillqakuyta. Ama hina kaspa, wakmanta ruwakuy.",
+      passwordsDoNotMatch: "Yaykuna rimaykuna mana tupanqachu",
+      passwordTooShort: "Yaykuna rimayqa suqta letraswan kanman tiyan",
+    },
+    messages: {
+      signingInWithGoogle: "Googlewan yaykuspa...",
+      signingUpWithGoogle: "Googlewan qillqakuspa...",
+      creatingAccount: "Cuentaykita ruwaspa...",
+      welcome: "¡Allin hamusqa! 🎉",
+      accountCreated: "¡Cuentaqa allillañam ruwasqa! 🎉",
+    },
+    placeholders: {
+      email: "correo@ejemplo.com",
+      name: "Sutiykim",
+      password: "••••••••",
+    },
+  },
+  legal: {
+    termsOfService: "Yanapakuypa Kamachikunan",
+    privacyPolicy: "Pakaypa Kamachikuna",
+    lastUpdated: "Qhipa musuqchasqa",
+  },
+  booking: {
+    title: "Citata Reservay",
+    steps: {
+      service: "Yanapakuyta Akllay",
+      professional: "Yachaqta Akllay",
+      date: "P'unchawta Akllay",
+      time: "Pacha Akllay",
+      confirm: "Takyachiy",
+    },
+    service: {
+      title: "¿Ima yanapakuytaq munanayki?",
+      filterByLocation: "Maypichus kanman",
+      filterByCategory: "Layamanta llikay",
+      locationInPerson: "Kaypim",
+      locationVirtual: "Virtual",
+      allCategories: "Tukuy Layakuna",
+      noServices: "Mana yanapakuykuna kanchu",
+    },
+    professional: {
+      title: "¿Piwan citakunayta munanayki?",
+      available: "Kashan",
+      noStaff: "Mana yachaqkuna kanchu",
+    },
+    date: {
+      title: "¿Hayk'aqtaq citaykita munanayki?",
+      selectDate: "P'unchawta akllay",
+    },
+    time: {
+      title: "¿Ima pachatataq allillanki?",
+      available: "kashan",
+      noSlots: "Kay p'unchawtaq mana pachakuna kanchu",
+    },
+    summary: {
+      title: "Akllasqayki",
+      service: "Yanapakuy",
+      professional: "Yachaq",
+      date: "P'unchaw",
+      time: "Pacha",
+      duration: "Unay",
+      price: "Chanin",
+      clear: "Pichay",
+      continue: "Puririy",
+      minutes: "minutos",
+    },
+    contact: {
+      phone: "Telefono",
+      email: "Correo",
+      location: "Maypi",
+      title: "Willay Willaykuna",
+      description: "Hunt'achiy willayniykita reserva takyachinaykipaq",
+      alreadyHaveAccount: "¿Cuentayuqñachu kanki?",
+      fullName: "Hunt'a Suti *",
+      phoneNumber: "Telefono *",
+      emailAddress: "Correo Electrónico *",
+      createAccountOption: "Hamuq reservakunapaq cuentata ruway",
+      currentPassword: "Yaykuna Rimay *",
+      confirmPassword: "Yaykuna Rimayta Takyachiy *",
+      passwordHelp: "Suqta letraswan ama pisi kananpaq",
+      placeholders: {
+        fullName: "Sutiykim",
+        phone: "+51 999 888 777",
+        email: "correo@ejemplo.com",
+        password: "••••••••",
+      },
+    },
+    payment: {
+      title: "Qullqi Qunaypaq Imawan",
+      description: "Akllay imaynatataq qullqita qunaykita munanayki",
+      methods: {
+        card: "Tarjeta de Crédito/Débito",
+        cardDescription: "Tarjetaykiwan allillanmi qullqita quy",
+        cash: "Localpi Qullqita Quy",
+        cashDescription: "Citaykiman chayaspayki qullqita quy",
+        wallet: "Digital Cartera",
+        walletDescription: "Digital carterakunawan qullqita quy",
+      },
+    },
+    confirmation: {
+      title: "¡Reservaqa Takyachasqañam!",
+      subtitle: "Citaykiqa allillanmi ruwasqa",
+      detailsTitle: "Reservaykipa Willaykunan",
+      paymentMethod: "Qullqi quypa imaynin",
+      confirmationSent: "Takyachiyqa kachasqañam",
+      confirmationEmail:
+        "Correo kachaykusqaykiku tukuy reservaykipa willaykunawan kayman",
+      calendarInvitation:
+        "videollamadapaq invitacionwan. Invitacionta awniyta atikunki calendarioykipi rikurinanpaq.",
+      importantInfo: "Cita virtualpaq importante willakuykuna",
+      locationTitle: "Maypi",
+      howToGetThere: "Imaynatataq chayamunki (Google Maps)",
+      needToReschedule: "¿Wakmanta pachakunayta utaq qichunayachu munanayki?",
+      contactUs: "Kaywan willaway",
+      makeAnotherBooking: "Huk Reservata Ruway",
+      viewMyBookings: "Reservasniyta Qaway",
+      needToCancelOrModify:
+        "¿Citaykita qichuyta utaq allichayta munanayachu? Kaywan willaway",
+      virtualInfo: {
+        punctuality: "Pachapi yaykuy:",
+        punctualityDescription:
+          "Citas virtuales mana pachanta yapanachu atinkichu.",
+        duration: "Unay:",
+        durationDescription: "Profesionalqa kaypi kanqa pachaykilla",
+        videoCallLink: "Videollamadapa tinkin:",
+        videoCallDescription:
+          "Correoykita qaway videollamadapa tinkiman yaykuypaq.",
+        calendar: "Calendario:",
+        calendarDescription:
+          "Calendariopa invitacionta awniy automático yuyarichikuykunata chaskinaykipaq.",
+      },
+    },
+  },
+  landing: {
+    footer: {
+      description:
+        "Plataforma profesional negocioykita allinta kamachinaykipaq.",
+      copyright: "© 2025 TuAgenda. Tukuy derechokuna waqaychasqa.",
+    },
+    hero: {
+      title: "Citasniykita mana sasachakuspa kamachiy",
+      subtitle:
+        "Hunt'a plataforma yanapakuypa negocioykita kamachinaykipaq. Citakuna, rantiqkuna, llamk'aqkuna, chaymanta aswan huk cheqaqpi.",
+      cta: "Mana qullqiyuq qallariy",
+      ctaSecondary: "Demota qaway",
+      badge: "Plataforma profesional kamachipaq",
+      badgeAlt: "Software profesional",
+      trustBadges: {
+        freeTrial: "14 p'unchaw mana qullqiyuq",
+        noCard: "Mana tarjeta necesitakunchu",
+        cancelAnytime: "Maypacha qichukuy",
+      },
+      stats: {
+        activeUsers: "Llamk'aqkuna ruwaspa",
+        uptime: "Pacha ruwaspa",
+        support: "Yanapakuy",
+      },
+    },
+    features: {
+      title: "Tukuynin negocioykita wiñachinaykipaq",
+      subtitle: "Kallpasapa yaramientokuna yanapakuypa negociokunapaq",
+      badge: "¿Imarayku ñuqanchikta akllawanayki?",
+      sectionTitle: "Hunt'a allichay negocioykipaq",
+      sectionDescription:
+        "Yanapayku yanapakuypa negociokuna, salones de belleza, qhali yachaqkuna, consultorakuna pachankuta allinta llamk'achinanku chaymanta aswan qullqita tarinankupaq.",
+      appointments: {
+        title: "Yuyaysapa Citakuna",
+        description:
+          "Agendaykita allinta kamachiy. Pacha realpi kashayku chaymanta kikin yuyarichiq.",
+      },
+      clients: {
+        title: "Rantiqkunata Kamachiy",
+        description:
+          "Rantiqkunata, munayninkuta chaymanta tukuy citaspa historianta qaway.",
+      },
+      team: {
+        title: "Equipopi Yanapanakuy",
+        description:
+          "Equipoykita kamachiyta, yanapakuykunata quy chaymanta tukuypaq pachanku allichay.",
+      },
+      analytics: {
+        title: "Willakuykuna & Yupaykunapi Ruwana",
+        description:
+          "Yachay yachasqawan tanteay negocioykipa allin ruwayninmanta ch'iqanchaykunawan.",
+      },
+      multiLocation: {
+        title: "Achkha Maykunapi",
+        description:
+          "Achkha maykunapi kamachiy huk chawpimanta plataformamanta.",
+      },
+      payments: {
+        title: "Qullqikunapa Kamachiynin",
+        description:
+          "Qullqikunata qatiy, facturakuna ruway chaymanta negocioykipa qullqinkunata kamachiy.",
+      },
+      quickFeatures: {
+        fast: "Utqaylla chaymanta facil",
+        fastDescription:
+          "Cuentaykita minutuskunapi allichay. Interfaz intuitiva mana yachachiy necesitakun.",
+        secure: "Willaykuna allchasqa",
+        secureDescription:
+          "Empresarial nivel cifrado. Willayniykikunapas rantiqniykikunapa willayninkunapas waqaychasqa.",
+        grow: "Aswan utqaylla wiñay",
+        growDescription:
+          "Pacha análisis aswan allin tanteasqakuna ruwanapaq chaymanta qullqiykita yapanapaq.",
+        saveTime: "Pachata waqaychay",
+        saveTimeDescription:
+          "Yuyarichiqkuna, qullqikuna chaymanta confirmacionkunata automatizay. Importanteman qhaway.",
+      },
+      powerfullBadge: "Kallpasapa ruwanakuna",
+      whyChooseUs: {
+        badge: "¿Imarayku ñuqanchikta akllawanayki?",
+        title: "Hunt'a allichay negocioykipaq",
+        description:
+          "Específicamente salonkuna sumaq kaypaq, spas, clínicas, gimnasios chaymanta ima negocio citaspi basasqa. Negocioykipa productividadta kallpachay chaymanta rantiqkunapa satisfaccionta mejorarchay.",
+      },
+      heroDescription:
+        "Citakuna, rantiqkuna chaymanta qullqikuna kamachiyta allinchay negocioykipaq. Pachata waqaychay, qullqiykita yapay chaymanta rantiqniykikunaman allin experienciata quy.",
+    },
+    howItWorks: {
+      badge: "Facil ruway",
+      title: "Imaynatataq llamk'an",
+      description:
+        "Minutuskunapi qallariy facil chaymanta pusasqa ruwaywanwan. Mana técnico yachaykuna necesitakunchu, tukuynin intuitivo chaymanta facil llamk'anaykipaq.",
+      steps: {
+        createAccount: {
+          title: "Cuentaykita ruway",
+          description:
+            "Mana qullqiyuq qillqakuy pisi iskay minutuskunapi. Mana tarjeta de crédito necesitakunchu. Tukuy premium ruwanakuna chaskiy mana qullqiyuq pruebaykipaq.",
+        },
+        setupBusiness: {
+          title: "Negocioykita allichay",
+          description:
+            "Yanapakuykuna, horariokuna chaymanta equipo personalizay necesidadesniykiman hina. Qullqi ruwaykuna, horario de atención chaymanta branding allichay. Tukuynin intuitivo panelmanta.",
+        },
+        startManaging: {
+          title: "Kamachiy qallariy",
+          description:
+            "Reservakuna chaskiy, rantiqkunata kamachiy chaymanta negocioykita wiñachiy. Reservakuna linkniykita rantiqniykikunawan rakiy chaymanta sistemata llamk'achiy.",
+        },
+      },
+      illustrationPlaceholder: "Paso ilustración",
+    },
+    cta: {
+      badge: "Kunan qallariy",
+      title: "¿Listochu kanki negocioykita tikrayta?",
+      subtitle: "Waranqa negociokunaman huñukuy TuAgendaman confiasqakuna",
+      button: "Kunan qallariy",
+      trustIndicators: {
+        noCard: "Mana tarjeta de crédito necesitakunchu",
+        freeTrial: "14 p'unchaw mana qullqiyuq prueba",
+        cancelAnytime: "Maypacha qichukuy",
+      },
+    },
+    testimonials: {
+      badge: "Testimoniokuna",
+      title: "Rantiqninchikpa nisqankuna",
+      subtitle:
+        "Waranqa profesionalkuna TuAgendaman confianku negociota kamachinanpaq",
+      testimonial1: {
+        quote:
+          "TuAgendaqa tikrarqan imayna citasniyta kamachasqayta. ¡Pacientesniytaq munakunku kikin yuyarichiqkunata!",
+        name: "Dra. Ana García",
+        role: "Psicóloga",
+      },
+      testimonial2: {
+        quote:
+          "Achka maykunapi kamachiyqa pesadillaña karqan. Kunantaq tukuynin chawpichaskam chaymanta allinmi.",
+        name: "Carlos Mendoza",
+        role: "Dueño de Salón",
+      },
+      testimonial3: {
+        quote:
+          "Willakuykunaqa yanapawanku aswan allin tanteasqakuna negocioniypaq ruwayta. ¡Ancha allin!",
+        name: "Laura Torres",
+        role: "Nutricionista",
+      },
+    },
+  },
+  pages: {
+    aboutUs: {
+      title: "Ñuqanchikpa",
+      subtitle: "Aswan yachay TuAgendamanta chaymanta misionninchikpa",
+      mission: {
+        title: "Misionninchik",
+        description:
+          "TuAgendapi, creeyku citakuna kamachiymi facil chaymanta allin kanan tiyan. Misionninchikqa yanapakuypa negociokunaman aswan allin yaramientokuna quy pachankuta, rantiqkunata chaymanta equipota allinta kamachinanpaq.",
+      },
+      story: {
+        title: "Historianchik",
+        description:
+          "2024pi qallarisqa, TuAgendaqa paqarimurqan necesidadmanta facilyachinapaq citakuna kamachiy yanapakuypa yachaqkunapaq. Qallarayku huk facil yuyaywan: huk plataforma ruway kallpata chaymanta facilta huñusqata, negociopa dueñokuna aswan allinta ruwananpaq kamachinanpaq - rantiqninkuta yanapay.",
+      },
+      values: {
+        title: "Valorninchikkuna",
+        value1: {
+          title: "Facil",
+          description:
+            "Creeyku softwareqa facil chaymanta mana sasa llamk'anapaq kanan tiyan.",
+        },
+        value2: {
+          title: "Musuqyachiy",
+          description:
+            "Sapa kuti plataformata musuqyachiyku aswan mosoq ruwaykunawan.",
+        },
+        value3: {
+          title: "Yanapakuy",
+          description:
+            "Equiponchikqa sapa kuti listo allin ruwanaykipaq yanapanaykipaq.",
+        },
+      },
+    },
+    pricing: {
+      title: "Chaninkuna",
+      subtitle: "Akllay perfecto planta negocioykipaq",
+      monthly: "Sapa killa",
+      annual: "Sapa wata",
+      save20: "20% waqaychay",
+      perMonth: "/killa",
+      getStarted: "Qallariy",
+      free: {
+        name: "Mana qullqiyuq",
+        price: "0",
+        description: "Perfecto qallanapaq",
+        feature1: "50 citakunakama/killa",
+        feature2: "1 maypi",
+        feature3: "Basico willakuykuna",
+        feature4: "Email yanapakuy",
+      },
+      pro: {
+        name: "Pro",
+        price: "29",
+        description: "Wiñaq negociokunapaq",
+        feature1: "Mana tukukuq citakuna",
+        feature2: "3 maykama",
+        feature3: "Avanzado willakuykuna",
+        feature4: "Prioridad yanapakuy",
+        feature5: "Kikin marca",
+        feature6: "Integraciónes",
+      },
+      enterprise: {
+        name: "Enterprise",
+        price: "99",
+        description: "Hatun negociokunapaq",
+        feature1: "Tukuynin Propi",
+        feature2: "Mana tukukuq maykuna",
+        feature3: "Dedicasqa cuenta kamachiq",
+        feature4: "24/7 telefono yanapakuy",
+        feature5: "Kikin ruway",
+        feature6: "SLA garantia",
+      },
+    },
+    dashboard: {
+      title: "Panel",
+      welcome: "Allin hamusqa panelniykiman",
+    },
+    employees: {
+      title: "Llamk'aqkuna",
+      addEmployee: "Llamk'aqta Yapay",
+      employeeList: "Llamk'aqkunapa Listanin",
+    },
+    calendar: {
+      title: "Calendario",
+      today: "Kunan p'unchaw",
+      month: "Killa",
+      week: "Semana",
+      day: "P'unchaw",
+    },
+    appointments: {
+      title: "Citakuna",
+      newAppointment: "Musuq Cita",
+      upcoming: "Hamuqkuna",
+      past: "Pasasqakuna",
+    },
+    services: {
+      title: "Yanapakuykuna",
+      addService: "Yanapakuyta Yapay",
+      serviceName: "Yanapakuypa Sutin",
+      duration: "Unay",
+      price: "Chanin",
+    },
+    locations: {
+      title: "Maykunapi",
+      addLocation: "Maypita Yapay",
+      address: "Direccion",
+      phone: "Telefono",
+    },
+    clients: {
+      title: "Rantiqkuna",
+      addClient: "Rantiqta Yapay",
+      clientList: "Rantiqkunapa Listanin",
+      name: "Suti",
+      email: "Correo electrónico",
+      phone: "Telefono",
+    },
+    business: {
+      title: "Negociokuna",
+      addBusiness: "Negociota Ruway",
+      editBusiness: "Negociota Allichay",
+      businessList: "Negociosniykita kamachiy",
+      noBusiness: "Mana negocioyuq kanki qillqasqa",
+      createFirst: "Ñawpaq negocioykita ruway qallanapaq",
+      form: {
+        title: "Titulo",
+        slug: "Sapalla riqsichiq",
+        description: "Willakuy",
+        email: "Correo electrónico",
+        phone: "Telefono",
+        website: "Sitio web",
+        address: "Direccion",
+        city: "Llaqta",
+        state: "Estado/Provincia",
+        country: "Suyu",
+        postalCode: "Código postal",
+        timeZone: "Pacha zona",
+        locale: "Simi",
+        currency: "Qullqi",
+        status: "Imaynachus kan",
+        basicInfo: "Basico Willakuykuna",
+        contactInfo: "Willay Willakuykuna",
+        locationInfo: "Maypi",
+        regionalSettings: "Regional Allichaykuna",
+      },
+      status: {
+        active: "Ruwaspa",
+        inactive: "Mana ruwaspa",
+        suspended: "Hark'asqa",
+      },
+      actions: {
+        save: "Negociota Waqaychay",
+        cancel: "Ama",
+        delete: "Negociota Pichanay",
+        confirmDelete: "¿Chiqaptachu kay negociota pichanayachu munanayki?",
+      },
+    },
+    payments: {
+      title: "Qullqikuna",
+      amount: "Hayk'a",
+      status: "Imaynachus kan",
+      date: "P'unchaw",
+      pending: "Suyaspa",
+      completed: "Tukusqa",
+      failed: "Mana atisqa",
+    },
+    notifications: {
+      title: "Willakuykuna",
+      markAsRead: "Ñawinchasqa nispa churay",
+      markAllAsRead: "Tukuyninta ñawinchasqa nispa churay",
+      noNotifications: "Mana willakuykuna kanchu",
+    },
+    settings: {
+      title: "Allichaykuna",
+      general: "General",
+      profile: "Perfil",
+      preferences: "Munasqaykuna",
+      language: "Simi",
+      theme: "Tema",
+      notifications: "Willakuykuna",
+      account: "Cuenta",
+    },
+    profile: {
+      title: "Perfilpa Allichaykunan",
+      subtitle: "Cuentaykipa allichaykunata chaymanta munasqaykunata kamachiy",
+      sections: {
+        photo: "Perfilpa Fotunin",
+        photoDescription: "Perfilpa fotoniykiqa tukuy TuAgendapi rikuchikun",
+        personalInfo: "Personal Willakuykuna",
+        personalInfoDescription:
+          "Personal willakuyniykita chaymanta willay willaykunaykita musuqchay",
+        security: "Yaykuna Rimayta Tikray",
+        securityDescription:
+          "Yaykuna rimayniykita musuqchay cuentaykita allin waqaychanaykipaq",
+      },
+      fields: {
+        firstName: "Ñawpaq Suti",
+        lastName: "Ayllu Suti",
+        email: "Correo Electrónico",
+        emailReadonly: "Correo mana tikrayta atikun",
+        phone: "Telefono Yupay",
+        phoneHelp: "9 yupaykuna qillqay mana ch'usaqkunawan",
+        birthday: "Yurisqa P'unchaw",
+        birthdayHelp: "16 wataswan kanam tiyanki",
+        timezone: "Pacha Zona",
+        currentPassword: "Kunan Yaykuna Rimay",
+        newPassword: "Musuq Yaykuna Rimay",
+        newPasswordHelp: "8 letraswan kanam tiyan",
+        confirmPassword: "Musuq Yaykuna Rimayta Takyachiy",
+      },
+      actions: {
+        saveChanges: "Tikraykunata Waqaychay",
+        changePassword: "Yaykuna Rimayta Tikray",
+      },
+      messages: {
+        profileUpdated: "Perfilqa allillanmi musuqchasqa",
+        passwordChanged: "Yaykuna rimayqa allillanmi tikrasqa",
+      },
+    },
+  },
+};
