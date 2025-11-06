@@ -72,33 +72,43 @@ export function EmployeePerformance({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Employee Performance</CardTitle>
+        <CardTitle className="text-base sm:text-lg">
+          Employee Performance
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {employees.map((employee) => (
             <div key={employee.id} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Avatar>
-                    <AvatarFallback>{employee.initials}</AvatarFallback>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0">
+                    <AvatarFallback className="text-xs sm:text-sm">
+                      {employee.initials}
+                    </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">{employee.name}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{employee.bookings} bookings</span>
-                      <span>•</span>
-                      <span>${employee.revenue.toLocaleString()}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">
+                      {employee.name}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                      <span className="whitespace-nowrap">
+                        {employee.bookings} bookings
+                      </span>
+                      <span className="hidden sm:inline">•</span>
+                      <span className="whitespace-nowrap">
+                        ${employee.revenue.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="gap-1">
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Badge variant="secondary" className="gap-1 text-xs">
                     ⭐ {employee.rating}
                   </Badge>
                   <Badge
                     variant={employee.trend === "up" ? "default" : "secondary"}
-                    className="gap-1"
+                    className="gap-1 text-xs"
                   >
                     {employee.trend === "up" ? (
                       <TrendingUp className="h-3 w-3" />

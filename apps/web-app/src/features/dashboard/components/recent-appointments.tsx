@@ -279,12 +279,12 @@ export function RecentAppointments() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
           Recent Appointments
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 overflow-x-auto">
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -340,34 +340,29 @@ export function RecentAppointments() {
               return (
                 <div
                   key={appointment.id}
-                  className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-all"
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:shadow-md transition-all min-w-0"
                 >
-                  {/* Client Avatar */}
-                  <Avatar className="h-12 w-12 border-2 border-primary/10">
-                    <AvatarFallback className="text-sm font-semibold bg-primary/5">
-                      {getInitials(appointment.client)}
-                    </AvatarFallback>
-                  </Avatar>
+                  {/* Client Avatar & Info */}
+                  <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
+                    <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 border-primary/10 flex-shrink-0">
+                      <AvatarFallback className="text-xs sm:text-sm font-semibold bg-primary/5">
+                        {getInitials(appointment.client)}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  {/* Client Info */}
-                  <div
-                    className="min-w-0 flex-shrink-0"
-                    style={{ width: "140px" }}
-                  >
-                    <p className="font-semibold text-sm truncate">
-                      {appointment.client}
-                    </p>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-                      <Clock className="h-3 w-3" />
-                      <span>{appointment.time}</span>
+                    <div className="min-w-0 flex-1 sm:flex-initial sm:w-32">
+                      <p className="font-semibold text-sm truncate">
+                        {appointment.client}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+                        <Clock className="h-3 w-3 flex-shrink-0" />
+                        <span>{appointment.time}</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Service Badge */}
-                  <div
-                    className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/30 min-w-0 flex-shrink-0"
-                    style={{ width: "180px" }}
-                  >
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/30 min-w-0 w-full sm:w-40 flex-shrink-0">
                     <div className="p-1.5 rounded bg-blue-100 dark:bg-blue-900/30 flex-shrink-0">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -401,10 +396,7 @@ export function RecentAppointments() {
                   </div>
 
                   {/* Professional Badge */}
-                  <div
-                    className="flex items-center gap-2 px-3 py-2 rounded-md bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/30 min-w-0 flex-shrink-0"
-                    style={{ width: "180px" }}
-                  >
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/30 min-w-0 w-full sm:w-40 flex-shrink-0">
                     <div className="p-1.5 rounded bg-purple-100 dark:bg-purple-900/30 flex-shrink-0">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -432,26 +424,29 @@ export function RecentAppointments() {
                     </div>
                   </div>
 
-                  {/* Date (Hidden on mobile) */}
-                  <div className="hidden lg:flex items-center gap-1.5 text-xs text-muted-foreground min-w-0 flex-shrink-0">
-                    <Calendar className="h-3.5 w-3.5" />
-                    <span>{appointment.date}</span>
-                  </div>
-
-                  {/* Status and Price */}
-                  <div className="flex flex-col items-end gap-2 ml-auto">
-                    <Badge
-                      variant={statusConfig.variant}
-                      className="gap-1.5 whitespace-nowrap"
-                    >
-                      <StatusIcon className="h-3 w-3" />
-                      {statusConfig.label}
-                    </Badge>
-                    {appointment.price && (
-                      <span className="text-base font-bold text-primary">
-                        ${appointment.price}
+                  {/* Date & Status & Price */}
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto sm:ml-auto flex-wrap">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
+                      <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span className="whitespace-nowrap">
+                        {appointment.date}
                       </span>
-                    )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <Badge
+                        variant={statusConfig.variant}
+                        className="gap-1.5 whitespace-nowrap"
+                      >
+                        <StatusIcon className="h-3 w-3" />
+                        {statusConfig.label}
+                      </Badge>
+                      {appointment.price && (
+                        <span className="text-base font-bold text-primary whitespace-nowrap">
+                          ${appointment.price}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -460,45 +455,57 @@ export function RecentAppointments() {
         )}
 
         {totalPages > 1 && currentAppointments.length > 0 && (
-          <div className="flex items-center justify-between pt-2 border-t">
-            <div className="text-sm text-muted-foreground">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t">
+            <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
               Showing {startIndex + 1}-
               {Math.min(endIndex, filteredAppointments.length)} of{" "}
               {filteredAppointments.length}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={goToPreviousPage}
                 disabled={currentPage === 1}
+                className="text-xs"
               >
-                <ChevronLeft className="h-4 w-4" />
-                Previous
+                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Previous</span>
               </Button>
               <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let page;
+                  if (totalPages <= 5) {
+                    page = i + 1;
+                  } else if (currentPage <= 3) {
+                    page = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    page = totalPages - 4 + i;
+                  } else {
+                    page = currentPage - 2 + i;
+                  }
+                  return (
                     <Button
                       key={page}
                       variant={currentPage === page ? "default" : "outline"}
                       size="sm"
                       onClick={() => setCurrentPage(page)}
-                      className="w-8 h-8 p-0"
+                      className="w-7 h-7 sm:w-8 sm:h-8 p-0 text-xs"
                     >
                       {page}
                     </Button>
-                  )
-                )}
+                  );
+                })}
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
+                className="text-xs"
               >
-                Next
-                <ChevronRight className="h-4 w-4" />
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </div>

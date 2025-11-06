@@ -16,7 +16,7 @@ export default function DashboardPage() {
   const [chartsPeriod, setChartsPeriod] = useState("7days");
 
   return (
-    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6 overflow-x-hidden">
       <div>
         <h1 className="text-xl font-bold sm:text-2xl">
           {t.pages.dashboard.title}
@@ -34,12 +34,12 @@ export default function DashboardPage() {
 
       <ChartsFilter onFilterChange={setChartsPeriod} />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
         <RevenueChart period={chartsPeriod} />
         <BookingsChart period={chartsPeriod} />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
         <ServicesChart period={chartsPeriod} />
         <EmployeePerformance period={chartsPeriod} />
       </div>

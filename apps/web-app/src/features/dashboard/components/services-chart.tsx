@@ -48,10 +48,13 @@ export function ServicesChart({ period: _period }: ServicesChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Popular Services</CardTitle>
+        <CardTitle className="text-base sm:text-lg">Popular Services</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <CardContent className="overflow-x-auto">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[250px] sm:h-[300px] w-full min-w-[280px]"
+        >
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <Pie
@@ -60,8 +63,8 @@ export function ServicesChart({ period: _period }: ServicesChartProps) {
               nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={100}
+              innerRadius={50}
+              outerRadius={80}
               paddingAngle={2}
             >
               {chartData.map((entry, index) => (

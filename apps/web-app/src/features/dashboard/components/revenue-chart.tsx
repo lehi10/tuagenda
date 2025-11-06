@@ -37,10 +37,13 @@ export function RevenueChart({ period: _period }: RevenueChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Revenue Overview</CardTitle>
+        <CardTitle className="text-base sm:text-lg">Revenue Overview</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <CardContent className="overflow-x-auto">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[250px] sm:h-[300px] w-full min-w-[300px]"
+        >
           <AreaChart data={chartData}>
             <defs>
               <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
@@ -74,8 +77,15 @@ export function RevenueChart({ period: _period }: RevenueChartProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tick={{ fontSize: 12 }}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tick={{ fontSize: 12 }}
+              width={40}
+            />
             <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
             <Area
               dataKey="revenue"

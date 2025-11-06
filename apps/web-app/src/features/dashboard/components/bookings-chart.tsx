@@ -38,10 +38,13 @@ export function BookingsChart({ period: _period }: BookingsChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Weekly Bookings</CardTitle>
+        <CardTitle className="text-base sm:text-lg">Weekly Bookings</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <CardContent className="overflow-x-auto">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[250px] sm:h-[300px] w-full min-w-[300px]"
+        >
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
@@ -49,8 +52,15 @@ export function BookingsChart({ period: _period }: BookingsChartProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tick={{ fontSize: 12 }}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tick={{ fontSize: 12 }}
+              width={40}
+            />
             <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
             <Bar
               dataKey="bookings"
