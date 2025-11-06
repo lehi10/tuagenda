@@ -2,7 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LanguageSelector } from "@/components/language-selector";
+import { LanguageSelectorButton } from "@/components/language-selector";
 import { useTranslation } from "@/i18n";
 import Link from "next/link";
 import Image from "next/image";
@@ -44,7 +44,7 @@ export function PublicHeader() {
 
         {/* Desktop Actions */}
         <div className="hidden items-center gap-2 lg:flex lg:gap-3">
-          <LanguageSelector />
+          <LanguageSelectorButton />
 
           <Link href="/login">
             <Button variant="ghost" size="sm" className="font-medium">
@@ -98,7 +98,7 @@ export function PublicHeader() {
               <div className="my-2 border-t border-border" />
 
               <div className="flex flex-col gap-2">
-                <LanguageSelector />
+                <LanguageSelectorButton />
 
                 <Link
                   href="/login"

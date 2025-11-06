@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export function BookingHeader() {
   const { user, signOut } = useAuth();
@@ -45,10 +46,15 @@ export function BookingHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         {/* Logo / Brand */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-lg font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            TuAgenda
-          </span>
+        <Link href="/" className="group flex items-center">
+          <Image
+            src="/icons/2_horizontal_color.png"
+            alt="TuAgenda"
+            width={140}
+            height={32}
+            className="h-8 w-auto transition-opacity group-hover:opacity-90"
+            priority
+          />
         </Link>
 
         {/* User Menu or Login Button */}
@@ -58,14 +64,22 @@ export function BookingHeader() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-9 w-9 rounded-full"
+                  className="relative h-10 gap-2 rounded-full px-3 hover:bg-muted/50"
                 >
-                  <Avatar className="h-9 w-9">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={userAvatar} alt={userName} />
-                    <AvatarFallback className="text-xs">
+                    <AvatarFallback className="text-xs bg-gradient-to-br from-primary/20 to-secondary/20 text-foreground">
                       {getInitials(userName)}
                     </AvatarFallback>
                   </Avatar>
+                  <div className="hidden sm:flex sm:flex-col sm:items-start sm:text-left">
+                    <span className="text-sm font-medium leading-none">
+                      {userName}
+                    </span>
+                    <span className="text-xs text-muted-foreground leading-none mt-1">
+                      {userEmail}
+                    </span>
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -97,10 +111,15 @@ export function BookingHeader() {
                 variant="ghost"
                 size="sm"
                 onClick={() => router.push("/login")}
+                className="font-medium"
               >
                 Log in
               </Button>
-              <Button size="sm" onClick={() => router.push("/signup")}>
+              <Button
+                size="sm"
+                onClick={() => router.push("/signup")}
+                className="font-medium shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl hover:shadow-primary/30"
+              >
                 Sign up
               </Button>
             </div>

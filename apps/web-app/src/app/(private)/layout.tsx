@@ -46,6 +46,13 @@ export default function RootLayout({
                 </Breadcrumb>
               </div>
             </header>
+            {/* Desktop Header with Trigger */}
+            <header className="sticky top-0 z-10 hidden h-14 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:flex">
+              <div className="flex flex-1 items-center gap-2 px-3">
+                <SidebarTrigger />
+                <Separator orientation="vertical" className="h-4" />
+              </div>
+            </header>
             <div className="flex-1">{children}</div>
             <PrivateFooter />
           </div>

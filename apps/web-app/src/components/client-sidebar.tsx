@@ -65,9 +65,7 @@ export function ClientSidebar({
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <div className="px-2 py-1">
-          <LanguageSelector />
-        </div>
+        <LanguageSelector />
         <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>

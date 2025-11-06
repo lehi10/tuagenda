@@ -12,12 +12,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import {
   Form,
   FormControl,
@@ -102,100 +102,105 @@ export function EditUserDialog({
   if (!user) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="sm:max-w-[500px] p-0 flex flex-col">
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle className="text-xl">Edit User</SheetTitle>
+          <SheetDescription>
             Update user type and status for {user.firstName} {user.lastName}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="mb-4 p-3 bg-muted rounded-md">
-          <p className="text-sm text-muted-foreground">User</p>
-          <p className="font-medium">
-            {user.firstName} {user.lastName}
-          </p>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
-        </div>
+          </SheetDescription>
+        </SheetHeader>
 
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
+            className="flex flex-col flex-1 overflow-hidden"
           >
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>User Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select user type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.values(UserType).map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {USER_TYPE_CONFIG[type].label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Determines the user&apos;s access level in the system
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="mb-4 p-3 bg-muted rounded-md">
+                <p className="text-sm text-muted-foreground">User</p>
+                <p className="font-medium">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
+              </div>
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.values(UserStatus).map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {USER_STATUS_CONFIG[status].label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Controls the user&apos;s account state
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>User Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select user type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(UserType).map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {USER_TYPE_CONFIG[type].label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Determines the user&apos;s access level in the system
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div className="flex justify-end gap-2 pt-4">
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(UserStatus).map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {USER_STATUS_CONFIG[status].label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Controls the user&apos;s account state
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={submitting}
+                className="flex-1"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={submitting}>
+              <Button type="submit" disabled={submitting} className="flex-1">
                 {submitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
@@ -204,7 +209,7 @@ export function EditUserDialog({
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

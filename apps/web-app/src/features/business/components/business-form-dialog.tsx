@@ -4,13 +4,12 @@ import { useState } from "react";
 import { useTranslation } from "@/i18n";
 import { toast } from "sonner";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -133,267 +132,286 @@ export function BusinessFormDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>
-              {business
-                ? t.pages.business.editBusiness
-                : t.pages.business.addBusiness}
-            </DialogTitle>
-            <DialogDescription>
-              {business
-                ? "Actualiza la información de tu negocio"
-                : "Completa la información para crear un nuevo negocio"}
-            </DialogDescription>
-          </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="sm:max-w-2xl p-0 flex flex-col">
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle className="text-xl">
+            {business
+              ? t.pages.business.editBusiness
+              : t.pages.business.addBusiness}
+          </SheetTitle>
+          <SheetDescription>
+            {business
+              ? "Actualiza la información de tu negocio"
+              : "Completa la información para crear un nuevo negocio"}
+          </SheetDescription>
+        </SheetHeader>
 
-          <div className="space-y-6 py-4">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold">
-                {t.pages.business.form.basicInfo}
-              </h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="title">{t.pages.business.form.title} *</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => handleChange("title", e.target.value)}
-                    required
-                  />
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col flex-1 overflow-hidden"
+        >
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold">
+                  {t.pages.business.form.basicInfo}
+                </h3>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">
+                      {t.pages.business.form.title} *
+                    </Label>
+                    <Input
+                      id="title"
+                      value={formData.title}
+                      onChange={(e) => handleChange("title", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="slug">{t.pages.business.form.slug} *</Label>
+                    <Input
+                      id="slug"
+                      value={formData.slug}
+                      onChange={(e) => handleChange("slug", e.target.value)}
+                      required
+                      disabled={!!business}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="slug">{t.pages.business.form.slug} *</Label>
-                  <Input
-                    id="slug"
-                    value={formData.slug}
-                    onChange={(e) => handleChange("slug", e.target.value)}
-                    required
-                    disabled={!!business}
+                  <Label htmlFor="description">
+                    {t.pages.business.form.description}
+                  </Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) =>
+                      handleChange("description", e.target.value)
+                    }
+                    rows={3}
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">
-                  {t.pages.business.form.description}
-                </Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </div>
 
-            <Separator />
+              <Separator />
 
-            {/* Contact Information */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold">
-                {t.pages.business.form.contactInfo}
-              </h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t.pages.business.form.email} *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    required
-                  />
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold">
+                  {t.pages.business.form.contactInfo}
+                </h3>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">
+                      {t.pages.business.form.email} *
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleChange("email", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">
+                      {t.pages.business.form.phone} *
+                    </Label>
+                    <Input
+                      id="phone"
+                      value={formData.phone}
+                      onChange={(e) => handleChange("phone", e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">{t.pages.business.form.phone} *</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => handleChange("phone", e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="website">{t.pages.business.form.website}</Label>
-                <Input
-                  id="website"
-                  type="url"
-                  value={formData.website}
-                  onChange={(e) => handleChange("website", e.target.value)}
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Location Information */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold">
-                {t.pages.business.form.locationInfo}
-              </h3>
-              <div className="space-y-2">
-                <Label htmlFor="address">
-                  {t.pages.business.form.address} *
-                </Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) => handleChange("address", e.target.value)}
-                  required
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="city">{t.pages.business.form.city} *</Label>
-                  <Input
-                    id="city"
-                    value={formData.city}
-                    onChange={(e) => handleChange("city", e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="state">{t.pages.business.form.state}</Label>
-                  <Input
-                    id="state"
-                    value={formData.state}
-                    onChange={(e) => handleChange("state", e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="country">
-                    {t.pages.business.form.country} *
+                  <Label htmlFor="website">
+                    {t.pages.business.form.website}
                   </Label>
                   <Input
-                    id="country"
-                    value={formData.country}
-                    onChange={(e) => handleChange("country", e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="postalCode">
-                    {t.pages.business.form.postalCode}
-                  </Label>
-                  <Input
-                    id="postalCode"
-                    value={formData.postalCode}
-                    onChange={(e) => handleChange("postalCode", e.target.value)}
+                    id="website"
+                    type="url"
+                    value={formData.website}
+                    onChange={(e) => handleChange("website", e.target.value)}
                   />
                 </div>
               </div>
-            </div>
 
-            <Separator />
+              <Separator />
 
-            {/* Regional Settings */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold">
-                {t.pages.business.form.regionalSettings}
-              </h3>
-              <div className="grid gap-4 sm:grid-cols-3">
+              {/* Location Information */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold">
+                  {t.pages.business.form.locationInfo}
+                </h3>
                 <div className="space-y-2">
-                  <Label htmlFor="timeZone">
-                    {t.pages.business.form.timeZone}
+                  <Label htmlFor="address">
+                    {t.pages.business.form.address} *
                   </Label>
+                  <Input
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => handleChange("address", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">{t.pages.business.form.city} *</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => handleChange("city", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">{t.pages.business.form.state}</Label>
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) => handleChange("state", e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="country">
+                      {t.pages.business.form.country} *
+                    </Label>
+                    <Input
+                      id="country"
+                      value={formData.country}
+                      onChange={(e) => handleChange("country", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="postalCode">
+                      {t.pages.business.form.postalCode}
+                    </Label>
+                    <Input
+                      id="postalCode"
+                      value={formData.postalCode}
+                      onChange={(e) =>
+                        handleChange("postalCode", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Regional Settings */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold">
+                  {t.pages.business.form.regionalSettings}
+                </h3>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="timeZone">
+                      {t.pages.business.form.timeZone}
+                    </Label>
+                    <Select
+                      value={formData.timeZone}
+                      onValueChange={(value) => handleChange("timeZone", value)}
+                    >
+                      <SelectTrigger id="timeZone">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="America/New_York">
+                          EST (New York)
+                        </SelectItem>
+                        <SelectItem value="America/Chicago">
+                          CST (Chicago)
+                        </SelectItem>
+                        <SelectItem value="America/Denver">
+                          MST (Denver)
+                        </SelectItem>
+                        <SelectItem value="America/Los_Angeles">
+                          PST (Los Angeles)
+                        </SelectItem>
+                        <SelectItem value="Europe/Madrid">
+                          CET (Madrid)
+                        </SelectItem>
+                        <SelectItem value="Europe/London">
+                          GMT (London)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="locale">
+                      {t.pages.business.form.locale}
+                    </Label>
+                    <Select
+                      value={formData.locale}
+                      onValueChange={(value) => handleChange("locale", value)}
+                    >
+                      <SelectTrigger id="locale">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="en">English</SelectItem>
+                        <SelectItem value="es">Español</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="currency">
+                      {t.pages.business.form.currency}
+                    </Label>
+                    <Select
+                      value={formData.currency}
+                      onValueChange={(value) => handleChange("currency", value)}
+                    >
+                      <SelectTrigger id="currency">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USD">USD ($)</SelectItem>
+                        <SelectItem value="EUR">EUR (€)</SelectItem>
+                        <SelectItem value="GBP">GBP (£)</SelectItem>
+                        <SelectItem value="MXN">MXN ($)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="status">{t.pages.business.form.status}</Label>
                   <Select
-                    value={formData.timeZone}
-                    onValueChange={(value) => handleChange("timeZone", value)}
+                    value={formData.status}
+                    onValueChange={(value) =>
+                      handleChange("status", value as any)
+                    }
                   >
-                    <SelectTrigger id="timeZone">
+                    <SelectTrigger id="status">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="America/New_York">
-                        EST (New York)
+                      <SelectItem value="active">
+                        {t.pages.business.status.active}
                       </SelectItem>
-                      <SelectItem value="America/Chicago">
-                        CST (Chicago)
+                      <SelectItem value="inactive">
+                        {t.pages.business.status.inactive}
                       </SelectItem>
-                      <SelectItem value="America/Denver">
-                        MST (Denver)
-                      </SelectItem>
-                      <SelectItem value="America/Los_Angeles">
-                        PST (Los Angeles)
-                      </SelectItem>
-                      <SelectItem value="Europe/Madrid">
-                        CET (Madrid)
-                      </SelectItem>
-                      <SelectItem value="Europe/London">
-                        GMT (London)
+                      <SelectItem value="suspended">
+                        {t.pages.business.status.suspended}
                       </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="locale">{t.pages.business.form.locale}</Label>
-                  <Select
-                    value={formData.locale}
-                    onValueChange={(value) => handleChange("locale", value)}
-                  >
-                    <SelectTrigger id="locale">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="es">Español</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="currency">
-                    {t.pages.business.form.currency}
-                  </Label>
-                  <Select
-                    value={formData.currency}
-                    onValueChange={(value) => handleChange("currency", value)}
-                  >
-                    <SelectTrigger id="currency">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">USD ($)</SelectItem>
-                      <SelectItem value="EUR">EUR (€)</SelectItem>
-                      <SelectItem value="GBP">GBP (£)</SelectItem>
-                      <SelectItem value="MXN">MXN ($)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="status">{t.pages.business.form.status}</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value) =>
-                    handleChange("status", value as any)
-                  }
-                >
-                  <SelectTrigger id="status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">
-                      {t.pages.business.status.active}
-                    </SelectItem>
-                    <SelectItem value="inactive">
-                      {t.pages.business.status.inactive}
-                    </SelectItem>
-                    <SelectItem value="suspended">
-                      {t.pages.business.status.suspended}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </div>
           </div>
 
-          <DialogFooter>
+          <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
             <Button
               type="button"
               variant="outline"
@@ -402,15 +420,16 @@ export function BusinessFormDialog({
                 if (onClose) onClose();
               }}
               disabled={isLoading}
+              className="flex-1"
             >
               {t.pages.business.actions.cancel}
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="flex-1">
               {isLoading ? "Guardando..." : t.pages.business.actions.save}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

@@ -16,6 +16,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { useBusiness } from "@/contexts";
 import { cn } from "@/lib/utils";
 
@@ -28,113 +34,133 @@ export function BusinessSwitcher() {
     loading,
   } = useBusiness();
   const [open, setOpen] = useState(false);
+  const { isMobile, state } = useSidebar();
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1.5">
-        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">Loading...</p>
-      </div>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" disabled>
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted">
+              <Loader2 className="size-4 animate-spin" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Loading...</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
     );
   }
 
   if (!currentBusiness) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1.5">
-        <div className="bg-muted p-1.5 rounded">
-          <Building2 className="h-4 w-4 text-muted-foreground" />
-        </div>
-        <div className="flex-1 overflow-hidden">
-          <p className="text-sm text-muted-foreground">No business</p>
-        </div>
-      </div>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" disabled tooltip="No business">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted">
+              <Building2 className="size-4" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">No business</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
     );
   }
 
   if (!isSuperAdmin && businesses.length <= 1) {
     // Si no es super admin y solo tiene un negocio, solo muestra el negocio actual sin selector
     return (
-      <div className="flex items-center gap-2 px-2 py-1.5">
-        <div className="bg-primary/10 p-1.5 rounded">
-          <Building2 className="h-4 w-4 text-primary" />
-        </div>
-        <div className="flex-1 overflow-hidden">
-          <p className="text-sm font-medium truncate">
-            {currentBusiness.title}
-          </p>
-          <p className="text-xs text-muted-foreground capitalize">
-            {currentBusiness.slug}
-          </p>
-        </div>
-      </div>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" tooltip={currentBusiness.title}>
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10">
+              <Building2 className="size-4 text-primary" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">
+                {currentBusiness.title}
+              </span>
+              <span className="truncate text-xs text-muted-foreground">
+                {currentBusiness.slug}
+              </span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
     );
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between px-2 h-auto py-2 hover:bg-accent"
-        >
-          <div className="flex items-center gap-2 flex-1 overflow-hidden">
-            <div className="bg-primary/10 p-1.5 rounded flex-shrink-0">
-              <Building2 className="h-4 w-4 text-primary" />
-            </div>
-            <div className="flex-1 text-left overflow-hidden">
-              <p className="text-sm font-medium truncate">
-                {currentBusiness.title}
-              </p>
-              <p className="text-xs text-muted-foreground capitalize">
-                {currentBusiness.slug}
-              </p>
-            </div>
-          </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0" align="start">
-        <Command>
-          <CommandInput placeholder="Search business..." />
-          <CommandList>
-            <CommandEmpty>No business found.</CommandEmpty>
-            <CommandGroup heading="Businesses">
-              {businesses.map((business) => (
-                <CommandItem
-                  key={business.id}
-                  value={business.title}
-                  onSelect={() => {
-                    setCurrentBusiness(business.id!);
-                    setOpen(false);
-                  }}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2 flex-1 overflow-hidden">
-                    <Check
-                      className={cn(
-                        "h-4 w-4 flex-shrink-0",
-                        currentBusiness?.id === business.id
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-sm font-medium truncate">
-                        {business.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {business.slug}
-                      </p>
-                    </div>
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              tooltip={currentBusiness.title}
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10">
+                <Building2 className="size-4 text-primary" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">
+                  {currentBusiness.title}
+                </span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {currentBusiness.slug}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] min-w-56 rounded-lg p-0"
+            side={isMobile ? "bottom" : "right"}
+            align="start"
+            sideOffset={4}
+          >
+            <Command>
+              <CommandInput placeholder="Search business..." />
+              <CommandList>
+                <CommandEmpty>No business found.</CommandEmpty>
+                <CommandGroup>
+                  {businesses.map((business) => (
+                    <CommandItem
+                      key={business.id}
+                      value={business.title}
+                      onSelect={() => {
+                        setCurrentBusiness(business.id!);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          currentBusiness?.id === business.id
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      <div className="flex-1 overflow-hidden">
+                        <p className="text-sm font-medium truncate">
+                          {business.title}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {business.slug}
+                        </p>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
