@@ -1,13 +1,10 @@
 import { IBusinessRepository } from "@/core/domain/repositories/IBusinessRepository";
 import { Business } from "@/core/domain/entities/Business";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-const getBusinessBySlugSchema = z.object({
-  slug: z.string().min(1, "Business slug cannot be empty"),
-});
-
-export type GetBusinessBySlugInput = z.infer<typeof getBusinessBySlugSchema>;
+export interface GetBusinessBySlugInput {
+  slug: string;
+}
 
 export interface GetBusinessBySlugResult {
   success: boolean;
@@ -30,18 +27,17 @@ export interface GetBusinessBySlugResult {
 export class GetBusinessBySlugUseCase {
   constructor(private readonly businessRepository: IBusinessRepository) {}
 
-  async execute(input: unknown): Promise<GetBusinessBySlugResult> {
+  async execute(
+    input: GetBusinessBySlugInput
+  ): Promise<GetBusinessBySlugResult> {
     try {
-      const validatedData = getBusinessBySlugSchema.parse(input);
       logger.info(
         "GetBusinessBySlugUseCase",
         "system",
-        `Fetching business with slug: ${validatedData.slug}`
+        `Fetching business with slug: ${input.slug}`
       );
 
-      const business = await this.businessRepository.findBySlug(
-        validatedData.slug
-      );
+      const business = await this.businessRepository.findBySlug(input.slug);
 
       if (!business) {
         logger.info("GetBusinessBySlugUseCase", "system", "Business not found");
@@ -55,12 +51,6 @@ export class GetBusinessBySlugUseCase {
       );
       return { success: true, business };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
       logger.error(
         "GetBusinessBySlugUseCase",
         "system",

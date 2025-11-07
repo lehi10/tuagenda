@@ -23,7 +23,7 @@ const updateUserSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
-  birthday: z.string().nullable().optional(),
+  birthday: z.date().nullable().optional(),
   phone: z.string().nullable().optional(),
   countryCode: z.string().nullable().optional(),
   timeZone: z.string().nullable().optional(),

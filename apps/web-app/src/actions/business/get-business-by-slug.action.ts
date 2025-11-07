@@ -17,18 +17,28 @@
  * - Service catalog pages
  * - Any public business information display
  *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
+ *
  * @module actions/business
  */
 
 "use server";
 
+import { z } from "zod";
 import { BusinessProps } from "@/core/domain/entities/Business";
 import { GetBusinessBySlugUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the get business by slug action
- */
+// Schema validation
+const getBusinessBySlugSchema = z.object({
+  slug: z.string().min(1, "Slug is required"),
+});
+
+export type GetBusinessBySlugInput = z.infer<typeof getBusinessBySlugSchema>;
+
 type GetBusinessBySlugResult =
   | { success: true; business: BusinessProps }
   | { success: false; error: string };
@@ -38,53 +48,36 @@ type GetBusinessBySlugResult =
  *
  * PUBLIC ACTION - No token or authentication required
  *
- * @param slug - The slug of the business to fetch (e.g., "my-salon")
+ * @param input - Input with business slug to fetch
  * @returns Result object with business data or error message
- *
- * @example
- * ```typescript
- * // In a public booking page
- * const result = await getBusinessBySlug("my-salon");
- *
- * if (result.success) {
- *   console.log('Business:', result.business);
- *   // Display booking form with business info
- * } else {
- *   console.error('Business not found');
- *   // Show 404 page
- * }
- * ```
  */
 export async function getBusinessBySlug(
-  slug: string
+  input: unknown
 ): Promise<GetBusinessBySlugResult> {
-  try {
-    // Dependency injection: Create repository and use case
-    const businessRepository = new PrismaBusinessRepository();
-    const getBusinessBySlugUseCase = new GetBusinessBySlugUseCase(
-      businessRepository
-    );
+  return validateAndExecute(
+    getBusinessBySlugSchema,
+    input,
+    async (validated) => {
+      const businessRepository = new PrismaBusinessRepository();
+      const getBusinessBySlugUseCase = new GetBusinessBySlugUseCase(
+        businessRepository
+      );
+      const result = await getBusinessBySlugUseCase.execute({
+        slug: validated.slug,
+      });
 
-    // Execute use case
-    const result = await getBusinessBySlugUseCase.execute({ slug });
+      if (result.success && result.business) {
+        return {
+          success: true,
+          business: result.business.toObject(),
+        };
+      }
 
-    // Convert domain entity to plain object for serialization
-    if (result.success && result.business) {
       return {
-        success: true,
-        business: result.business.toObject(),
+        success: false,
+        error: result.error || "Business not found",
       };
-    }
-
-    return {
-      success: false,
-      error: result.error || "Business not found",
-    };
-  } catch (error) {
-    console.error("Error in getBusinessBySlug action:", error);
-    return {
-      success: false,
-      error: "An unexpected error occurred while fetching the business",
-    };
-  }
+    },
+    { errorMessage: "An unexpected error occurred while fetching the business" }
+  );
 }

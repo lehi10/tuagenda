@@ -4,46 +4,47 @@
  * Creates a new business in the database.
  * This is used when creating a new business from the dashboard.
  *
- * REFACTORED: Now uses hexagonal architecture with use cases.
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/business
  */
 
 "use server";
 
+import { z } from "zod";
 import { BusinessProps } from "@/core/domain/entities/Business";
 import { CreateBusinessUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Input data for creating a business
- */
-export interface CreateBusinessInput {
-  title: string;
-  slug: string;
-  domain?: string;
-  description?: string;
-  logo?: string;
-  coverImage?: string;
-  timeZone: string;
-  locale: string;
-  currency: string;
-  status?: "active" | "inactive" | "suspended";
-  email: string;
-  phone: string;
-  website?: string;
-  address: string;
-  city: string;
-  state?: string;
-  country: string;
-  postalCode?: string;
-  latitude?: number;
-  longitude?: number;
-}
+// Schema validation
+const createBusinessSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  slug: z.string().min(1, "Slug is required"),
+  domain: z.string().optional(),
+  description: z.string().optional(),
+  logo: z.string().optional(),
+  coverImage: z.string().optional(),
+  timeZone: z.string().min(1, "Time zone is required"),
+  locale: z.string().min(1, "Locale is required"),
+  currency: z.string().min(1, "Currency is required"),
+  status: z.enum(["active", "inactive", "suspended"]).optional(),
+  email: z.string().email("Invalid email format"),
+  phone: z.string().min(1, "Phone is required"),
+  website: z.string().optional(),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().optional(),
+  country: z.string().min(1, "Country is required"),
+  postalCode: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+});
 
-/**
- * Result type for the create business action
- */
+export type CreateBusinessInput = z.infer<typeof createBusinessSchema>;
+
 type CreateBusinessResult =
   | { success: true; business: BusinessProps }
   | { success: false; error: string };
@@ -51,59 +52,34 @@ type CreateBusinessResult =
 /**
  * Creates a new business in the database
  *
- * @param data - Business data to create
+ * @param input - Business data to create
  * @returns Result object with created business or error message
- *
- * @example
- * ```typescript
- * const result = await createBusiness({
- *   title: 'Mi Negocio',
- *   slug: 'mi-negocio',
- *   email: 'contact@negocio.com',
- *   phone: '+56912345678',
- *   address: 'Av. Principal 123',
- *   city: 'Santiago',
- *   country: 'Chile',
- *   timeZone: 'America/Santiago',
- *   locale: 'es-CL',
- *   currency: 'CLP'
- * });
- *
- * if (result.success) {
- *   console.log('Business created:', result.business);
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function createBusiness(
-  data: CreateBusinessInput
+  input: unknown
 ): Promise<CreateBusinessResult> {
-  try {
-    // Dependency injection: Create repository and use case
-    const businessRepository = new PrismaBusinessRepository();
-    const createBusinessUseCase = new CreateBusinessUseCase(businessRepository);
+  return validateAndExecute(
+    createBusinessSchema,
+    input,
+    async (validated) => {
+      const businessRepository = new PrismaBusinessRepository();
+      const createBusinessUseCase = new CreateBusinessUseCase(
+        businessRepository
+      );
+      const result = await createBusinessUseCase.execute(validated);
 
-    // Execute use case
-    const result = await createBusinessUseCase.execute(data);
+      if (result.success && result.business) {
+        return {
+          success: true,
+          business: result.business.toObject(),
+        };
+      }
 
-    // Convert domain entity to plain object for serialization
-    if (result.success && result.business) {
       return {
-        success: true,
-        business: result.business.toObject(),
+        success: false,
+        error: result.error || "Failed to create business",
       };
-    }
-
-    return {
-      success: false,
-      error: result.error || "Failed to create business",
-    };
-  } catch (error) {
-    console.error("Error in createBusiness action:", error);
-    return {
-      success: false,
-      error: "An unexpected error occurred while creating the business",
-    };
-  }
+    },
+    { errorMessage: "An unexpected error occurred while creating the business" }
+  );
 }

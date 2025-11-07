@@ -146,10 +146,13 @@ export default function UsersPage() {
 
   // Calculate stats
   const activeUsers =
-    data?.users?.filter((u) => u.status === "active").length || 0;
+    data?.users?.filter((u) => u.status === UserStatus.VISIBLE).length || 0;
   const inactiveUsers =
-    data?.users?.filter((u) => u.status === "inactive").length || 0;
-  const adminUsers = data?.users?.filter((u) => u.type === "admin").length || 0;
+    data?.users?.filter(
+      (u) => u.status === UserStatus.HIDDEN || u.status === UserStatus.DISABLED
+    ).length || 0;
+  const adminUsers =
+    data?.users?.filter((u) => u.type === UserType.ADMIN).length || 0;
   const totalUsers = data?.total || 0;
 
   return (

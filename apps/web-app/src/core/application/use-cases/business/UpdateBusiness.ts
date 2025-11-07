@@ -1,32 +1,29 @@
 import { IBusinessRepository } from "@/core/domain/repositories/IBusinessRepository";
 import { Business } from "@/core/domain/entities/Business";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-const updateBusinessSchema = z.object({
-  id: z.number().int().positive(),
-  title: z.string().min(1).max(255).optional(),
-  slug: z.string().min(1).max(255).optional(),
-  description: z.string().optional().nullable(),
-  domain: z.string().optional().nullable(),
-  logo: z.string().optional().nullable(),
-  coverImage: z.string().optional().nullable(),
-  timeZone: z.string().optional(),
-  locale: z.string().optional(),
-  currency: z.string().optional(),
-  email: z.string().email().optional(),
-  phone: z.string().optional(),
-  website: z.string().optional().nullable(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional().nullable(),
-  country: z.string().optional(),
-  postalCode: z.string().optional().nullable(),
-  latitude: z.number().optional().nullable(),
-  longitude: z.number().optional().nullable(),
-});
-
-export type UpdateBusinessInput = z.infer<typeof updateBusinessSchema>;
+export interface UpdateBusinessInput {
+  id: number;
+  title?: string;
+  slug?: string;
+  description?: string | null;
+  domain?: string | null;
+  logo?: string | null;
+  coverImage?: string | null;
+  timeZone?: string;
+  locale?: string;
+  currency?: string;
+  email?: string;
+  phone?: string;
+  website?: string | null;
+  address?: string;
+  city?: string;
+  state?: string | null;
+  country?: string;
+  postalCode?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
 
 export interface UpdateBusinessResult {
   success: boolean;
@@ -37,28 +34,25 @@ export interface UpdateBusinessResult {
 export class UpdateBusinessUseCase {
   constructor(private readonly businessRepository: IBusinessRepository) {}
 
-  async execute(input: unknown): Promise<UpdateBusinessResult> {
+  async execute(input: UpdateBusinessInput): Promise<UpdateBusinessResult> {
     try {
-      const validatedData = updateBusinessSchema.parse(input);
       logger.info(
         "UpdateBusinessUseCase",
         "system",
-        `Updating business with ID: ${validatedData.id}`
+        `Updating business with ID: ${input.id}`
       );
 
-      const existingBusiness = await this.businessRepository.findById(
-        validatedData.id
-      );
+      const existingBusiness = await this.businessRepository.findById(input.id);
 
       if (!existingBusiness) {
         return { success: false, error: "Business not found" };
       }
 
       // Check if slug is being updated and if it's already taken
-      if (validatedData.slug && validatedData.slug !== existingBusiness.slug) {
+      if (input.slug && input.slug !== existingBusiness.slug) {
         const slugTaken = await this.businessRepository.slugExists(
-          validatedData.slug,
-          validatedData.id
+          input.slug,
+          input.id
         );
         if (slugTaken) {
           return {
@@ -70,43 +64,40 @@ export class UpdateBusinessUseCase {
 
       // Update the business entity
       existingBusiness.updateInfo({
-        title: validatedData.title,
-        description: validatedData.description ?? undefined,
-        email: validatedData.email,
-        phone: validatedData.phone,
-        website: validatedData.website ?? undefined,
-        address: validatedData.address,
-        city: validatedData.city,
-        state: validatedData.state ?? undefined,
-        country: validatedData.country,
-        postalCode: validatedData.postalCode ?? undefined,
-        timeZone: validatedData.timeZone,
-        locale: validatedData.locale,
-        currency: validatedData.currency,
+        title: input.title,
+        description: input.description ?? undefined,
+        email: input.email,
+        phone: input.phone,
+        website: input.website ?? undefined,
+        address: input.address,
+        city: input.city,
+        state: input.state ?? undefined,
+        country: input.country,
+        postalCode: input.postalCode ?? undefined,
+        timeZone: input.timeZone,
+        locale: input.locale,
+        currency: input.currency,
       });
 
       if (
-        validatedData.logo !== undefined ||
-        validatedData.coverImage !== undefined ||
-        validatedData.domain !== undefined
+        input.logo !== undefined ||
+        input.coverImage !== undefined ||
+        input.domain !== undefined
       ) {
         existingBusiness.updateBranding({
-          logo: validatedData.logo ?? undefined,
-          coverImage: validatedData.coverImage ?? undefined,
-          domain: validatedData.domain ?? undefined,
+          logo: input.logo ?? undefined,
+          coverImage: input.coverImage ?? undefined,
+          domain: input.domain ?? undefined,
         });
       }
 
       if (
-        validatedData.latitude !== undefined &&
-        validatedData.latitude !== null &&
-        validatedData.longitude !== undefined &&
-        validatedData.longitude !== null
+        input.latitude !== undefined &&
+        input.latitude !== null &&
+        input.longitude !== undefined &&
+        input.longitude !== null
       ) {
-        existingBusiness.updateLocation(
-          validatedData.latitude,
-          validatedData.longitude
-        );
+        existingBusiness.updateLocation(input.latitude, input.longitude);
       }
 
       const updatedBusiness =
@@ -119,12 +110,6 @@ export class UpdateBusinessUseCase {
       );
       return { success: true, business: updatedBusiness };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
       logger.error(
         "UpdateBusinessUseCase",
         "system",

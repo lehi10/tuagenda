@@ -2,26 +2,21 @@
  * Get Businesses By IDs Use Case
  *
  * This use case handles retrieving multiple businesses by their IDs.
- * It validates input and fetches the businesses using the repository.
+ * It fetches the businesses using the repository.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  *
  * @module core/application/use-cases/business
  */
 
 import { IBusinessRepository } from "@/core/domain/repositories/IBusinessRepository";
 import { Business } from "@/core/domain/entities/Business";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-/**
- * Input schema for getting businesses by IDs
- */
-const getBusinessesByIdsSchema = z.object({
-  ids: z.array(
-    z.number().int().positive("Business ID must be a positive integer")
-  ),
-});
-
-export type GetBusinessesByIdsInput = z.infer<typeof getBusinessesByIdsSchema>;
+export interface GetBusinessesByIdsInput {
+  ids: number[];
+}
 
 export interface GetBusinessesByIdsResult {
   success: boolean;
@@ -33,24 +28,17 @@ export interface GetBusinessesByIdsResult {
  * Get Businesses By IDs Use Case
  *
  * Business logic for retrieving businesses by IDs:
- * 1. Validate input data
- * 2. Fetch businesses using repository
- * 3. Return results
+ * 1. Fetch businesses using repository
+ * 2. Return results
  */
 export class GetBusinessesByIdsUseCase {
   constructor(private readonly businessRepository: IBusinessRepository) {}
 
-  async execute(input: unknown): Promise<GetBusinessesByIdsResult> {
+  async execute(
+    input: GetBusinessesByIdsInput
+  ): Promise<GetBusinessesByIdsResult> {
     try {
-      // 1. Validate input
-      logger.info(
-        "GetBusinessesByIdsUseCase",
-        "system",
-        "Validating input data"
-      );
-      const validatedData = getBusinessesByIdsSchema.parse(input);
-
-      if (validatedData.ids.length === 0) {
+      if (input.ids.length === 0) {
         logger.info(
           "GetBusinessesByIdsUseCase",
           "system",
@@ -65,13 +53,10 @@ export class GetBusinessesByIdsUseCase {
       logger.info(
         "GetBusinessesByIdsUseCase",
         "system",
-        `Fetching ${validatedData.ids.length} businesses`
+        `Fetching ${input.ids.length} businesses`
       );
 
-      // 2. Fetch businesses using repository
-      const businesses = await this.businessRepository.findByIds(
-        validatedData.ids
-      );
+      const businesses = await this.businessRepository.findByIds(input.ids);
 
       logger.info(
         "GetBusinessesByIdsUseCase",
@@ -84,19 +69,6 @@ export class GetBusinessesByIdsUseCase {
         businesses,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessage = error.issues.map((e) => e.message).join(", ");
-        logger.error(
-          "GetBusinessesByIdsUseCase",
-          "system",
-          `Validation error: ${errorMessage}`
-        );
-        return {
-          success: false,
-          error: `Validation error: ${errorMessage}`,
-        };
-      }
-
       logger.error(
         "GetBusinessesByIdsUseCase",
         "system",

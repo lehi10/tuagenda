@@ -2,6 +2,9 @@
  * Get All Users Use Case
  *
  * Fetches all users with optional filtering and pagination.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  */
 
 import {
@@ -9,19 +12,16 @@ import {
   UserRepositoryFilters,
 } from "@/core/domain/repositories/IUserRepository";
 import { User } from "@/core/domain/entities/User";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 import { UserType, UserStatus } from "@/core/domain/entities/User";
 
-const getAllUsersSchema = z.object({
-  search: z.string().optional(),
-  type: z.enum(UserType).optional(),
-  status: z.enum(UserStatus).optional(),
-  limit: z.number().int().positive().optional(),
-  offset: z.number().int().nonnegative().optional(),
-});
-
-export type GetAllUsersInput = z.infer<typeof getAllUsersSchema>;
+export interface GetAllUsersInput {
+  search?: string;
+  type?: UserType;
+  status?: UserStatus;
+  limit?: number;
+  offset?: number;
+}
 
 export interface GetAllUsersResult {
   success: boolean;
@@ -33,18 +33,16 @@ export interface GetAllUsersResult {
 export class GetAllUsersUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(input: unknown = {}): Promise<GetAllUsersResult> {
+  async execute(input: GetAllUsersInput = {}): Promise<GetAllUsersResult> {
     try {
-      const validatedData = getAllUsersSchema.parse(input);
-
       logger.info("GetAllUsersUseCase", "system", "Fetching all users");
 
       const filters: UserRepositoryFilters = {
-        search: validatedData.search,
-        type: validatedData.type,
-        status: validatedData.status,
-        limit: validatedData.limit,
-        offset: validatedData.offset,
+        search: input.search,
+        type: input.type,
+        status: input.status,
+        limit: input.limit,
+        offset: input.offset,
       };
 
       const users = await this.userRepository.findAll(filters);
@@ -62,13 +60,6 @@ export class GetAllUsersUseCase {
         total,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
-
       logger.error(
         "GetAllUsersUseCase",
         "system",

@@ -3,6 +3,9 @@
  *
  * Updates user admin fields (type, status).
  * This is separate from regular user updates.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  */
 
 import {
@@ -10,17 +13,14 @@ import {
   UpdateUserAdminData,
 } from "@/core/domain/repositories/IUserRepository";
 import { UserType, UserStatus } from "@/core/domain/entities/User";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 import { syncUserType } from "@/lib/auth/authorization";
 
-const updateUserAdminSchema = z.object({
-  userId: z.string().min(1, "User ID is required"),
-  type: z.enum(UserType).optional(),
-  status: z.enum(UserStatus).optional(),
-});
-
-export type UpdateUserAdminInput = z.infer<typeof updateUserAdminSchema>;
+export interface UpdateUserAdminInput {
+  id: string;
+  type?: UserType;
+  status?: UserStatus;
+}
 
 export interface UpdateUserAdminResult {
   success: boolean;
@@ -30,12 +30,10 @@ export interface UpdateUserAdminResult {
 export class UpdateUserAdminUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(input: unknown): Promise<UpdateUserAdminResult> {
+  async execute(input: UpdateUserAdminInput): Promise<UpdateUserAdminResult> {
     try {
-      const validatedData = updateUserAdminSchema.parse(input);
-
       // Check if there's anything to update
-      if (!validatedData.type && !validatedData.status) {
+      if (!input.type && !input.status) {
         return {
           success: false,
           error: "No fields to update",
@@ -44,16 +42,14 @@ export class UpdateUserAdminUseCase {
 
       logger.info(
         "UpdateUserAdminUseCase",
-        validatedData.userId,
-        `Updating user admin fields: type=${validatedData.type}, status=${validatedData.status}`
+        input.id,
+        `Updating user admin fields: type=${input.type}, status=${input.status}`
       );
 
       // Get current user if type is being updated
       let oldUserType: UserType | undefined;
-      if (validatedData.type) {
-        const currentUser = await this.userRepository.findById(
-          validatedData.userId
-        );
+      if (input.type) {
+        const currentUser = await this.userRepository.findById(input.id);
         if (!currentUser) {
           return {
             success: false,
@@ -65,33 +61,33 @@ export class UpdateUserAdminUseCase {
 
       // Update user
       const updateData: UpdateUserAdminData = {};
-      if (validatedData.type) updateData.type = validatedData.type;
-      if (validatedData.status) updateData.status = validatedData.status;
+      if (input.type) updateData.type = input.type;
+      if (input.status) updateData.status = input.status;
 
-      await this.userRepository.updateAdmin(validatedData.userId, updateData);
+      await this.userRepository.updateAdmin(input.id, updateData);
 
       // Sync user type with authorization system if type changed
-      if (validatedData.type && oldUserType !== validatedData.type) {
+      if (input.type && oldUserType !== input.type) {
         logger.info(
           "UpdateUserAdminUseCase",
-          validatedData.userId,
-          `Syncing user type change: ${oldUserType} -> ${validatedData.type}`
+          input.id,
+          `Syncing user type change: ${oldUserType} -> ${input.type}`
         );
 
         // Remove old user type
         if (oldUserType && oldUserType !== UserType.CUSTOMER) {
           await syncUserType(
-            validatedData.userId,
+            input.id,
             oldUserType === UserType.ADMIN ? "admin" : "superadmin",
             "remove"
           );
         }
 
         // Add new user type
-        if (validatedData.type !== UserType.CUSTOMER) {
+        if (input.type !== UserType.CUSTOMER) {
           await syncUserType(
-            validatedData.userId,
-            validatedData.type === UserType.ADMIN ? "admin" : "superadmin",
+            input.id,
+            input.type === UserType.ADMIN ? "admin" : "superadmin",
             "add"
           );
         }
@@ -99,7 +95,7 @@ export class UpdateUserAdminUseCase {
 
       logger.info(
         "UpdateUserAdminUseCase",
-        validatedData.userId,
+        input.id,
         "User updated successfully"
       );
 
@@ -107,13 +103,6 @@ export class UpdateUserAdminUseCase {
         success: true,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
-
       logger.error(
         "UpdateUserAdminUseCase",
         "system",

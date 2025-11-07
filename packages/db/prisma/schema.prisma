@@ -74,7 +74,7 @@ model User {
   status          UserStatus @default(visible)
   type            UserType   @default(customer)
   firstName       String     @db.VarChar(255)
-  lastName        String     @db.VarChar(255)
+  lastName        String?     @db.VarChar(255)
   email           String     @unique @db.VarChar(255)
   birthday        DateTime?  @db.Date
   phone           String?    @db.VarChar(63)

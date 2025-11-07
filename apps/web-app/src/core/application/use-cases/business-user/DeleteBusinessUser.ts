@@ -2,25 +2,22 @@
  * Delete BusinessUser Use Case
  *
  * This use case handles deleting a business-user relationship.
- * It validates input, finds the relationship, and deletes it.
+ * It finds the relationship, deletes it, and handles user type demotion if needed.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  *
  * @module core/application/use-cases/business-user
  */
 
 import { IBusinessUserRepository } from "@/core/domain/repositories/IBusinessUserRepository";
 import { IUserRepository } from "@/core/domain/repositories/IUserRepository";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 import { syncUserRole, syncUserType } from "@/lib/auth/authorization";
 
-/**
- * Input schema for deleting a business-user relationship
- */
-const deleteBusinessUserSchema = z.object({
-  id: z.number().int().positive("BusinessUser ID must be a positive integer"),
-});
-
-export type DeleteBusinessUserInput = z.infer<typeof deleteBusinessUserSchema>;
+export interface DeleteBusinessUserInput {
+  id: number;
+}
 
 export interface DeleteBusinessUserResult {
   success: boolean;
@@ -31,11 +28,10 @@ export interface DeleteBusinessUserResult {
  * Delete BusinessUser Use Case
  *
  * Business logic for deleting a business-user relationship:
- * 1. Validate input data
- * 2. Check if relationship exists
- * 3. Delete using repository
- * 4. Check if user still has other businesses
- * 5. If no businesses remain, demote user from admin to customer
+ * 1. Check if relationship exists
+ * 2. Delete using repository
+ * 3. Check if user still has other businesses
+ * 4. If no businesses remain, demote user from admin to customer
  */
 export class DeleteBusinessUserUseCase {
   constructor(
@@ -43,14 +39,13 @@ export class DeleteBusinessUserUseCase {
     private readonly userRepository: IUserRepository
   ) {}
 
-  async execute(input: unknown): Promise<DeleteBusinessUserResult> {
+  async execute(
+    input: DeleteBusinessUserInput
+  ): Promise<DeleteBusinessUserResult> {
     try {
-      // 1. Validate input
-      const validatedData = deleteBusinessUserSchema.parse(input);
-
-      // 2. Check if relationship exists
+      // 1. Check if relationship exists
       const existingBusinessUser = await this.businessUserRepository.findById(
-        validatedData.id
+        input.id
       );
 
       if (!existingBusinessUser) {
@@ -60,13 +55,13 @@ export class DeleteBusinessUserUseCase {
         };
       }
 
-      // 3. Delete using repository
+      // 2. Delete using repository
 
       const userId = existingBusinessUser.userId;
       const businessId = existingBusinessUser.businessId;
       const role = existingBusinessUser.role;
 
-      await this.businessUserRepository.delete(validatedData.id);
+      await this.businessUserRepository.delete(input.id);
 
       // Sync role removal with authorization service
       const roleRemoved = await syncUserRole(
@@ -85,12 +80,12 @@ export class DeleteBusinessUserUseCase {
         // Continue anyway - the database was updated
       }
 
-      // 4. Check if user still has other businesses
+      // 3. Check if user still has other businesses
 
       const remainingBusinesses =
         await this.businessUserRepository.findByUser(userId);
 
-      // 5. If no businesses remain, demote user from admin to customer
+      // 4. If no businesses remain, demote user from admin to customer
       if (remainingBusinesses.length === 0) {
         const user = await this.userRepository.findById(userId);
 
@@ -116,19 +111,6 @@ export class DeleteBusinessUserUseCase {
         success: true,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessage = error.issues.map((e) => e.message).join(", ");
-        logger.error(
-          "DeleteBusinessUserUseCase",
-          "system",
-          `Validation error: ${errorMessage}`
-        );
-        return {
-          success: false,
-          error: `Validation error: ${errorMessage}`,
-        };
-      }
-
       logger.error(
         "DeleteBusinessUserUseCase",
         "system",

@@ -39,28 +39,36 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
     return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
   };
 
-  const formatType = (type: string) => {
+  const formatType = (type: string | undefined) => {
+    if (!type) return "Unknown";
     return USER_TYPE_CONFIG[type as UserType]?.label || type;
   };
 
-  const formatStatus = (status: string) => {
+  const formatStatus = (status: string | undefined) => {
+    if (!status) return "Unknown";
     return USER_STATUS_CONFIG[status as UserStatus]?.label || status;
   };
 
-  const getTypeBadgeVariant = (type: string) => {
+  const getTypeBadgeVariant = (type: string | undefined) => {
+    if (!type) return "outline";
     return USER_TYPE_CONFIG[type as UserType]?.variant || "outline";
   };
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string | undefined) => {
+    if (!status) return "outline";
     return USER_STATUS_CONFIG[status as UserStatus]?.variant || "outline";
   };
 
-  const formatPhone = (phone: string | null, countryCode: string | null) => {
+  const formatPhone = (
+    phone: string | null | undefined,
+    countryCode: string | null | undefined
+  ) => {
     if (!phone) return null;
     return countryCode ? `${countryCode} ${phone}` : phone;
   };
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return "N/A";
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",

@@ -2,7 +2,10 @@
  * Get BusinessUsers By User Use Case
  *
  * This use case handles retrieving all businesses associated with a user.
- * It validates input and fetches the relationships using the repository.
+ * It fetches the relationships using the repository.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  *
  * @module core/application/use-cases/business-user
  */
@@ -12,22 +15,14 @@ import {
   BusinessUser,
   BusinessRole,
 } from "@/core/domain/entities/BusinessUser";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-/**
- * Input schema for getting user's businesses
- */
-const getBusinessUsersByUserSchema = z.object({
-  userId: z.string().min(1, "User ID is required"),
-  role: z.enum(BusinessRole).optional(),
-  limit: z.number().int().positive().optional(),
-  offset: z.number().int().nonnegative().optional(),
-});
-
-export type GetBusinessUsersByUserInput = z.infer<
-  typeof getBusinessUsersByUserSchema
->;
+export interface GetBusinessUsersByUserInput {
+  userId: string;
+  role?: BusinessRole;
+  limit?: number;
+  offset?: number;
+}
 
 export interface GetBusinessUsersByUserResult {
   success: boolean;
@@ -39,44 +34,36 @@ export interface GetBusinessUsersByUserResult {
  * Get BusinessUsers By User Use Case
  *
  * Business logic for retrieving user's businesses:
- * 1. Validate input data
- * 2. Fetch relationships using repository
- * 3. Return results
+ * 1. Fetch relationships using repository
+ * 2. Return results
  */
 export class GetBusinessUsersByUserUseCase {
   constructor(
     private readonly businessUserRepository: IBusinessUserRepository
   ) {}
 
-  async execute(input: unknown): Promise<GetBusinessUsersByUserResult> {
+  async execute(
+    input: GetBusinessUsersByUserInput
+  ): Promise<GetBusinessUsersByUserResult> {
     try {
-      // 1. Validate input
       logger.info(
         "GetBusinessUsersByUserUseCase",
-        "system",
-        "Validating input data"
-      );
-      const validatedData = getBusinessUsersByUserSchema.parse(input);
-
-      logger.info(
-        "GetBusinessUsersByUserUseCase",
-        validatedData.userId,
+        input.userId,
         "Fetching businesses for user"
       );
 
-      // 2. Fetch relationships using repository
       const businessUsers = await this.businessUserRepository.findByUser(
-        validatedData.userId,
+        input.userId,
         {
-          role: validatedData.role,
-          limit: validatedData.limit,
-          offset: validatedData.offset,
+          role: input.role,
+          limit: input.limit,
+          offset: input.offset,
         }
       );
 
       logger.info(
         "GetBusinessUsersByUserUseCase",
-        validatedData.userId,
+        input.userId,
         `Found ${businessUsers.length} businesses for user`
       );
 
@@ -85,19 +72,6 @@ export class GetBusinessUsersByUserUseCase {
         businessUsers,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessage = error.issues.map((e) => e.message).join(", ");
-        logger.error(
-          "GetBusinessUsersByUserUseCase",
-          "system",
-          `Validation error: ${errorMessage}`
-        );
-        return {
-          success: false,
-          error: `Validation error: ${errorMessage}`,
-        };
-      }
-
       logger.error(
         "GetBusinessUsersByUserUseCase",
         "system",

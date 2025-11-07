@@ -1,12 +1,9 @@
 import { IBusinessRepository } from "@/core/domain/repositories/IBusinessRepository";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-const deleteBusinessSchema = z.object({
-  id: z.number().int().positive("Business ID must be a positive integer"),
-});
-
-export type DeleteBusinessInput = z.infer<typeof deleteBusinessSchema>;
+export interface DeleteBusinessInput {
+  id: number;
+}
 
 export interface DeleteBusinessResult {
   success: boolean;
@@ -16,22 +13,21 @@ export interface DeleteBusinessResult {
 export class DeleteBusinessUseCase {
   constructor(private readonly businessRepository: IBusinessRepository) {}
 
-  async execute(input: unknown): Promise<DeleteBusinessResult> {
+  async execute(input: DeleteBusinessInput): Promise<DeleteBusinessResult> {
     try {
-      const validatedData = deleteBusinessSchema.parse(input);
       logger.info(
         "DeleteBusinessUseCase",
         "system",
-        `Deleting business with ID: ${validatedData.id}`
+        `Deleting business with ID: ${input.id}`
       );
 
-      const exists = await this.businessRepository.exists(validatedData.id);
+      const exists = await this.businessRepository.exists(input.id);
 
       if (!exists) {
         return { success: false, error: "Business not found" };
       }
 
-      await this.businessRepository.delete(validatedData.id);
+      await this.businessRepository.delete(input.id);
 
       logger.info(
         "DeleteBusinessUseCase",
@@ -40,12 +36,6 @@ export class DeleteBusinessUseCase {
       );
       return { success: true };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
       logger.error(
         "DeleteBusinessUseCase",
         "system",

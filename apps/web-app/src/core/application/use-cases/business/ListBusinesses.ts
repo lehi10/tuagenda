@@ -1,18 +1,15 @@
 import { IBusinessRepository } from "@/core/domain/repositories/IBusinessRepository";
 import { Business, BusinessStatus } from "@/core/domain/entities/Business";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-const listBusinessesSchema = z.object({
-  status: z.enum(BusinessStatus).optional(),
-  city: z.string().optional(),
-  country: z.string().optional(),
-  search: z.string().optional(),
-  limit: z.number().int().positive().optional(),
-  offset: z.number().int().nonnegative().optional(),
-});
-
-export type ListBusinessesInput = z.infer<typeof listBusinessesSchema>;
+export interface ListBusinessesInput {
+  status?: BusinessStatus;
+  city?: string;
+  country?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
 
 export interface ListBusinessesResult {
   success: boolean;
@@ -24,17 +21,18 @@ export interface ListBusinessesResult {
 export class ListBusinessesUseCase {
   constructor(private readonly businessRepository: IBusinessRepository) {}
 
-  async execute(input: unknown = {}): Promise<ListBusinessesResult> {
+  async execute(
+    input: ListBusinessesInput = {}
+  ): Promise<ListBusinessesResult> {
     try {
-      const validatedData = listBusinessesSchema.parse(input);
       logger.info(
         "ListBusinessesUseCase",
         "system",
         "Fetching businesses list"
       );
 
-      const businesses = await this.businessRepository.findAll(validatedData);
-      const total = await this.businessRepository.count(validatedData);
+      const businesses = await this.businessRepository.findAll(input);
+      const total = await this.businessRepository.count(input);
 
       logger.info(
         "ListBusinessesUseCase",
@@ -43,12 +41,6 @@ export class ListBusinessesUseCase {
       );
       return { success: true, businesses, total };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
       logger.error(
         "ListBusinessesUseCase",
         "system",

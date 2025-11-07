@@ -75,7 +75,7 @@ export function PersonalInfoSection({
     setIsLoading(true);
 
     try {
-      const result = await updateUserProfile(user.id, data);
+      const result = await updateUserProfile({ userId: user.id, ...data });
 
       if (result.success) {
         toast.success(t.pages.profile.messages.profileUpdated);

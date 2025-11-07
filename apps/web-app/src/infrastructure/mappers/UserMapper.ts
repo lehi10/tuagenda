@@ -19,7 +19,7 @@ export class UserMapper {
       id: prismaUser.id,
       email: prismaUser.email,
       firstName: prismaUser.firstName,
-      lastName: prismaUser.lastName,
+      lastName: prismaUser.lastName || "",
       status: prismaUser.status as UserStatus,
       type: prismaUser.type as UserType,
       birthday: prismaUser.birthday,

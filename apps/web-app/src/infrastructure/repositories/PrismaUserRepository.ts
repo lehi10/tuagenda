@@ -264,7 +264,10 @@ export class PrismaUserRepository implements IUserRepository {
       orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
     });
 
-    return users;
+    return users.map((user) => ({
+      ...user,
+      lastName: user.lastName || "",
+    }));
   }
 
   /**

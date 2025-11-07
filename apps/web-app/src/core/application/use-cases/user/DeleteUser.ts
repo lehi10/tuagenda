@@ -2,17 +2,17 @@
  * Delete User Use Case
  *
  * Deletes a user from the system.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  */
 
 import { IUserRepository } from "@/core/domain/repositories/IUserRepository";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-const deleteUserSchema = z.object({
-  id: z.string().min(1, "User ID is required"),
-});
-
-export type DeleteUserInput = z.infer<typeof deleteUserSchema>;
+export interface DeleteUserInput {
+  id: string;
+}
 
 export interface DeleteUserResult {
   success: boolean;
@@ -22,21 +22,15 @@ export interface DeleteUserResult {
 export class DeleteUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(input: { id: string }): Promise<DeleteUserResult> {
+  async execute(input: DeleteUserInput): Promise<DeleteUserResult> {
     try {
-      const validatedData = deleteUserSchema.parse(input);
-
-      logger.info(
-        "DeleteUserUseCase",
-        validatedData.id,
-        "Attempting to delete user"
-      );
+      logger.info("DeleteUserUseCase", input.id, "Attempting to delete user");
 
       // Check if user exists
-      const user = await this.userRepository.findById(validatedData.id);
+      const user = await this.userRepository.findById(input.id);
 
       if (!user) {
-        logger.warning("DeleteUserUseCase", validatedData.id, "User not found");
+        logger.warning("DeleteUserUseCase", input.id, "User not found");
         return {
           success: false,
           error: "User not found",
@@ -44,11 +38,11 @@ export class DeleteUserUseCase {
       }
 
       // Delete user
-      await this.userRepository.delete(validatedData.id);
+      await this.userRepository.delete(input.id);
 
       logger.info(
         "DeleteUserUseCase",
-        validatedData.id,
+        input.id,
         `User deleted successfully: ${user.email}`
       );
 
@@ -56,13 +50,6 @@ export class DeleteUserUseCase {
         success: true,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
-
       logger.error(
         "DeleteUserUseCase",
         "system",

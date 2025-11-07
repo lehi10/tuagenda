@@ -4,31 +4,32 @@
  * Fetches all businesses with optional filtering.
  * This is used to display businesses in the dashboard.
  *
- * REFACTORED: Now uses hexagonal architecture with use cases.
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/business
  */
 
 "use server";
 
+import { z } from "zod";
 import { BusinessProps } from "@/core/domain/entities/Business";
 import { ListBusinessesUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Filters for listing businesses
- */
-export interface ListBusinessesFilters {
-  search?: string;
-  city?: string;
-  country?: string;
-  limit?: number;
-  offset?: number;
-}
+// Schema validation
+const listBusinessesSchema = z.object({
+  search: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+  limit: z.number().int().positive().optional(),
+  offset: z.number().int().nonnegative().optional(),
+});
 
-/**
- * Result type for the list businesses action
- */
+export type ListBusinessesFilters = z.infer<typeof listBusinessesSchema>;
+
 type ListBusinessesResult =
   | { success: true; businesses: BusinessProps[]; total: number }
   | { success: false; error: string };
@@ -38,48 +39,33 @@ type ListBusinessesResult =
  *
  * @param filters - Optional filters for searching/filtering businesses
  * @returns Result object with businesses array and total count or error message
- *
- * @example
- * ```typescript
- * const result = await listBusinesses({ city: 'Santiago' });
- *
- * if (result.success) {
- *   console.log('Businesses:', result.businesses);
- *   console.log('Total:', result.total);
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function listBusinesses(
-  filters?: ListBusinessesFilters
+  filters?: unknown
 ): Promise<ListBusinessesResult> {
-  try {
-    // Dependency injection: Create repository and use case
-    const businessRepository = new PrismaBusinessRepository();
-    const listBusinessesUseCase = new ListBusinessesUseCase(businessRepository);
+  return validateAndExecute(
+    listBusinessesSchema,
+    filters || {},
+    async (validated) => {
+      const businessRepository = new PrismaBusinessRepository();
+      const listBusinessesUseCase = new ListBusinessesUseCase(
+        businessRepository
+      );
+      const result = await listBusinessesUseCase.execute(validated);
 
-    // Execute use case
-    const result = await listBusinessesUseCase.execute(filters);
+      if (result.success && result.businesses) {
+        return {
+          success: true,
+          businesses: result.businesses.map((b) => b.toObject()),
+          total: result.total || 0,
+        };
+      }
 
-    // Convert domain entities to plain objects for serialization
-    if (result.success && result.businesses) {
       return {
-        success: true,
-        businesses: result.businesses.map((b) => b.toObject()),
-        total: result.total || 0,
+        success: false,
+        error: result.error || "Failed to fetch businesses",
       };
-    }
-
-    return {
-      success: false,
-      error: result.error || "Failed to fetch businesses",
-    };
-  } catch (error) {
-    console.error("Error in listBusinesses action:", error);
-    return {
-      success: false,
-      error: "An unexpected error occurred while fetching businesses",
-    };
-  }
+    },
+    { errorMessage: "An unexpected error occurred while fetching businesses" }
+  );
 }

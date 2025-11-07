@@ -36,6 +36,9 @@ const getAllUsersSchema = z.object({
 
 export type GetAllUsersInput = z.infer<typeof getAllUsersSchema>;
 
+// Export type for UI components
+export type UserListItem = UserProps;
+
 export interface GetAllUsersResult {
   success: boolean;
   users?: UserProps[];

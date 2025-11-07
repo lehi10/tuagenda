@@ -4,19 +4,27 @@
  * Deletes a business from the database.
  * This is used when removing a business from the dashboard.
  *
- * REFACTORED: Now uses hexagonal architecture with use cases.
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/business
  */
 
 "use server";
 
+import { z } from "zod";
 import { DeleteBusinessUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the delete business action
- */
+// Schema validation
+const deleteBusinessSchema = z.object({
+  id: z.number().int().positive("Business ID must be a positive integer"),
+});
+
+export type DeleteBusinessInput = z.infer<typeof deleteBusinessSchema>;
+
 type DeleteBusinessResult =
   | { success: true }
   | { success: false; error: string };
@@ -24,44 +32,31 @@ type DeleteBusinessResult =
 /**
  * Deletes a business from the database
  *
- * @param id - The ID of the business to delete
+ * @param input - Input with business ID to delete
  * @returns Result object indicating success or error message
- *
- * @example
- * ```typescript
- * const result = await deleteBusiness(1);
- *
- * if (result.success) {
- *   console.log('Business deleted successfully');
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function deleteBusiness(
-  id: number
+  input: unknown
 ): Promise<DeleteBusinessResult> {
-  try {
-    // Dependency injection: Create repository and use case
-    const businessRepository = new PrismaBusinessRepository();
-    const deleteBusinessUseCase = new DeleteBusinessUseCase(businessRepository);
+  return validateAndExecute(
+    deleteBusinessSchema,
+    input,
+    async (validated) => {
+      const businessRepository = new PrismaBusinessRepository();
+      const deleteBusinessUseCase = new DeleteBusinessUseCase(
+        businessRepository
+      );
+      const result = await deleteBusinessUseCase.execute({ id: validated.id });
 
-    // Execute use case
-    const result = await deleteBusinessUseCase.execute({ id });
+      if (result.success) {
+        return { success: true };
+      }
 
-    if (result.success) {
-      return { success: true };
-    }
-
-    return {
-      success: false,
-      error: result.error || "Failed to delete business",
-    };
-  } catch (error) {
-    console.error("Error in deleteBusiness action:", error);
-    return {
-      success: false,
-      error: "An unexpected error occurred while deleting the business",
-    };
-  }
+      return {
+        success: false,
+        error: result.error || "Failed to delete business",
+      };
+    },
+    { errorMessage: "An unexpected error occurred while deleting the business" }
+  );
 }

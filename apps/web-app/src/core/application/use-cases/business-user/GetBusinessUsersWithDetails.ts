@@ -3,26 +3,21 @@
  *
  * Retrieves business users with full user information for displaying employee lists.
  * This includes user details like name, email, phone, etc.
+ *
+ * REFACTORED: Validation removed from use case (now in action layer).
+ * Receives pre-validated data from server actions.
  */
 
 import {
   IBusinessUserRepository,
   BusinessUserWithDetails,
 } from "@/core/domain/repositories/IBusinessUserRepository";
-import { z } from "zod";
 import { logger } from "@/lib/logger";
 
-const getBusinessUsersWithDetailsSchema = z.object({
-  businessId: z
-    .number()
-    .int()
-    .positive("Business ID must be a positive integer"),
-  search: z.string().optional(),
-});
-
-export type GetBusinessUsersWithDetailsInput = z.infer<
-  typeof getBusinessUsersWithDetailsSchema
->;
+export interface GetBusinessUsersWithDetailsInput {
+  businessId: number;
+  search?: string;
+}
 
 export interface GetBusinessUsersWithDetailsResult {
   success: boolean;
@@ -35,20 +30,20 @@ export class GetBusinessUsersWithDetailsUseCase {
     private readonly businessUserRepository: IBusinessUserRepository
   ) {}
 
-  async execute(input: unknown): Promise<GetBusinessUsersWithDetailsResult> {
+  async execute(
+    input: GetBusinessUsersWithDetailsInput
+  ): Promise<GetBusinessUsersWithDetailsResult> {
     try {
-      const validatedData = getBusinessUsersWithDetailsSchema.parse(input);
-
       logger.info(
         "GetBusinessUsersWithDetailsUseCase",
         "system",
-        `Fetching business users with details for business ${validatedData.businessId}`
+        `Fetching business users with details for business ${input.businessId}`
       );
 
       const businessUsers =
         await this.businessUserRepository.findByBusinessWithUserDetails(
-          validatedData.businessId,
-          validatedData.search
+          input.businessId,
+          input.search
         );
 
       logger.info(
@@ -62,13 +57,6 @@ export class GetBusinessUsersWithDetailsUseCase {
         businessUsers,
       };
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: "Invalid input: " + error.issues[0].message,
-        };
-      }
-
       logger.error(
         "GetBusinessUsersWithDetailsUseCase",
         "system",
