@@ -83,7 +83,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         try {
           // Try to get user from database using hexagonal architecture
-          const result = await getUserById(firebaseUser.uid);
+          const result = await getUserById({
+            userId: firebaseUser.uid,
+          });
+          console.log("GetUserById result 2222:", result);
 
           if (result.success) {
             // Successfully loaded user data from database
@@ -233,7 +236,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const firebaseUser = await authService.signInWithGoogle();
 
       // Step 2: Check if user exists in database
-      const existingUser = await getUserById(firebaseUser.uid);
+      const existingUser = await getUserById({
+        userId: firebaseUser.uid,
+      });
 
       if (!existingUser.success) {
         // Step 3: User doesn't exist, create in database using hexagonal architecture
@@ -340,7 +345,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Reload user data from database to get updated information
       const firebaseUser = authService.getCurrentUser();
       if (firebaseUser) {
-        const result = await getUserById(firebaseUser.uid);
+        const result = await getUserById({ userId: firebaseUser.uid });
         if (result.success) {
           setState((prev) => ({ ...prev, user: result.user }));
         }

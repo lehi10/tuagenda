@@ -15,8 +15,8 @@ import { UserType, UserStatus } from "@/core/domain/entities/User";
 
 const getAllUsersSchema = z.object({
   search: z.string().optional(),
-  type: z.nativeEnum(UserType).optional(),
-  status: z.nativeEnum(UserStatus).optional(),
+  type: z.enum(UserType).optional(),
+  status: z.enum(UserStatus).optional(),
   limit: z.number().int().positive().optional(),
   offset: z.number().int().nonnegative().optional(),
 });

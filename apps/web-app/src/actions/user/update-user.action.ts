@@ -4,24 +4,33 @@
  * Updates user profile information in PostgreSQL database.
  * Used for updating personal information from the profile page.
  *
- * REFACTORED: Now uses hexagonal architecture with use cases.
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/user
  */
 
 "use server";
 
-import {
-  updateProfilePersonalInfoSchema,
-  type UpdateProfilePersonalInfoInput,
-} from "@/lib/validations/user.schema";
-import { logger } from "@/lib/logger";
+import { z } from "zod";
 import { UpdateUserUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the update user action
- */
+// Schema validation
+const updateUserSchema = z.object({
+  userId: z.string().min(1, "User ID is required"),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  birthday: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  countryCode: z.string().nullable().optional(),
+  timeZone: z.string().nullable().optional(),
+});
+
+export type UpdateUserProfileInput = z.infer<typeof updateUserSchema>;
+
 type UpdateUserResult =
   | { success: true; message: string }
   | { success: false; error: string };
@@ -29,91 +38,43 @@ type UpdateUserResult =
 /**
  * Updates user profile personal information in database
  *
- * @param userId - The ID of the user to update
- * @param data - The profile data to update
+ * @param input - Input with userId and profile data to update
  * @returns Result object with success status or error message
- *
- * @example
- * ```typescript
- * const result = await updateUserProfile(userId, {
- *   firstName: 'John',
- *   lastName: 'Doe',
- *   phone: '987654321',
- *   countryCode: '+51',
- * });
- *
- * if (result.success) {
- *   console.log('Profile updated successfully');
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function updateUserProfile(
-  userId: string,
-  data: UpdateProfilePersonalInfoInput
+  input: unknown
 ): Promise<UpdateUserResult> {
-  logger.info("UPDATE_USER", userId, "Starting profile update");
+  return validateAndExecute(
+    updateUserSchema,
+    input,
+    async (validated) => {
+      const userRepository = new PrismaUserRepository();
+      const updateUserUseCase = new UpdateUserUseCase(userRepository);
 
-  try {
-    // Validate input data
-    const validatedData = updateProfilePersonalInfoSchema.parse(data);
-    logger.info("UPDATE_USER", userId, "Data validated successfully");
-
-    // Dependency injection: Create repository and use case
-    const userRepository = new PrismaUserRepository();
-    const updateUserUseCase = new UpdateUserUseCase(userRepository);
-
-    // Convert empty strings to null for optional fields
-    const updateInput = {
-      id: userId,
-      firstName: validatedData.firstName,
-      lastName: validatedData.lastName,
-      birthday: validatedData.birthday || null,
-      phone: validatedData.phone || null,
-      countryCode: validatedData.countryCode || null,
-      timeZone: validatedData.timeZone || null,
-    };
-
-    // Execute use case
-    const result = await updateUserUseCase.execute(updateInput);
-
-    if (result.success) {
-      logger.info(
-        "UPDATE_USER",
-        userId,
-        `Profile updated successfully - ${result.user.email}`
-      );
-
-      return {
-        success: true,
-        message: "Profile updated successfully",
+      const updateInput = {
+        id: validated.userId,
+        firstName: validated.firstName,
+        lastName: validated.lastName,
+        birthday: validated.birthday || null,
+        phone: validated.phone || null,
+        countryCode: validated.countryCode || null,
+        timeZone: validated.timeZone || null,
       };
-    }
 
-    logger.error("UPDATE_USER", userId, `Update failed: ${result.error}`);
-    return {
-      success: false,
-      error: result.error,
-    };
-  } catch (error) {
-    if (error instanceof Error && error.name === "ZodError") {
-      logger.error("UPDATE_USER", userId, `Validation error: ${error.message}`);
+      const result = await updateUserUseCase.execute(updateInput);
+
+      if (result.success) {
+        return {
+          success: true,
+          message: "Profile updated successfully",
+        };
+      }
+
       return {
         success: false,
-        error: "Invalid data provided. Please check your input.",
+        error: result.error || "Failed to update profile",
       };
-    }
-
-    logger.error(
-      "UPDATE_USER",
-      userId,
-      `Error updating profile: ${error instanceof Error ? error.message : "Unknown error"}`
-    );
-
-    return {
-      success: false,
-      error: "Failed to update profile. Please try again.",
-    };
-  }
+    },
+    { errorMessage: "An unexpected error occurred while updating profile" }
+  );
 }

@@ -22,7 +22,7 @@ export interface DeleteUserResult {
 export class DeleteUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(input: unknown): Promise<DeleteUserResult> {
+  async execute(input: { id: string }): Promise<DeleteUserResult> {
     try {
       const validatedData = deleteUserSchema.parse(input);
 

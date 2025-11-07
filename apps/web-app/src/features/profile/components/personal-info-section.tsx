@@ -72,7 +72,6 @@ export function PersonalInfoSection({
   const timeZone = watch("timeZone");
 
   const onSubmit = async (data: UpdateProfilePersonalInfoInput) => {
-    logger.info("PERSONAL_INFO", user.id, "Submitting form");
     setIsLoading(true);
 
     try {

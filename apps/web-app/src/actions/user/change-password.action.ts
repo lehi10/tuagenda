@@ -4,21 +4,36 @@
  * Changes user password in Firebase Authentication.
  * Requires the current password for re-authentication.
  *
+ * REFACTORED: Added Zod validation for input data.
+ * Validation happens here, auth service receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
+ *
  * @module actions/user
  */
 
 "use server";
 
+import { z } from "zod";
 import { getAuthService } from "@/lib/auth/auth-service";
-import {
-  changePasswordSchema,
-  type ChangePasswordInput,
-} from "@/lib/validations/user.schema";
-import { logger } from "@/lib/logger";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the change password action
- */
+// Schema validation
+const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(100, "Password is too long"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
 type ChangePasswordResult =
   | { success: true; message: string }
   | { success: false; error: string };
@@ -26,111 +41,52 @@ type ChangePasswordResult =
 /**
  * Changes user password in Firebase Authentication
  *
- * @param data - The password change data (current, new, confirm)
+ * @param input - The password change data (current, new, confirm)
  * @returns Result object with success status or error message
- *
- * @example
- * ```typescript
- * const result = await changePassword({
- *   currentPassword: 'oldPassword123',
- *   newPassword: 'newPassword456',
- *   confirmPassword: 'newPassword456'
- * });
- *
- * if (result.success) {
- *   console.log('Password changed successfully');
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function changePassword(
-  data: ChangePasswordInput
+  input: unknown
 ): Promise<ChangePasswordResult> {
-  logger.info("CHANGE_PASSWORD", "anonymous", "Starting password change");
+  return validateAndExecute(
+    changePasswordSchema,
+    input,
+    async (validated) => {
+      const authService = getAuthService();
 
-  try {
-    // Validate input data
-    const validatedData = changePasswordSchema.parse(data);
-    logger.info("CHANGE_PASSWORD", "anonymous", "Data validated successfully");
+      const currentUser = authService.getCurrentUser();
+      if (!currentUser) {
+        return {
+          success: false,
+          error: "You must be signed in to change your password",
+        };
+      }
 
-    // Get auth service
-    const authService = getAuthService();
-
-    // Check if user is authenticated
-    const currentUser = authService.getCurrentUser();
-    if (!currentUser) {
-      logger.error("CHANGE_PASSWORD", "anonymous", "No user authenticated");
-      return {
-        success: false,
-        error: "You must be signed in to change your password",
-      };
-    }
-
-    // Change password in Firebase (this includes re-authentication)
-    if (typeof authService.changePassword === "function") {
-      await authService.changePassword(
-        validatedData.currentPassword,
-        validatedData.newPassword
-      );
-
-      logger.info(
-        "CHANGE_PASSWORD",
-        currentUser.uid,
-        "Password changed successfully"
-      );
-
-      return {
-        success: true,
-        message: "Password changed successfully",
-      };
-    } else {
-      logger.error(
-        "CHANGE_PASSWORD",
-        currentUser.uid,
-        "changePassword method not available on auth service"
-      );
-      return {
-        success: false,
-        error: "Password change is not supported",
-      };
-    }
-  } catch (error) {
-    if (error instanceof Error && error.name === "ZodError") {
-      logger.error(
-        "CHANGE_PASSWORD",
-        "anonymous",
-        `Validation error: ${error.message}`
-      );
-      return {
-        success: false,
-        error: "Invalid data provided. Please check your input.",
-      };
-    }
-
-    if (error instanceof Error) {
-      logger.error(
-        "CHANGE_PASSWORD",
-        "anonymous",
-        `Error changing password: ${error.message}`
-      );
-
-      // Return specific error message from Firebase
-      return {
-        success: false,
-        error: error.message,
-      };
-    }
-
-    logger.error(
-      "CHANGE_PASSWORD",
-      "anonymous",
-      `Unknown error: ${String(error)}`
-    );
-
-    return {
-      success: false,
-      error: "Failed to change password. Please try again.",
-    };
-  }
+      if (typeof authService.changePassword === "function") {
+        try {
+          await authService.changePassword(
+            validated.currentPassword,
+            validated.newPassword
+          );
+          return {
+            success: true,
+            message: "Password changed successfully",
+          };
+        } catch (error) {
+          if (error instanceof Error) {
+            return {
+              success: false,
+              error: error.message,
+            };
+          }
+          throw error;
+        }
+      } else {
+        return {
+          success: false,
+          error: "Password change is not supported",
+        };
+      }
+    },
+    { errorMessage: "Failed to change password. Please try again." }
+  );
 }

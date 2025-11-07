@@ -4,77 +4,51 @@
  * This server action searches for users by email or name.
  * Used for adding employees to a business.
  *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses types from domain/repository instead of custom interfaces.
+ * Uses action-validator wrapper for consistent error handling.
+ *
  * @module actions/user
  */
 
 "use server";
 
-import { prisma } from "db";
+import { z } from "zod";
+import { SearchUsersUseCase } from "@/core/application/use-cases/user";
+import type { SearchUsersResult } from "@/core/application/use-cases/user";
+import { PrismaUserRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-export interface SearchUsersInput {
-  search: string;
-  limit?: number;
-}
+// Schema validation
+const searchUsersSchema = z.object({
+  search: z.string().min(1, "Search term is required"),
+  limit: z.number().int().positive().optional(),
+});
 
-export interface UserSearchResult {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  pictureFullPath: string | null;
-}
-
-type SearchUsersResult =
-  | { success: true; users: UserSearchResult[] }
-  | { success: false; error: string };
+export type SearchUsersInput = z.infer<typeof searchUsersSchema>;
 
 /**
  * Search for users by email or name
  *
- * @param data - Input with search term and optional limit
+ * @param input - Input with search term and optional limit
  * @returns Result object with matching users
  */
-export async function searchUsers(
-  data: SearchUsersInput
-): Promise<SearchUsersResult> {
-  try {
-    const { search, limit = 10 } = data;
+export async function searchUsers(input: unknown): Promise<SearchUsersResult> {
+  return validateAndExecute(
+    searchUsersSchema,
+    input,
+    async (validated) => {
+      const userRepository = new PrismaUserRepository();
+      const searchUsersUseCase = new SearchUsersUseCase(userRepository);
+      const result = await searchUsersUseCase.execute(validated);
 
-    if (!search || search.trim().length < 2) {
       return {
-        success: true,
-        users: [],
+        success: result.success,
+        users: result.users,
+        error: result.error,
       };
-    }
-
-    const users = await prisma.user.findMany({
-      where: {
-        OR: [
-          { email: { contains: search, mode: "insensitive" } },
-          { firstName: { contains: search, mode: "insensitive" } },
-          { lastName: { contains: search, mode: "insensitive" } },
-        ],
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        pictureFullPath: true,
-      },
-      take: limit,
-      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
-    });
-
-    return {
-      success: true,
-      users,
-    };
-  } catch (error) {
-    console.error("Error in searchUsers:", error);
-    return {
-      success: false,
-      error: "Failed to search users",
-    };
-  }
+    },
+    { errorMessage: "An unexpected error occurred while searching users" }
+  );
 }

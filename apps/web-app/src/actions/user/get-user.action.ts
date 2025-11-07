@@ -4,20 +4,28 @@
  * Fetches user data from PostgreSQL database by Firebase UID.
  * This is used after Firebase authentication to get the full user profile.
  *
- * REFACTORED: Now uses hexagonal architecture with use cases.
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/user
  */
 
 "use server";
 
+import { z } from "zod";
 import { UserProps } from "@/core/domain/entities/User";
 import { GetUserUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
+import { validateAndExecute } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the get user action
- */
+// Schema validation
+const getUserSchema = z.object({
+  userId: z.string().min(1, "User ID is required"),
+});
+
+export type GetUserInput = z.infer<typeof getUserSchema>;
+
 type GetUserResult =
   | { success: true; user: UserProps }
   | { success: false; error: string };
@@ -25,38 +33,30 @@ type GetUserResult =
 /**
  * Fetches user data from database by Firebase UID
  *
- * @param firebaseUid - The Firebase UID of the user
+ * @param input - Input with userId to fetch
  * @returns Result object with user data or error message
- *
- * @example
- * ```typescript
- * const result = await getUserById(firebaseUser.uid);
- *
- * if (result.success) {
- *   console.log('User data:', result.user);
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
-export async function getUserById(firebaseUid: string): Promise<GetUserResult> {
-  // Dependency injection: Create repository and use case
-  const userRepository = new PrismaUserRepository();
-  const getUserUseCase = new GetUserUseCase(userRepository);
+export async function getUserById(input: unknown): Promise<GetUserResult> {
+  return validateAndExecute(
+    getUserSchema,
+    input,
+    async (validated) => {
+      const userRepository = new PrismaUserRepository();
+      const getUserUseCase = new GetUserUseCase(userRepository);
+      const result = await getUserUseCase.execute({ id: validated.userId });
 
-  // Execute use case
-  const result = await getUserUseCase.execute({ id: firebaseUid });
+      if (result.success && result.user) {
+        return {
+          success: true,
+          user: result.user.toObject(),
+        };
+      }
 
-  // Return domain result directly
-  if (result.success && result.user) {
-    return {
-      success: true,
-      user: result.user.toObject(),
-    };
-  }
-
-  return {
-    success: false,
-    error: result.error || "User not found",
-  };
+      return {
+        success: false,
+        error: result.error || "User not found",
+      };
+    },
+    { errorMessage: "An unexpected error occurred while fetching user" }
+  );
 }

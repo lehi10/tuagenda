@@ -16,8 +16,8 @@ import { syncUserType } from "@/lib/auth/authorization";
 
 const updateUserAdminSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
-  type: z.nativeEnum(UserType).optional(),
-  status: z.nativeEnum(UserStatus).optional(),
+  type: z.enum(UserType).optional(),
+  status: z.enum(UserStatus).optional(),
 });
 
 export type UpdateUserAdminInput = z.infer<typeof updateUserAdminSchema>;
