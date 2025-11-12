@@ -5,10 +5,6 @@
  * after they successfully authenticate with Firebase. All new users are
  * created with the 'customer' type by default.
  *
- * REFACTORED: Uses hexagonal architecture with use cases.
- * Validation happens here, use case receives validated data.
- * Uses action-validator wrapper for consistent error handling.
- *
  * @module actions/user
  */
 
@@ -22,10 +18,10 @@ import { validateAndExecute } from "@/lib/utils/action-validator";
 // Schema validation for creating user from Firebase Auth
 const createUserFromAuthSchema = z.object({
   id: z.string().min(1, "Firebase UID is required"),
-  email: z.string().email("Invalid email format"),
+  email: z.email("Invalid email format"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string(), // Allow empty string for users with single name
-  pictureFullPath: z.string().url().nullish(),
+  pictureFullPath: z.url().nullish(),
 });
 
 export type CreateUserFromAuthInput = z.infer<typeof createUserFromAuthSchema>;
@@ -43,7 +39,7 @@ type CreateUserResult =
  * @param input - User data from Firebase Auth
  * @returns Result object with success status and user ID or error message
  */
-export async function createUserInDatabase(
+export async function createUserAction(
   input: unknown
 ): Promise<CreateUserResult> {
   return validateAndExecute(

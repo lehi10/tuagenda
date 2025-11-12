@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BusinessRole } from "@/core/domain/entities";
-import { searchUsers } from "@/actions/user";
+import { searchUsersAction } from "@/actions/user";
 import { useDebounce } from "@/hooks/use-debounce";
 
 const formSchema = z.object({
@@ -76,7 +76,7 @@ export function EmployeeDialog({
   const { data: searchResults, isLoading: searching } = useQuery({
     queryKey: ["user-search", debouncedSearch],
     queryFn: async () => {
-      const result = await searchUsers({ search: debouncedSearch });
+      const result = await searchUsersAction({ search: debouncedSearch });
       return result.success ? result.users : [];
     },
     enabled: !editData && debouncedSearch.length >= 2,

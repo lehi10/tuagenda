@@ -246,7 +246,7 @@ Ubicados en `src/actions/`, se utilizan para:
 "use server";
 import { prisma } from "@/lib/db/prisma";
 
-export async function getUserById(firebaseUid: string) {
+export async function getUserByIdAction(firebaseUid: string) {
   const user = await prisma.user.findUnique({
     where: { id: firebaseUid }
   });
@@ -281,7 +281,7 @@ export function getAuthService(): IAuthService {
 onAuthStateChanged(async (firebaseUser) => {
   if (firebaseUser) {
     // Cargar datos del usuario desde PostgreSQL
-    const result = await getUserById(firebaseUser.uid);
+    const result = await getUserByIdAction(firebaseUser.uid);
     setState({ user: result.user, loading: false });
   }
 });

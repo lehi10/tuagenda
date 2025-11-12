@@ -12,7 +12,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts";
-import { createUserInDatabase } from "@/actions/user";
+import { createUserAction } from "@/actions/user";
 import { toast } from "sonner";
 
 interface UseGoogleAuthOptions {
@@ -56,7 +56,7 @@ export function useGoogleAuth(options?: UseGoogleAuthOptions) {
       toast.loading(
         mode === "signup" ? "Saving your profile..." : "Syncing profile..."
       );
-      const dbResult = await createUserInDatabase({
+      const dbResult = await createUserAction({
         id: firebaseUser.uid,
         email: firebaseUser.email || "",
         firstName,

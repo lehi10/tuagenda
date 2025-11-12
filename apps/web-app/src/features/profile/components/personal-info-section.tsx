@@ -34,7 +34,7 @@ import {
   updateProfilePersonalInfoSchema,
   type UpdateProfilePersonalInfoInput,
 } from "@/lib/validations/user.schema";
-import { updateUserProfile } from "@/actions/user";
+import { updateUserProfileAction } from "@/actions/user";
 import { logger } from "@/lib/logger";
 import type { UserProps } from "@/core/domain/entities/User";
 
@@ -75,7 +75,10 @@ export function PersonalInfoSection({
     setIsLoading(true);
 
     try {
-      const result = await updateUserProfile({ userId: user.id, ...data });
+      const result = await updateUserProfileAction({
+        userId: user.id,
+        ...data,
+      });
 
       if (result.success) {
         toast.success(t.pages.profile.messages.profileUpdated);

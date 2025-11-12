@@ -41,7 +41,7 @@ type UpdateUserResult =
  * @param input - Input with userId and profile data to update
  * @returns Result object with success status or error message
  */
-export async function updateUserProfile(
+export async function updateUserProfileAction(
   input: unknown
 ): Promise<UpdateUserResult> {
   return validateAndExecute(

@@ -2,7 +2,7 @@
  * Update User Admin Action
  *
  * Admin action to update user type and status.
- * This is separate from updateUserProfile which only handles personal info.
+ * This is separate from updateUserProfileAction which only handles personal info.
  *
  * REFACTORED: Uses hexagonal architecture with use cases.
  * Validation happens here, use case receives validated data.

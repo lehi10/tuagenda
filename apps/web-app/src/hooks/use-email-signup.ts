@@ -12,7 +12,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts";
-import { createUserInDatabase } from "@/actions/user";
+import { createUserAction } from "@/actions/user";
 import { toast } from "sonner";
 
 interface UseEmailSignupOptions {
@@ -57,7 +57,7 @@ export function useEmailSignup(options?: UseEmailSignupOptions) {
       });
 
       toast.loading("Saving your profile...");
-      const dbResult = await createUserInDatabase({
+      const dbResult = await createUserAction({
         id: firebaseUser.uid,
         email: firebaseUser.email || data.email,
         firstName,

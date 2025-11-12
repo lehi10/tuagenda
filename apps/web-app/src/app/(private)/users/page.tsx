@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllUsers, updateUserAdmin, deleteUser } from "@/actions/user";
+import { getAllUsersAction, updateUserAdmin, deleteUser } from "@/actions/user";
 import type { UserListItem } from "@/actions/user/get-all-users.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -53,7 +53,7 @@ export default function UsersPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["users", debouncedSearch, typeFilter, statusFilter],
     queryFn: async () => {
-      const result = await getAllUsers({
+      const result = await getAllUsersAction({
         search: debouncedSearch || undefined,
         type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
         status:

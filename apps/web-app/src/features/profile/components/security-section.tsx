@@ -27,7 +27,7 @@ import {
   changePasswordSchema,
   type ChangePasswordInput,
 } from "@/lib/validations/user.schema";
-import { changePassword } from "@/actions/user/change-password.action";
+import { changePasswordAction } from "@/actions/user/change-password.action";
 import { logger } from "@/lib/logger";
 import { authService } from "@/lib/auth/auth-service";
 
@@ -57,7 +57,7 @@ export function SecuritySection() {
     setIsLoading(true);
 
     try {
-      const result = await changePassword(data);
+      const result = await changePasswordAction(data);
 
       if (result.success) {
         toast.success(t.pages.profile.messages.passwordChanged);

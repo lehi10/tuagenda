@@ -4,8 +4,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
-import { getUserById } from "@/actions/user/get-user.action";
-import { createUserInDatabase } from "@/actions/user/create-user.action";
+import { getUserByIdAction } from "@/actions/user/get-user.action";
+import { createUserAction } from "@/actions/user/create-user.action";
 import { logger } from "@/lib/logger";
 
 interface AuthContextValue extends AuthState {
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         try {
           // Try to get user from database using hexagonal architecture
-          const result = await getUserById({
+          const result = await getUserByIdAction({
             userId: firebaseUser.uid,
           });
           console.log("GetUserById result 2222:", result);
@@ -193,7 +193,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         `Creating user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
       );
 
-      const dbResult = await createUserInDatabase({
+      const dbResult = await createUserAction({
         id: firebaseUser.uid,
         email: firebaseUser.email || "",
         firstName,
@@ -236,7 +236,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const firebaseUser = await authService.signInWithGoogle();
 
       // Step 2: Check if user exists in database
-      const existingUser = await getUserById({
+      const existingUser = await getUserByIdAction({
         userId: firebaseUser.uid,
       });
 
@@ -253,7 +253,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           `Creating new user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
         );
 
-        const dbResult = await createUserInDatabase({
+        const dbResult = await createUserAction({
           id: firebaseUser.uid,
           email: firebaseUser.email || "",
           firstName,
@@ -345,7 +345,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Reload user data from database to get updated information
       const firebaseUser = authService.getCurrentUser();
       if (firebaseUser) {
-        const result = await getUserById({ userId: firebaseUser.uid });
+        const result = await getUserByIdAction({ userId: firebaseUser.uid });
         if (result.success) {
           setState((prev) => ({ ...prev, user: result.user }));
         }

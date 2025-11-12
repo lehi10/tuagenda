@@ -2,7 +2,7 @@
  * Get All Users Server Action
  *
  * This server action retrieves all users from the system with comprehensive filtering.
- * More complete than searchUsers - includes type, status, and pagination support.
+ * More complete than searchUsersAction - includes type, status, and pagination support.
  *
  * REFACTORED: Uses hexagonal architecture with use cases.
  * Validation happens here, use case receives validated data.
@@ -52,7 +52,7 @@ export interface GetAllUsersResult {
  * @param filters - Optional filters for search, type, status, pagination
  * @returns Result with users array and total count
  */
-export async function getAllUsers(
+export async function getAllUsersAction(
   filters?: unknown
 ): Promise<GetAllUsersResult> {
   return validateAndExecute(

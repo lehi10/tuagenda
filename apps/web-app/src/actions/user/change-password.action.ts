@@ -44,7 +44,7 @@ type ChangePasswordResult =
  * @param input - The password change data (current, new, confirm)
  * @returns Result object with success status or error message
  */
-export async function changePassword(
+export async function changePasswordAction(
   input: unknown
 ): Promise<ChangePasswordResult> {
   return validateAndExecute(

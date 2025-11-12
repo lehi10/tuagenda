@@ -8,9 +8,7 @@
  *
  * @module lib/utils/action-validator
  */
-
 import { z } from "zod";
-import { logger } from "../logger";
 
 export type ActionError = { success: false; error: string };
 

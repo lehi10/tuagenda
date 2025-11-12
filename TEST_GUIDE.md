@@ -37,7 +37,7 @@ pnpm dev
 ```
 signup-form.tsx
     ↓
-createUserInDatabase() [Server Action]
+createUserAction() [Server Action]
     ↓
 CreateUserUseCase.execute()
     ↓
@@ -70,7 +70,7 @@ use-google-auth.ts
     ↓
 Firebase Google OAuth
     ↓
-createUserInDatabase() [Mismo flujo]
+createUserAction() [Mismo flujo]
     ↓
 CreateUserUseCase
     ↓
@@ -101,7 +101,7 @@ PostgreSQL ✅
 ```
 AuthContext.tsx (en cada cambio de ruta)
     ↓
-getUserById() [Server Action]
+getUserByIdAction() [Server Action]
     ↓
 GetUserUseCase.execute()
     ↓
@@ -156,12 +156,12 @@ updatedAt: 2025-11-01T...
 3. Filtra por **Fetch/XHR**
 4. Haz signup/login
 5. Busca llamadas a:
-   - `createUserInDatabase`
-   - `getUserById`
+   - `createUserAction`
+   - `getUserByIdAction`
 
 ### Ejemplo de Request/Response:
 ```json
-// Request a createUserInDatabase
+// Request a createUserAction
 {
   "id": "firebase-uid-123",
   "email": "test@example.com",

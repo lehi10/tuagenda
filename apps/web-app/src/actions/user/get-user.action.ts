@@ -4,10 +4,6 @@
  * Fetches user data from PostgreSQL database by Firebase UID.
  * This is used after Firebase authentication to get the full user profile.
  *
- * REFACTORED: Uses hexagonal architecture with use cases.
- * Validation happens here, use case receives validated data.
- * Uses action-validator wrapper for consistent error handling.
- *
  * @module actions/user
  */
 
@@ -36,13 +32,16 @@ type GetUserResult =
  * @param input - Input with userId to fetch
  * @returns Result object with user data or error message
  */
-export async function getUserById(input: unknown): Promise<GetUserResult> {
+export async function getUserByIdAction(
+  input: unknown
+): Promise<GetUserResult> {
   return validateAndExecute(
     getUserSchema,
     input,
     async (validated) => {
       const userRepository = new PrismaUserRepository();
       const getUserUseCase = new GetUserUseCase(userRepository);
+
       const result = await getUserUseCase.execute({ id: validated.userId });
 
       if (result.success && result.user) {

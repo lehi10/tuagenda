@@ -4,11 +4,6 @@
  * This server action searches for users by email or name.
  * Used for adding employees to a business.
  *
- * REFACTORED: Uses hexagonal architecture with use cases.
- * Validation happens here, use case receives validated data.
- * Uses types from domain/repository instead of custom interfaces.
- * Uses action-validator wrapper for consistent error handling.
- *
  * @module actions/user
  */
 
@@ -34,13 +29,16 @@ export type SearchUsersInput = z.infer<typeof searchUsersSchema>;
  * @param input - Input with search term and optional limit
  * @returns Result object with matching users
  */
-export async function searchUsers(input: unknown): Promise<SearchUsersResult> {
+export async function searchUsersAction(
+  input: unknown
+): Promise<SearchUsersResult> {
   return validateAndExecute(
     searchUsersSchema,
     input,
     async (validated) => {
       const userRepository = new PrismaUserRepository();
       const searchUsersUseCase = new SearchUsersUseCase(userRepository);
+
       const result = await searchUsersUseCase.execute(validated);
 
       return {
