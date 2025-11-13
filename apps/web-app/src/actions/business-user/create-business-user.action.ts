@@ -9,7 +9,8 @@
 
 "use server";
 
-import { BusinessUserProps } from "@/core/domain/entities";
+import { z } from "zod";
+import { BusinessUserProps, BusinessRole } from "@/core/domain/entities";
 import {
   CreateBusinessUserUseCase,
   CreateBusinessUserInput,
@@ -18,10 +19,18 @@ import {
   PrismaBusinessUserRepository,
   PrismaUserRepository,
 } from "@/infrastructure/repositories";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the create business-user action
- */
+// Schema validation
+const createBusinessUserSchema = z.object({
+  businessId: z.number(),
+  role: z.nativeEnum(BusinessRole),
+});
+
+export type CreateBusinessUserActionInput = z.infer<
+  typeof createBusinessUserSchema
+>;
+
 type CreateBusinessUserResult =
   | { success: true; businessUser: BusinessUserProps }
   | { success: false; error: string };
@@ -29,50 +38,45 @@ type CreateBusinessUserResult =
 /**
  * Creates a new business-user relationship
  *
- * This function should be called to associate a user with a business.
- *
- * @param data - Business-user relationship data
+ * @param input - Business-user relationship data
  * @returns Result object with success status and business-user data or error message
- *
- * @example
- * ```typescript
- * const result = await createBusinessUser({
- *   userId: 'firebase-uid',
- *   businessId: 1,
- *   role: BusinessRole.EMPLOYEE,
- * });
- *
- * if (result.success) {
- *   console.log('BusinessUser created:', result.businessUser);
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function createBusinessUser(
-  data: CreateBusinessUserInput
+  input: unknown
 ): Promise<CreateBusinessUserResult> {
-  // Dependency injection: Create repository and use case
-  const businessUserRepository = new PrismaBusinessUserRepository();
-  const userRepository = new PrismaUserRepository();
-  const createBusinessUserUseCase = new CreateBusinessUserUseCase(
-    businessUserRepository,
-    userRepository
+  return validatePrivateAction(
+    createBusinessUserSchema,
+    input,
+    async (validated, userId) => {
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const userRepository = new PrismaUserRepository();
+      const createBusinessUserUseCase = new CreateBusinessUserUseCase(
+        businessUserRepository,
+        userRepository
+      );
+
+      const data: CreateBusinessUserInput = {
+        userId,
+        businessId: validated.businessId,
+        role: validated.role,
+      };
+
+      const result = await createBusinessUserUseCase.execute(data);
+
+      if (result.success && result.businessUser) {
+        return {
+          success: true,
+          businessUser: result.businessUser.toObject(),
+        };
+      }
+
+      return {
+        success: false,
+        error: result.error || "Failed to create business-user relationship",
+      };
+    },
+    {
+      errorMessage: "An unexpected error occurred while creating business-user",
+    }
   );
-
-  // Execute use case
-  const result = await createBusinessUserUseCase.execute(data);
-
-  // Return domain result directly
-  if (result.success && result.businessUser) {
-    return {
-      success: true,
-      businessUser: result.businessUser.toObject(),
-    };
-  }
-
-  return {
-    success: false,
-    error: result.error || "Failed to create business-user relationship",
-  };
 }

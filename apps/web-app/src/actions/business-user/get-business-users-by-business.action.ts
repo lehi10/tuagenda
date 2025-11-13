@@ -9,16 +9,25 @@
 
 "use server";
 
-import { BusinessUserProps } from "@/core/domain/entities";
+import { z } from "zod";
+import { BusinessUserProps, BusinessRole } from "@/core/domain/entities";
 import {
   GetBusinessUsersByBusinessUseCase,
   GetBusinessUsersByBusinessInput,
 } from "@/core/application/use-cases/business-user";
 import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the get business users by business action
- */
+// Schema validation
+const getBusinessUsersByBusinessSchema = z.object({
+  businessId: z.number(),
+  role: z.nativeEnum(BusinessRole).optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
+});
+
+export type GetBusinessUsersByBusinessActionInput = z.infer<typeof getBusinessUsersByBusinessSchema>;
+
 type GetBusinessUsersByBusinessResult =
   | { success: true; businessUsers: BusinessUserProps[] }
   | { success: false; error: string };
@@ -26,48 +35,35 @@ type GetBusinessUsersByBusinessResult =
 /**
  * Gets all users associated with a business
  *
- * This function should be called to retrieve the list of users in a business.
- *
- * @param data - Query parameters (businessId, optional filters)
+ * @param input - Query parameters (businessId, optional filters)
  * @returns Result object with success status and business-user list or error message
- *
- * @example
- * ```typescript
- * const result = await getBusinessUsersByBusiness({
- *   businessId: 1,
- *   role: BusinessRole.EMPLOYEE,
- *   limit: 10,
- *   offset: 0,
- * });
- *
- * if (result.success) {
- *   console.log('BusinessUsers:', result.businessUsers);
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function getBusinessUsersByBusiness(
-  data: GetBusinessUsersByBusinessInput
+  input: unknown
 ): Promise<GetBusinessUsersByBusinessResult> {
-  // Dependency injection: Create repository and use case
-  const businessUserRepository = new PrismaBusinessUserRepository();
-  const getBusinessUsersByBusinessUseCase =
-    new GetBusinessUsersByBusinessUseCase(businessUserRepository);
+  return validatePrivateAction(
+    getBusinessUsersByBusinessSchema,
+    input,
+    async (validated) => {
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const getBusinessUsersByBusinessUseCase =
+        new GetBusinessUsersByBusinessUseCase(businessUserRepository);
 
-  // Execute use case
-  const result = await getBusinessUsersByBusinessUseCase.execute(data);
+      const data: GetBusinessUsersByBusinessInput = validated;
+      const result = await getBusinessUsersByBusinessUseCase.execute(data);
 
-  // Return domain result directly
-  if (result.success && result.businessUsers) {
-    return {
-      success: true,
-      businessUsers: result.businessUsers.map((bu) => bu.toObject()),
-    };
-  }
+      if (result.success && result.businessUsers) {
+        return {
+          success: true,
+          businessUsers: result.businessUsers.map((bu) => bu.toObject()),
+        };
+      }
 
-  return {
-    success: false,
-    error: result.error || "Failed to get business users",
-  };
+      return {
+        success: false,
+        error: result.error || "Failed to get business users",
+      };
+    },
+    { errorMessage: "An unexpected error occurred while fetching business users" }
+  );
 }

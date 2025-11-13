@@ -16,7 +16,7 @@
 import { z } from "zod";
 import { UpdateUserUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const updateUserSchema = z.object({
@@ -44,7 +44,7 @@ type UpdateUserResult =
 export async function updateUserProfileAction(
   input: unknown
 ): Promise<UpdateUserResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     updateUserSchema,
     input,
     async (validated) => {

@@ -7,6 +7,7 @@ import { getUserByIdAction } from "@/actions/user/get-user.action";
 import { createUserAction } from "@/actions/user/create-user.action";
 import { parseFullName } from "@/lib/utils/name-parser";
 import { getAuthErrorMessage } from "@/lib/auth/errors";
+import { withAuth } from "@/lib/auth/with-auth";
 
 interface AuthContextValue extends AuthState {
   /**
@@ -81,7 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         try {
           // Get user from database
-          const result = await getUserByIdAction({
+          const result = await withAuth(getUserByIdAction, {
             userId: firebaseUser.uid,
           });
 
@@ -97,7 +98,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               firebaseUser.displayName || ""
             );
 
-            const createResult = await createUserAction({
+            const createResult = await withAuth(createUserAction, {
               id: firebaseUser.uid,
               email: firebaseUser.email || "",
               firstName,
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             if (createResult.success) {
               // Fetch the newly created user
-              const newUserResult = await getUserByIdAction({
+              const newUserResult = await withAuth(getUserByIdAction, {
                 userId: firebaseUser.uid,
               });
 
@@ -116,6 +117,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
                   user: newUserResult.user,
                   loading: false,
                   error: null,
+                });
+              } else {
+                setState({
+                  user: null,
+                  loading: false,
+                  error: new Error(newUserResult.error),
                 });
               }
             } else {
@@ -234,7 +241,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const firebaseUser = authService.getCurrentUser();
       if (firebaseUser) {
-        const result = await getUserByIdAction({ userId: firebaseUser.uid });
+        const result = await withAuth(getUserByIdAction, {
+          userId: firebaseUser.uid,
+        });
         if (result.success) {
           setState((prev) => ({ ...prev, user: result.user }));
         }

@@ -13,7 +13,7 @@
 import { z } from "zod";
 import { CreateUserUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation for creating user from Firebase Auth
 const createUserFromAuthSchema = z.object({
@@ -42,10 +42,18 @@ type CreateUserResult =
 export async function createUserAction(
   input: unknown
 ): Promise<CreateUserResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     createUserFromAuthSchema,
     input,
-    async (validated) => {
+    async (validated, userId) => {
+      // Security: Validate that the authenticated user ID matches the ID being created
+      if (validated.id !== userId) {
+        return {
+          success: false,
+          error: "Unauthorized: Cannot create user with different ID",
+        };
+      }
+
       const userRepository = new PrismaUserRepository();
       const createUserUseCase = new CreateUserUseCase(userRepository);
 

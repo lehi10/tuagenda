@@ -4,10 +4,6 @@
  * Creates a new business in the database.
  * This is used when creating a new business from the dashboard.
  *
- * REFACTORED: Uses hexagonal architecture with use cases.
- * Validation happens here, use case receives validated data.
- * Uses action-validator wrapper for consistent error handling.
- *
  * @module actions/business
  */
 
@@ -17,7 +13,7 @@ import { z } from "zod";
 import { BusinessProps } from "@/core/domain/entities/Business";
 import { CreateBusinessUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const createBusinessSchema = z.object({
@@ -58,7 +54,7 @@ type CreateBusinessResult =
 export async function createBusiness(
   input: unknown
 ): Promise<CreateBusinessResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     createBusinessSchema,
     input,
     async (validated) => {

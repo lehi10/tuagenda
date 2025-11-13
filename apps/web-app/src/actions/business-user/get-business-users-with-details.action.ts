@@ -9,8 +9,18 @@
 
 "use server";
 
+import { z } from "zod";
 import { prisma } from "db";
 import { BusinessRole } from "@/core/domain/entities";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
+
+// Schema validation
+const getBusinessUsersWithDetailsSchema = z.object({
+  businessId: z.number(),
+  search: z.string().optional(),
+});
+
+export type GetBusinessUsersWithDetailsActionInput = z.infer<typeof getBusinessUsersWithDetailsSchema>;
 
 export interface BusinessUserWithDetails {
   id: number;
@@ -29,11 +39,6 @@ export interface BusinessUserWithDetails {
   updatedAt: Date;
 }
 
-interface GetBusinessUsersWithDetailsInput {
-  businessId: number;
-  search?: string;
-}
-
 type GetBusinessUsersWithDetailsResult =
   | { success: true; businessUsers: BusinessUserWithDetails[] }
   | { success: false; error: string };
@@ -41,14 +46,18 @@ type GetBusinessUsersWithDetailsResult =
 /**
  * Gets all business users with their user details for a specific business
  *
- * @param data - Input with businessId and optional search term
+ * @param input - Input with businessId and optional search term
  * @returns Result object with business users including user details
  */
 export async function getBusinessUsersWithDetails(
-  data: GetBusinessUsersWithDetailsInput
+  input: unknown
 ): Promise<GetBusinessUsersWithDetailsResult> {
-  try {
-    const { businessId, search } = data;
+  return validatePrivateAction(
+    getBusinessUsersWithDetailsSchema,
+    input,
+    async (validated) => {
+      try {
+        const { businessId, search } = validated;
 
     const businessUsers = await prisma.businessUser.findMany({
       where: {
@@ -80,15 +89,17 @@ export async function getBusinessUsersWithDetails(
       orderBy: { createdAt: "desc" },
     });
 
-    return {
-      success: true,
-      businessUsers: businessUsers as BusinessUserWithDetails[],
-    };
-  } catch (error) {
-    console.error("Error in getBusinessUsersWithDetails:", error);
-    return {
-      success: false,
-      error: "Failed to fetch business users with details",
-    };
-  }
+        return {
+          success: true,
+          businessUsers: businessUsers as BusinessUserWithDetails[],
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: "Failed to fetch business users with details",
+        };
+      }
+    },
+    { errorMessage: "An unexpected error occurred while fetching business users with details" }
+  );
 }

@@ -16,7 +16,7 @@
 import { z } from "zod";
 import { DeleteBusinessUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const deleteBusinessSchema = z.object({
@@ -38,7 +38,7 @@ type DeleteBusinessResult =
 export async function deleteBusiness(
   input: unknown
 ): Promise<DeleteBusinessResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     deleteBusinessSchema,
     input,
     async (validated) => {

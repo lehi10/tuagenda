@@ -61,14 +61,18 @@ export function SignupForm({
     }
 
     try {
-      // Create user in Firebase and database
-      // All database operations are handled by auth context using hexagonal architecture
       toast.loading("Creating your account...");
+
+      // The signUp will trigger onAuthStateChanged which handles DB creation
       await signUp({
         email,
         password,
         displayName: fullName,
       });
+
+      // Wait for auth context to finish processing
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       toast.dismiss();
       toast.success("Account created successfully! 🎉");
 

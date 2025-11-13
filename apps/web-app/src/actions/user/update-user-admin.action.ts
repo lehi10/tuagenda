@@ -17,13 +17,13 @@ import { z } from "zod";
 import { UpdateUserAdminUseCase } from "@/core/application/use-cases/user";
 import { UserType, UserStatus } from "@/core/domain/entities/User";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const updateUserAdminSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
-  type: z.nativeEnum(UserType).optional(),
-  status: z.nativeEnum(UserStatus).optional(),
+  type: z.enum(UserType).optional(),
+  status: z.enum(UserStatus).optional(),
 });
 
 export interface UpdateUserAdminResult {
@@ -40,7 +40,7 @@ export interface UpdateUserAdminResult {
 export async function updateUserAdmin(
   input: unknown
 ): Promise<UpdateUserAdminResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     updateUserAdminSchema,
     input,
     async (validated) => {

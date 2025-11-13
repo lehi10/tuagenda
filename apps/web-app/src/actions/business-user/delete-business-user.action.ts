@@ -9,6 +9,7 @@
 
 "use server";
 
+import { z } from "zod";
 import {
   DeleteBusinessUserUseCase,
   DeleteBusinessUserInput,
@@ -17,10 +18,15 @@ import {
   PrismaBusinessUserRepository,
   PrismaUserRepository,
 } from "@/infrastructure/repositories";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
-/**
- * Result type for the delete business-user action
- */
+// Schema validation
+const deleteBusinessUserSchema = z.object({
+  id: z.number(),
+});
+
+export type DeleteBusinessUserActionInput = z.infer<typeof deleteBusinessUserSchema>;
+
 type DeleteBusinessUserResult =
   | { success: true }
   | { success: false; error: string };
@@ -28,45 +34,37 @@ type DeleteBusinessUserResult =
 /**
  * Deletes a business-user relationship
  *
- * This function should be called to remove a user from a business.
- *
- * @param data - Business-user relationship ID
+ * @param input - Business-user relationship ID
  * @returns Result object with success status or error message
- *
- * @example
- * ```typescript
- * const result = await deleteBusinessUser({ id: 1 });
- *
- * if (result.success) {
- *   console.log('BusinessUser deleted successfully');
- * } else {
- *   console.error('Error:', result.error);
- * }
- * ```
  */
 export async function deleteBusinessUser(
-  data: DeleteBusinessUserInput
+  input: unknown
 ): Promise<DeleteBusinessUserResult> {
-  // Dependency injection: Create repository and use case
-  const businessUserRepository = new PrismaBusinessUserRepository();
-  const userRepository = new PrismaUserRepository();
-  const deleteBusinessUserUseCase = new DeleteBusinessUserUseCase(
-    businessUserRepository,
-    userRepository
+  return validatePrivateAction(
+    deleteBusinessUserSchema,
+    input,
+    async (validated) => {
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const userRepository = new PrismaUserRepository();
+      const deleteBusinessUserUseCase = new DeleteBusinessUserUseCase(
+        businessUserRepository,
+        userRepository
+      );
+
+      const data: DeleteBusinessUserInput = validated;
+      const result = await deleteBusinessUserUseCase.execute(data);
+
+      if (result.success) {
+        return {
+          success: true,
+        };
+      }
+
+      return {
+        success: false,
+        error: result.error || "Failed to delete business-user relationship",
+      };
+    },
+    { errorMessage: "An unexpected error occurred while deleting business-user" }
   );
-
-  // Execute use case
-  const result = await deleteBusinessUserUseCase.execute(data);
-
-  // Return domain result directly
-  if (result.success) {
-    return {
-      success: true,
-    };
-  }
-
-  return {
-    success: false,
-    error: result.error || "Failed to delete business-user relationship",
-  };
 }

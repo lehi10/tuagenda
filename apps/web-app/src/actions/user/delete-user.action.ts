@@ -17,7 +17,7 @@ import { z } from "zod";
 import { DeleteUserUseCase } from "@/core/application/use-cases/user";
 import type { DeleteUserResult } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePublicAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const deleteUserSchema = z.object({
@@ -33,7 +33,7 @@ export type DeleteUserInput = z.infer<typeof deleteUserSchema>;
  * @returns Result with success status
  */
 export async function deleteUser(input: unknown): Promise<DeleteUserResult> {
-  return validateAndExecute(
+  return validatePublicAction(
     deleteUserSchema,
     input,
     async (validated) => {

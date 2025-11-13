@@ -23,7 +23,7 @@ import {
 } from "@/core/domain/entities/User";
 import { GetAllUsersUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const getAllUsersSchema = z.object({
@@ -55,7 +55,7 @@ export interface GetAllUsersResult {
 export async function getAllUsersAction(
   filters?: unknown
 ): Promise<GetAllUsersResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     getAllUsersSchema,
     filters || {},
     async (validated) => {

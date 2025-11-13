@@ -13,7 +13,7 @@ import { z } from "zod";
 import { UserProps } from "@/core/domain/entities/User";
 import { GetUserUseCase } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const getUserSchema = z.object({
@@ -35,7 +35,7 @@ type GetUserResult =
 export async function getUserByIdAction(
   input: unknown
 ): Promise<GetUserResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     getUserSchema,
     input,
     async (validated) => {

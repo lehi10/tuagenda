@@ -13,7 +13,7 @@ import { z } from "zod";
 import { SearchUsersUseCase } from "@/core/application/use-cases/user";
 import type { SearchUsersResult } from "@/core/application/use-cases/user";
 import { PrismaUserRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const searchUsersSchema = z.object({
@@ -32,7 +32,7 @@ export type SearchUsersInput = z.infer<typeof searchUsersSchema>;
 export async function searchUsersAction(
   input: unknown
 ): Promise<SearchUsersResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     searchUsersSchema,
     input,
     async (validated) => {

@@ -13,7 +13,8 @@ export const AUTH_ERRORS = {
   INVALID_EMAIL: "Correo electrónico inválido",
 
   // Google auth errors
-  POPUP_BLOCKED: "El popup fue bloqueado. Por favor permite popups para este sitio",
+  POPUP_BLOCKED:
+    "El popup fue bloqueado. Por favor permite popups para este sitio",
   POPUP_CLOSED: "Cerraste la ventana de autenticación",
 
   // Database errors
@@ -39,7 +40,10 @@ export function getAuthErrorMessage(error: unknown): string {
   if (message.includes("email-already-in-use")) {
     return AUTH_ERRORS.EMAIL_ALREADY_IN_USE;
   }
-  if (message.includes("invalid-credential") || message.includes("invalid-login-credentials")) {
+  if (
+    message.includes("invalid-credential") ||
+    message.includes("invalid-login-credentials")
+  ) {
     return AUTH_ERRORS.INVALID_CREDENTIALS;
   }
   if (message.includes("user-not-found")) {
@@ -57,7 +61,10 @@ export function getAuthErrorMessage(error: unknown): string {
   if (message.includes("popup-blocked")) {
     return AUTH_ERRORS.POPUP_BLOCKED;
   }
-  if (message.includes("popup-closed-by-user") || message.includes("cancelled-popup-request")) {
+  if (
+    message.includes("popup-closed-by-user") ||
+    message.includes("cancelled-popup-request")
+  ) {
     return AUTH_ERRORS.POPUP_CLOSED;
   }
   if (message.includes("network")) {

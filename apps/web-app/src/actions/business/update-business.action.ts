@@ -17,7 +17,7 @@ import { z } from "zod";
 import { BusinessProps } from "@/core/domain/entities/Business";
 import { UpdateBusinessUseCase } from "@/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const updateBusinessSchema = z.object({
@@ -59,7 +59,7 @@ type UpdateBusinessResult =
 export async function updateBusiness(
   input: unknown
 ): Promise<UpdateBusinessResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     updateBusinessSchema,
     input,
     async (validated) => {

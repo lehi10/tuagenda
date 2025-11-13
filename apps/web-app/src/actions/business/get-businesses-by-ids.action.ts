@@ -17,7 +17,7 @@ import { z } from "zod";
 import { BusinessProps } from "@/core/domain/entities";
 import { GetBusinessesByIdsUseCase } from "@/core/application/use-cases/business/GetBusinessesByIds";
 import { PrismaBusinessRepository } from "@/infrastructure/repositories";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const getBusinessesByIdsSchema = z.object({
@@ -41,7 +41,7 @@ type GetBusinessesByIdsResult =
 export async function getBusinessesByIds(
   input: unknown
 ): Promise<GetBusinessesByIdsResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     getBusinessesByIdsSchema,
     input,
     async (validated) => {

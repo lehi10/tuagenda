@@ -15,7 +15,7 @@
 
 import { z } from "zod";
 import { getAuthService } from "@/lib/auth/auth-service";
-import { validateAndExecute } from "@/lib/utils/action-validator";
+import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const changePasswordSchema = z
@@ -47,7 +47,7 @@ type ChangePasswordResult =
 export async function changePasswordAction(
   input: unknown
 ): Promise<ChangePasswordResult> {
-  return validateAndExecute(
+  return validatePrivateAction(
     changePasswordSchema,
     input,
     async (validated) => {
