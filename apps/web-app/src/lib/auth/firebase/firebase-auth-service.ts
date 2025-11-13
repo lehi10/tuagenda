@@ -19,6 +19,7 @@ import {
   EmailPasswordCredentials,
   SignUpCredentials,
 } from "../types";
+import { getAuthErrorMessage } from "../errors";
 
 /**
  * Firebase implementation of the AuthService
@@ -57,10 +58,7 @@ export class FirebaseAuthService implements IAuthService {
       }
       return authUser;
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Sign in failed: ${error.message}`);
-      }
-      throw new Error("Sign in failed: Unknown error");
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 
@@ -74,7 +72,6 @@ export class FirebaseAuthService implements IAuthService {
         credentials.password
       );
 
-      // Update profile with display name if provided
       if (credentials.displayName) {
         await firebaseUpdateProfile(userCredential.user, {
           displayName: credentials.displayName,
@@ -87,17 +84,13 @@ export class FirebaseAuthService implements IAuthService {
       }
       return authUser;
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Sign up failed: ${error.message}`);
-      }
-      throw new Error("Sign up failed: Unknown error");
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 
   async signInWithGoogle(): Promise<FirebaseUserData> {
     try {
       const provider = new GoogleAuthProvider();
-      // Optional: Add custom parameters
       provider.setCustomParameters({
         prompt: "select_account",
       });
@@ -109,10 +102,7 @@ export class FirebaseAuthService implements IAuthService {
       }
       return authUser;
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Google sign in failed: ${error.message}`);
-      }
-      throw new Error("Google sign in failed: Unknown error");
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 
@@ -120,10 +110,7 @@ export class FirebaseAuthService implements IAuthService {
     try {
       await firebaseSignOut(this.auth);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Sign out failed: ${error.message}`);
-      }
-      throw new Error("Sign out failed: Unknown error");
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 
@@ -144,10 +131,7 @@ export class FirebaseAuthService implements IAuthService {
     try {
       await firebaseSendPasswordReset(this.auth, email);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Password reset failed: ${error.message}`);
-      }
-      throw new Error("Password reset failed: Unknown error");
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 
@@ -162,17 +146,10 @@ export class FirebaseAuthService implements IAuthService {
       }
       await firebaseUpdateProfile(user, data);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`Profile update failed: ${error.message}`);
-      }
-      throw new Error("Profile update failed: Unknown error");
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 
-  /**
-   * Change user password
-   * Requires re-authentication with current password
-   */
   async changePassword(
     currentPassword: string,
     newPassword: string
@@ -183,27 +160,26 @@ export class FirebaseAuthService implements IAuthService {
         throw new Error("No user is currently signed in");
       }
 
-      // Re-authenticate user with current password
       const credential = EmailAuthProvider.credential(
         user.email,
         currentPassword
       );
       await reauthenticateWithCredential(user, credential);
-
-      // Update password
       await firebaseUpdatePassword(user, newPassword);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        // Handle specific Firebase errors
-        if (error.message.includes("wrong-password")) {
-          throw new Error("Current password is incorrect");
-        }
-        if (error.message.includes("weak-password")) {
-          throw new Error("New password is too weak");
-        }
-        throw new Error(`Password change failed: ${error.message}`);
+      throw new Error(getAuthErrorMessage(error));
+    }
+  }
+
+  async getIdToken(forceRefresh: boolean = false): Promise<string | null> {
+    try {
+      const user = this.auth.currentUser;
+      if (!user) {
+        return null;
       }
-      throw new Error("Password change failed: Unknown error");
+      return await user.getIdToken(forceRefresh);
+    } catch (error: unknown) {
+      throw new Error(getAuthErrorMessage(error));
     }
   }
 }

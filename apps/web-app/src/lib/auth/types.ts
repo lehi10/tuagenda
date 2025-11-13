@@ -112,4 +112,10 @@ export interface IAuthService {
     _currentPassword: string,
     _newPassword: string
   ): Promise<void>;
+
+  /**
+   * Get ID token for current user
+   * Token is used for authenticated server requests
+   */
+  getIdToken(_forceRefresh?: boolean): Promise<string | null>;
 }

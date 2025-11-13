@@ -1,12 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
 import { getUserByIdAction } from "@/actions/user/get-user.action";
 import { createUserAction } from "@/actions/user/create-user.action";
-import { logger } from "@/lib/logger";
+import { parseFullName } from "@/lib/utils/name-parser";
+import { getAuthErrorMessage } from "@/lib/auth/errors";
 
 interface AuthContextValue extends AuthState {
   /**
@@ -47,7 +47,16 @@ interface AuthContextValue extends AuthState {
     displayName?: string;
     photoURL?: string;
   }) => Promise<void>;
+
+  /**
+   * Get user auth providers
+   */
   getUserAuthProviders: () => string[] | undefined;
+
+  /**
+   * Get current user ID token for authenticated requests
+   */
+  getIdToken: (_forceRefresh?: boolean) => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -64,80 +73,67 @@ export function AuthProvider({ children }: AuthProviderProps) {
   });
 
   const authService = getAuthService();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Subscribe to auth state changes
     const unsubscribe = authService.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser) {
-        // User is authenticated - clear all queries before loading new data
-        logger.info(
-          "AUTH_CONTEXT",
-          firebaseUser.uid,
-          "User authenticated, clearing query cache"
-        );
-        queryClient.clear();
-
-        // Load data from database
         setState((prev) => ({ ...prev, loading: true }));
 
         try {
-          // Try to get user from database using hexagonal architecture
+          // Get user from database
           const result = await getUserByIdAction({
             userId: firebaseUser.uid,
           });
-          console.log("GetUserById result 2222:", result);
 
           if (result.success) {
-            // Successfully loaded user data from database
-            logger.info(
-              "AUTH_CONTEXT",
-              firebaseUser.uid,
-              "User data loaded from database"
-            );
             setState({
               user: result.user,
               loading: false,
               error: null,
             });
           } else {
-            // User not found in database after retries
-            logger.error(
-              "AUTH_CONTEXT",
-              firebaseUser.uid,
-              `User not found in database: ${result.error}`
+            // User not in database - create new user (Google first-time login)
+            const { firstName, lastName } = parseFullName(
+              firebaseUser.displayName || ""
             );
-            setState({
-              user: null,
-              loading: false,
-              error: new Error(
-                "User data not found in database. Please try logging in again."
-              ),
+
+            const createResult = await createUserAction({
+              id: firebaseUser.uid,
+              email: firebaseUser.email || "",
+              firstName,
+              lastName,
+              pictureFullPath: firebaseUser.photoURL,
             });
+
+            if (createResult.success) {
+              // Fetch the newly created user
+              const newUserResult = await getUserByIdAction({
+                userId: firebaseUser.uid,
+              });
+
+              if (newUserResult.success) {
+                setState({
+                  user: newUserResult.user,
+                  loading: false,
+                  error: null,
+                });
+              }
+            } else {
+              setState({
+                user: null,
+                loading: false,
+                error: new Error(createResult.error),
+              });
+            }
           }
         } catch (error) {
-          logger.error(
-            "AUTH_CONTEXT",
-            firebaseUser.uid,
-            `Error loading user data: ${error instanceof Error ? error.message : String(error)}`
-          );
           setState({
             user: null,
             loading: false,
-            error:
-              error instanceof Error
-                ? error
-                : new Error("Failed to load user data"),
+            error: new Error(getAuthErrorMessage(error)),
           });
         }
       } else {
-        // User is signed out or session expired - clear all queries and user data
-        logger.info(
-          "AUTH_CONTEXT",
-          "anonymous",
-          "User signed out, clearing query cache"
-        );
-        queryClient.clear();
         setState({
           user: null,
           loading: false,
@@ -146,9 +142,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, [authService, queryClient]);
+  }, [authService]);
 
   const signIn = async (credentials: {
     email: string;
@@ -157,12 +152,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       await authService.signInWithEmailAndPassword(credentials);
-      // User state will be updated by onAuthStateChanged
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error: error instanceof Error ? error : new Error("Sign in failed"),
+        error: new Error(getAuthErrorMessage(error)),
       }));
       throw error;
     }
@@ -175,54 +169,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      // Step 1: Create user in Firebase
       const firebaseUser =
         await authService.signUpWithEmailAndPassword(credentials);
-
-      // Step 2: Extract first and last name from displayName
-      const displayName = credentials.displayName || "";
-      const nameParts = displayName.trim().split(/\s+/);
-      const firstName = nameParts[0] || "User";
-      const lastName = nameParts.slice(1).join(" ") || "";
-
-      // Step 3: Create user in database using hexagonal architecture
-      logger.info(
-        "AUTH_CONTEXT.signUp",
-        firebaseUser.uid,
-        `Creating user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
-      );
-
-      const dbResult = await createUserAction({
-        id: firebaseUser.uid,
-        email: firebaseUser.email || "",
-        firstName,
-        lastName,
-        pictureFullPath: firebaseUser.photoURL,
-      });
-
-      if (!dbResult.success) {
-        logger.error(
-          "AUTH_CONTEXT.signUp",
-          firebaseUser.uid,
-          `Failed to create user in database: ${dbResult.error}`
-        );
-        throw new Error(`Failed to sync user data: ${dbResult.error}`);
-      }
-
-      logger.info(
-        "AUTH_CONTEXT.signUp",
-        dbResult.userId,
-        "User created successfully in database"
-      );
-
-      // User state will be updated by onAuthStateChanged
       return firebaseUser;
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error: error instanceof Error ? error : new Error("Sign up failed"),
+        error: new Error(getAuthErrorMessage(error)),
       }));
       throw error;
     }
@@ -231,66 +185,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signInWithGoogle = async (): Promise<FirebaseUserData> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      // Step 1: Authenticate with Google (Firebase)
       const firebaseUser = await authService.signInWithGoogle();
-
-      // Step 2: Check if user exists in database
-      const existingUser = await getUserByIdAction({
-        userId: firebaseUser.uid,
-      });
-
-      if (!existingUser.success) {
-        // Step 3: User doesn't exist, create in database using hexagonal architecture
-        const displayName = firebaseUser.displayName || "";
-        const nameParts = displayName.trim().split(/\s+/);
-        const firstName = nameParts[0] || "User";
-        const lastName = nameParts.slice(1).join(" ") || "";
-
-        logger.info(
-          "AUTH_CONTEXT.signInWithGoogle",
-          firebaseUser.uid,
-          `Creating new user in database - Email: ${firebaseUser.email}, Name: ${firstName} ${lastName}`
-        );
-
-        const dbResult = await createUserAction({
-          id: firebaseUser.uid,
-          email: firebaseUser.email || "",
-          firstName,
-          lastName,
-          pictureFullPath: firebaseUser.photoURL,
-        });
-
-        if (!dbResult.success) {
-          logger.error(
-            "AUTH_CONTEXT.signInWithGoogle",
-            firebaseUser.uid,
-            `Failed to create user in database: ${dbResult.error}`
-          );
-          throw new Error(`Failed to sync user data: ${dbResult.error}`);
-        }
-
-        logger.info(
-          "AUTH_CONTEXT.signInWithGoogle",
-          dbResult.userId,
-          "New user created successfully in database"
-        );
-      } else {
-        logger.info(
-          "AUTH_CONTEXT.signInWithGoogle",
-          firebaseUser.uid,
-          "Existing user found in database"
-        );
-      }
-
-      // User state will be updated by onAuthStateChanged
       return firebaseUser;
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error:
-          error instanceof Error ? error : new Error("Google sign in failed"),
+        error: new Error(getAuthErrorMessage(error)),
       }));
       throw error;
     }
@@ -299,22 +200,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = async (): Promise<void> => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      // Clear all queries before signing out
-      logger.info(
-        "AUTH_CONTEXT",
-        state.user?.id || "anonymous",
-        "Clearing query cache before sign out"
-      );
-      queryClient.clear();
-
       await authService.signOut();
-      // User state will be updated by onAuthStateChanged
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error: error instanceof Error ? error : new Error("Sign out failed"),
+        error: new Error(getAuthErrorMessage(error)),
       }));
       throw error;
     }
@@ -327,8 +218,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       setState((prev) => ({
         ...prev,
-        error:
-          error instanceof Error ? error : new Error("Password reset failed"),
+        error: new Error(getAuthErrorMessage(error)),
       }));
       throw error;
     }
@@ -342,7 +232,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setState((prev) => ({ ...prev, error: null }));
       await authService.updateProfile(data);
 
-      // Reload user data from database to get updated information
       const firebaseUser = authService.getCurrentUser();
       if (firebaseUser) {
         const result = await getUserByIdAction({ userId: firebaseUser.uid });
@@ -353,8 +242,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       setState((prev) => ({
         ...prev,
-        error:
-          error instanceof Error ? error : new Error("Profile update failed"),
+        error: new Error(getAuthErrorMessage(error)),
       }));
       throw error;
     }
@@ -363,6 +251,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const getUserAuthProviders = (): string[] | undefined => {
     const firebaseUser = authService.getCurrentUser();
     return firebaseUser?.providerData;
+  };
+
+  const getIdToken = async (forceRefresh?: boolean): Promise<string | null> => {
+    return authService.getIdToken(forceRefresh);
   };
 
   const value: AuthContextValue = {
@@ -374,6 +266,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     sendPasswordResetEmail,
     updateProfile,
     getUserAuthProviders,
+    getIdToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
