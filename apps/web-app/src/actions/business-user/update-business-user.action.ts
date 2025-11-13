@@ -24,7 +24,9 @@ const updateBusinessUserSchema = z.object({
   role: z.nativeEnum(BusinessRole),
 });
 
-export type UpdateBusinessUserActionInput = z.infer<typeof updateBusinessUserSchema>;
+export type UpdateBusinessUserActionInput = z.infer<
+  typeof updateBusinessUserSchema
+>;
 
 type UpdateBusinessUserResult =
   | { success: true; businessUser: BusinessUserProps }
@@ -63,6 +65,8 @@ export async function updateBusinessUser(
         error: result.error || "Failed to update business-user relationship",
       };
     },
-    { errorMessage: "An unexpected error occurred while updating business-user" }
+    {
+      errorMessage: "An unexpected error occurred while updating business-user",
+    }
   );
 }

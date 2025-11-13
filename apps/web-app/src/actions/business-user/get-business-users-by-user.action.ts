@@ -25,7 +25,9 @@ const getBusinessUsersByUserSchema = z.object({
   offset: z.number().optional(),
 });
 
-export type GetBusinessUsersByUserActionInput = z.infer<typeof getBusinessUsersByUserSchema>;
+export type GetBusinessUsersByUserActionInput = z.infer<
+  typeof getBusinessUsersByUserSchema
+>;
 
 type GetBusinessUsersByUserResult =
   | { success: true; businessUsers: BusinessUserProps[] }
@@ -68,6 +70,9 @@ export async function getBusinessUsersByUser(
         error: result.error || "Failed to get user businesses",
       };
     },
-    { errorMessage: "An unexpected error occurred while fetching user businesses" }
+    {
+      errorMessage:
+        "An unexpected error occurred while fetching user businesses",
+    }
   );
 }

@@ -25,7 +25,9 @@ const deleteBusinessUserSchema = z.object({
   id: z.number(),
 });
 
-export type DeleteBusinessUserActionInput = z.infer<typeof deleteBusinessUserSchema>;
+export type DeleteBusinessUserActionInput = z.infer<
+  typeof deleteBusinessUserSchema
+>;
 
 type DeleteBusinessUserResult =
   | { success: true }
@@ -65,6 +67,8 @@ export async function deleteBusinessUser(
         error: result.error || "Failed to delete business-user relationship",
       };
     },
-    { errorMessage: "An unexpected error occurred while deleting business-user" }
+    {
+      errorMessage: "An unexpected error occurred while deleting business-user",
+    }
   );
 }

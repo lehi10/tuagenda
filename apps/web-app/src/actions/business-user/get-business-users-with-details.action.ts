@@ -20,7 +20,9 @@ const getBusinessUsersWithDetailsSchema = z.object({
   search: z.string().optional(),
 });
 
-export type GetBusinessUsersWithDetailsActionInput = z.infer<typeof getBusinessUsersWithDetailsSchema>;
+export type GetBusinessUsersWithDetailsActionInput = z.infer<
+  typeof getBusinessUsersWithDetailsSchema
+>;
 
 export interface BusinessUserWithDetails {
   id: number;
@@ -59,35 +61,35 @@ export async function getBusinessUsersWithDetails(
       try {
         const { businessId, search } = validated;
 
-    const businessUsers = await prisma.businessUser.findMany({
-      where: {
-        businessId,
-        ...(search
-          ? {
-              user: {
-                OR: [
-                  { firstName: { contains: search, mode: "insensitive" } },
-                  { lastName: { contains: search, mode: "insensitive" } },
-                  { email: { contains: search, mode: "insensitive" } },
-                ],
-              },
-            }
-          : {}),
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            pictureFullPath: true,
-            phone: true,
+        const businessUsers = await prisma.businessUser.findMany({
+          where: {
+            businessId,
+            ...(search
+              ? {
+                  user: {
+                    OR: [
+                      { firstName: { contains: search, mode: "insensitive" } },
+                      { lastName: { contains: search, mode: "insensitive" } },
+                      { email: { contains: search, mode: "insensitive" } },
+                    ],
+                  },
+                }
+              : {}),
           },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                pictureFullPath: true,
+                phone: true,
+              },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        });
 
         return {
           success: true,
@@ -100,6 +102,9 @@ export async function getBusinessUsersWithDetails(
         };
       }
     },
-    { errorMessage: "An unexpected error occurred while fetching business users with details" }
+    {
+      errorMessage:
+        "An unexpected error occurred while fetching business users with details",
+    }
   );
 }
