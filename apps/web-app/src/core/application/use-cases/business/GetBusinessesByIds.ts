@@ -15,7 +15,7 @@ import { Business } from "@/core/domain/entities/Business";
 import { logger } from "@/lib/logger";
 
 export interface GetBusinessesByIdsInput {
-  ids: number[];
+  ids: string[];
 }
 
 export interface GetBusinessesByIdsResult {

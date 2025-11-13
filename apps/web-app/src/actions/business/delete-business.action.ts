@@ -20,7 +20,7 @@ import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const deleteBusinessSchema = z.object({
-  id: z.number().int().positive("Business ID must be a positive integer"),
+  id: z.string().uuid("Business ID must be a valid UUID"),
 });
 
 export type DeleteBusinessInput = z.infer<typeof deleteBusinessSchema>;

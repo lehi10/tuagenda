@@ -21,7 +21,7 @@ export class PrismaBusinessRepository implements IBusinessRepository {
   /**
    * Find a business by its ID
    */
-  async findById(id: number): Promise<Business | null> {
+  async findById(id: string): Promise<Business | null> {
     const prismaBusiness = await prisma.business.findUnique({
       where: { id },
     });
@@ -51,7 +51,7 @@ export class PrismaBusinessRepository implements IBusinessRepository {
   /**
    * Find multiple businesses by their IDs
    */
-  async findByIds(ids: number[]): Promise<Business[]> {
+  async findByIds(ids: string[]): Promise<Business[]> {
     const prismaBusinesses = await prisma.business.findMany({
       where: {
         id: {
@@ -157,7 +157,7 @@ export class PrismaBusinessRepository implements IBusinessRepository {
   /**
    * Delete a business by ID
    */
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await prisma.business.delete({
       where: { id },
     });
@@ -166,7 +166,7 @@ export class PrismaBusinessRepository implements IBusinessRepository {
   /**
    * Check if a business exists by ID
    */
-  async exists(id: number): Promise<boolean> {
+  async exists(id: string): Promise<boolean> {
     const count = await prisma.business.count({
       where: { id },
     });
@@ -177,7 +177,7 @@ export class PrismaBusinessRepository implements IBusinessRepository {
   /**
    * Check if a slug is already taken
    */
-  async slugExists(slug: string, excludeId?: number): Promise<boolean> {
+  async slugExists(slug: string, excludeId?: string): Promise<boolean> {
     const where: Prisma.BusinessWhereInput = {
       slug,
     };

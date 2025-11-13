@@ -2,7 +2,10 @@
  * Update BusinessUser Server Action
  *
  * This server action handles updating an existing business-user relationship.
- * It uses hexagonal architecture with use cases.
+ *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/business-user
  */
@@ -11,22 +14,17 @@
 
 import { z } from "zod";
 import { BusinessUserProps, BusinessRole } from "@/core/domain/entities";
-import {
-  UpdateBusinessUserUseCase,
-  UpdateBusinessUserInput,
-} from "@/core/application/use-cases/business-user";
+import { UpdateBusinessUserUseCase } from "@/core/application/use-cases/business-user";
 import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
 import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const updateBusinessUserSchema = z.object({
-  id: z.number(),
+  id: z.string().uuid("Business User ID must be a valid UUID"),
   role: z.nativeEnum(BusinessRole),
 });
 
-export type UpdateBusinessUserActionInput = z.infer<
-  typeof updateBusinessUserSchema
->;
+export type UpdateBusinessUserInput = z.infer<typeof updateBusinessUserSchema>;
 
 type UpdateBusinessUserResult =
   | { success: true; businessUser: BusinessUserProps }
@@ -50,8 +48,7 @@ export async function updateBusinessUser(
         businessUserRepository
       );
 
-      const data: UpdateBusinessUserInput = validated;
-      const result = await updateBusinessUserUseCase.execute(data);
+      const result = await updateBusinessUserUseCase.execute(validated);
 
       if (result.success && result.businessUser) {
         return {

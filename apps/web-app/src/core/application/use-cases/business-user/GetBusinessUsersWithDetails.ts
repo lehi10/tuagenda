@@ -15,7 +15,7 @@ import {
 import { logger } from "@/lib/logger";
 
 export interface GetBusinessUsersWithDetailsInput {
-  businessId: number;
+  businessId: string;
   search?: string;
 }
 

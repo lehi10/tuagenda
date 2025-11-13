@@ -14,9 +14,9 @@ export enum BusinessRole {
 }
 
 export interface BusinessUserProps {
-  id?: number;
+  id?: string;
   userId: string; // Firebase UID
-  businessId: number;
+  businessId: string;
   role: BusinessRole;
   createdAt?: Date;
   updatedAt?: Date;
@@ -29,9 +29,9 @@ export interface BusinessUserProps {
  * Contains business rules and validations.
  */
 export class BusinessUser {
-  private _id?: number;
+  private _id?: string;
   private readonly _userId: string;
-  private readonly _businessId: number;
+  private readonly _businessId: string;
   private _role: BusinessRole;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
@@ -41,8 +41,8 @@ export class BusinessUser {
     if (!props.userId || props.userId.trim() === "") {
       throw new Error("User ID is required");
     }
-    if (!props.businessId || props.businessId <= 0) {
-      throw new Error("Business ID must be a positive number");
+    if (!props.businessId || props.businessId.trim() === "") {
+      throw new Error("Business ID is required");
     }
     if (!props.role) {
       throw new Error("Role is required");
@@ -57,7 +57,7 @@ export class BusinessUser {
   }
 
   // Getters
-  get id(): number | undefined {
+  get id(): string | undefined {
     return this._id;
   }
 
@@ -65,7 +65,7 @@ export class BusinessUser {
     return this._userId;
   }
 
-  get businessId(): number {
+  get businessId(): string {
     return this._businessId;
   }
 

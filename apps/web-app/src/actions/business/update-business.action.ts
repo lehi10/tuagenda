@@ -21,7 +21,7 @@ import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const updateBusinessSchema = z.object({
-  id: z.number().int().positive("Business ID must be a positive integer"),
+  id: z.string().uuid("Business ID must be a valid UUID"),
   title: z.string().min(1).optional(),
   slug: z.string().min(1).optional(),
   domain: z.string().optional(),

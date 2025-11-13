@@ -16,7 +16,7 @@ export interface IBusinessRepository {
    * @param id - Business ID
    * @returns Business entity or null if not found
    */
-  findById(_id: number): Promise<Business | null>;
+  findById(_id: string): Promise<Business | null>;
 
   /**
    * Find a business by its slug
@@ -30,7 +30,7 @@ export interface IBusinessRepository {
    * @param ids - Array of business IDs
    * @returns Array of Business entities
    */
-  findByIds(_ids: number[]): Promise<Business[]>;
+  findByIds(_ids: string[]): Promise<Business[]>;
 
   /**
    * Find all businesses with optional filtering
@@ -58,14 +58,14 @@ export interface IBusinessRepository {
    * @param id - Business ID to delete
    * @returns void
    */
-  delete(_id: number): Promise<void>;
+  delete(_id: string): Promise<void>;
 
   /**
    * Check if a business exists by ID
    * @param id - Business ID
    * @returns true if business exists, false otherwise
    */
-  exists(_id: number): Promise<boolean>;
+  exists(_id: string): Promise<boolean>;
 
   /**
    * Check if a slug is already taken
@@ -73,7 +73,7 @@ export interface IBusinessRepository {
    * @param excludeId - Optional ID to exclude from check (for updates)
    * @returns true if slug exists, false otherwise
    */
-  slugExists(_slug: string, _excludeId?: number): Promise<boolean>;
+  slugExists(_slug: string, _excludeId?: string): Promise<boolean>;
 
   /**
    * Count total businesses with optional filters

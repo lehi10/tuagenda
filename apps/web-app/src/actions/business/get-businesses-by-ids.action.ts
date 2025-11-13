@@ -22,7 +22,7 @@ import { validatePrivateAction } from "@/lib/utils/action-validator";
 // Schema validation
 const getBusinessesByIdsSchema = z.object({
   ids: z
-    .array(z.number().int().positive())
+    .array(z.string().uuid("Each ID must be a valid UUID"))
     .min(1, "At least one ID is required"),
 });
 

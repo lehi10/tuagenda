@@ -4,6 +4,10 @@
  * This server action handles creating a new business-user relationship.
  * It uses hexagonal architecture with use cases.
  *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
+ *
  * @module actions/business-user
  */
 
@@ -11,10 +15,7 @@
 
 import { z } from "zod";
 import { BusinessUserProps, BusinessRole } from "@/core/domain/entities";
-import {
-  CreateBusinessUserUseCase,
-  CreateBusinessUserInput,
-} from "@/core/application/use-cases/business-user";
+import { CreateBusinessUserUseCase } from "@/core/application/use-cases/business-user";
 import {
   PrismaBusinessUserRepository,
   PrismaUserRepository,
@@ -23,13 +24,11 @@ import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const createBusinessUserSchema = z.object({
-  businessId: z.number(),
+  businessId: z.string().uuid("Business ID must be a valid UUID"),
   role: z.nativeEnum(BusinessRole),
 });
 
-export type CreateBusinessUserActionInput = z.infer<
-  typeof createBusinessUserSchema
->;
+export type CreateBusinessUserInput = z.infer<typeof createBusinessUserSchema>;
 
 type CreateBusinessUserResult =
   | { success: true; businessUser: BusinessUserProps }
@@ -55,13 +54,11 @@ export async function createBusinessUser(
         userRepository
       );
 
-      const data: CreateBusinessUserInput = {
+      const result = await createBusinessUserUseCase.execute({
         userId,
         businessId: validated.businessId,
         role: validated.role,
-      };
-
-      const result = await createBusinessUserUseCase.execute(data);
+      });
 
       if (result.success && result.businessUser) {
         return {

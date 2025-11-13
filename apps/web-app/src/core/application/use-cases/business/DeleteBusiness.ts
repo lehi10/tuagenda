@@ -2,7 +2,7 @@ import { IBusinessRepository } from "@/core/domain/repositories/IBusinessReposit
 import { logger } from "@/lib/logger";
 
 export interface DeleteBusinessInput {
-  id: number;
+  id: string;
 }
 
 export interface DeleteBusinessResult {

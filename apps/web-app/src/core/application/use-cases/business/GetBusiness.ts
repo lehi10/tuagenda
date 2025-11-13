@@ -3,7 +3,7 @@ import { Business } from "@/core/domain/entities/Business";
 import { logger } from "@/lib/logger";
 
 export interface GetBusinessInput {
-  id: number;
+  id: string;
 }
 
 export interface GetBusinessResult {

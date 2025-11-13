@@ -3,7 +3,7 @@ import { Business } from "@/core/domain/entities/Business";
 import { logger } from "@/lib/logger";
 
 export interface UpdateBusinessInput {
-  id: number;
+  id: string;
   title?: string;
   slug?: string;
   description?: string | null;

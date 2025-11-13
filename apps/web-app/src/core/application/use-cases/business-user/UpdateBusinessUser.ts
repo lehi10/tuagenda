@@ -19,7 +19,7 @@ import { logger } from "@/lib/logger";
 import { syncUserRole } from "@/lib/auth/authorization";
 
 export interface UpdateBusinessUserInput {
-  id: number;
+  id: string;
   role: BusinessRole;
 }
 

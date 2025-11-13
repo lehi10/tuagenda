@@ -4,42 +4,33 @@
  * This server action retrieves business users with full user information.
  * It combines BusinessUser data with User data for displaying employee lists.
  *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
+ *
  * @module actions/business-user
  */
 
 "use server";
 
 import { z } from "zod";
-import { prisma } from "db";
-import { BusinessRole } from "@/core/domain/entities";
+import { GetBusinessUsersWithDetailsUseCase } from "@/core/application/use-cases/business-user";
+import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
 import { validatePrivateAction } from "@/lib/utils/action-validator";
+import { BusinessUserWithDetails as IBusinessUserWithDetails } from "@/core/domain/repositories/IBusinessUserRepository";
+
+// Re-export the type for consumers
+export type BusinessUserWithDetails = IBusinessUserWithDetails;
 
 // Schema validation
 const getBusinessUsersWithDetailsSchema = z.object({
-  businessId: z.number(),
+  businessId: z.string().uuid("Business ID must be a valid UUID"),
   search: z.string().optional(),
 });
 
-export type GetBusinessUsersWithDetailsActionInput = z.infer<
+export type GetBusinessUsersWithDetailsInput = z.infer<
   typeof getBusinessUsersWithDetailsSchema
 >;
-
-export interface BusinessUserWithDetails {
-  id: number;
-  userId: string;
-  businessId: number;
-  role: BusinessRole;
-  user: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    pictureFullPath: string | null;
-    phone: string | null;
-  };
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 type GetBusinessUsersWithDetailsResult =
   | { success: true; businessUsers: BusinessUserWithDetails[] }
@@ -58,49 +49,24 @@ export async function getBusinessUsersWithDetails(
     getBusinessUsersWithDetailsSchema,
     input,
     async (validated) => {
-      try {
-        const { businessId, search } = validated;
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const getBusinessUsersWithDetailsUseCase =
+        new GetBusinessUsersWithDetailsUseCase(businessUserRepository);
 
-        const businessUsers = await prisma.businessUser.findMany({
-          where: {
-            businessId,
-            ...(search
-              ? {
-                  user: {
-                    OR: [
-                      { firstName: { contains: search, mode: "insensitive" } },
-                      { lastName: { contains: search, mode: "insensitive" } },
-                      { email: { contains: search, mode: "insensitive" } },
-                    ],
-                  },
-                }
-              : {}),
-          },
-          include: {
-            user: {
-              select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                pictureFullPath: true,
-                phone: true,
-              },
-            },
-          },
-          orderBy: { createdAt: "desc" },
-        });
+      const result =
+        await getBusinessUsersWithDetailsUseCase.execute(validated);
 
+      if (result.success && result.businessUsers) {
         return {
           success: true,
-          businessUsers: businessUsers as BusinessUserWithDetails[],
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: "Failed to fetch business users with details",
+          businessUsers: result.businessUsers,
         };
       }
+
+      return {
+        success: false,
+        error: result.error || "Failed to fetch business users with details",
+      };
     },
     {
       errorMessage:

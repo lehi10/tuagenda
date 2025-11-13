@@ -2,7 +2,10 @@
  * Get BusinessUsers By User Server Action
  *
  * This server action handles retrieving all businesses associated with a user.
- * It uses hexagonal architecture with use cases.
+ *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/business-user
  */
@@ -11,10 +14,7 @@
 
 import { z } from "zod";
 import { BusinessUserProps, BusinessRole } from "@/core/domain/entities";
-import {
-  GetBusinessUsersByUserUseCase,
-  GetBusinessUsersByUserInput,
-} from "@/core/application/use-cases/business-user";
+import { GetBusinessUsersByUserUseCase } from "@/core/application/use-cases/business-user";
 import { PrismaBusinessUserRepository } from "@/infrastructure/repositories";
 import { validatePrivateAction } from "@/lib/utils/action-validator";
 
@@ -25,7 +25,7 @@ const getBusinessUsersByUserSchema = z.object({
   offset: z.number().optional(),
 });
 
-export type GetBusinessUsersByUserActionInput = z.infer<
+export type GetBusinessUsersByUserInput = z.infer<
   typeof getBusinessUsersByUserSchema
 >;
 
@@ -51,12 +51,10 @@ export async function getBusinessUsersByUser(
         businessUserRepository
       );
 
-      const data: GetBusinessUsersByUserInput = {
+      const result = await getBusinessUsersByUserUseCase.execute({
         userId,
         ...validated,
-      };
-
-      const result = await getBusinessUsersByUserUseCase.execute(data);
+      });
 
       if (result.success && result.businessUsers) {
         return {

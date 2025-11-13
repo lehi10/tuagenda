@@ -22,7 +22,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
   /**
    * Find a business-user relationship by ID
    */
-  async findById(id: number): Promise<BusinessUser | null> {
+  async findById(id: string): Promise<BusinessUser | null> {
     const prismaBusinessUser = await prisma.businessUser.findUnique({
       where: { id },
     });
@@ -39,7 +39,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
    */
   async findByUserAndBusiness(
     userId: string,
-    businessId: number
+    businessId: string
   ): Promise<BusinessUser | null> {
     const prismaBusinessUser = await prisma.businessUser.findUnique({
       where: {
@@ -61,7 +61,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
    * Find all users associated with a business
    */
   async findByBusiness(
-    businessId: number,
+    businessId: string,
     filters?: BusinessUserRepositoryFilters
   ): Promise<BusinessUser[]> {
     const where: Prisma.BusinessUserWhereInput = {
@@ -137,7 +137,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
   /**
    * Delete a business-user relationship by ID
    */
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await prisma.businessUser.delete({
       where: { id },
     });
@@ -148,7 +148,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
    */
   async deleteByUserAndBusiness(
     userId: string,
-    businessId: number
+    businessId: string
   ): Promise<void> {
     await prisma.businessUser.delete({
       where: {
@@ -163,7 +163,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
   /**
    * Check if a business-user relationship exists
    */
-  async exists(userId: string, businessId: number): Promise<boolean> {
+  async exists(userId: string, businessId: string): Promise<boolean> {
     const count = await prisma.businessUser.count({
       where: {
         userId,
@@ -188,7 +188,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
   /**
    * Get all managers for a business
    */
-  async findManagersByBusiness(businessId: number): Promise<BusinessUser[]> {
+  async findManagersByBusiness(businessId: string): Promise<BusinessUser[]> {
     const prismaBusinessUsers = await prisma.businessUser.findMany({
       where: {
         businessId,
@@ -203,7 +203,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
   /**
    * Get all employees for a business
    */
-  async findEmployeesByBusiness(businessId: number): Promise<BusinessUser[]> {
+  async findEmployeesByBusiness(businessId: string): Promise<BusinessUser[]> {
     const prismaBusinessUsers = await prisma.businessUser.findMany({
       where: {
         businessId,
@@ -219,7 +219,7 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
    * Find business users with full user details
    */
   async findByBusinessWithUserDetails(
-    businessId: number,
+    businessId: string,
     search?: string
   ): Promise<BusinessUserWithDetails[]> {
     const businessUsers = await prisma.businessUser.findMany({

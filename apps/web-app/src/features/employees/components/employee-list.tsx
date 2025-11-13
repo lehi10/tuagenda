@@ -49,7 +49,7 @@ export function EmployeeList() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editData, setEditData] = useState<
     | {
-        id: number;
+        id: string;
         userId: string;
         role: BusinessRole;
         firstName: string;
@@ -58,7 +58,7 @@ export function EmployeeList() {
     | undefined
   >();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -90,7 +90,7 @@ export function EmployeeList() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: { id: number; role: BusinessRole }) => {
+    mutationFn: async (data: { id: string; role: BusinessRole }) => {
       return await updateBusinessUser({
         id: data.id,
         role: data.role,
@@ -102,7 +102,7 @@ export function EmployeeList() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       return await deleteBusinessUser({ id });
     },
     onSuccess: () => {
@@ -129,7 +129,7 @@ export function EmployeeList() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setDeleteId(id);
     setDeleteDialogOpen(true);
   };

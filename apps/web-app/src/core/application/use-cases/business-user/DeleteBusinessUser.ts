@@ -16,7 +16,7 @@ import { logger } from "@/lib/logger";
 import { syncUserRole, syncUserType } from "@/lib/auth/authorization";
 
 export interface DeleteBusinessUserInput {
-  id: number;
+  id: string;
 }
 
 export interface DeleteBusinessUserResult {

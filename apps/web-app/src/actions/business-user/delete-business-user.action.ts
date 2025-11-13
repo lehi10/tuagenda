@@ -2,7 +2,10 @@
  * Delete BusinessUser Server Action
  *
  * This server action handles deleting a business-user relationship.
- * It uses hexagonal architecture with use cases.
+ *
+ * REFACTORED: Uses hexagonal architecture with use cases.
+ * Validation happens here, use case receives validated data.
+ * Uses action-validator wrapper for consistent error handling.
  *
  * @module actions/business-user
  */
@@ -10,10 +13,7 @@
 "use server";
 
 import { z } from "zod";
-import {
-  DeleteBusinessUserUseCase,
-  DeleteBusinessUserInput,
-} from "@/core/application/use-cases/business-user";
+import { DeleteBusinessUserUseCase } from "@/core/application/use-cases/business-user";
 import {
   PrismaBusinessUserRepository,
   PrismaUserRepository,
@@ -22,12 +22,10 @@ import { validatePrivateAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const deleteBusinessUserSchema = z.object({
-  id: z.number(),
+  id: z.string().uuid("Business User ID must be a valid UUID"),
 });
 
-export type DeleteBusinessUserActionInput = z.infer<
-  typeof deleteBusinessUserSchema
->;
+export type DeleteBusinessUserInput = z.infer<typeof deleteBusinessUserSchema>;
 
 type DeleteBusinessUserResult =
   | { success: true }
@@ -53,8 +51,7 @@ export async function deleteBusinessUser(
         userRepository
       );
 
-      const data: DeleteBusinessUserInput = validated;
-      const result = await deleteBusinessUserUseCase.execute(data);
+      const result = await deleteBusinessUserUseCase.execute(validated);
 
       if (result.success) {
         return {

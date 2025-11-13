@@ -21,7 +21,7 @@ import { validatePublicAction } from "@/lib/utils/action-validator";
 
 // Schema validation
 const getBusinessSchema = z.object({
-  id: z.number().int().positive("Business ID must be a positive integer"),
+  id: z.string().uuid("Business ID must be a valid UUID"),
 });
 
 export type GetBusinessInput = z.infer<typeof getBusinessSchema>;

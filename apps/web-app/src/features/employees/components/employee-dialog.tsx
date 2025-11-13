@@ -47,7 +47,7 @@ interface EmployeeDialogProps {
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: FormValues) => Promise<void>;
   editData?: {
-    id: number;
+    id: string;
     userId: string;
     role: BusinessRole;
     firstName: string;

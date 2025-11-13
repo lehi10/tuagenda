@@ -61,7 +61,7 @@ interface BusinessContextValue extends BusinessState {
   /**
    * Set the current business by ID
    */
-  setCurrentBusiness: (businessId: number) => void;
+  setCurrentBusiness: (businessId: string) => void;
 
   /**
    * Refresh business data
@@ -101,7 +101,7 @@ const STORAGE_KEY = "current-business-id";
 export function BusinessProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [currentBusinessId, setCurrentBusinessId] = useState<number | null>(
+  const [currentBusinessId, setCurrentBusinessId] = useState<string | null>(
     null
   );
 
@@ -112,7 +112,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== "undefined") {
       const savedId = localStorage.getItem(STORAGE_KEY);
       if (savedId) {
-        setCurrentBusinessId(parseInt(savedId, 10));
+        setCurrentBusinessId(savedId);
       }
     }
   }, []);
@@ -241,14 +241,13 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== "undefined") {
         const savedId = localStorage.getItem(STORAGE_KEY);
         if (savedId) {
-          const parsedId = parseInt(savedId, 10);
-          const savedBusiness = businesses.find((b) => b.id === parsedId);
+          const savedBusiness = businesses.find((b) => b.id === savedId);
           if (savedBusiness) {
-            setCurrentBusinessId(parsedId);
+            setCurrentBusinessId(savedId);
             logger.info(
               "BusinessContext",
               user?.id || "system",
-              `Restored saved business: ${parsedId}`
+              `Restored saved business: ${savedId}`
             );
             return;
           }
@@ -298,7 +297,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
   const currentBusiness =
     businesses.find((b) => b.id === currentBusinessId) || null;
 
-  const setCurrentBusiness = (businessId: number) => {
+  const setCurrentBusiness = (businessId: string) => {
     const business = businesses.find((b) => b.id === businessId);
 
     if (!business) {

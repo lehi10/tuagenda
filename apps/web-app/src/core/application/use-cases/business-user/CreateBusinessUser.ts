@@ -22,7 +22,7 @@ import { syncUserRole, syncUserType } from "@/lib/auth/authorization";
 
 export interface CreateBusinessUserInput {
   userId: string;
-  businessId: number;
+  businessId: string;
   role: BusinessRole;
 }
 

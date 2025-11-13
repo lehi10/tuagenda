@@ -16,7 +16,7 @@ export interface IBusinessUserRepository {
    * @param id - BusinessUser ID
    * @returns BusinessUser entity or null if not found
    */
-  findById(_id: number): Promise<BusinessUser | null>;
+  findById(_id: string): Promise<BusinessUser | null>;
 
   /**
    * Find a business-user relationship by user and business IDs
@@ -26,7 +26,7 @@ export interface IBusinessUserRepository {
    */
   findByUserAndBusiness(
     _userId: string,
-    _businessId: number
+    _businessId: string
   ): Promise<BusinessUser | null>;
 
   /**
@@ -36,7 +36,7 @@ export interface IBusinessUserRepository {
    * @returns Array of BusinessUser entities
    */
   findByBusiness(
-    _businessId: number,
+    _businessId: string,
     _filters?: BusinessUserRepositoryFilters
   ): Promise<BusinessUser[]>;
 
@@ -70,7 +70,7 @@ export interface IBusinessUserRepository {
    * @param id - BusinessUser ID to delete
    * @returns void
    */
-  delete(_id: number): Promise<void>;
+  delete(_id: string): Promise<void>;
 
   /**
    * Delete a business-user relationship by user and business IDs
@@ -78,7 +78,7 @@ export interface IBusinessUserRepository {
    * @param businessId - Business ID
    * @returns void
    */
-  deleteByUserAndBusiness(_userId: string, _businessId: number): Promise<void>;
+  deleteByUserAndBusiness(_userId: string, _businessId: string): Promise<void>;
 
   /**
    * Check if a business-user relationship exists
@@ -86,7 +86,7 @@ export interface IBusinessUserRepository {
    * @param businessId - Business ID
    * @returns true if relationship exists, false otherwise
    */
-  exists(_userId: string, _businessId: number): Promise<boolean>;
+  exists(_userId: string, _businessId: string): Promise<boolean>;
 
   /**
    * Count total business-user relationships with optional filters
@@ -100,14 +100,14 @@ export interface IBusinessUserRepository {
    * @param businessId - Business ID
    * @returns Array of BusinessUser entities with MANAGER role
    */
-  findManagersByBusiness(_businessId: number): Promise<BusinessUser[]>;
+  findManagersByBusiness(_businessId: string): Promise<BusinessUser[]>;
 
   /**
    * Get all employees for a business
    * @param businessId - Business ID
    * @returns Array of BusinessUser entities with EMPLOYEE role
    */
-  findEmployeesByBusiness(_businessId: number): Promise<BusinessUser[]>;
+  findEmployeesByBusiness(_businessId: string): Promise<BusinessUser[]>;
 
   /**
    * Find business users with full user details (for display purposes)
@@ -116,7 +116,7 @@ export interface IBusinessUserRepository {
    * @returns Array of BusinessUser entities with populated user data
    */
   findByBusinessWithUserDetails(
-    _businessId: number,
+    _businessId: string,
     _search?: string
   ): Promise<BusinessUserWithDetails[]>;
 }
@@ -137,9 +137,9 @@ export interface BusinessUserRepositoryFilters {
  * Used for displaying employee lists with user information
  */
 export interface BusinessUserWithDetails {
-  id: number;
+  id: string;
   userId: string;
-  businessId: number;
+  businessId: string;
   role: BusinessRole;
   user: {
     id: string;

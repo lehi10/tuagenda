@@ -14,7 +14,7 @@ export enum BusinessStatus {
 }
 
 export interface BusinessProps {
-  id?: number;
+  id?: string;
   title: string;
   slug: string;
   domain?: string | null;
@@ -46,7 +46,7 @@ export interface BusinessProps {
  * Contains business rules and validations.
  */
 export class Business {
-  private _id?: number;
+  private _id?: string;
   private _title: string;
   private _slug: string;
   private _domain: string | null;
@@ -129,7 +129,7 @@ export class Business {
   }
 
   // Getters
-  get id(): number | undefined {
+  get id(): string | undefined {
     return this._id;
   }
 

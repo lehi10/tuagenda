@@ -92,13 +92,13 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
       setIsEditDialogOpen(true);
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
       if (!confirm(t.pages.business.actions.confirmDelete)) {
         return;
       }
 
       try {
-        const result = await deleteBusiness(id);
+        const result = await deleteBusiness({ id });
 
         if (result.success) {
           toast.success("Negocio eliminado exitosamente");
