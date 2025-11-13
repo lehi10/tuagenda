@@ -15,7 +15,7 @@ interface PageProps {
 
 async function BookingContent({ slug }: { slug: string }) {
   // Fetch business data on the server
-  const result = await getBusinessBySlug(slug);
+  const result = await getBusinessBySlug({ slug });
 
   // Redirect to 404 if business not found
   if (!result.success || !result.business) {

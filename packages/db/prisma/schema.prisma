@@ -71,10 +71,13 @@ model Business {
   updatedAt   DateTime       @updatedAt
 
   // Relaciones
-  businessUsers     BusinessUser[]
-  serviceCategories ServiceCategory[]
-  services          Service[]
-  appointments      Appointment[]
+  businessUsers        BusinessUser[]
+  serviceCategories    ServiceCategory[]
+  services             Service[]
+  appointments         Appointment[]
+  employeeServices     EmployeeService[]
+  employeeAvailability EmployeeAvailability[]
+  employeeExceptions   EmployeeException[]
 
   @@map("business")
 }
@@ -127,6 +130,7 @@ model BusinessUser {
 
   // Índice único: un usuario solo puede tener un rol por negocio
   @@unique([userId, businessId])
+  @@unique([id, businessId])
   @@map("business_users")
 }
 
@@ -188,6 +192,7 @@ model Service {
   appointments     Appointment[]
   employeeServices EmployeeService[]
 
+  @@unique([id, businessId])
   @@map("services")
 }
 
@@ -198,12 +203,14 @@ model Service {
 model EmployeeService {
   businessUserId String   @map("business_user_id") @db.Uuid
   serviceId      String   @map("service_id") @db.Uuid
+  businessId     String   @map("business_id") @db.Uuid
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relaciones
-  businessUser BusinessUser @relation(fields: [businessUserId], references: [id], onDelete: Cascade)
-  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId, businessId], references: [id, businessId], onDelete: Cascade)
+  service      Service      @relation(fields: [serviceId, businessId], references: [id, businessId], onDelete: Cascade)
 
   @@id([businessUserId, serviceId])
   @@map("employee_services")
@@ -216,6 +223,7 @@ model EmployeeService {
 model EmployeeAvailability {
   id             String   @id @default(uuid()) @db.Uuid
   businessUserId String   @map("business_user_id") @db.Uuid
+  businessId     String   @map("business_id") @db.Uuid
   dayOfWeek      Int      @map("day_of_week") @db.SmallInt
   startTime      DateTime @map("start_time") @db.Time
   endTime        DateTime @map("end_time") @db.Time
@@ -223,7 +231,8 @@ model EmployeeAvailability {
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relaciones
-  businessUser BusinessUser @relation(fields: [businessUserId], references: [id], onDelete: Cascade)
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId, businessId], references: [id, businessId], onDelete: Cascade)
 
   // Evitar horarios duplicados para el mismo empleado, día y hora
   @@unique([businessUserId, dayOfWeek, startTime])
@@ -238,6 +247,7 @@ model EmployeeAvailability {
 model EmployeeException {
   id             String    @id @default(uuid()) @db.Uuid
   businessUserId String    @map("business_user_id") @db.Uuid
+  businessId     String    @map("business_id") @db.Uuid
   date           DateTime  @db.Date
   isAllDay       Boolean   @default(true) @map("is_all_day")
   startTime      DateTime? @map("start_time") @db.Time // Solo si isAllDay = false
@@ -248,7 +258,8 @@ model EmployeeException {
   updatedAt      DateTime  @updatedAt @map("updated_at")
 
   // Relaciones
-  businessUser BusinessUser @relation(fields: [businessUserId], references: [id], onDelete: Cascade)
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId, businessId], references: [id, businessId], onDelete: Cascade)
 
   // Índice para queries (sin unique constraint, permite múltiples excepciones por día)
   @@index([businessUserId, date])
@@ -273,11 +284,11 @@ model Appointment {
   createdAt              DateTime          @default(now()) @map("created_at")
   updatedAt              DateTime          @updatedAt @map("updated_at")
 
-  // Relaciones
-  customer             User?         @relation("CustomerAppointments", fields: [customerId], references: [id])
-  providerBusinessUser BusinessUser? @relation("ProviderAppointments", fields: [providerBusinessUserId], references: [id])
-  business             Business      @relation(fields: [businessId], references: [id])
-  service              Service       @relation(fields: [serviceId], references: [id])
+  // Relaciones con FKs compuestas para garantizar integridad cross-business
+  customer             User?         @relation("CustomerAppointments", fields: [customerId], references: [id], onDelete: SetNull)
+  providerBusinessUser BusinessUser? @relation("ProviderAppointments", fields: [providerBusinessUserId, businessId], references: [id, businessId], onDelete: SetNull)
+  business             Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  service              Service       @relation(fields: [serviceId, businessId], references: [id, businessId], onDelete: Restrict)
 
   @@index([businessId])
   @@index([serviceId])

@@ -447,6 +447,7 @@ async function main() {
           data: {
             businessUserId: employee.id,
             serviceId: businessServices[i].id,
+            businessId: employee.businessId,
           },
         });
         console.log(`✅ Servicio asignado a empleado`);
@@ -470,6 +471,7 @@ async function main() {
         await prisma.employeeAvailability.create({
           data: {
             businessUserId: employee.id,
+            businessId: employee.businessId,
             dayOfWeek: day,
             startTime: new Date("2024-01-01T09:00:00Z"),
             endTime: new Date("2024-01-01T18:00:00Z"),
@@ -499,6 +501,7 @@ async function main() {
       await prisma.employeeException.create({
         data: {
           businessUserId: employees[0].id,
+          businessId: employees[0].businessId,
           date: futureDate1,
           isAllDay: true,
           isAvailable: false,
@@ -515,6 +518,7 @@ async function main() {
       await prisma.employeeException.create({
         data: {
           businessUserId: employees[0].id,
+          businessId: employees[0].businessId,
           date: futureDate2,
           isAllDay: false,
           startTime: new Date("2024-01-01T14:00:00Z"),
@@ -533,6 +537,7 @@ async function main() {
       await prisma.employeeException.create({
         data: {
           businessUserId: employees[1].id,
+          businessId: employees[1].businessId,
           date: futureDate2,
           isAllDay: false,
           startTime: new Date("2024-01-01T18:00:00Z"),
