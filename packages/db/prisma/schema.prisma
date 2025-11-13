@@ -75,7 +75,6 @@ model Business {
   serviceCategories ServiceCategory[]
   services          Service[]
   appointments      Appointment[]
-  employees         Employee[]
 
   @@map("business")
 }
@@ -98,25 +97,33 @@ model User {
   updatedAt       DateTime   @updatedAt
 
   // Relaciones
-  businessUsers        BusinessUser[]
-  employees            Employee[]
-  appointmentsProvider Appointment[]  @relation("ProviderAppointments")
+  businessUsers          BusinessUser[]
+  appointmentsAsCustomer Appointment[]  @relation("CustomerAppointments")
 
   @@map("users")
 }
 
 // Tabla intermedia para la relación N:N entre User y Business
+// Fusionada con Employee para eliminar redundancia
 model BusinessUser {
-  id         String       @id @default(uuid()) @db.Uuid
-  userId     String       @map("user_id")
-  businessId String       @map("business_id") @db.Uuid
-  role       BusinessRole
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @map("user_id")
+  businessId  String       @map("business_id") @db.Uuid
+  role        BusinessRole
+  displayName String?      @map("display_name") @db.Text // Ej: "Dr. Juan", "Lic. María"
+  isActive    Boolean      @default(true) @map("is_active")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
   // Relaciones N:1 hacia User y Business
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  // Relaciones operacionales (para usuarios con role=EMPLOYEE)
+  employeeServices       EmployeeService[]
+  employeeAvailability   EmployeeAvailability[]
+  employeeExceptions     EmployeeException[]
+  appointmentsAsProvider Appointment[]          @relation("ProviderAppointments")
 
   // Índice único: un usuario solo puede tener un rol por negocio
   @@unique([userId, businessId])
@@ -155,6 +162,8 @@ model ServiceCategory {
   business Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
   services Service[]
 
+  // Evitar categorías duplicadas en el mismo negocio
+  @@unique([businessId, name])
   @@map("service_categories")
 }
 
@@ -183,79 +192,66 @@ model Service {
 }
 
 // -----------------------------------------------------
-// Empleados
-// -----------------------------------------------------
-model Employee {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @map("user_id")
-  businessId String   @map("business_id") @db.Uuid
-  name       String?  @db.Text
-  isActive   Boolean  @default(true) @map("is_active")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
-  // Relaciones
-  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  business             Business               @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  employeeServices     EmployeeService[]
-  employeeAvailability EmployeeAvailability[]
-  employeeExceptions   EmployeeException[]
-
-  @@unique([userId, businessId])
-  @@map("employees")
-}
-
-// -----------------------------------------------------
-// Tabla intermedia: Empleados-Servicios (N:M)
+// Tabla intermedia: BusinessUser-Servicios (N:M)
+// Solo para usuarios con role=EMPLOYEE
 // -----------------------------------------------------
 model EmployeeService {
-  employeeId String   @map("employee_id") @db.Uuid
-  serviceId  String   @map("service_id") @db.Uuid
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  businessUserId String   @map("business_user_id") @db.Uuid
+  serviceId      String   @map("service_id") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relaciones
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  service  Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId], references: [id], onDelete: Cascade)
+  service      Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  @@id([employeeId, serviceId])
+  @@id([businessUserId, serviceId])
   @@map("employee_services")
 }
 
 // -----------------------------------------------------
-// Disponibilidad de Empleados (horarios semanales)
+// Disponibilidad de BusinessUser (horarios semanales)
+// Solo para usuarios con role=EMPLOYEE
 // -----------------------------------------------------
 model EmployeeAvailability {
-  id          String   @id @default(uuid()) @db.Uuid
-  employeeId  String   @map("employee_id") @db.Uuid
-  dayOfWeek   Int      @map("day_of_week") @db.SmallInt
-  startTime   DateTime @map("start_time") @db.Time
-  endTime     DateTime @map("end_time") @db.Time
-  isRecurring Boolean  @default(true) @map("is_recurring")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             String   @id @default(uuid()) @db.Uuid
+  businessUserId String   @map("business_user_id") @db.Uuid
+  dayOfWeek      Int      @map("day_of_week") @db.SmallInt
+  startTime      DateTime @map("start_time") @db.Time
+  endTime        DateTime @map("end_time") @db.Time
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relaciones
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId], references: [id], onDelete: Cascade)
 
+  // Evitar horarios duplicados para el mismo empleado, día y hora
+  @@unique([businessUserId, dayOfWeek, startTime])
   @@map("employee_availabilities")
 }
 
 // -----------------------------------------------------
-// Excepciones de Empleados (vacaciones, bloqueos, etc.)
+// Excepciones de BusinessUser (vacaciones, bloqueos, etc.)
+// Solo para usuarios con role=EMPLOYEE
+// Soporta excepciones de todo el día o por horas específicas
 // -----------------------------------------------------
 model EmployeeException {
-  id          String   @id @default(uuid()) @db.Uuid
-  employeeId  String   @map("employee_id") @db.Uuid
-  date        DateTime @db.Date
-  isAvailable Boolean  @map("is_available")
-  reason      String?  @db.Text
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             String    @id @default(uuid()) @db.Uuid
+  businessUserId String    @map("business_user_id") @db.Uuid
+  date           DateTime  @db.Date
+  isAllDay       Boolean   @default(true) @map("is_all_day")
+  startTime      DateTime? @map("start_time") @db.Time // Solo si isAllDay = false
+  endTime        DateTime? @map("end_time") @db.Time // Solo si isAllDay = false
+  isAvailable    Boolean   @default(false) @map("is_available") // false = bloqueado, true = disponible excepcionalmente
+  reason         String?   @db.Text
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
   // Relaciones
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId], references: [id], onDelete: Cascade)
 
+  // Índice para queries (sin unique constraint, permite múltiples excepciones por día)
+  @@index([businessUserId, date])
   @@map("employee_exceptions")
 }
 
@@ -263,27 +259,30 @@ model EmployeeException {
 // Citas/Reservas
 // -----------------------------------------------------
 model Appointment {
-  id         String            @id @default(uuid()) @db.Uuid
-  providerId String?           @map("provider_id")
-  businessId String            @map("business_id") @db.Uuid
-  serviceId  String            @map("service_id") @db.Uuid
-  startTime  DateTime          @map("start_time")
-  endTime    DateTime          @map("end_time")
-  isGroup    Boolean           @default(false) @map("is_group")
-  capacity   Int?
-  status     AppointmentStatus @default(scheduled)
-  notes      String?           @db.Text
-  createdAt  DateTime          @default(now()) @map("created_at")
-  updatedAt  DateTime          @updatedAt @map("updated_at")
+  id                     String            @id @default(uuid()) @db.Uuid
+  customerId             String?           @map("customer_id") // Cliente que reserva
+  providerBusinessUserId String?           @map("provider_business_user_id") @db.Uuid // Empleado que da el servicio
+  businessId             String            @map("business_id") @db.Uuid
+  serviceId              String            @map("service_id") @db.Uuid
+  startTime              DateTime          @map("start_time")
+  endTime                DateTime          @map("end_time")
+  isGroup                Boolean           @default(false) @map("is_group")
+  capacity               Int?
+  status                 AppointmentStatus @default(scheduled)
+  notes                  String?           @db.Text
+  createdAt              DateTime          @default(now()) @map("created_at")
+  updatedAt              DateTime          @updatedAt @map("updated_at")
 
   // Relaciones
-  provider User?    @relation("ProviderAppointments", fields: [providerId], references: [id])
-  business Business @relation(fields: [businessId], references: [id])
-  service  Service  @relation(fields: [serviceId], references: [id])
+  customer             User?         @relation("CustomerAppointments", fields: [customerId], references: [id])
+  providerBusinessUser BusinessUser? @relation("ProviderAppointments", fields: [providerBusinessUserId], references: [id])
+  business             Business      @relation(fields: [businessId], references: [id])
+  service              Service       @relation(fields: [serviceId], references: [id])
 
   @@index([businessId])
   @@index([serviceId])
-  @@index([providerId])
+  @@index([customerId])
+  @@index([providerBusinessUserId])
   @@index([status])
   @@map("appointments")
 }
