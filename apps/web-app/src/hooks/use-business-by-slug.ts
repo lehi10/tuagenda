@@ -8,7 +8,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { getBusinessBySlug } from "@/actions/business";
+import { getBusinessBySlug } from "@/server/api/business";
 import { BusinessProps } from "@/core/domain/entities/Business";
 
 interface UseBusinessBySlugOptions {

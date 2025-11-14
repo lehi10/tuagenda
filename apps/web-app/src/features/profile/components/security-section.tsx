@@ -27,7 +27,7 @@ import {
   changePasswordSchema,
   type ChangePasswordInput,
 } from "@/lib/validations/user.schema";
-import { changePasswordAction } from "@/actions/user/change-password.action";
+import { changePasswordAction } from "@/server/api/user/change-password.action";
 import { logger } from "@/lib/logger";
 import { authService } from "@/lib/auth/auth-service";
 

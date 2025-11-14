@@ -37,7 +37,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { UserType, UserStatus } from "@/core/domain/entities/User";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
-import type { UserListItem } from "@/actions/user/get-all-users.action";
+import type { UserListItem } from "@/server/api/user/get-all-users.action";
 
 const editUserSchema = z.object({
   type: z.nativeEnum(UserType),

@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { checkPermission } from "@/actions/authorization/check-permission.action";
+import { checkPermission } from "@/server/api/authorization/check-permission.action";
 import { Resource, Action } from "auth";
 
 interface UsePermissionOptions {

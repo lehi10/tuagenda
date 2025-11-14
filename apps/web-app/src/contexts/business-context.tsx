@@ -3,8 +3,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "./auth-context";
-import { getBusinessUsersByUser } from "@/actions/business-user";
-import { listBusinesses } from "@/actions/business";
+import { getBusinessUsersByUser } from "@/server/api/business-user";
+import { listBusinesses } from "@/server/api/business";
 import {
   BusinessProps,
   BusinessRole,

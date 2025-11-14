@@ -3,8 +3,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthState, FirebaseUserData } from "@/lib/auth/types";
 import { getAuthService } from "@/lib/auth/auth-service";
-import { getUserByIdAction } from "@/actions/user/get-user.action";
-import { createUserAction } from "@/actions/user/create-user.action";
+import { getUserByIdAction } from "@/server/api/user/get-user.action";
+import { createUserAction } from "@/server/api/user/create-user.action";
 import { parseFullName } from "@/lib/utils/name-parser";
 import { getAuthErrorMessage } from "@/lib/auth/errors";
 import { withAuth } from "@/lib/auth/with-auth";

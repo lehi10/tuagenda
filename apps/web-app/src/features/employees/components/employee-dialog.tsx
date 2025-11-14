@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BusinessRole } from "@/core/domain/entities";
-import { searchUsersAction } from "@/actions/user";
+import { searchUsersAction } from "@/server/api/user";
 import { useDebounce } from "@/hooks/use-debounce";
 
 const formSchema = z.object({

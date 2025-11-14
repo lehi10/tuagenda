@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllUsersAction, updateUserAdmin, deleteUser } from "@/actions/user";
-import type { UserListItem } from "@/actions/user/get-all-users.action";
+import { getAllUsersAction, updateUserAdmin, deleteUser } from "@/server/api/user";
+import type { UserListItem } from "@/server/api/user/get-all-users.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

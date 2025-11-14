@@ -40,7 +40,7 @@ import {
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
 import { BusinessProps } from "@/core/domain/entities/Business";
-import { listBusinesses, deleteBusiness } from "@/actions/business";
+import { listBusinesses, deleteBusiness } from "@/server/api/business";
 import { useBusiness } from "@/contexts";
 
 const ITEMS_PER_PAGE = 10;

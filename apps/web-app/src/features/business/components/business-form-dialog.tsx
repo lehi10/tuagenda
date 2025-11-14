@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { BusinessProps } from "@/core/domain/entities/Business";
-import { createBusiness, updateBusiness } from "@/actions/business";
+import { createBusiness, updateBusiness } from "@/server/api/business";
 
 interface BusinessFormDialogProps {
   open: boolean;

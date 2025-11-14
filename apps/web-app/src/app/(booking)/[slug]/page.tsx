@@ -5,7 +5,7 @@ import { PublicFooter } from "@/components/public-footer";
 import { BookingHeader } from "@/components/booking/booking-header";
 import { BookingPageSkeleton } from "@/components/booking/booking-page-skeleton";
 import { BookingFlow } from "@/components/booking/booking-flow";
-import { getBusinessBySlug } from "@/actions/business";
+import { getBusinessBySlug } from "@/server/api/business";
 
 interface PageProps {
   params: Promise<{

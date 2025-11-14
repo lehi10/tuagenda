@@ -26,7 +26,7 @@ import {
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
 import { UserType, UserStatus } from "@/core/domain/entities/User";
-import type { UserListItem } from "@/actions/user/get-all-users.action";
+import type { UserListItem } from "@/server/api/user/get-all-users.action";
 
 interface UsersTableProps {
   users: UserListItem[];

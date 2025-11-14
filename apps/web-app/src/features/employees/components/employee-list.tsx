@@ -29,12 +29,12 @@ import { useBusiness } from "@/contexts";
 import {
   getBusinessUsersWithDetails,
   BusinessUserWithDetails,
-} from "@/actions/business-user/get-business-users-with-details.action";
+} from "@/server/api/business-user/get-business-users-with-details.action";
 import {
   createBusinessUser,
   updateBusinessUser,
   deleteBusinessUser,
-} from "@/actions/business-user";
+} from "@/server/api/business-user";
 import { BusinessRole } from "@/core/domain/entities";
 import { EmployeeDialog } from "./employee-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
