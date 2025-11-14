@@ -1,0 +1,399 @@
+"use client";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "./auth-context";
+import { getBusinessUsersByUser } from "@/server/api/business-user";
+import { listBusinesses } from "@/server/api/business";
+import {
+  BusinessProps,
+  BusinessRole,
+  BusinessUserProps,
+  UserType,
+} from "@/core/domain/entities";
+import { logger } from "@/lib/logger";
+
+/**
+ * Business context state
+ */
+interface BusinessState {
+  /**
+   * Currently selected business
+   */
+  currentBusiness: BusinessProps | null;
+
+  /**
+   * Current user's relationship with the business (role, etc.)
+   * Only available for regular users, null for superadmins
+   */
+  currentBusinessUser: BusinessUserProps | null;
+
+  /**
+   * All businesses accessible to the user
+   * - For superadmins: all businesses in the system
+   * - For regular users: only businesses they're associated with
+   */
+  businesses: BusinessProps[];
+
+  /**
+   * All business-user relationships for the current user
+   * Empty array for superadmins
+   */
+  businessUsers: BusinessUserProps[];
+
+  /**
+   * Whether the user is a superadmin (has access to all businesses)
+   */
+  isSuperAdmin: boolean;
+
+  /**
+   * Whether data is being loaded
+   */
+  loading: boolean;
+
+  /**
+   * Error if any occurred
+   */
+  error: Error | null;
+}
+
+interface BusinessContextValue extends BusinessState {
+  /**
+   * Set the current business by ID
+   */
+  setCurrentBusiness: (businessId: string) => void;
+
+  /**
+   * Refresh business data
+   */
+  refreshBusinesses: () => Promise<void>;
+
+  /**
+   * Check if user is a manager in the current business
+   * Always returns false for superadmins
+   */
+  isManager: () => boolean;
+
+  /**
+   * Check if user is an employee in the current business
+   * Always returns false for superadmins
+   */
+  isEmployee: () => boolean;
+}
+
+const BusinessContext = createContext<BusinessContextValue | undefined>(
+  undefined
+);
+
+const STORAGE_KEY = "current-business-id";
+
+/**
+ * Business Provider
+ *
+ * Manages the current business and user's role in that business.
+ * Uses TanStack Query for data fetching and caching.
+ * Persists selected business to localStorage.
+ *
+ * Supports two modes:
+ * - Regular users: Fetch only businesses they're associated with via business_users
+ * - Superadmins: Fetch all businesses in the system
+ */
+export function BusinessProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [currentBusinessId, setCurrentBusinessId] = useState<string | null>(
+    null
+  );
+
+  const isSuperAdmin = user?.type === UserType.SUPERADMIN;
+
+  // Load saved business ID from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedId = localStorage.getItem(STORAGE_KEY);
+      if (savedId) {
+        setCurrentBusinessId(savedId);
+      }
+    }
+  }, []);
+
+  // QUERY 1: Fetch business-user relationships (only for regular users)
+  const {
+    data: businessUsersData,
+    isLoading: isLoadingBusinessUsers,
+    error: businessUsersError,
+    refetch: refetchBusinessUsers,
+  } = useQuery({
+    queryKey: ["business-users", user?.id],
+    queryFn: async () => {
+      if (!user?.id) {
+        throw new Error("User not authenticated");
+      }
+
+      logger.info(
+        "BusinessContext",
+        user.id,
+        "Fetching business-user relationships"
+      );
+
+      const result = await getBusinessUsersByUser({
+        userId: user.id,
+      });
+
+      if (!result.success) {
+        throw new Error(
+          result.error || "Failed to fetch business relationships"
+        );
+      }
+
+      logger.info(
+        "BusinessContext",
+        user.id,
+        `Found ${result.businessUsers.length} business relationships`
+      );
+
+      return result.businessUsers;
+    },
+    enabled: !!user?.id && !isSuperAdmin, // Only for non-superadmins
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
+
+  const businessUsers = businessUsersData || [];
+
+  // QUERY 2: Fetch businesses
+  // - For superadmins: all businesses
+  // - For regular users: businesses by IDs from business-user relationships
+  const {
+    data: businessesData,
+    isLoading: isLoadingBusinesses,
+    error: businessesError,
+    refetch: refetchBusinesses,
+  } = useQuery({
+    queryKey: isSuperAdmin
+      ? ["businesses", "all"]
+      : ["businesses", businessUsers.map((bu) => bu.businessId).sort()],
+    queryFn: async () => {
+      if (isSuperAdmin) {
+        // Superadmin: fetch all businesses
+        logger.info(
+          "BusinessContext",
+          user?.id || "system",
+          "Fetching all businesses (superadmin)"
+        );
+
+        const result = await listBusinesses();
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to fetch businesses");
+        }
+
+        logger.info(
+          "BusinessContext",
+          user?.id || "system",
+          `Fetched ${result.businesses.length} businesses (superadmin)`
+        );
+
+        return result.businesses;
+      } else {
+        // Regular user: fetch businesses by IDs
+        if (businessUsers.length === 0) {
+          return [];
+        }
+
+        const businessIds = businessUsers.map((bu) => bu.businessId);
+
+        logger.info(
+          "BusinessContext",
+          user?.id || "system",
+          `Fetching details for ${businessIds.length} businesses`
+        );
+
+        const { getBusinessesByIds } = await import("@/actions/business");
+        const result = await getBusinessesByIds({ ids: businessIds });
+
+        if (!result.success) {
+          throw new Error(result.error || "Failed to fetch business details");
+        }
+
+        logger.info(
+          "BusinessContext",
+          user?.id || "system",
+          `Fetched ${result.businesses.length} business details`
+        );
+
+        return result.businesses;
+      }
+    },
+    enabled: isSuperAdmin ? !!user?.id : businessUsers.length > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
+
+  const businesses: BusinessProps[] = businessesData || [];
+  const isLoading = isLoadingBusinessUsers || isLoadingBusinesses;
+  const error = businessUsersError || businessesError;
+
+  // Set initial business when data loads
+  useEffect(() => {
+    if (businesses.length > 0 && currentBusinessId === null) {
+      // Try to load from localStorage
+      if (typeof window !== "undefined") {
+        const savedId = localStorage.getItem(STORAGE_KEY);
+        if (savedId) {
+          const savedBusiness = businesses.find((b) => b.id === savedId);
+          if (savedBusiness) {
+            setCurrentBusinessId(savedId);
+            logger.info(
+              "BusinessContext",
+              user?.id || "system",
+              `Restored saved business: ${savedId}`
+            );
+            return;
+          }
+        }
+      }
+
+      // Default to first business
+      const firstBusinessId = businesses[0].id!;
+      setCurrentBusinessId(firstBusinessId);
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEY, String(firstBusinessId));
+      }
+
+      logger.info(
+        "BusinessContext",
+        user?.id || "system",
+        `Set default business: ${firstBusinessId}`
+      );
+    }
+  }, [businesses, currentBusinessId, user?.id]);
+
+  // Clear business data when user logs out
+  useEffect(() => {
+    if (!user) {
+      setCurrentBusinessId(null);
+      queryClient.removeQueries({ queryKey: ["business-users"] });
+      queryClient.removeQueries({ queryKey: ["businesses"] });
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+
+      logger.info(
+        "BusinessContext",
+        "system",
+        "Cleared business data on logout"
+      );
+    }
+  }, [user, queryClient]);
+
+  // Find current business and business-user relationship
+  const currentBusinessUser = isSuperAdmin
+    ? null
+    : businessUsers.find((bu) => bu.businessId === currentBusinessId) || null;
+
+  const currentBusiness =
+    businesses.find((b) => b.id === currentBusinessId) || null;
+
+  const setCurrentBusiness = (businessId: string) => {
+    const business = businesses.find((b) => b.id === businessId);
+
+    if (!business) {
+      logger.error(
+        "BusinessContext",
+        user?.id || "system",
+        `Business ${businessId} not found in user's businesses`
+      );
+      return;
+    }
+
+    // For regular users, verify they have access
+    if (!isSuperAdmin) {
+      const businessUser = businessUsers.find(
+        (bu) => bu.businessId === businessId
+      );
+
+      if (!businessUser) {
+        logger.error(
+          "BusinessContext",
+          user?.id || "system",
+          `Business ${businessId} not found in user's business relationships`
+        );
+        return;
+      }
+    }
+
+    setCurrentBusinessId(businessId);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, String(businessId));
+    }
+
+    logger.info(
+      "BusinessContext",
+      user?.id || "system",
+      `Switched to business: ${businessId}`
+    );
+  };
+
+  const refreshBusinesses = async () => {
+    logger.info(
+      "BusinessContext",
+      user?.id || "system",
+      "Refreshing business data"
+    );
+
+    if (!isSuperAdmin) {
+      await refetchBusinessUsers();
+    }
+    await refetchBusinesses();
+  };
+
+  const isManager = (): boolean => {
+    if (isSuperAdmin) return false;
+    return currentBusinessUser?.role === BusinessRole.MANAGER;
+  };
+
+  const isEmployee = (): boolean => {
+    if (isSuperAdmin) return false;
+    return currentBusinessUser?.role === BusinessRole.EMPLOYEE;
+  };
+
+  const value: BusinessContextValue = {
+    currentBusiness,
+    currentBusinessUser,
+    businesses,
+    businessUsers,
+    isSuperAdmin,
+    loading: isLoading,
+    error: error instanceof Error ? error : null,
+    setCurrentBusiness,
+    refreshBusinesses,
+    isManager,
+    isEmployee,
+  };
+
+  return (
+    <BusinessContext.Provider value={value}>
+      {children}
+    </BusinessContext.Provider>
+  );
+}
+
+/**
+ * Hook to access business context
+ *
+ * Usage:
+ * ```tsx
+ * const { currentBusiness, currentBusinessUser, isManager, isSuperAdmin } = useBusiness();
+ * ```
+ */
+export function useBusiness(): BusinessContextValue {
+  const context = useContext(BusinessContext);
+  if (context === undefined) {
+    throw new Error("useBusiness must be used within a BusinessProvider");
+  }
+  return context;
+}
