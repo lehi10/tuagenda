@@ -1,12 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthState, FirebaseUserData } from "@/lib/auth/types";
+import { AuthState, FirebaseUserData } from "@/shared/types/auth";
 import { getAuthService } from "@/client/lib/auth/auth-service";
 import { getUserByIdAction } from "@/server/api/user/get-user.action";
 import { createUserAction } from "@/server/api/user/create-user.action";
-import { parseFullName } from "@/lib/utils/name-parser";
-import { getAuthErrorMessage } from "@/lib/auth/errors";
+import { parseFullName } from "@/shared/utils/name-parser";
+import { getAuthErrorMessage } from "@/shared/lib/auth/errors";
 import { withAuth } from "@/client/lib/auth/with-auth";
 
 interface AuthContextValue extends AuthState {

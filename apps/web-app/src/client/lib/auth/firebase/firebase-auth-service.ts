@@ -18,8 +18,8 @@ import {
   FirebaseUserData,
   EmailPasswordCredentials,
   SignUpCredentials,
-} from "@/lib/auth/types";
-import { getAuthErrorMessage } from "@/lib/auth/errors";
+} from "@/shared/types/auth";
+import { getAuthErrorMessage } from "@/shared/lib/auth/errors";
 
 /**
  * Firebase implementation of the AuthService

@@ -1,4 +1,4 @@
-import { IAuthService } from "@/lib/auth/types";
+import { IAuthService } from "@/shared/types/auth";
 import { FirebaseAuthService } from "./firebase/firebase-auth-service";
 
 /**

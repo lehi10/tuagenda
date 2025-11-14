@@ -10,7 +10,7 @@ import { getAuthorizationService } from "@/server/lib/auth/authorization";
 import { Resource, Action } from "auth";
 import { logger } from "@/server/lib/logger";
 import { prisma } from "db";
-import { User } from "@/lib/auth/types";
+import { User } from "@/shared/types/auth";
 
 export interface UserPermissionInfo {
   userId: string;

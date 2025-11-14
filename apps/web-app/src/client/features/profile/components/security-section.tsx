@@ -26,7 +26,7 @@ import { useTranslation } from "@/client/i18n";
 import {
   changePasswordSchema,
   type ChangePasswordInput,
-} from "@/lib/validations/user.schema";
+} from "@/shared/validations/user.schema";
 import { changePasswordAction } from "@/server/api/user/change-password.action";
 import { logger } from "@/lib/logger";
 import { authService } from "@/client/lib/auth/auth-service";

@@ -10,7 +10,7 @@
  */
 import { z } from "zod";
 import { verifyAuthToken } from "@/server/lib/auth/firebase/admin";
-import { getAuthErrorMessage } from "@/lib/auth/errors";
+import { getAuthErrorMessage } from "@/shared/lib/auth/errors";
 
 export type ActionError = { success: false; error: string };
 

@@ -33,7 +33,7 @@ import { useTranslation } from "@/client/i18n";
 import {
   updateProfilePersonalInfoSchema,
   type UpdateProfilePersonalInfoInput,
-} from "@/lib/validations/user.schema";
+} from "@/shared/validations/user.schema";
 import { updateUserProfileAction } from "@/server/api/user";
 import { logger } from "@/lib/logger";
 import type { UserProps } from "@/core/domain/entities/User";
