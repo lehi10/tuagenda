@@ -1,6 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
 import { Avatar, AvatarFallback } from "@/client/components/ui/avatar";
 import { Progress } from "@/client/components/ui/progress";
 import { Badge } from "@/client/components/ui/badge";

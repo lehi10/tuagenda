@@ -10,7 +10,7 @@ import {
   BusinessRole,
   BusinessUserProps,
   UserType,
-} from "@/core/domain/entities";
+} from "@/server/core/domain/entities";
 import { logger } from "@/lib/logger";
 
 /**
@@ -209,7 +209,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
           `Fetching details for ${businessIds.length} businesses`
         );
 
-        const { getBusinessesByIds } = await import("@/actions/business");
+        const { getBusinessesByIds } = await import("@/server/api/business");
         const result = await getBusinessesByIds({ ids: businessIds });
 
         if (!result.success) {

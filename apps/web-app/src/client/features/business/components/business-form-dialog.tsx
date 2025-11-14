@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/client/components/ui/select";
 import { Separator } from "@/client/components/ui/separator";
-import { BusinessProps } from "@/core/domain/entities/Business";
+import { BusinessProps } from "@/server/core/domain/entities/Business";
 import { createBusiness, updateBusiness } from "@/server/api/business";
 
 interface BusinessFormDialogProps {

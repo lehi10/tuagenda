@@ -4,7 +4,12 @@ import { Bell, Calendar, DollarSign, UserPlus } from "lucide-react";
 import { Card, CardContent } from "@/client/components/ui/card";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/client/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/client/components/ui/tabs";
 import { useTranslation } from "@/client/i18n";
 
 interface Notification {

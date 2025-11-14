@@ -36,7 +36,7 @@ import {
 } from "@/shared/validations/user.schema";
 import { updateUserProfileAction } from "@/server/api/user";
 import { logger } from "@/lib/logger";
-import type { UserProps } from "@/core/domain/entities/User";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 interface PersonalInfoSectionProps {
   user: UserProps;

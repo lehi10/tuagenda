@@ -2,9 +2,18 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllUsersAction, updateUserAdmin, deleteUser } from "@/server/api/user";
+import {
+  getAllUsersAction,
+  updateUserAdmin,
+  deleteUser,
+} from "@/server/api/user";
 import type { UserListItem } from "@/server/api/user/get-all-users.action";
-import { Card, CardContent, CardHeader, CardTitle } from "@/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
 import { Input } from "@/client/components/ui/input";
 import { Button } from "@/client/components/ui/button";
 import {
@@ -38,7 +47,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
-import { UserType, UserStatus } from "@/core/domain/entities/User";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");

@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from "@/client/components/ui/select";
 import { Button } from "@/client/components/ui/button";
-import { UserType, UserStatus } from "@/core/domain/entities/User";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
 import type { UserListItem } from "@/server/api/user/get-all-users.action";
 

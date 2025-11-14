@@ -5,7 +5,11 @@ import { MoreHorizontal, Search, Building2, Users } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import { Input } from "@/client/components/ui/input";
 import {
   DropdownMenu,
@@ -35,7 +39,7 @@ import {
   updateBusinessUser,
   deleteBusinessUser,
 } from "@/server/api/business-user";
-import { BusinessRole } from "@/core/domain/entities";
+import { BusinessRole } from "@/server/core/domain/entities";
 import { EmployeeDialog } from "./employee-dialog";
 import { EmptyState } from "@/client/components/shared/empty-state";
 import { useDebounce } from "@/client/hooks/use-debounce";

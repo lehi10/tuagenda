@@ -9,7 +9,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getBusinessBySlug } from "@/server/api/business";
-import { BusinessProps } from "@/core/domain/entities/Business";
+import { BusinessProps } from "@/server/core/domain/entities/Business";
 
 interface UseBusinessBySlugOptions {
   slug: string;

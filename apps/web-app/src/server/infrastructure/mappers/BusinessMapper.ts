@@ -8,7 +8,10 @@
  */
 
 import { Business as PrismaBusiness } from "db";
-import { Business, BusinessStatus } from "@/server/core/domain/entities/Business";
+import {
+  Business,
+  BusinessStatus,
+} from "@/server/core/domain/entities/Business";
 
 export class BusinessMapper {
   /**

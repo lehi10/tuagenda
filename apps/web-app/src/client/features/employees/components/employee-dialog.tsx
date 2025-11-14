@@ -30,8 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/client/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
-import { BusinessRole } from "@/core/domain/entities";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
+import { BusinessRole } from "@/server/core/domain/entities";
 import { searchUsersAction } from "@/server/api/user";
 import { useDebounce } from "@/client/hooks/use-debounce";
 

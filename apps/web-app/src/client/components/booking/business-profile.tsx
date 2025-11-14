@@ -1,6 +1,10 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import { Button } from "@/client/components/ui/button";
 import { MapPin, Phone, Mail, Globe, MessageCircle } from "lucide-react";
 

@@ -1,4 +1,4 @@
-import type { UserProps } from "@/core/domain/entities/User";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 /**
  * User authentication data from database

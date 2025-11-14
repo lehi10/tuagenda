@@ -4,7 +4,11 @@
  * Displays a table of users with their information and actions
  */
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import {
@@ -25,7 +29,7 @@ import {
 } from "@/client/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
-import { UserType, UserStatus } from "@/core/domain/entities/User";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 import type { UserListItem } from "@/server/api/user/get-all-users.action";
 
 interface UsersTableProps {

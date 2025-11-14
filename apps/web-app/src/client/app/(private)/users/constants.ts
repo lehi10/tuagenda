@@ -4,7 +4,7 @@
  * Centralized configuration for user types and statuses
  */
 
-import { UserType, UserStatus } from "@/core/domain/entities/User";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 
 // User Type Configuration
 export const USER_TYPE_CONFIG = {

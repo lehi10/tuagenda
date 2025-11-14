@@ -1,5 +1,8 @@
 import { IBusinessRepository } from "@/server/core/domain/repositories/IBusinessRepository";
-import { Business, BusinessStatus } from "@/server/core/domain/entities/Business";
+import {
+  Business,
+  BusinessStatus,
+} from "@/server/core/domain/entities/Business";
 import { logger } from "@/server/lib/logger";
 
 export interface ListBusinessesInput {

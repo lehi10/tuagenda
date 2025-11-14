@@ -3,7 +3,11 @@
 import { ChevronsUpDown, LogOut, User2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,

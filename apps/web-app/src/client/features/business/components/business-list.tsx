@@ -19,7 +19,11 @@ import {
   DropdownMenuTrigger,
 } from "@/client/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/client/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import { Input } from "@/client/components/ui/input";
 import {
   Table,
@@ -39,7 +43,7 @@ import {
 } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
-import { BusinessProps } from "@/core/domain/entities/Business";
+import { BusinessProps } from "@/server/core/domain/entities/Business";
 import { listBusinesses, deleteBusiness } from "@/server/api/business";
 import { useBusiness } from "@/client/contexts";
 

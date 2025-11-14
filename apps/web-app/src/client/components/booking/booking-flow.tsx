@@ -7,7 +7,10 @@ import { ProfessionalSelection } from "@/client/components/booking/professional-
 import { DateSelection } from "@/client/components/booking/date-selection";
 import { TimeSlotSelection } from "@/client/components/booking/time-slot-selection";
 import { ClientInfoStep } from "@/client/components/booking/client-info-step";
-import { PaymentStep, PaymentMethod } from "@/client/components/booking/payment-step";
+import {
+  PaymentStep,
+  PaymentMethod,
+} from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
 import {
   defaultStepConfig,
@@ -15,7 +18,7 @@ import {
   type StepType,
   type StepConfig,
 } from "@/client/lib/booking-steps";
-import type { BusinessProps } from "@/core/domain/entities/Business";
+import type { BusinessProps } from "@/server/core/domain/entities/Business";
 
 // Mock data - Replace with actual data fetching based on [username]
 const mockBusiness = {

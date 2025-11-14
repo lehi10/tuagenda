@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { Calendar } from "@/client/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
 import { useTranslation } from "@/client/i18n";
 
 interface CalendarViewProps {

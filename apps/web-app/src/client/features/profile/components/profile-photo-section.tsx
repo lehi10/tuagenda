@@ -1,6 +1,10 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/client/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import {
   Card,
   CardContent,
@@ -9,7 +13,7 @@ import {
   CardTitle,
 } from "@/client/components/ui/card";
 import { useTranslation } from "@/client/i18n";
-import type { UserProps } from "@/core/domain/entities/User";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 interface ProfilePhotoSectionProps {
   user: UserProps;

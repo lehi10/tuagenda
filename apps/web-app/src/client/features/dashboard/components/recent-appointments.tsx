@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
 import { Badge } from "@/client/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/client/components/ui/avatar";
 import { Button } from "@/client/components/ui/button";

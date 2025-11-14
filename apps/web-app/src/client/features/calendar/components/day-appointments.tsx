@@ -1,6 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
 import { Badge } from "@/client/components/ui/badge";
 import { Clock, User } from "lucide-react";
 import { useTranslation } from "@/client/i18n";

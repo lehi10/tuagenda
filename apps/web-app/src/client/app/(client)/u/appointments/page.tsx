@@ -4,7 +4,12 @@ import { useState } from "react";
 import { Button } from "@/client/components/ui/button";
 import { Card, CardContent } from "@/client/components/ui/card";
 import { Badge } from "@/client/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/client/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/client/components/ui/tabs";
 import { Calendar, Clock, MapPin, User, X, CalendarClock } from "lucide-react";
 import {
   AlertDialog,

@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/client/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
 import { Separator } from "@/client/components/ui/separator";
 import { useTranslation } from "@/client/i18n";
 import { X } from "lucide-react";
