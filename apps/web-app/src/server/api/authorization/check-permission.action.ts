@@ -8,7 +8,7 @@
 "use server";
 
 import { getAuthorizationService } from "@/server/lib/auth/authorization";
-import { getAuthService } from "@/lib/auth/auth-service";
+import { getAuthService } from "@/shared/lib/auth/auth-service";
 import { Resource, Action } from "auth";
 import { z } from "zod";
 import { logger } from "@/server/lib/logger";

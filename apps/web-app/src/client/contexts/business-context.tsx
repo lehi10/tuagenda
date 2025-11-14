@@ -11,7 +11,8 @@ import {
   BusinessUserProps,
   UserType,
 } from "@/server/core/domain/entities";
-import { logger } from "@/lib/logger";
+import { logger } from "@/shared/lib/logger";
+import { withAuth } from "../lib/auth/with-auth";
 
 /**
  * Business context state
@@ -182,7 +183,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
           "Fetching all businesses (superadmin)"
         );
 
-        const result = await listBusinesses();
+        const result = await withAuth(listBusinesses);
 
         if (!result.success) {
           throw new Error(result.error || "Failed to fetch businesses");

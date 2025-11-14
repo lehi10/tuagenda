@@ -1,5 +1,5 @@
-import { IAuthService } from "./types";
-import { FirebaseAuthService } from "./firebase/firebase-auth-service";
+import { IAuthService } from "@/shared/types/auth";
+import { FirebaseAuthService } from "@/client/lib/auth/firebase/firebase-auth-service";
 
 /**
  * Singleton instance of the auth service

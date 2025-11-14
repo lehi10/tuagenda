@@ -5,7 +5,7 @@ import { PersonalInfoSection } from "@/client/features/profile/components/person
 import { ProfilePhotoSection } from "@/client/features/profile/components/profile-photo-section";
 import { SecuritySection } from "@/client/features/profile/components/security-section";
 import { Skeleton } from "@/client/components/ui/skeleton";
-import { logger } from "@/lib/logger";
+import { logger } from "@/shared/lib/logger";
 
 export default function ClientProfilePage() {
   const { user, loading } = useAuth();

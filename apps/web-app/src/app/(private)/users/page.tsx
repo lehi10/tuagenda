@@ -48,6 +48,7 @@ import {
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
 import { UserType, UserStatus } from "@/server/core/domain/entities/User";
+import { withAuth } from "@/client/lib/auth/with-auth";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
@@ -62,7 +63,7 @@ export default function UsersPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["users", debouncedSearch, typeFilter, statusFilter],
     queryFn: async () => {
-      const result = await getAllUsersAction({
+      const result = await withAuth(getAllUsersAction, {
         search: debouncedSearch || undefined,
         type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
         status:
@@ -86,10 +87,10 @@ export default function UsersPage() {
       userId: string;
       data: { type: string; status: string };
     }) => {
-      const result = await updateUserAdmin({
+      const result = await withAuth(updateUserAdmin, {
         userId,
-        type: data.type as any,
-        status: data.status as any,
+        type: data.type,
+        status: data.status,
       });
 
       if (!result.success) {
@@ -110,7 +111,7 @@ export default function UsersPage() {
   // Delete user mutation
   const deleteMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const result = await deleteUser({ userId });
+      const result = await withAuth(deleteUser, { userId });
 
       if (!result.success) {
         throw new Error(result.error || "Failed to delete user");

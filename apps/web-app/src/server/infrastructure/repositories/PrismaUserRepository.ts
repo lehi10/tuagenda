@@ -158,8 +158,15 @@ export class PrismaUserRepository implements IUserRepository {
 
   /**
    * Delete a user by ID
+   * First deletes related business_users records to avoid constraint violations
    */
   async delete(id: string): Promise<void> {
+    // Delete related business_users first
+    await prisma.businessUser.deleteMany({
+      where: { userId: id },
+    });
+
+    // Then delete the user
     await prisma.user.delete({
       where: { id },
     });

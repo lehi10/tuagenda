@@ -35,7 +35,7 @@ import {
   type UpdateProfilePersonalInfoInput,
 } from "@/shared/validations/user.schema";
 import { updateUserProfileAction } from "@/server/api/user";
-import { logger } from "@/lib/logger";
+import { logger } from "@/shared/lib/logger";
 import type { UserProps } from "@/server/core/domain/entities/User";
 
 interface PersonalInfoSectionProps {

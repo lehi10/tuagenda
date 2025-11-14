@@ -28,7 +28,7 @@ import {
   type ChangePasswordInput,
 } from "@/shared/validations/user.schema";
 import { changePasswordAction } from "@/server/api/user/change-password.action";
-import { logger } from "@/lib/logger";
+import { logger } from "@/shared/lib/logger";
 import { authService } from "@/client/lib/auth/auth-service";
 
 export function SecuritySection() {

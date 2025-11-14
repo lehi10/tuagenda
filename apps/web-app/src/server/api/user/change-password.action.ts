@@ -14,7 +14,7 @@
 "use server";
 
 import { z } from "zod";
-import { getAuthService } from "@/lib/auth/auth-service";
+import { getAuthService } from "@/shared/lib/auth/auth-service";
 import { validatePrivateAction } from "@/server/lib/utils/action-validator";
 
 // Schema validation
