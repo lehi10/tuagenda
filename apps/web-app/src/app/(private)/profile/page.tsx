@@ -9,7 +9,7 @@ import { Skeleton } from "@/client/components/ui/skeleton";
 import { logger } from "@/shared/lib/logger";
 
 export default function ProfilePage() {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUser } = useAuth();
   const { t } = useTranslation();
 
   if (loading) {
@@ -42,10 +42,9 @@ export default function ProfilePage() {
     );
   }
 
-  const handleUpdate = () => {
-    // This will trigger a re-render when user data is updated
-    // The context will automatically refresh from the database
+  const handleUpdate = async () => {
     logger.info("PROFILE_PAGE", user.id, "Profile updated, refreshing data");
+    await refreshUser();
   };
 
   return (
@@ -61,7 +60,7 @@ export default function ProfilePage() {
       {/* Profile Sections */}
       <div className="grid gap-6">
         {/* Profile Photo Section */}
-        <ProfilePhotoSection user={user} />
+        <ProfilePhotoSection user={user} onUpdate={handleUpdate} />
 
         {/* Personal Information Section */}
         <PersonalInfoSection user={user} onUpdate={handleUpdate} />

@@ -6,10 +6,7 @@
  */
 
 import { IMAGE_LIMITS } from "@/shared/constants/image.constants";
-import type {
-  ImagePreset,
-  ImageFormat,
-} from "@/shared/constants/image.constants";
+import type { ImageFormat } from "@/shared/constants/image.constants";
 import {
   processImageWithPreset,
   calculateCompressionRatio,

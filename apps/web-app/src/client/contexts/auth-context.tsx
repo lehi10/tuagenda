@@ -56,6 +56,11 @@ interface AuthContextValue extends AuthState {
    * Get current user ID token for authenticated requests
    */
   getIdToken: (_forceRefresh?: boolean) => Promise<string | null>;
+
+  /**
+   * Refresh user data from database
+   */
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -246,6 +251,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return authService.getIdToken(forceRefresh);
   };
 
+  const refreshUser = async (): Promise<void> => {
+    const firebaseUser = authService.getCurrentUser();
+    if (firebaseUser) {
+      try {
+        const user = await trpc.user.getById.query({
+          userId: firebaseUser.uid,
+        });
+        setState((prev) => ({ ...prev, user }));
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          error: new Error(getAuthErrorMessage(error)),
+        }));
+        throw error;
+      }
+    }
+  };
+
   const value: AuthContextValue = {
     ...state,
     signIn,
@@ -256,6 +279,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     updateProfile,
     getUserAuthProviders,
     getIdToken,
+    refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
