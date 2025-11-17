@@ -86,7 +86,10 @@ export function DataTableWithFilters<T extends object>({
     // Filtros por columnas
     Object.entries(selectedFilters).forEach(([key, value]) => {
       if (value && value !== "all") {
-        result = result.filter((item) => String(item[key]) === value);
+        result = result.filter((item) => {
+          const itemValue = (item as Record<string, unknown>)[key];
+          return String(itemValue) === value;
+        });
       }
     });
 

@@ -12,7 +12,18 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-export default [
+const eslintConfig = [
+  // Global ignores must be in a separate config object
+  {
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      "src/client/components/ui/**",
+    ],
+  },
   ...compat.extends(
     "next/core-web-vitals",
     "next/typescript",
@@ -21,14 +32,6 @@ export default [
     "prettier"
   ),
   {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "next-env.d.ts",
-      "components/ui/**",
-    ],
     plugins: {
       "@typescript-eslint": tsPlugin,
       prettier: prettierPlugin,
@@ -53,3 +56,5 @@ export default [
     },
   },
 ];
+
+export default eslintConfig;
