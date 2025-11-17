@@ -1,5 +1,6 @@
 import { initializeApp, getApps, FirebaseApp } from "firebase/app";
 import { getAuth, Auth } from "firebase/auth";
+import { getStorage, FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,20 +13,27 @@ const firebaseConfig = {
 
 let app: FirebaseApp;
 let auth: Auth;
+let storage: FirebaseStorage;
 
 /**
  * Initialize Firebase only once
  */
-export function initializeFirebase(): { app: FirebaseApp; auth: Auth } {
+export function initializeFirebase(): {
+  app: FirebaseApp;
+  auth: Auth;
+  storage: FirebaseStorage;
+} {
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    storage = getStorage(app);
   } else {
     app = getApps()[0];
     auth = getAuth(app);
+    storage = getStorage(app);
   }
 
-  return { app, auth };
+  return { app, auth, storage };
 }
 
 /**
@@ -37,4 +45,15 @@ export function getFirebaseAuth(): Auth {
     return initializedAuth;
   }
   return auth;
+}
+
+/**
+ * Get Firebase Storage instance
+ */
+export function getFirebaseStorage(): FirebaseStorage {
+  if (!storage) {
+    const { storage: initializedStorage } = initializeFirebase();
+    return initializedStorage;
+  }
+  return storage;
 }
