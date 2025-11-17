@@ -21,6 +21,11 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "@/client/components/ui/sidebar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import { useBusiness } from "@/client/contexts";
 import { cn } from "@/client/lib/utils";
 
@@ -75,9 +80,15 @@ export function BusinessSwitcher() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" tooltip={currentBusiness.title}>
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10">
-              <Building2 className="size-4 text-primary" />
-            </div>
+            <Avatar className="size-8">
+              <AvatarImage
+                src={currentBusiness.logo || undefined}
+                alt={currentBusiness.title}
+              />
+              <AvatarFallback className="bg-primary/10">
+                <Building2 className="size-4 text-primary" />
+              </AvatarFallback>
+            </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">
                 {currentBusiness.title}
@@ -102,9 +113,15 @@ export function BusinessSwitcher() {
               tooltip={currentBusiness.title}
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10">
-                <Building2 className="size-4 text-primary" />
-              </div>
+              <Avatar className="size-8">
+                <AvatarImage
+                  src={currentBusiness.logo || undefined}
+                  alt={currentBusiness.title}
+                />
+                <AvatarFallback className="bg-primary/10">
+                  <Building2 className="size-4 text-primary" />
+                </AvatarFallback>
+              </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   {currentBusiness.title}
@@ -144,6 +161,15 @@ export function BusinessSwitcher() {
                             : "opacity-0"
                         )}
                       />
+                      <Avatar className="mr-2 h-6 w-6">
+                        <AvatarImage
+                          src={business.logo || undefined}
+                          alt={business.title}
+                        />
+                        <AvatarFallback className="bg-primary/10 text-xs">
+                          <Building2 className="h-3 w-3 text-primary" />
+                        </AvatarFallback>
+                      </Avatar>
                       <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-medium truncate">
                           {business.title}

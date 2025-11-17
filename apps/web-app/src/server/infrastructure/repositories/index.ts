@@ -9,3 +9,4 @@ export { PrismaBusinessRepository } from "./PrismaBusinessRepository";
 export { PrismaBusinessUserRepository } from "./PrismaBusinessUserRepository";
 export { PrismaServiceCategoryRepository } from "./PrismaServiceCategoryRepository";
 export { PrismaServiceRepository } from "./PrismaServiceRepository";
+export { PrismaEmployeeServiceRepository } from "./PrismaEmployeeServiceRepository";

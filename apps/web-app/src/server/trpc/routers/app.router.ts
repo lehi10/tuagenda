@@ -5,6 +5,7 @@ import { businessRouter } from "./business.router";
 import { businessUserRouter } from "./businessUser.router";
 import { serviceCategoryRouter } from "./serviceCategory.router";
 import { serviceRouter } from "./service.router";
+import { employeeServiceRouter } from "./employeeService.router";
 
 /**
  * Main application router
@@ -55,6 +56,12 @@ export const appRouter = router({
    * Access: trpc.service.create, trpc.service.list, etc.
    */
   service: serviceRouter,
+
+  /**
+   * EmployeeService domain procedures
+   * Access: trpc.employeeService.assign, trpc.employeeService.getByEmployee, etc.
+   */
+  employeeService: employeeServiceRouter,
 
   // Future routers:
   // appointment: appointmentRouter,

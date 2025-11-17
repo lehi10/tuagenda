@@ -21,3 +21,8 @@ export type {
   IServiceRepository,
   ServiceRepositoryFilters,
 } from "./IServiceRepository";
+export type {
+  IEmployeeServiceRepository,
+  EmployeeWithServices,
+  ServiceWithEmployees,
+} from "./IEmployeeServiceRepository";

@@ -13,3 +13,4 @@ export {
 } from "./BusinessUser";
 export { ServiceCategory, type ServiceCategoryProps } from "./ServiceCategory";
 export { Service, type ServiceProps } from "./Service";
+export { EmployeeService, type EmployeeServiceProps } from "./EmployeeService";
