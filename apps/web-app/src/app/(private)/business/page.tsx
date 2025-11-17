@@ -1,12 +1,12 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { BusinessList } from "@/features/business/components/business-list";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/client/i18n";
+import { BusinessList } from "@/client/features/business/components/business-list";
+import { Button } from "@/client/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState, useRef } from "react";
-import { BusinessFormDialog } from "@/features/business/components/business-form-dialog";
-import { useBusiness } from "@/contexts";
+import { BusinessFormDialog } from "@/client/features/business/components/business-form-dialog";
+import { useBusiness } from "@/client/contexts";
 
 export default function BusinessPage() {
   const { t } = useTranslation();

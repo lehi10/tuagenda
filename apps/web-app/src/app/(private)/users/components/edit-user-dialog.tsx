@@ -17,7 +17,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from "@/client/components/ui/sheet";
 import {
   Form,
   FormControl,
@@ -26,17 +26,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/client/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { UserType, UserStatus } from "@/core/domain/entities/User";
+} from "@/client/components/ui/select";
+import { Button } from "@/client/components/ui/button";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 const editUserSchema = z.object({
   type: z.nativeEnum(UserType),
@@ -48,14 +49,7 @@ type EditUserFormValues = z.infer<typeof editUserSchema>;
 interface EditUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    type: string;
-    status: string;
-  } | null;
+  user: UserProps | null;
   onSubmit: (userId: string, data: EditUserFormValues) => Promise<void>;
 }
 

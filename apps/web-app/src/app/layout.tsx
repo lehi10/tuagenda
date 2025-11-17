@@ -1,9 +1,9 @@
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { I18nProvider } from "@/i18n";
-import { AuthProvider, BusinessProvider } from "@/contexts";
-import { QueryProvider } from "@/lib/query";
-import { Toaster } from "@/components/ui/toaster";
+import { I18nProvider } from "@/client/i18n";
+import { AuthProvider, BusinessProvider } from "@/client/contexts";
+import { TRPCProvider } from "@/client/lib/trpc";
+import { Toaster } from "@/client/components/ui/toaster";
 import type { Metadata } from "next";
 
 const poppins = Poppins({
@@ -26,14 +26,24 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${poppins.variable} antialiased font-sans`}>
-        <QueryProvider>
+        <TRPCProvider>
           <AuthProvider>
             <BusinessProvider>
               <I18nProvider>{children}</I18nProvider>
             </BusinessProvider>
           </AuthProvider>
-        </QueryProvider>
-        <Toaster />
+        </TRPCProvider>
+        <Toaster
+          theme="light"
+          richColors
+          closeButton
+          toastOptions={{
+            style: { animationDuration: "200ms" },
+            className: "animate-in fade-in-0 slide-in-from-right-5",
+          }}
+          duration={10000}
+          position="top-right"
+        />
       </body>
     </html>
   );

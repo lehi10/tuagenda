@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { SettingsTabs } from "@/features/settings/components/settings-tabs";
+import { useTranslation } from "@/client/i18n";
+import { SettingsTabs } from "@/client/features/settings/components/settings-tabs";
 
 export default function SettingsPage() {
   const { t } = useTranslation();

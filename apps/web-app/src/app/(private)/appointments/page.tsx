@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { AppointmentStats } from "@/features/appointments/components/appointment-stats";
-import { AppointmentList } from "@/features/appointments/components/appointment-list";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/client/i18n";
+import { AppointmentStats } from "@/client/features/appointments/components/appointment-stats";
+import { AppointmentList } from "@/client/features/appointments/components/appointment-list";
+import { Button } from "@/client/components/ui/button";
 
 export default function AppointmentsPage() {
   const { t } = useTranslation();

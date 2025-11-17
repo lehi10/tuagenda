@@ -7,11 +7,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts";
-import { getUserClaims } from "@/actions/demo/get-user-claims.action";
-import type { UserPermissionInfo } from "@/actions/demo/get-user-claims.action";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/client/contexts";
+import { getUserClaims } from "@/server/api/demo/get-user-claims.action";
+import type { UserPermissionInfo } from "@/server/api/demo/get-user-claims.action";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
+import { Badge } from "@/client/components/ui/badge";
 import {
   CheckCircle2,
   XCircle,

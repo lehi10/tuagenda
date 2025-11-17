@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { ClientStats } from "@/features/clients/components/client-stats";
-import { ClientList } from "@/features/clients/components/client-list";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/client/i18n";
+import { ClientStats } from "@/client/features/clients/components/client-stats";
+import { ClientList } from "@/client/features/clients/components/client-list";
+import { Button } from "@/client/components/ui/button";
 
 export default function ClientsPage() {
   const { t } = useTranslation();

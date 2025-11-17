@@ -4,9 +4,13 @@
  * Displays a table of users with their information and actions
  */
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
+import { Badge } from "@/client/components/ui/badge";
+import { Button } from "@/client/components/ui/button";
 import {
   Table,
   TableBody,
@@ -14,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/client/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,16 +26,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/client/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
-import { UserType, UserStatus } from "@/core/domain/entities/User";
-import type { UserListItem } from "@/actions/user/get-all-users.action";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 interface UsersTableProps {
-  users: UserListItem[];
-  onEdit: (user: UserListItem) => void;
-  onDelete: (user: UserListItem) => void;
+  users: UserProps[];
+  onEdit: (user: UserProps) => void;
+  onDelete: (user: UserProps) => void;
 }
 
 export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
@@ -39,28 +43,36 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
     return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
   };
 
-  const formatType = (type: string) => {
+  const formatType = (type: string | undefined) => {
+    if (!type) return "Unknown";
     return USER_TYPE_CONFIG[type as UserType]?.label || type;
   };
 
-  const formatStatus = (status: string) => {
+  const formatStatus = (status: string | undefined) => {
+    if (!status) return "Unknown";
     return USER_STATUS_CONFIG[status as UserStatus]?.label || status;
   };
 
-  const getTypeBadgeVariant = (type: string) => {
+  const getTypeBadgeVariant = (type: string | undefined) => {
+    if (!type) return "outline";
     return USER_TYPE_CONFIG[type as UserType]?.variant || "outline";
   };
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string | undefined) => {
+    if (!status) return "outline";
     return USER_STATUS_CONFIG[status as UserStatus]?.variant || "outline";
   };
 
-  const formatPhone = (phone: string | null, countryCode: string | null) => {
+  const formatPhone = (
+    phone: string | null | undefined,
+    countryCode: string | null | undefined
+  ) => {
     if (!phone) return null;
     return countryCode ? `${countryCode} ${phone}` : phone;
   };
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return "N/A";
     return new Date(date).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",

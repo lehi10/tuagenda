@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { BusinessProfile } from "@/components/booking/business-profile";
-import { PublicFooter } from "@/components/public-footer";
-import { BookingHeader } from "@/components/booking/booking-header";
-import { BookingPageSkeleton } from "@/components/booking/booking-page-skeleton";
-import { BookingFlow } from "@/components/booking/booking-flow";
-import { getBusinessBySlug } from "@/actions/business";
+import { BusinessProfile } from "@/client/components/booking/business-profile";
+import { PublicFooter } from "@/client/components/public-footer";
+import { BookingHeader } from "@/client/components/booking/booking-header";
+import { BookingPageSkeleton } from "@/client/components/booking/booking-page-skeleton";
+import { BookingFlow } from "@/client/components/booking/booking-flow";
+import { GetBusinessBySlugUseCase } from "@/server/core/application/use-cases/business";
+import { PrismaBusinessRepository } from "@/server/infrastructure/repositories";
 
 interface PageProps {
   params: Promise<{
@@ -14,15 +15,19 @@ interface PageProps {
 }
 
 async function BookingContent({ slug }: { slug: string }) {
-  // Fetch business data on the server
-  const result = await getBusinessBySlug(slug);
+  // Fetch business data on the server using the use case directly
+  const businessRepository = new PrismaBusinessRepository();
+  const getBusinessBySlugUseCase = new GetBusinessBySlugUseCase(
+    businessRepository
+  );
+  const result = await getBusinessBySlugUseCase.execute({ slug });
 
   // Redirect to 404 if business not found
   if (!result.success || !result.business) {
     notFound();
   }
 
-  const business = result.business;
+  const business = result.business.toObject();
 
   // Map business data to the expected format for BusinessProfile component
   const businessProfile = {

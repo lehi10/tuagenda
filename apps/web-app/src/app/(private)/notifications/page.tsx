@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { NotificationList } from "@/features/notifications/components/notification-list";
+import { useTranslation } from "@/client/i18n";
+import { NotificationList } from "@/client/features/notifications/components/notification-list";
 
 export default function NotificationsPage() {
   const { t } = useTranslation();

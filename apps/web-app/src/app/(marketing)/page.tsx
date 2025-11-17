@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { useTranslation } from "@/i18n";
+import { Button } from "@/client/components/ui/button";
+import { ScrollReveal } from "@/client/components/ui/scroll-reveal";
+import { useTranslation } from "@/client/i18n";
 import Link from "next/link";
 import Image from "next/image";
 import {

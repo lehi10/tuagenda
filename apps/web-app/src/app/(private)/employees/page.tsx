@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { EmployeeList } from "@/features/employees/components/employee-list";
+import { useTranslation } from "@/client/i18n";
+import { EmployeeList } from "@/client/features/employees/components/employee-list";
 
 export default function EmployeesPage() {
   const { t } = useTranslation();

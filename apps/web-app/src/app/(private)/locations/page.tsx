@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { LocationStats } from "@/features/locations/components/location-stats";
-import { LocationList } from "@/features/locations/components/location-list";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/client/i18n";
+import { LocationStats } from "@/client/features/locations/components/location-stats";
+import { LocationList } from "@/client/features/locations/components/location-list";
+import { Button } from "@/client/components/ui/button";
 
 export default function LocationsPage() {
   const { t } = useTranslation();

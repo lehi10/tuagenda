@@ -5,17 +5,17 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { PrivateFooter } from "@/components/private-footer";
-import { Separator } from "@/components/ui/separator";
+} from "@/client/components/ui/sidebar";
+import { AppSidebar } from "@/client/components/app-sidebar";
+import { PrivateFooter } from "@/client/components/private-footer";
+import { Separator } from "@/client/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
-import { ProtectedRoute } from "@/components/protected-route";
+} from "@/client/components/ui/breadcrumb";
+import { ProtectedRoute } from "@/client/components/protected-route";
 
 export default function RootLayout({
   children,

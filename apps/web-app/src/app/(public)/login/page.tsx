@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { LoginForm } from "@/components/auth/login-form";
-import { PublicRoute } from "@/components/public-route";
+import { LoginForm } from "@/client/components/auth/login-form";
+import { PublicRoute } from "@/client/components/public-route";
 import Link from "next/link";
 import { Suspense } from "react";
 

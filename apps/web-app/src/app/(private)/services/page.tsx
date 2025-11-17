@@ -1,9 +1,9 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { ServiceStats } from "@/features/services/components/service-stats";
-import { ServiceList } from "@/features/services/components/service-list";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/client/i18n";
+import { ServiceStats } from "@/client/features/services/components/service-stats";
+import { ServiceList } from "@/client/features/services/components/service-list";
+import { Button } from "@/client/components/ui/button";
 
 export default function ServicesPage() {
   const { t } = useTranslation();

@@ -3,16 +3,16 @@
 import { GalleryVerticalEnd } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
-import { useTranslation } from "@/i18n";
+import { ForgotPasswordForm } from "@/client/components/auth/forgot-password-form";
+import { useTranslation } from "@/client/i18n";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/client/components/ui/card";
+import { Button } from "@/client/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

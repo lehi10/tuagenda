@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
-import { PaymentStats } from "@/features/payments/components/payment-stats";
-import { PaymentList } from "@/features/payments/components/payment-list";
+import { useTranslation } from "@/client/i18n";
+import { PaymentStats } from "@/client/features/payments/components/payment-stats";
+import { PaymentList } from "@/client/features/payments/components/payment-list";
 
 export default function PaymentsPage() {
   const { t } = useTranslation();

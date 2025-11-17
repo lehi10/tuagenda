@@ -163,13 +163,13 @@ export class PrismaUserRepository implements IUserRepository {
 #### Server Action Refactorizado
 ```typescript
 // ANTES (acoplado a Prisma)
-export async function createUserInDatabase(data) {
+export async function createUserAction(data) {
   const user = await prisma.user.create({ data });
   return { success: true, userId: user.id };
 }
 
 // DESPUÉS (usa use case)
-export async function createUserInDatabase(data) {
+export async function createUserAction(data) {
   const userRepository = new PrismaUserRepository();
   const createUserUseCase = new CreateUserUseCase(userRepository);
   const result = await createUserUseCase.execute(data);
@@ -199,8 +199,8 @@ export async function createUserInDatabase(data) {
                      ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  Presentación: Server Actions                                │
-│  - createUserInDatabase()                                    │
-│  - getUserById()                                             │
+│  - createUserAction()                                    │
+│  - getUserByIdAction()                                             │
 └────────────────────┬────────────────────────────────────────┘
                      │ Dependency Injection
                      ▼
@@ -298,7 +298,7 @@ const prismaUser = UserToPrismaType.toPrismaType(domainUser);
 - [ ] UpdateUser
 - [ ] DeleteUser
 - [ ] ListUsers
-- [ ] SearchUsers
+- [ ] searchUsersAction
 - [ ] BlockUser / UnblockUser
 
 ### 3. Dependency Injection Container

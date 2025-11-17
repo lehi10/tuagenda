@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
+import { useTranslation } from "@/client/i18n";
 import { CheckCircle2 } from "lucide-react";
 
 export default function AboutUsPage() {

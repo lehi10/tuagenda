@@ -5,16 +5,16 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { ClientSidebar } from "@/components/client-sidebar";
-import { ClientRoute } from "@/components/client-route";
-import { Separator } from "@/components/ui/separator";
+} from "@/client/components/ui/sidebar";
+import { ClientSidebar } from "@/client/components/client-sidebar";
+import { ClientRoute } from "@/client/components/client-route";
+import { Separator } from "@/client/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+} from "@/client/components/ui/breadcrumb";
 
 export default function ClientLayout({
   children,

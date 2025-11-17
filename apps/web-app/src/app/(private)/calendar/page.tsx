@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslation } from "@/i18n";
-import { CalendarStats } from "@/features/calendar/components/calendar-stats";
+import { useTranslation } from "@/client/i18n";
+import { CalendarStats } from "@/client/features/calendar/components/calendar-stats";
 import {
   AppointmentsCalendar,
   AppointmentDetailModal,
-} from "@/features/calendar/components";
-import { mockAppointments } from "@/features/calendar/data/mock-appointments";
-import type { Appointment } from "@/features/calendar/types";
+} from "@/client/features/calendar/components";
+import { mockAppointments } from "@/client/features/calendar/data/mock-appointments";
+import type { Appointment } from "@/client/features/calendar/types";
 
 export default function CalendarPage() {
   const { t } = useTranslation();

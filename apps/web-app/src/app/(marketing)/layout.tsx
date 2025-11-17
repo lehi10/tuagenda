@@ -1,7 +1,7 @@
 "use client";
 
-import { PublicHeader } from "@/components/public-header";
-import { PublicFooter } from "@/components/public-footer";
+import { PublicHeader } from "@/client/components/public-header";
+import { PublicFooter } from "@/client/components/public-footer";
 
 export default function MarketingLayout({
   children,

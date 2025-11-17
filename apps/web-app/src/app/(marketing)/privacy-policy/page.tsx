@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "@/i18n";
+import { useTranslation } from "@/client/i18n";
 
 export default function PrivacyPolicyPage() {
   const { t } = useTranslation();

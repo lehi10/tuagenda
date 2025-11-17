@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@/contexts/auth-context";
-import { PersonalInfoSection } from "@/features/profile/components/personal-info-section";
-import { ProfilePhotoSection } from "@/features/profile/components/profile-photo-section";
-import { SecuritySection } from "@/features/profile/components/security-section";
-import { Skeleton } from "@/components/ui/skeleton";
-import { logger } from "@/lib/logger";
+import { useAuth } from "@/client/contexts/auth-context";
+import { PersonalInfoSection } from "@/client/features/profile/components/personal-info-section";
+import { ProfilePhotoSection } from "@/client/features/profile/components/profile-photo-section";
+import { SecuritySection } from "@/client/features/profile/components/security-section";
+import { Skeleton } from "@/client/components/ui/skeleton";
+import { logger } from "@/shared/lib/logger";
 
 export default function ClientProfilePage() {
   const { user, loading } = useAuth();

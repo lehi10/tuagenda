@@ -38,8 +38,15 @@ enum BusinessRole {
   EMPLOYEE
 }
 
+enum AppointmentStatus {
+  scheduled
+  confirmed
+  completed
+  cancelled
+}
+
 model Business {
-  id          Int            @id @default(autoincrement())
+  id          String         @id @default(uuid()) @db.Uuid
   title       String         @db.VarChar(255)
   slug        String         @unique @db.VarChar(255)
   domain      String?        @db.VarChar(255)
@@ -63,8 +70,14 @@ model Business {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
-  // Relación 1:N con BusinessUser
-  businessUsers BusinessUser[]
+  // Relaciones
+  businessUsers        BusinessUser[]
+  serviceCategories    ServiceCategory[]
+  services             Service[]
+  appointments         Appointment[]
+  employeeServices     EmployeeService[]
+  employeeAvailability EmployeeAvailability[]
+  employeeExceptions   EmployeeException[]
 
   @@map("business")
 }
@@ -74,7 +87,7 @@ model User {
   status          UserStatus @default(visible)
   type            UserType   @default(customer)
   firstName       String     @db.VarChar(255)
-  lastName        String     @db.VarChar(255)
+  lastName        String?    @db.VarChar(255)
   email           String     @unique @db.VarChar(255)
   birthday        DateTime?  @db.Date
   phone           String?    @db.VarChar(63)
@@ -86,27 +99,38 @@ model User {
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
-  // Relación 1:N con BusinessUser
-  businessUsers BusinessUser[]
+  // Relaciones
+  businessUsers          BusinessUser[]
+  appointmentsAsCustomer Appointment[]  @relation("CustomerAppointments")
 
   @@map("users")
 }
 
 // Tabla intermedia para la relación N:N entre User y Business
+// Fusionada con Employee para eliminar redundancia
 model BusinessUser {
-  id         Int          @id @default(autoincrement())
-  userId     String       @map("user_id")
-  businessId Int          @map("business_id")
-  role       BusinessRole
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @map("user_id")
+  businessId  String       @map("business_id") @db.Uuid
+  role        BusinessRole
+  displayName String?      @map("display_name") @db.Text // Ej: "Dr. Juan", "Lic. María"
+  isActive    Boolean      @default(true) @map("is_active")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
   // Relaciones N:1 hacia User y Business
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 
+  // Relaciones operacionales (para usuarios con role=EMPLOYEE)
+  employeeServices       EmployeeService[]
+  employeeAvailability   EmployeeAvailability[]
+  employeeExceptions     EmployeeException[]
+  appointmentsAsProvider Appointment[]          @relation("ProviderAppointments")
+
   // Índice único: un usuario solo puede tener un rol por negocio
   @@unique([userId, businessId])
+  @@unique([id, businessId])
   @@map("business_users")
 }
 
@@ -122,7 +146,154 @@ model CasbinRule {
   v4    String? @db.VarChar(100) // Additional field
   v5    String? @db.VarChar(100) // Additional field
 
-  @@map("casbin_rule")
   @@index([ptype])
   @@index([v0, v1])
+  @@map("casbin_rule")
+}
+
+// -----------------------------------------------------
+// Categorías de Servicios
+// -----------------------------------------------------
+model ServiceCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  businessId  String   @map("business_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  business Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  services Service[]
+
+  // Evitar categorías duplicadas en el mismo negocio
+  @@unique([businessId, name])
+  @@map("service_categories")
+}
+
+// -----------------------------------------------------
+// Servicios
+// -----------------------------------------------------
+model Service {
+  id              String   @id @default(uuid()) @db.Uuid
+  businessId      String   @map("business_id") @db.Uuid
+  categoryId      String?  @map("category_id") @db.Uuid
+  name            String   @db.VarChar(255)
+  description     String?  @db.Text
+  price           Decimal  @db.Decimal(10, 2)
+  durationMinutes Int      @map("duration_minutes")
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  business         Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  category         ServiceCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  appointments     Appointment[]
+  employeeServices EmployeeService[]
+
+  @@unique([id, businessId])
+  @@map("services")
+}
+
+// -----------------------------------------------------
+// Tabla intermedia: BusinessUser-Servicios (N:M)
+// Solo para usuarios con role=EMPLOYEE
+// -----------------------------------------------------
+model EmployeeService {
+  businessUserId String   @map("business_user_id") @db.Uuid
+  serviceId      String   @map("service_id") @db.Uuid
+  businessId     String   @map("business_id") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId, businessId], references: [id, businessId], onDelete: Cascade)
+  service      Service      @relation(fields: [serviceId, businessId], references: [id, businessId], onDelete: Cascade)
+
+  @@id([businessUserId, serviceId])
+  @@map("employee_services")
+}
+
+// -----------------------------------------------------
+// Disponibilidad de BusinessUser (horarios semanales)
+// Solo para usuarios con role=EMPLOYEE
+// -----------------------------------------------------
+model EmployeeAvailability {
+  id             String   @id @default(uuid()) @db.Uuid
+  businessUserId String   @map("business_user_id") @db.Uuid
+  businessId     String   @map("business_id") @db.Uuid
+  dayOfWeek      Int      @map("day_of_week") @db.SmallInt
+  startTime      DateTime @map("start_time") @db.Time
+  endTime        DateTime @map("end_time") @db.Time
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relaciones
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId, businessId], references: [id, businessId], onDelete: Cascade)
+
+  // Evitar horarios duplicados para el mismo empleado, día y hora
+  @@unique([businessUserId, dayOfWeek, startTime])
+  @@map("employee_availabilities")
+}
+
+// -----------------------------------------------------
+// Excepciones de BusinessUser (vacaciones, bloqueos, etc.)
+// Solo para usuarios con role=EMPLOYEE
+// Soporta excepciones de todo el día o por horas específicas
+// -----------------------------------------------------
+model EmployeeException {
+  id             String    @id @default(uuid()) @db.Uuid
+  businessUserId String    @map("business_user_id") @db.Uuid
+  businessId     String    @map("business_id") @db.Uuid
+  date           DateTime  @db.Date
+  isAllDay       Boolean   @default(true) @map("is_all_day")
+  startTime      DateTime? @map("start_time") @db.Time // Solo si isAllDay = false
+  endTime        DateTime? @map("end_time") @db.Time // Solo si isAllDay = false
+  isAvailable    Boolean   @default(false) @map("is_available") // false = bloqueado, true = disponible excepcionalmente
+  reason         String?   @db.Text
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  // Relaciones
+  business     Business     @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessUser BusinessUser @relation(fields: [businessUserId, businessId], references: [id, businessId], onDelete: Cascade)
+
+  // Índice para queries (sin unique constraint, permite múltiples excepciones por día)
+  @@index([businessUserId, date])
+  @@map("employee_exceptions")
+}
+
+// -----------------------------------------------------
+// Citas/Reservas
+// -----------------------------------------------------
+model Appointment {
+  id                     String            @id @default(uuid()) @db.Uuid
+  customerId             String?           @map("customer_id") // Cliente que reserva
+  providerBusinessUserId String?           @map("provider_business_user_id") @db.Uuid // Empleado que da el servicio
+  businessId             String            @map("business_id") @db.Uuid
+  serviceId              String            @map("service_id") @db.Uuid
+  startTime              DateTime          @map("start_time")
+  endTime                DateTime          @map("end_time")
+  isGroup                Boolean           @default(false) @map("is_group")
+  capacity               Int?
+  status                 AppointmentStatus @default(scheduled)
+  notes                  String?           @db.Text
+  createdAt              DateTime          @default(now()) @map("created_at")
+  updatedAt              DateTime          @updatedAt @map("updated_at")
+
+  // Relaciones con FKs compuestas para garantizar integridad cross-business
+  customer             User?         @relation("CustomerAppointments", fields: [customerId], references: [id], onDelete: SetNull)
+  providerBusinessUser BusinessUser? @relation("ProviderAppointments", fields: [providerBusinessUserId, businessId], references: [id, businessId], onDelete: SetNull)
+  business             Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  service              Service       @relation(fields: [serviceId, businessId], references: [id, businessId], onDelete: Restrict)
+
+  @@index([businessId])
+  @@index([serviceId])
+  @@index([customerId])
+  @@index([providerBusinessUserId])
+  @@index([status])
+  @@map("appointments")
 }

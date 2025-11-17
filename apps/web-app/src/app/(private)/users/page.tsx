@@ -1,19 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllUsers, updateUserAdmin, deleteUser } from "@/actions/user";
-import type { UserListItem } from "@/actions/user/get-all-users.action";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { useTrpc } from "@/client/lib/trpc";
+import type { UserProps } from "@/server/core/domain/entities/User";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/client/components/ui/card";
+import { Input } from "@/client/components/ui/input";
+import { Button } from "@/client/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/client/components/ui/select";
 import {
   Search,
   Users as UsersIcon,
@@ -23,7 +28,7 @@ import {
   Shield,
   UserPlus,
 } from "lucide-react";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useDebounce } from "@/client/hooks/use-debounce";
 import { USER_TYPE_FILTERS, USER_STATUS_FILTERS } from "./constants";
 import { UsersTable } from "./components/users-table";
 import { EditUserDialog } from "./components/edit-user-dialog";
@@ -37,8 +42,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { UserType, UserStatus } from "@/core/domain/entities/User";
+} from "@/client/components/ui/alert-dialog";
+import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
@@ -46,84 +51,44 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState<string | UserStatus>("all");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserProps | null>(null);
   const debouncedSearch = useDebounce(search, 300);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["users", debouncedSearch, typeFilter, statusFilter],
-    queryFn: async () => {
-      const result = await getAllUsers({
-        search: debouncedSearch || undefined,
-        type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
-        status:
-          statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
-      });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to fetch users");
-      }
-
-      return result;
-    },
+  const { data, isLoading, error } = useTrpc.user.getAll.useQuery({
+    search: debouncedSearch || undefined,
+    type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
+    status: statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
   });
 
   // Update user mutation
-  const updateMutation = useMutation({
-    mutationFn: async ({
-      userId,
-      data,
-    }: {
-      userId: string;
-      data: { type: string; status: string };
-    }) => {
-      const result = await updateUserAdmin({
-        userId,
-        type: data.type as any,
-        status: data.status as any,
-      });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to update user");
-      }
-
-      return result;
-    },
+  const updateMutation = useTrpc.user.updateAdmin.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: [["user", "getAll"]] });
       toast.success("User updated successfully");
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast.error(error.message || "Failed to update user");
     },
   });
 
   // Delete user mutation
-  const deleteMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      const result = await deleteUser({ userId });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to delete user");
-      }
-
-      return result;
-    },
+  const deleteMutation = useTrpc.user.delete.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: [["user", "getAll"]] });
       toast.success("User deleted successfully");
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast.error(error.message || "Failed to delete user");
     },
   });
 
-  const handleEdit = (user: UserListItem) => {
+  const handleEdit = (user: UserProps) => {
     setSelectedUser(user);
     setEditDialogOpen(true);
   };
 
-  const handleDelete = (user: UserListItem) => {
+  const handleDelete = (user: UserProps) => {
     setSelectedUser(user);
     setDeleteDialogOpen(true);
   };
@@ -133,12 +98,16 @@ export default function UsersPage() {
     data: { type: string; status: string }
   ) => {
     console.log("Submitting update:", { userId, data });
-    await updateMutation.mutateAsync({ userId, data });
+    await updateMutation.mutateAsync({
+      userId,
+      type: data.type as UserType,
+      status: data.status as UserStatus,
+    });
   };
 
   const handleDeleteConfirm = async () => {
     if (selectedUser) {
-      await deleteMutation.mutateAsync(selectedUser.id);
+      await deleteMutation.mutateAsync({ userId: selectedUser.id });
       setDeleteDialogOpen(false);
       setSelectedUser(null);
     }
@@ -146,10 +115,13 @@ export default function UsersPage() {
 
   // Calculate stats
   const activeUsers =
-    data?.users?.filter((u) => u.status === "active").length || 0;
+    data?.users?.filter((u) => u.status === UserStatus.VISIBLE).length || 0;
   const inactiveUsers =
-    data?.users?.filter((u) => u.status === "inactive").length || 0;
-  const adminUsers = data?.users?.filter((u) => u.type === "admin").length || 0;
+    data?.users?.filter(
+      (u) => u.status === UserStatus.HIDDEN || u.status === UserStatus.DISABLED
+    ).length || 0;
+  const adminUsers =
+    data?.users?.filter((u) => u.type === UserType.ADMIN).length || 0;
   const totalUsers = data?.total || 0;
 
   return (
