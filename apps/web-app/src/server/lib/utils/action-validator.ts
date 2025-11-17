@@ -95,13 +95,7 @@ export async function validatePublicAction<TInput, TResult>(
 export async function validatePrivateAction<TInput, TResult>(
   schema: z.ZodSchema<TInput>,
   input: unknown,
-  handler: (
-    validated: TInput,
-    userId: string
-  ) => Promise<TResult | ActionError>,
-  options?: {
-    errorMessage?: string;
-  }
+  handler: (validated: TInput, userId: string) => Promise<TResult | ActionError>
 ): Promise<TResult | ActionError> {
   try {
     // Extract token from input
@@ -109,10 +103,7 @@ export async function validatePrivateAction<TInput, TResult>(
     const token = inputWithToken?._token;
 
     if (!token || typeof token !== "string") {
-      return {
-        success: false,
-        error: "Token de autenticación no proporcionado",
-      };
+      throw new Error("Authentication token is missing or invalid");
     }
 
     // Verify token
@@ -121,10 +112,7 @@ export async function validatePrivateAction<TInput, TResult>(
       const decoded = await verifyAuthToken(token);
       userId = decoded.uid;
     } catch (error) {
-      return {
-        success: false,
-        error: getAuthErrorMessage(error),
-      };
+      throw new Error(getAuthErrorMessage(error));
     }
 
     // Remove _token from input before validation
@@ -137,15 +125,8 @@ export async function validatePrivateAction<TInput, TResult>(
     return await handler(validated, userId);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: `Validation error: ${error.message}`,
-      };
+      throw new Error("Validation error: " + error.message);
     }
-
-    return {
-      success: false,
-      error: options?.errorMessage || "An unexpected error occurred",
-    };
+    throw error;
   }
 }

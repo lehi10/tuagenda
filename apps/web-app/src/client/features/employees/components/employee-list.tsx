@@ -43,6 +43,7 @@ import { BusinessRole } from "@/server/core/domain/entities";
 import { EmployeeDialog } from "./employee-dialog";
 import { EmptyState } from "@/client/components/shared/empty-state";
 import { useDebounce } from "@/client/hooks/use-debounce";
+import { withAuth } from "@/client/lib/auth/with-auth";
 
 export function EmployeeList() {
   const { t } = useTranslation();
@@ -70,7 +71,7 @@ export function EmployeeList() {
     queryKey: ["business-users", currentBusiness?.id, debouncedSearch],
     queryFn: async () => {
       if (!currentBusiness?.id) return null;
-      const result = await getBusinessUsersWithDetails({
+      const result = await withAuth(getBusinessUsersWithDetails, {
         businessId: currentBusiness.id,
         search: debouncedSearch,
       });

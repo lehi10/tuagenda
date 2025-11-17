@@ -67,10 +67,6 @@ export async function getBusinessUsersWithDetails(
         success: false,
         error: result.error || "Failed to fetch business users with details",
       };
-    },
-    {
-      errorMessage:
-        "An unexpected error occurred while fetching business users with details",
     }
   );
 }
