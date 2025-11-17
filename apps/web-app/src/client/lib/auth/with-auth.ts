@@ -13,10 +13,10 @@ import { getAuth } from "firebase/auth";
  * The token is automatically added as `_token` property in the data object
  * Firebase caches tokens internally, so this is very fast (1-2ms)
  */
-export async function withAuth<T>(
-  action: (data: any) => Promise<T>,
-  data?: any
-): Promise<T> {
+export async function withAuth<
+  T,
+  D extends Record<string, unknown> = Record<string, unknown>,
+>(action: (data: D & { _token: string }) => Promise<T>, data?: D): Promise<T> {
   const auth = getAuth();
   const token = await auth.currentUser?.getIdToken();
 
@@ -24,5 +24,5 @@ export async function withAuth<T>(
     throw new Error("No estás autenticado. Por favor inicia sesión.");
   }
 
-  return action({ ...data, _token: token });
+  return action({ ...data, _token: token } as D & { _token: string });
 }

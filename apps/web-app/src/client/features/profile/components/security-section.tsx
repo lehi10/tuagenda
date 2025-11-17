@@ -22,18 +22,18 @@ import {
   FieldDescription,
 } from "@/client/components/ui/field";
 import { useTranslation } from "@/client/i18n";
+import { useChangePassword } from "@/client/hooks/use-change-password";
 
 import {
   changePasswordSchema,
   type ChangePasswordInput,
 } from "@/shared/validations/user.schema";
-import { changePasswordAction } from "@/server/api/user/change-password.action";
 import { logger } from "@/shared/lib/logger";
 import { authService } from "@/client/lib/auth/auth-service";
 
 export function SecuritySection() {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
+  const { changePassword, isLoading } = useChangePassword();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -54,32 +54,20 @@ export function SecuritySection() {
 
   const onSubmit = async (data: ChangePasswordInput) => {
     logger.info("SECURITY", "anonymous", "Submitting password change");
-    setIsLoading(true);
 
-    try {
-      const result = await changePasswordAction(data);
+    const result = await changePassword(data.currentPassword, data.newPassword);
 
-      if (result.success) {
-        toast.success(t.pages.profile.messages.passwordChanged);
-        logger.info("SECURITY", "anonymous", "Password changed successfully");
-        reset(); // Clear form on success
-      } else {
-        toast.error(result.error);
-        logger.error(
-          "SECURITY",
-          "anonymous",
-          `Password change failed: ${result.error}`
-        );
-      }
-    } catch (error) {
+    if (result.success) {
+      toast.success(t.pages.profile.messages.passwordChanged);
+      logger.info("SECURITY", "anonymous", "Password changed successfully");
+      reset(); // Clear form on success
+    } else {
+      toast.error(result.error || "Failed to change password");
       logger.error(
         "SECURITY",
         "anonymous",
-        `Unexpected error: ${error instanceof Error ? error.message : String(error)}`
+        `Password change failed: ${result.error}`
       );
-      toast.error("An unexpected error occurred");
-    } finally {
-      setIsLoading(false);
     }
   };
   const authProviders = authService.getCurrentUser()?.providerData;
@@ -87,7 +75,7 @@ export function SecuritySection() {
   // Memoize provider parsing to avoid recalculating on every render
   const { providerIds, primaryProvider, providerName } = useMemo(() => {
     const ids = (authProviders || [])
-      .map((p: any) =>
+      .map((p: string | { providerId?: string; provider?: string }) =>
         typeof p === "string" ? p : p?.providerId || p?.provider || ""
       )
       .filter(Boolean) as string[];

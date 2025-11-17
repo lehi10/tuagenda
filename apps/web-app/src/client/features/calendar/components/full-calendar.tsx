@@ -31,8 +31,6 @@ export function FullCalendarView({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const calendarView = viewType === "list" ? "listWeek" : "dayGridMonth";
-
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}

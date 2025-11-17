@@ -156,7 +156,7 @@ interface BookingFlowProps {
   business: BusinessProps;
 }
 
-export function BookingFlow({ business }: BookingFlowProps) {
+export function BookingFlow({ business: _business }: BookingFlowProps) {
   // You can modify this configuration based on business settings
   // For example, if business has only one professional:
   // const stepConfig = singleProfessionalConfig

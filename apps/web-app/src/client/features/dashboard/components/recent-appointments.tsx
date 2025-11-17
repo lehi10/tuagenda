@@ -42,6 +42,142 @@ interface Appointment {
   price?: number;
 }
 
+// Mock data - move outside component for stable reference
+const MOCK_APPOINTMENTS: Appointment[] = [
+  {
+    id: "1",
+    client: "John Doe",
+    service: "Haircut",
+    employee: "Sarah Johnson",
+    date: "2024-10-24",
+    time: "10:00 AM",
+    duration: "30 min",
+    status: "completed",
+    price: 45,
+  },
+  {
+    id: "2",
+    client: "Jane Smith",
+    service: "Manicure",
+    employee: "Emily Davis",
+    date: "2024-10-24",
+    time: "11:30 AM",
+    duration: "45 min",
+    status: "pending",
+    price: 35,
+  },
+  {
+    id: "3",
+    client: "Bob Johnson",
+    service: "Massage",
+    employee: "Mike Chen",
+    date: "2024-10-23",
+    time: "2:00 PM",
+    duration: "60 min",
+    status: "completed",
+    price: 80,
+  },
+  {
+    id: "4",
+    client: "Alice Williams",
+    service: "Coloring",
+    employee: "Sarah Johnson",
+    date: "2024-10-23",
+    time: "9:00 AM",
+    duration: "90 min",
+    status: "completed",
+    price: 120,
+  },
+  {
+    id: "5",
+    client: "Charlie Brown",
+    service: "Haircut",
+    employee: "James Wilson",
+    date: "2024-10-22",
+    time: "3:30 PM",
+    duration: "30 min",
+    status: "cancelled",
+    price: 45,
+  },
+  {
+    id: "6",
+    client: "Diana Prince",
+    service: "Spa Treatment",
+    employee: "Emily Davis",
+    date: "2024-10-22",
+    time: "1:00 PM",
+    duration: "120 min",
+    status: "completed",
+    price: 150,
+  },
+  {
+    id: "7",
+    client: "Erik Mason",
+    service: "Haircut",
+    employee: "Mike Chen",
+    date: "2024-10-21",
+    time: "4:00 PM",
+    duration: "30 min",
+    status: "completed",
+    price: 45,
+  },
+  {
+    id: "8",
+    client: "Fiona Green",
+    service: "Manicure",
+    employee: "Sarah Johnson",
+    date: "2024-10-21",
+    time: "2:30 PM",
+    duration: "45 min",
+    status: "pending",
+    price: 35,
+  },
+  {
+    id: "9",
+    client: "George Harris",
+    service: "Massage",
+    employee: "Emily Davis",
+    date: "2024-10-21",
+    time: "11:00 AM",
+    duration: "60 min",
+    status: "completed",
+    price: 80,
+  },
+  {
+    id: "10",
+    client: "Hannah Lee",
+    service: "Coloring",
+    employee: "Sarah Johnson",
+    date: "2024-10-20",
+    time: "10:00 AM",
+    duration: "90 min",
+    status: "completed",
+    price: 120,
+  },
+  {
+    id: "11",
+    client: "Ian Foster",
+    service: "Haircut",
+    employee: "James Wilson",
+    date: "2024-10-20",
+    time: "3:00 PM",
+    duration: "30 min",
+    status: "cancelled",
+    price: 45,
+  },
+  {
+    id: "12",
+    client: "Julia Roberts",
+    service: "Spa Treatment",
+    employee: "Mike Chen",
+    date: "2024-10-19",
+    time: "1:30 PM",
+    duration: "120 min",
+    status: "completed",
+    price: 150,
+  },
+];
+
 export function RecentAppointments() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,149 +185,14 @@ export function RecentAppointments() {
   const [serviceFilter, setServiceFilter] = useState<string>("all");
   const itemsPerPage = 5;
 
-  const appointments: Appointment[] = [
-    {
-      id: "1",
-      client: "John Doe",
-      service: "Haircut",
-      employee: "Sarah Johnson",
-      date: "2024-10-24",
-      time: "10:00 AM",
-      duration: "30 min",
-      status: "completed",
-      price: 45,
-    },
-    {
-      id: "2",
-      client: "Jane Smith",
-      service: "Manicure",
-      employee: "Emily Davis",
-      date: "2024-10-24",
-      time: "11:30 AM",
-      duration: "45 min",
-      status: "pending",
-      price: 35,
-    },
-    {
-      id: "3",
-      client: "Bob Johnson",
-      service: "Massage",
-      employee: "Mike Chen",
-      date: "2024-10-23",
-      time: "2:00 PM",
-      duration: "60 min",
-      status: "completed",
-      price: 80,
-    },
-    {
-      id: "4",
-      client: "Alice Williams",
-      service: "Coloring",
-      employee: "Sarah Johnson",
-      date: "2024-10-23",
-      time: "9:00 AM",
-      duration: "90 min",
-      status: "completed",
-      price: 120,
-    },
-    {
-      id: "5",
-      client: "Charlie Brown",
-      service: "Haircut",
-      employee: "James Wilson",
-      date: "2024-10-22",
-      time: "3:30 PM",
-      duration: "30 min",
-      status: "cancelled",
-      price: 45,
-    },
-    {
-      id: "6",
-      client: "Diana Prince",
-      service: "Spa Treatment",
-      employee: "Emily Davis",
-      date: "2024-10-22",
-      time: "1:00 PM",
-      duration: "120 min",
-      status: "completed",
-      price: 150,
-    },
-    {
-      id: "7",
-      client: "Erik Mason",
-      service: "Haircut",
-      employee: "Mike Chen",
-      date: "2024-10-21",
-      time: "4:00 PM",
-      duration: "30 min",
-      status: "completed",
-      price: 45,
-    },
-    {
-      id: "8",
-      client: "Fiona Green",
-      service: "Manicure",
-      employee: "Sarah Johnson",
-      date: "2024-10-21",
-      time: "2:30 PM",
-      duration: "45 min",
-      status: "pending",
-      price: 35,
-    },
-    {
-      id: "9",
-      client: "George Harris",
-      service: "Massage",
-      employee: "Emily Davis",
-      date: "2024-10-21",
-      time: "11:00 AM",
-      duration: "60 min",
-      status: "completed",
-      price: 80,
-    },
-    {
-      id: "10",
-      client: "Hannah Lee",
-      service: "Coloring",
-      employee: "Sarah Johnson",
-      date: "2024-10-20",
-      time: "10:00 AM",
-      duration: "90 min",
-      status: "completed",
-      price: 120,
-    },
-    {
-      id: "11",
-      client: "Ian Foster",
-      service: "Haircut",
-      employee: "James Wilson",
-      date: "2024-10-20",
-      time: "3:00 PM",
-      duration: "30 min",
-      status: "cancelled",
-      price: 45,
-    },
-    {
-      id: "12",
-      client: "Julia Roberts",
-      service: "Spa Treatment",
-      employee: "Mike Chen",
-      date: "2024-10-19",
-      time: "1:30 PM",
-      duration: "120 min",
-      status: "completed",
-      price: 150,
-    },
-  ];
-
   // Get unique services for filter
   const uniqueServices = useMemo(() => {
-    return Array.from(new Set(appointments.map((app) => app.service)));
-  }, [appointments]);
+    return Array.from(new Set(MOCK_APPOINTMENTS.map((app) => app.service)));
+  }, []);
 
   // Filter appointments based on search and filters
   const filteredAppointments = useMemo(() => {
-    return appointments.filter((appointment) => {
+    return MOCK_APPOINTMENTS.filter((appointment) => {
       const matchesSearch =
         searchQuery === "" ||
         appointment.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -205,7 +206,7 @@ export function RecentAppointments() {
 
       return matchesSearch && matchesStatus && matchesService;
     });
-  }, [appointments, searchQuery, statusFilter, serviceFilter]);
+  }, [searchQuery, statusFilter, serviceFilter]);
 
   const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

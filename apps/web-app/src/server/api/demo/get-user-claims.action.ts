@@ -125,7 +125,7 @@ export async function getUserClaims(
     try {
       const userTypes = await authService.getUserTypes(user.id);
       userType = userTypes.length > 0 ? userTypes.join(", ") : undefined;
-    } catch (error) {
+    } catch (_error) {
       logger.warning(
         "GetUserPermissionsDemo",
         user.id,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "@/client/i18n";
+import { useTranslation, type Locale } from "@/client/i18n";
 import { Button } from "@/client/components/ui/button";
 import {
   DropdownMenu,
@@ -68,7 +68,7 @@ export function LanguageSelector() {
             {languages.map((language) => (
               <DropdownMenuItem
                 key={language.code}
-                onClick={() => setLocale(language.code as any)}
+                onClick={() => setLocale(language.code as Locale)}
                 className="flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ export function LanguageSelectorButton() {
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
-            onClick={() => setLocale(language.code as any)}
+            onClick={() => setLocale(language.code as Locale)}
             className="flex items-center justify-between cursor-pointer"
           >
             <div className="flex items-center gap-2">

@@ -80,4 +80,22 @@ export const authService = {
    */
   updateProfile: (data: { displayName?: string; photoURL?: string }) =>
     getAuthService().updateProfile(data),
+
+  /**
+   * Change user password
+   * Requires re-authentication with current password
+   */
+  changePassword: (currentPassword: string, newPassword: string) => {
+    const service = getAuthService();
+    if (typeof service.changePassword === "function") {
+      return service.changePassword(currentPassword, newPassword);
+    }
+    throw new Error("Password change is not supported");
+  },
+
+  /**
+   * Get ID token for current user
+   */
+  getIdToken: (forceRefresh?: boolean) =>
+    getAuthService().getIdToken(forceRefresh),
 };

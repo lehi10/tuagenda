@@ -33,7 +33,7 @@ export function BusinessSwitcher() {
     loading,
   } = useBusiness();
   const [open, setOpen] = useState(false);
-  const { isMobile, state } = useSidebar();
+  const { isMobile } = useSidebar();
 
   if (loading) {
     return (

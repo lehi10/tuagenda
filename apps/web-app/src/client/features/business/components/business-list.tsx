@@ -68,7 +68,10 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
       staleTime: 5 * 60 * 1000,
     });
 
-    const businesses = businessesData?.businesses || [];
+    const businesses = useMemo(
+      () => businessesData?.businesses || [],
+      [businessesData?.businesses]
+    );
 
     // Delete mutation
     const deleteMutation = useTrpc.business.delete.useMutation({

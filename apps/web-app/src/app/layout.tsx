@@ -5,7 +5,6 @@ import { AuthProvider, BusinessProvider } from "@/client/contexts";
 import { TRPCProvider } from "@/client/lib/trpc";
 import { Toaster } from "@/client/components/ui/toaster";
 import type { Metadata } from "next";
-import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 
 const poppins = Poppins({
   variable: "--font-poppins",

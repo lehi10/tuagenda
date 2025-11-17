@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "./auth-context";
 import { trpc } from "@/client/lib/trpc";
@@ -216,7 +222,10 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  const businesses: BusinessProps[] = businessesData || [];
+  const businesses: BusinessProps[] = useMemo(
+    () => businessesData || [],
+    [businessesData]
+  );
   const isLoading = isLoadingBusinessUsers || isLoadingBusinesses;
   const error = businessUsersError || businessesError;
 

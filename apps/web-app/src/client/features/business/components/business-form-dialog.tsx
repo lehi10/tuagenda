@@ -390,7 +390,10 @@ export function BusinessFormDialog({
                   <Select
                     value={formData.status}
                     onValueChange={(value) =>
-                      handleChange("status", value as any)
+                      handleChange(
+                        "status",
+                        value as "active" | "inactive" | "suspended"
+                      )
                     }
                   >
                     <SelectTrigger id="status">
