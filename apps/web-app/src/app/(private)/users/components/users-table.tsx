@@ -30,12 +30,12 @@ import {
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
 import { UserType, UserStatus } from "@/server/core/domain/entities/User";
-import type { UserListItem } from "@/server/api/user/get-all-users.action";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 interface UsersTableProps {
-  users: UserListItem[];
-  onEdit: (user: UserListItem) => void;
-  onDelete: (user: UserListItem) => void;
+  users: UserProps[];
+  onEdit: (user: UserProps) => void;
+  onDelete: (user: UserProps) => void;
 }
 
 export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {

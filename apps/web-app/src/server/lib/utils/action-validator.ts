@@ -95,11 +95,17 @@ export async function validatePublicAction<TInput, TResult>(
 export async function validatePrivateAction<TInput, TResult>(
   schema: z.ZodSchema<TInput>,
   input: unknown,
-  handler: (validated: TInput, userId: string) => Promise<TResult | ActionError>
+  handler: (
+    validated: TInput,
+    userId: string
+  ) => Promise<TResult | ActionError>,
+  options?: {
+    errorMessage?: string;
+  }
 ): Promise<TResult | ActionError> {
   try {
     // Extract token from input
-    const inputWithToken = input as any;
+    const inputWithToken = input as unknown as Record<string, unknown>;
     const token = inputWithToken?._token;
 
     if (!token || typeof token !== "string") {
@@ -116,7 +122,7 @@ export async function validatePrivateAction<TInput, TResult>(
     }
 
     // Remove _token from input before validation
-    const { _token, ...inputWithoutToken } = inputWithToken;
+    const { _token: _, ...inputWithoutToken } = inputWithToken;
 
     // Validate input
     const validated = schema.parse(inputWithoutToken);
@@ -125,8 +131,22 @@ export async function validatePrivateAction<TInput, TResult>(
     return await handler(validated, userId);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new Error("Validation error: " + error.message);
+      return {
+        success: false,
+        error: `Validation error: ${error.message}`,
+      };
     }
-    throw error;
+
+    if (error instanceof Error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: options?.errorMessage || "An unexpected error occurred",
+    };
   }
 }

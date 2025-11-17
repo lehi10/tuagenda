@@ -86,7 +86,6 @@ export async function changePasswordAction(
           error: "Password change is not supported",
         };
       }
-    },
-    { errorMessage: "Failed to change password. Please try again." }
+    }
   );
 }

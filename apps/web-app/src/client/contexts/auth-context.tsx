@@ -3,11 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthState, FirebaseUserData } from "@/shared/types/auth";
 import { getAuthService } from "@/client/lib/auth/auth-service";
-import { getUserByIdAction } from "@/server/api/user/get-user.action";
-import { createUserAction } from "@/server/api/user/create-user.action";
+import { trpc } from "@/client/lib/trpc";
 import { parseFullName } from "@/shared/utils/name-parser";
 import { getAuthErrorMessage } from "@/shared/lib/auth/errors";
-import { withAuth } from "@/client/lib/auth/with-auth";
 
 interface AuthContextValue extends AuthState {
   /**
@@ -81,24 +79,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setState((prev) => ({ ...prev, loading: true }));
 
         try {
-          // Get user from database
-          const result = await withAuth(getUserByIdAction, {
+          // Get user from database using tRPC direct client
+          const user = await trpc.user.getById.query({
             userId: firebaseUser.uid,
           });
 
-          if (result.success) {
-            setState({
-              user: result.user,
-              loading: false,
-              error: null,
-            });
-          } else {
-            // User not in database - create new user (Google first-time login)
+          setState({
+            user,
+            loading: false,
+            error: null,
+          });
+        } catch {
+          // User not in database - create new user (Google first-time login)
+          try {
             const { firstName, lastName } = parseFullName(
               firebaseUser.displayName || ""
             );
 
-            const createResult = await withAuth(createUserAction, {
+            await trpc.user.create.mutate({
               id: firebaseUser.uid,
               email: firebaseUser.email || "",
               firstName,
@@ -106,39 +104,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
               pictureFullPath: firebaseUser.photoURL,
             });
 
-            if (createResult.success) {
-              // Fetch the newly created user
-              const newUserResult = await withAuth(getUserByIdAction, {
-                userId: firebaseUser.uid,
-              });
+            // Fetch the newly created user
+            const newUser = await trpc.user.getById.query({
+              userId: firebaseUser.uid,
+            });
 
-              if (newUserResult.success) {
-                setState({
-                  user: newUserResult.user,
-                  loading: false,
-                  error: null,
-                });
-              } else {
-                setState({
-                  user: null,
-                  loading: false,
-                  error: new Error(newUserResult.error),
-                });
-              }
-            } else {
-              setState({
-                user: null,
-                loading: false,
-                error: new Error(createResult.error),
-              });
-            }
+            setState({
+              user: newUser,
+              loading: false,
+              error: null,
+            });
+          } catch (createError) {
+            setState({
+              user: null,
+              loading: false,
+              error: new Error(getAuthErrorMessage(createError)),
+            });
           }
-        } catch (error) {
-          setState({
-            user: null,
-            loading: false,
-            error: new Error(getAuthErrorMessage(error)),
-          });
         }
       } else {
         setState({
@@ -241,12 +223,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       const firebaseUser = authService.getCurrentUser();
       if (firebaseUser) {
-        const result = await withAuth(getUserByIdAction, {
+        const user = await trpc.user.getById.query({
           userId: firebaseUser.uid,
         });
-        if (result.success) {
-          setState((prev) => ({ ...prev, user: result.user }));
-        }
+        setState((prev) => ({ ...prev, user }));
       }
     } catch (error) {
       setState((prev) => ({

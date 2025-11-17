@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2, Search } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useTrpc } from "@/client/lib/trpc";
 import {
   Sheet,
   SheetContent,
@@ -36,7 +36,6 @@ import {
   AvatarImage,
 } from "@/client/components/ui/avatar";
 import { BusinessRole } from "@/server/core/domain/entities";
-import { searchUsersAction } from "@/server/api/user";
 import { useDebounce } from "@/client/hooks/use-debounce";
 
 const formSchema = z.object({
@@ -77,14 +76,12 @@ export function EmployeeDialog({
     },
   });
 
-  const { data: searchResults, isLoading: searching } = useQuery({
-    queryKey: ["user-search", debouncedSearch],
-    queryFn: async () => {
-      const result = await searchUsersAction({ search: debouncedSearch });
-      return result.success ? result.users : [];
-    },
-    enabled: !editData && debouncedSearch.length >= 2,
-  });
+  const { data: searchData, isLoading: searching } =
+    useTrpc.user.search.useQuery(
+      { search: debouncedSearch },
+      { enabled: !editData && debouncedSearch.length >= 2 }
+    );
+  const searchResults = searchData?.users;
 
   useEffect(() => {
     if (editData) {

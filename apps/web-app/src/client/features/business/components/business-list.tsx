@@ -36,15 +36,15 @@ import {
 import { useTranslation } from "@/client/i18n";
 import {
   useState,
-  useEffect,
   forwardRef,
   useImperativeHandle,
   useMemo,
+  useEffect,
 } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
 import { toast } from "sonner";
 import { BusinessProps } from "@/server/core/domain/entities/Business";
-import { listBusinesses, deleteBusiness } from "@/server/api/business";
+import { useTrpc } from "@/client/lib/trpc";
 import { useBusiness } from "@/client/contexts";
 
 const ITEMS_PER_PAGE = 10;
@@ -56,40 +56,39 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
     const [editingBusiness, setEditingBusiness] =
       useState<BusinessProps | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [businesses, setBusinesses] = useState<BusinessProps[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
+    // Fetch businesses using tRPC
+    const {
+      data: businessesData,
+      isLoading,
+      refetch: refetchBusinesses,
+    } = useTrpc.business.list.useQuery(undefined, {
+      staleTime: 5 * 60 * 1000,
+    });
+
+    const businesses = businessesData?.businesses || [];
+
+    // Delete mutation
+    const deleteMutation = useTrpc.business.delete.useMutation({
+      onSuccess: async () => {
+        toast.success("Negocio eliminado exitosamente");
+        await refetchBusinesses();
+        await refreshBusinesses();
+      },
+      onError: (error) => {
+        toast.error(error.message || "Error al eliminar el negocio");
+      },
+    });
+
     // Expose refresh method to parent
     useImperativeHandle(ref, () => ({
-      refresh: fetchBusinesses,
+      refresh: async () => {
+        await refetchBusinesses();
+        await refreshBusinesses();
+      },
     }));
-
-    // Fetch businesses on mount
-    useEffect(() => {
-      fetchBusinesses();
-    }, []);
-
-    const fetchBusinesses = async () => {
-      try {
-        setIsLoading(true);
-        const result = await listBusinesses();
-
-        if (result.success) {
-          setBusinesses(result.businesses);
-          // Refresh business switcher in case names changed
-          await refreshBusinesses();
-        } else {
-          toast.error(result.error || "Error al cargar los negocios");
-        }
-      } catch (error) {
-        console.error("Error fetching businesses:", error);
-        toast.error("Error al cargar los negocios");
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
     const handleEdit = (business: BusinessProps) => {
       setEditingBusiness(business);
@@ -101,20 +100,7 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
         return;
       }
 
-      try {
-        const result = await deleteBusiness({ id });
-
-        if (result.success) {
-          toast.success("Negocio eliminado exitosamente");
-          fetchBusinesses(); // Refresh the list
-          await refreshBusinesses(); // Refresh business switcher
-        } else {
-          toast.error(result.error || "Error al eliminar el negocio");
-        }
-      } catch (error) {
-        console.error("Error deleting business:", error);
-        toast.error("Error al eliminar el negocio");
-      }
+      deleteMutation.mutate({ id });
     };
 
     const getStatusVariant = (
@@ -387,8 +373,9 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
               setEditingBusiness(null);
               setIsEditDialogOpen(false);
             }}
-            onSuccess={() => {
-              fetchBusinesses(); // Refresh the list after edit
+            onSuccess={async () => {
+              await refetchBusinesses();
+              await refreshBusinesses();
             }}
           />
         )}

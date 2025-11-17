@@ -23,7 +23,7 @@ import {
 } from "@/client/components/ui/select";
 import { Separator } from "@/client/components/ui/separator";
 import { BusinessProps } from "@/server/core/domain/entities/Business";
-import { createBusiness, updateBusiness } from "@/server/api/business";
+import { useTrpc } from "@/client/lib/trpc";
 
 interface BusinessFormDialogProps {
   open: boolean;
@@ -41,7 +41,32 @@ export function BusinessFormDialog({
   onSuccess,
 }: BusinessFormDialogProps) {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const createMutation = useTrpc.business.create.useMutation({
+    onSuccess: () => {
+      toast.success("Negocio creado exitosamente");
+      onOpenChange(false);
+      if (onClose) onClose();
+      if (onSuccess) onSuccess();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Error al crear el negocio");
+    },
+  });
+
+  const updateMutation = useTrpc.business.update.useMutation({
+    onSuccess: () => {
+      toast.success("Negocio actualizado exitosamente");
+      onOpenChange(false);
+      if (onClose) onClose();
+      if (onSuccess) onSuccess();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Error al actualizar el negocio");
+    },
+  });
+
+  const isLoading = createMutation.isPending || updateMutation.isPending;
 
   const [formData, setFormData] = useState<{
     title: string;
@@ -95,39 +120,16 @@ export function BusinessFormDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      let result;
-
-      if (business && business.id) {
-        // Update existing business
-        result = await updateBusiness({
-          id: business.id,
-          ...formData,
-        });
-      } else {
-        // Create new business
-        result = await createBusiness(formData);
-      }
-
-      if (result.success) {
-        const successMessage = business
-          ? "Negocio actualizado exitosamente"
-          : "Negocio creado exitosamente";
-
-        toast.success(successMessage);
-        onOpenChange(false);
-        if (onClose) onClose();
-        if (onSuccess) onSuccess();
-      } else {
-        toast.error(result.error || "Error al guardar el negocio");
-      }
-    } catch (error) {
-      console.error("Error saving business:", error);
-      toast.error("Error al guardar el negocio");
-    } finally {
-      setIsLoading(false);
+    if (business && business.id) {
+      // Update existing business
+      updateMutation.mutate({
+        id: business.id,
+        ...formData,
+      });
+    } else {
+      // Create new business
+      createMutation.mutate(formData);
     }
   };
 

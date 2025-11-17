@@ -4,12 +4,12 @@
  * This hook is designed for PUBLIC booking flows.
  * It handles caching, loading states, and error handling automatically.
  *
+ * Uses tRPC under the hood for type-safe API calls.
+ *
  * @module hooks
  */
 
-import { useQuery } from "@tanstack/react-query";
-import { getBusinessBySlug } from "@/server/api/business";
-import { BusinessProps } from "@/server/core/domain/entities/Business";
+import { useTrpc } from "@/client/lib/trpc";
 
 interface UseBusinessBySlugOptions {
   slug: string;
@@ -20,17 +20,8 @@ export function useBusinessBySlug({
   slug,
   enabled = true,
 }: UseBusinessBySlugOptions) {
-  return useQuery({
-    queryKey: ["business", "slug", slug],
-    queryFn: async () => {
-      const result = await getBusinessBySlug(slug);
-
-      if (!result.success) {
-        throw new Error(result.error || "Business not found");
-      }
-
-      return result.business as BusinessProps;
-    },
-    enabled: enabled && !!slug,
-  });
+  return useTrpc.business.getBySlug.useQuery(
+    { slug },
+    { enabled: enabled && !!slug }
+  );
 }

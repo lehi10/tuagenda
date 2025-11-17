@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { MoreHorizontal, Search, Building2, Users } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import {
@@ -30,25 +29,17 @@ import {
 import { DataTableWithFilters } from "@/client/components/shared/data-table-with-filters";
 import { useTranslation } from "@/client/i18n";
 import { useBusiness } from "@/client/contexts";
-import {
-  getBusinessUsersWithDetails,
-  BusinessUserWithDetails,
-} from "@/server/api/business-user/get-business-users-with-details.action";
-import {
-  createBusinessUser,
-  updateBusinessUser,
-  deleteBusinessUser,
-} from "@/server/api/business-user";
+import { useTrpc } from "@/client/lib/trpc";
 import { BusinessRole } from "@/server/core/domain/entities";
+import { BusinessUserWithDetails } from "@/server/core/domain/repositories/IBusinessUserRepository";
 import { EmployeeDialog } from "./employee-dialog";
 import { EmptyState } from "@/client/components/shared/empty-state";
 import { useDebounce } from "@/client/hooks/use-debounce";
-import { withAuth } from "@/client/lib/auth/with-auth";
 
 export function EmployeeList() {
   const { t } = useTranslation();
   const { currentBusiness } = useBusiness();
-  const queryClient = useQueryClient();
+  const utils = useTrpc.useUtils();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -67,51 +58,32 @@ export function EmployeeList() {
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
-  const { data: employeesData, isLoading } = useQuery({
-    queryKey: ["business-users", currentBusiness?.id, debouncedSearch],
-    queryFn: async () => {
-      if (!currentBusiness?.id) return null;
-      const result = await withAuth(getBusinessUsersWithDetails, {
-        businessId: currentBusiness.id,
-        search: debouncedSearch,
-      });
-      return result.success ? result.businessUsers : [];
-    },
-    enabled: !!currentBusiness?.id,
-  });
+  const { data: employeesData, isLoading } =
+    useTrpc.businessUser.getWithDetails.useQuery(
+      {
+        businessId: currentBusiness?.id || "",
+        search: debouncedSearch || undefined,
+      },
+      {
+        enabled: !!currentBusiness?.id,
+      }
+    );
 
-  const createMutation = useMutation({
-    mutationFn: async (data: { userId: string; role: BusinessRole }) => {
-      if (!currentBusiness?.id) throw new Error("No business selected");
-      return await createBusinessUser({
-        userId: data.userId,
-        businessId: currentBusiness.id,
-        role: data.role,
-      });
-    },
+  const createMutation = useTrpc.businessUser.create.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["business-users"] });
+      utils.businessUser.getWithDetails.invalidate();
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: async (data: { id: string; role: BusinessRole }) => {
-      return await updateBusinessUser({
-        id: data.id,
-        role: data.role,
-      });
-    },
+  const updateMutation = useTrpc.businessUser.update.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["business-users"] });
+      utils.businessUser.getWithDetails.invalidate();
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return await deleteBusinessUser({ id });
-    },
+  const deleteMutation = useTrpc.businessUser.delete.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["business-users"] });
+      utils.businessUser.getWithDetails.invalidate();
     },
   });
 
@@ -119,7 +91,12 @@ export function EmployeeList() {
     if (editData) {
       await updateMutation.mutateAsync({ id: editData.id, role: data.role });
     } else {
-      await createMutation.mutateAsync(data);
+      if (!currentBusiness?.id) throw new Error("No business selected");
+      await createMutation.mutateAsync({
+        userId: data.userId,
+        businessId: currentBusiness.id,
+        role: data.role,
+      });
     }
   };
 
@@ -141,7 +118,7 @@ export function EmployeeList() {
 
   const confirmDelete = async () => {
     if (deleteId) {
-      await deleteMutation.mutateAsync(deleteId);
+      await deleteMutation.mutateAsync({ id: deleteId });
       setDeleteDialogOpen(false);
       setDeleteId(null);
     }

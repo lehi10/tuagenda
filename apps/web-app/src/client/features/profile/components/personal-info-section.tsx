@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -29,12 +28,12 @@ import {
   FieldDescription,
 } from "@/client/components/ui/field";
 import { useTranslation } from "@/client/i18n";
+import { useTrpc } from "@/client/lib/trpc";
 
 import {
   updateProfilePersonalInfoSchema,
   type UpdateProfilePersonalInfoInput,
 } from "@/shared/validations/user.schema";
-import { updateUserProfileAction } from "@/server/api/user";
 import { logger } from "@/shared/lib/logger";
 import type { UserProps } from "@/server/core/domain/entities/User";
 
@@ -48,7 +47,18 @@ export function PersonalInfoSection({
   onUpdate,
 }: PersonalInfoSectionProps) {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const updateProfileMutation = useTrpc.user.updateProfile.useMutation({
+    onSuccess: () => {
+      toast.success(t.pages.profile.messages.profileUpdated);
+      logger.info("PERSONAL_INFO", user.id, "Profile updated successfully");
+      onUpdate?.();
+    },
+    onError: (error) => {
+      logger.error("PERSONAL_INFO", user.id, `Update failed: ${error.message}`);
+      toast.error(error.message);
+    },
+  });
 
   const {
     register,
@@ -71,38 +81,14 @@ export function PersonalInfoSection({
   const countryCode = watch("countryCode");
   const timeZone = watch("timeZone");
 
-  const onSubmit = async (data: UpdateProfilePersonalInfoInput) => {
-    setIsLoading(true);
-
-    try {
-      const result = await updateUserProfileAction({
-        userId: user.id,
-        ...data,
-      });
-
-      if (result.success) {
-        toast.success(t.pages.profile.messages.profileUpdated);
-        logger.info("PERSONAL_INFO", user.id, "Profile updated successfully");
-        onUpdate?.();
-      } else {
-        toast.error(result.error);
-        logger.error(
-          "PERSONAL_INFO",
-          user.id,
-          `Update failed: ${result.error}`
-        );
-      }
-    } catch (error) {
-      logger.error(
-        "PERSONAL_INFO",
-        user.id,
-        `Unexpected error: ${error instanceof Error ? error.message : String(error)}`
-      );
-      toast.error("An unexpected error occurred");
-    } finally {
-      setIsLoading(false);
-    }
+  const onSubmit = (data: UpdateProfilePersonalInfoInput) => {
+    updateProfileMutation.mutate({
+      userId: user.id,
+      ...data,
+    });
   };
+
+  const isLoading = updateProfileMutation.isPending;
 
   return (
     <Card>

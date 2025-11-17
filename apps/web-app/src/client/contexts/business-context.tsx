@@ -3,8 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "./auth-context";
-import { getBusinessUsersByUser } from "@/server/api/business-user";
-import { listBusinesses } from "@/server/api/business";
+import { trpc } from "@/client/lib/trpc";
 import {
   BusinessProps,
   BusinessRole,
@@ -12,7 +11,6 @@ import {
   UserType,
 } from "@/server/core/domain/entities";
 import { logger } from "@/shared/lib/logger";
-import { withAuth } from "../lib/auth/with-auth";
 
 /**
  * Business context state
@@ -137,23 +135,17 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
         "Fetching business-user relationships"
       );
 
-      const result = await getBusinessUsersByUser({
+      const businessUsers = await trpc.businessUser.getByUser.query({
         userId: user.id,
       });
-
-      if (!result.success) {
-        throw new Error(
-          result.error || "Failed to fetch business relationships"
-        );
-      }
 
       logger.info(
         "BusinessContext",
         user.id,
-        `Found ${result.businessUsers.length} business relationships`
+        `Found ${businessUsers.length} business relationships`
       );
 
-      return result.businessUsers;
+      return businessUsers;
     },
     enabled: !!user?.id && !isSuperAdmin, // Only for non-superadmins
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -183,11 +175,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
           "Fetching all businesses (superadmin)"
         );
 
-        const result = await withAuth(listBusinesses);
-
-        if (!result.success) {
-          throw new Error(result.error || "Failed to fetch businesses");
-        }
+        const result = await trpc.business.list.query();
 
         logger.info(
           "BusinessContext",
@@ -210,20 +198,17 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
           `Fetching details for ${businessIds.length} businesses`
         );
 
-        const { getBusinessesByIds } = await import("@/server/api/business");
-        const result = await getBusinessesByIds({ ids: businessIds });
-
-        if (!result.success) {
-          throw new Error(result.error || "Failed to fetch business details");
-        }
+        const businesses = await trpc.business.getByIds.query({
+          ids: businessIds,
+        });
 
         logger.info(
           "BusinessContext",
           user?.id || "system",
-          `Fetched ${result.businesses.length} business details`
+          `Fetched ${businesses.length} business details`
         );
 
-        return result.businesses;
+        return businesses;
       }
     },
     enabled: isSuperAdmin ? !!user?.id : businessUsers.length > 0,

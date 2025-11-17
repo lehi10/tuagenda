@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getAllUsersAction,
-  updateUserAdmin,
-  deleteUser,
-} from "@/server/api/user";
-import type { UserListItem } from "@/server/api/user/get-all-users.action";
+import { useQueryClient } from "@tanstack/react-query";
+import { useTrpc } from "@/client/lib/trpc";
+import type { UserProps } from "@/server/core/domain/entities/User";
 import {
   Card,
   CardContent,
@@ -48,7 +44,6 @@ import {
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
 import { UserType, UserStatus } from "@/server/core/domain/entities/User";
-import { withAuth } from "@/client/lib/auth/with-auth";
 
 export default function UsersPage() {
   const [search, setSearch] = useState("");
@@ -56,84 +51,44 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState<string | UserStatus>("all");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserProps | null>(null);
   const debouncedSearch = useDebounce(search, 300);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["users", debouncedSearch, typeFilter, statusFilter],
-    queryFn: async () => {
-      const result = await withAuth(getAllUsersAction, {
-        search: debouncedSearch || undefined,
-        type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
-        status:
-          statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
-      });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to fetch users");
-      }
-
-      return result;
-    },
+  const { data, isLoading, error } = useTrpc.user.getAll.useQuery({
+    search: debouncedSearch || undefined,
+    type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
+    status: statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
   });
 
   // Update user mutation
-  const updateMutation = useMutation({
-    mutationFn: async ({
-      userId,
-      data,
-    }: {
-      userId: string;
-      data: { type: string; status: string };
-    }) => {
-      const result = await withAuth(updateUserAdmin, {
-        userId,
-        type: data.type,
-        status: data.status,
-      });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to update user");
-      }
-
-      return result;
-    },
+  const updateMutation = useTrpc.user.updateAdmin.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: [["user", "getAll"]] });
       toast.success("User updated successfully");
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast.error(error.message || "Failed to update user");
     },
   });
 
   // Delete user mutation
-  const deleteMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      const result = await withAuth(deleteUser, { userId });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to delete user");
-      }
-
-      return result;
-    },
+  const deleteMutation = useTrpc.user.delete.useMutation({
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: [["user", "getAll"]] });
       toast.success("User deleted successfully");
     },
-    onError: (error: Error) => {
+    onError: (error) => {
       toast.error(error.message || "Failed to delete user");
     },
   });
 
-  const handleEdit = (user: UserListItem) => {
+  const handleEdit = (user: UserProps) => {
     setSelectedUser(user);
     setEditDialogOpen(true);
   };
 
-  const handleDelete = (user: UserListItem) => {
+  const handleDelete = (user: UserProps) => {
     setSelectedUser(user);
     setDeleteDialogOpen(true);
   };
@@ -143,12 +98,16 @@ export default function UsersPage() {
     data: { type: string; status: string }
   ) => {
     console.log("Submitting update:", { userId, data });
-    await updateMutation.mutateAsync({ userId, data });
+    await updateMutation.mutateAsync({
+      userId,
+      type: data.type as UserType,
+      status: data.status as UserStatus,
+    });
   };
 
   const handleDeleteConfirm = async () => {
     if (selectedUser) {
-      await deleteMutation.mutateAsync(selectedUser.id);
+      await deleteMutation.mutateAsync({ userId: selectedUser.id });
       setDeleteDialogOpen(false);
       setSelectedUser(null);
     }

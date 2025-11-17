@@ -5,7 +5,8 @@ import { PublicFooter } from "@/client/components/public-footer";
 import { BookingHeader } from "@/client/components/booking/booking-header";
 import { BookingPageSkeleton } from "@/client/components/booking/booking-page-skeleton";
 import { BookingFlow } from "@/client/components/booking/booking-flow";
-import { getBusinessBySlug } from "@/server/api/business";
+import { GetBusinessBySlugUseCase } from "@/server/core/application/use-cases/business";
+import { PrismaBusinessRepository } from "@/server/infrastructure/repositories";
 
 interface PageProps {
   params: Promise<{
@@ -14,15 +15,19 @@ interface PageProps {
 }
 
 async function BookingContent({ slug }: { slug: string }) {
-  // Fetch business data on the server
-  const result = await getBusinessBySlug({ slug });
+  // Fetch business data on the server using the use case directly
+  const businessRepository = new PrismaBusinessRepository();
+  const getBusinessBySlugUseCase = new GetBusinessBySlugUseCase(
+    businessRepository
+  );
+  const result = await getBusinessBySlugUseCase.execute({ slug });
 
   // Redirect to 404 if business not found
   if (!result.success || !result.business) {
     notFound();
   }
 
-  const business = result.business;
+  const business = result.business.toObject();
 
   // Map business data to the expected format for BusinessProfile component
   const businessProfile = {

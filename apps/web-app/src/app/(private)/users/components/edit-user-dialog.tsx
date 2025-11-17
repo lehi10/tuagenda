@@ -37,7 +37,7 @@ import {
 import { Button } from "@/client/components/ui/button";
 import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 import { USER_TYPE_CONFIG, USER_STATUS_CONFIG } from "../constants";
-import type { UserListItem } from "@/server/api/user/get-all-users.action";
+import type { UserProps } from "@/server/core/domain/entities/User";
 
 const editUserSchema = z.object({
   type: z.nativeEnum(UserType),
@@ -49,7 +49,7 @@ type EditUserFormValues = z.infer<typeof editUserSchema>;
 interface EditUserDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  user: UserListItem | null;
+  user: UserProps | null;
   onSubmit: (userId: string, data: EditUserFormValues) => Promise<void>;
 }
 
