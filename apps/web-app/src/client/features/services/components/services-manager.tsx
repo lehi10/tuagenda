@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { Plus, Package } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/client/components/ui/button";
 import { useBusiness } from "@/client/contexts/business-context";
 import { useTrpc } from "@/client/lib/trpc";
@@ -155,8 +156,10 @@ export function ServicesManager() {
 
   const handleConfirmDeleteCategory = async () => {
     if (!deletingCategory) return;
+    const categoryName = deletingCategory.name;
     await deleteCategoryMutation.mutateAsync({ id: deletingCategory.id });
     setDeletingCategory(null);
+    toast.success(`Categoria "${categoryName}" eliminada`);
   };
 
   const handleCategorySubmit = async (data: CategoryFormData) => {
@@ -168,6 +171,7 @@ export function ServicesManager() {
         name: data.name,
         description: data.description || null,
       });
+      toast.success("Categoria actualizada correctamente");
     } else {
       const result = await createCategoryMutation.mutateAsync({
         businessId: currentBusiness.id,
@@ -175,6 +179,7 @@ export function ServicesManager() {
         description: data.description || null,
       });
       setSelectedCategoryId(result.id || null);
+      toast.success("Categoria creada correctamente");
     }
   };
 
@@ -194,8 +199,10 @@ export function ServicesManager() {
 
   const handleConfirmDeleteService = async () => {
     if (!deletingService) return;
+    const serviceName = deletingService.name;
     await deleteServiceMutation.mutateAsync({ id: deletingService.id });
     setDeletingService(null);
+    toast.success(`Servicio "${serviceName}" eliminado`);
   };
 
   const handleServiceSubmit = async (data: ServiceFormData) => {
@@ -211,6 +218,7 @@ export function ServicesManager() {
         durationMinutes: data.durationMinutes,
         active: data.active,
       });
+      toast.success("Servicio actualizado correctamente");
     } else {
       await createServiceMutation.mutateAsync({
         businessId: currentBusiness.id,
@@ -221,6 +229,7 @@ export function ServicesManager() {
         durationMinutes: data.durationMinutes,
         active: data.active,
       });
+      toast.success("Servicio creado correctamente");
     }
   };
 
@@ -229,6 +238,11 @@ export function ServicesManager() {
       id: service.id,
       active,
     });
+    toast.success(
+      active
+        ? `Servicio "${service.name}" activado`
+        : `Servicio "${service.name}" desactivado`
+    );
   };
 
   // Loading state
