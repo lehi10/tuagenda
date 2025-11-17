@@ -3,6 +3,8 @@ import { publicProcedure } from "../procedures";
 import { userRouter } from "./user.router";
 import { businessRouter } from "./business.router";
 import { businessUserRouter } from "./businessUser.router";
+import { serviceCategoryRouter } from "./serviceCategory.router";
+import { serviceRouter } from "./service.router";
 
 /**
  * Main application router
@@ -42,9 +44,20 @@ export const appRouter = router({
    */
   businessUser: businessUserRouter,
 
+  /**
+   * ServiceCategory domain procedures
+   * Access: trpc.serviceCategory.create, trpc.serviceCategory.list, etc.
+   */
+  serviceCategory: serviceCategoryRouter,
+
+  /**
+   * Service domain procedures
+   * Access: trpc.service.create, trpc.service.list, etc.
+   */
+  service: serviceRouter,
+
   // Future routers:
   // appointment: appointmentRouter,
-  // service: serviceRouter,
 });
 
 /**

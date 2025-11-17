@@ -11,3 +11,5 @@ export {
   BusinessRole,
   type BusinessUserProps,
 } from "./BusinessUser";
+export { ServiceCategory, type ServiceCategoryProps } from "./ServiceCategory";
+export { Service, type ServiceProps } from "./Service";

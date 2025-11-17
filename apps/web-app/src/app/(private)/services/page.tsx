@@ -1,26 +1,17 @@
 "use client";
 
-import { useTranslation } from "@/client/i18n";
-import { ServiceStats } from "@/client/features/services/components/service-stats";
-import { ServiceList } from "@/client/features/services/components/service-list";
-import { Button } from "@/client/components/ui/button";
+import { ServicesManager } from "@/client/features/services/components/services-manager";
 
 export default function ServicesPage() {
-  const { t } = useTranslation();
-
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{t.pages.services.title}</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your service catalog
-          </p>
-        </div>
-        <Button>{t.pages.services.addService}</Button>
+      <div>
+        <h1 className="text-2xl font-bold">Servicios</h1>
+        <p className="text-sm text-muted-foreground">
+          Gestiona tu catalogo de servicios por categoria
+        </p>
       </div>
-      <ServiceStats />
-      <ServiceList />
+      <ServicesManager />
     </div>
   );
 }
