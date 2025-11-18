@@ -17,7 +17,7 @@ interface BookingData {
   service?: {
     id: string;
     name: string;
-    duration: number;
+    durationMinutes: number;
     price: number;
   };
   professional?: {
@@ -82,9 +82,9 @@ export function BookingSummary({
                 <p className="font-semibold">{bookingData.service.name}</p>
                 <div className="mt-1 flex items-center justify-between text-sm text-muted-foreground">
                   <span>
-                    {bookingData.service.duration} {t.booking.summary.minutes}
+                    {bookingData.service.durationMinutes} {t.booking.summary.minutes}
                   </span>
-                  <span>${bookingData.service.price}</span>
+                  <span>${bookingData.service.price.toFixed(2)}</span>
                 </div>
               </div>
             )}

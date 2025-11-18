@@ -35,7 +35,7 @@ export const serviceRouter = router({
       const useCase = new ListServicesUseCase(repository);
       const result = await useCase.execute({
         businessId: input.businessId,
-        categoryId: input.categoryId,
+        ...(input.categoryId ? { categoryId: input.categoryId } : {}),
         active: true, // Only return active services for public
       });
 

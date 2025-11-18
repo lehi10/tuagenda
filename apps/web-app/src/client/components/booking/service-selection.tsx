@@ -10,46 +10,52 @@ import {
 } from "@/client/components/ui/select";
 import { Card, CardContent } from "@/client/components/ui/card";
 import { useTranslation } from "@/client/i18n";
-import { Clock, DollarSign, MapPin, Video } from "lucide-react";
+import { Clock, DollarSign, Loader2 } from "lucide-react";
+import { useTrpc } from "@/client/lib/trpc";
 
 interface Service {
   id: string;
   name: string;
-  description: string;
-  duration: number;
+  description: string | null;
+  durationMinutes: number;
   price: number;
-  category: string;
-  location: "in-person" | "virtual";
+  categoryId: string | null;
 }
 
 interface ServiceSelectionProps {
-  services: Service[];
+  businessId: string;
   onSelect: (_service: Service) => void;
   selectedServiceId?: string;
 }
 
 export function ServiceSelection({
-  services,
+  businessId,
   onSelect,
   selectedServiceId,
 }: ServiceSelectionProps) {
   const { t } = useTranslation();
-  const [locationFilter, setLocationFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
-  // Get unique categories
-  const categories = Array.from(
-    new Set(services.map((service) => service.category))
-  );
+  // Fetch categories
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useTrpc.serviceCategory.listPublic.useQuery(
+      { businessId },
+      { enabled: !!businessId }
+    );
 
-  // Filter services
-  const filteredServices = services.filter((service) => {
-    const matchesLocation =
-      locationFilter === "all" || service.location === locationFilter;
-    const matchesCategory =
-      categoryFilter === "all" || service.category === categoryFilter;
-    return matchesLocation && matchesCategory;
-  });
+  // Fetch services
+  const { data: servicesData, isLoading: isLoadingServices } =
+    useTrpc.service.listPublic.useQuery(
+      {
+        businessId,
+        categoryId: categoryFilter === "all" ? null : categoryFilter,
+      },
+      { enabled: !!businessId }
+    );
+
+  const categories = categoriesData?.categories || [];
+  const services = servicesData?.services || [];
+  const isLoading = isLoadingCategories || isLoadingServices;
 
   return (
     <div className="space-y-4">
@@ -59,27 +65,10 @@ export function ServiceSelection({
         </h2>
       </div>
 
-      {/* Filters */}
+      {/* Category Filter */}
       <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-        <Select value={locationFilter} onValueChange={setLocationFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder={t.booking.service.filterByLocation} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">
-              {t.booking.service.allCategories}
-            </SelectItem>
-            <SelectItem value="in-person">
-              {t.booking.service.locationInPerson}
-            </SelectItem>
-            <SelectItem value="virtual">
-              {t.booking.service.locationVirtual}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
+          <SelectTrigger className="w-full sm:w-[200px]">
             <SelectValue placeholder={t.booking.service.filterByCategory} />
           </SelectTrigger>
           <SelectContent>
@@ -87,22 +76,31 @@ export function ServiceSelection({
               {t.booking.service.allCategories}
             </SelectItem>
             {categories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
       {/* Services Grid */}
-      {filteredServices.length === 0 ? (
+      {!isLoading && services.length === 0 && (
         <div className="py-8 text-center text-sm text-muted-foreground">
           {t.booking.service.noServices}
         </div>
-      ) : (
+      )}
+
+      {!isLoading && services.length > 0 && (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredServices.map((service) => (
+          {services.map((service) => (
             <Card
               key={service.id}
               className={`cursor-pointer transition-all hover:shadow-md ${
@@ -111,31 +109,26 @@ export function ServiceSelection({
               onClick={() => onSelect(service)}
             >
               <CardContent className="p-3 sm:p-4">
-                <div className="mb-2 flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-sm sm:text-base line-clamp-1">
-                    {service.name}
-                  </h3>
-                  {service.location === "virtual" ? (
-                    <Video className="h-4 w-4 text-muted-foreground shrink-0" />
-                  ) : (
-                    <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                  )}
-                </div>
+                <h3 className="font-semibold text-sm sm:text-base line-clamp-1 mb-2">
+                  {service.name}
+                </h3>
 
-                <p className="mb-3 text-xs text-muted-foreground line-clamp-2">
-                  {service.description}
-                </p>
+                {service.description && (
+                  <p className="mb-3 text-xs text-muted-foreground line-clamp-2">
+                    {service.description}
+                  </p>
+                )}
 
                 <div className="flex items-center justify-between text-xs sm:text-sm">
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span>
-                      {service.duration} {t.booking.summary.minutes}
+                      {service.durationMinutes} {t.booking.summary.minutes}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 font-semibold">
                     <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>{service.price}</span>
+                    <span>${service.price.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>

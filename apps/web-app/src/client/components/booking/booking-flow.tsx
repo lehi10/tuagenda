@@ -31,63 +31,6 @@ const mockBusiness = {
   location: "Av. Principal 123, Lima",
 };
 
-const mockServices = [
-  {
-    id: "1",
-    name: "Corte de Cabello",
-    description: "Corte personalizado según tu estilo",
-    duration: 45,
-    price: 25,
-    category: "Cabello",
-    location: "in-person" as const,
-  },
-  {
-    id: "2",
-    name: "Manicure",
-    description: "Cuidado completo de uñas",
-    duration: 30,
-    price: 15,
-    category: "Uñas",
-    location: "in-person" as const,
-  },
-  {
-    id: "3",
-    name: "Masaje Relajante",
-    description: "Masaje de cuerpo completo para aliviar el estrés",
-    duration: 60,
-    price: 40,
-    category: "Masajes",
-    location: "in-person" as const,
-  },
-  {
-    id: "4",
-    name: "Consulta Virtual",
-    description: "Asesoría de imagen online",
-    duration: 30,
-    price: 20,
-    category: "Consultoría",
-    location: "virtual" as const,
-  },
-  {
-    id: "5",
-    name: "Facial",
-    description: "Tratamiento facial hidratante",
-    duration: 45,
-    price: 35,
-    category: "Faciales",
-    location: "in-person" as const,
-  },
-  {
-    id: "6",
-    name: "Pedicure",
-    description: "Cuidado completo de pies",
-    duration: 40,
-    price: 18,
-    category: "Uñas",
-    location: "in-person" as const,
-  },
-];
-
 const mockProfessionals = [
   {
     id: "1",
@@ -132,9 +75,10 @@ interface BookingData {
   service?: {
     id: string;
     name: string;
-    duration: number;
+    durationMinutes: number;
     price: number;
-    location: "in-person" | "virtual";
+    description: string | null;
+    categoryId: string | null;
   };
   professional?: {
     id: string;
@@ -189,16 +133,17 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
     }
   };
 
-  const handleServiceSelect = (service: (typeof mockServices)[0]) => {
+  const handleServiceSelect = (service: {
+    id: string;
+    name: string;
+    durationMinutes: number;
+    price: number;
+    description: string | null;
+    categoryId: string | null;
+  }) => {
     setBookingData({
       ...bookingData,
-      service: {
-        id: service.id,
-        name: service.name,
-        duration: service.duration,
-        price: service.price,
-        location: service.location,
-      },
+      service,
     });
     goToNextStep();
   };
@@ -274,7 +219,7 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
       case "service":
         return (
           <ServiceSelection
-            services={mockServices}
+            businessId={_business.id}
             onSelect={handleServiceSelect}
             selectedServiceId={bookingData.service?.id}
           />
@@ -318,7 +263,7 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
         return (
           <PaymentStep
             onContinue={handlePaymentMethodSelect}
-            isInPerson={bookingData.service?.location === "in-person"}
+            isInPerson={true} // Default to in-person for now
           />
         );
 

@@ -19,9 +19,8 @@ import { es, enUS } from "date-fns/locale";
 interface BookingSummary {
   service: {
     name: string;
-    duration: number;
+    durationMinutes: number;
     price: number;
-    location: "in-person" | "virtual";
   };
   professional?: {
     name: string;
@@ -72,7 +71,7 @@ export function ConfirmationStep({
     return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
   };
 
-  const isInPerson = bookingSummary.service.location === "in-person";
+  const isInPerson = true; // Default to in-person for now
   const hasLocation = bookingSummary.businessLocation;
 
   return (
@@ -113,9 +112,9 @@ export function ConfirmationStep({
                       {bookingSummary.service.name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {bookingSummary.service.duration}{" "}
+                      {bookingSummary.service.durationMinutes}{" "}
                       {t.booking.summary.minutes} • $
-                      {bookingSummary.service.price}
+                      {bookingSummary.service.price.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -289,7 +288,7 @@ export function ConfirmationStep({
                         {t.booking.confirmation.virtualInfo.duration}
                       </strong>{" "}
                       {t.booking.confirmation.virtualInfo.durationDescription}{" "}
-                      {bookingSummary.service.duration} minutos reservados.
+                      {bookingSummary.service.durationMinutes} minutos reservados.
                     </p>
                   </div>
 
