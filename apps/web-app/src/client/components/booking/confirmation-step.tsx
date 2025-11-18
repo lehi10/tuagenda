@@ -49,7 +49,7 @@ export function ConfirmationStep({
         </div>
 
         {/* Right Column: Location Map */}
-        {isInPerson && hasLocation && (
+        {isInPerson && hasLocation && bookingSummary.businessLocation && (
           <LocationMap
             location={bookingSummary.businessLocation}
             googleMapsApiKey={googleMapsApiKey}

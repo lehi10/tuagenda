@@ -22,10 +22,11 @@ export function EmailNotice({ email }: EmailNoticeProps) {
           <Mail className="mt-0.5 h-5 w-5 text-blue-600 dark:text-blue-400" />
           <div className="flex-1">
             <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-              {t.booking.confirmation.emailSent}
+              {t.booking.confirmation.confirmationSent}
             </p>
             <p className="mt-1 text-sm text-blue-700 dark:text-blue-300">
-              {t.booking.confirmation.emailDescription} <strong>{email}</strong>
+              {t.booking.confirmation.confirmationEmail}{" "}
+              <strong>{email}</strong>
             </p>
           </div>
         </div>

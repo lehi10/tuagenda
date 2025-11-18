@@ -68,7 +68,8 @@ export function BookingSummary({
                 <p className="font-semibold">{bookingData.service.name}</p>
                 <div className="mt-1 flex items-center justify-between text-sm text-muted-foreground">
                   <span>
-                    {bookingData.service.durationMinutes} {t.booking.summary.minutes}
+                    {bookingData.service.durationMinutes}{" "}
+                    {t.booking.summary.minutes}
                   </span>
                   <span>{formatPrice(bookingData.service.price)}</span>
                 </div>

@@ -237,7 +237,15 @@ export class PrismaBusinessUserRepository implements IBusinessUserRepository {
             }
           : {}),
       },
-      include: {
+      select: {
+        id: true,
+        userId: true,
+        businessId: true,
+        role: true,
+        displayName: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
         user: {
           select: {
             id: true,

@@ -1,3 +1,11 @@
+/**
+ * Professional Selection View (Presentational Component)
+ *
+ * Pure UI component that displays professionals.
+ * All data and handlers are passed via props.
+ * No data fetching or business logic.
+ */
+
 "use client";
 
 import {
@@ -10,20 +18,28 @@ import { useTranslation } from "@/client/i18n";
 import { UserX } from "lucide-react";
 import { SelectableCard } from "@/client/components/booking/shared/selectable-card";
 import { EmptyState } from "@/client/components/booking/shared/empty-state";
+import { LoadingSpinner } from "@/client/components/booking/shared/loading-spinner";
 import { getInitials } from "@/client/lib/booking-utils";
 import type { Professional } from "@/client/types/booking";
 
-interface ProfessionalSelectionProps {
+export interface ProfessionalSelectionViewProps {
+  // Data
   professionals: Professional[];
-  onSelect: (_professional: Professional) => void;
+
+  // State
+  isLoading: boolean;
   selectedProfessionalId?: string;
+
+  // Handlers
+  onProfessionalSelect: (professional: Professional) => void;
 }
 
-export function ProfessionalSelection({
+export function ProfessionalSelectionView({
   professionals,
-  onSelect,
+  isLoading,
   selectedProfessionalId,
-}: ProfessionalSelectionProps) {
+  onProfessionalSelect,
+}: ProfessionalSelectionViewProps) {
   const { t } = useTranslation();
 
   return (
@@ -34,18 +50,24 @@ export function ProfessionalSelection({
         </h2>
       </div>
 
-      {professionals.length === 0 ? (
-        <EmptyState
-          icon={UserX}
-          message={t.booking.professional.noStaff}
-        />
-      ) : (
+      {/* Loading State */}
+      {isLoading && <LoadingSpinner fullScreen />}
+
+      {/* Empty State */}
+      {!isLoading && professionals.length === 0 && (
+        <EmptyState icon={UserX} message={t.booking.professional.noStaff} />
+      )}
+
+      {/* Professionals Grid */}
+      {!isLoading && professionals.length > 0 && (
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {professionals.map((professional) => (
             <SelectableCard
               key={professional.id}
               isSelected={selectedProfessionalId === professional.id}
-              onClick={() => professional.available && onSelect(professional)}
+              onClick={() =>
+                professional.available && onProfessionalSelect(professional)
+              }
               disabled={!professional.available}
             >
               <div className="flex flex-col items-center text-center">

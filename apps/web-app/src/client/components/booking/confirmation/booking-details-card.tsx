@@ -18,7 +18,9 @@ interface BookingDetailsCardProps {
   bookingSummary: BookingSummary;
 }
 
-export function BookingDetailsCard({ bookingSummary }: BookingDetailsCardProps) {
+export function BookingDetailsCard({
+  bookingSummary,
+}: BookingDetailsCardProps) {
   const { t } = useTranslation();
   const dateLocale = useDateLocale();
 

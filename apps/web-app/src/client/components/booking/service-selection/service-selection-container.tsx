@@ -43,9 +43,13 @@ export function ServiceSelectionContainer({
       { enabled: !!businessId }
     );
 
-  // Extract data with defaults
-  const categories = categoriesData?.categories || [];
-  const services = servicesData?.services || [];
+  // Extract data with defaults and filter out any without IDs
+  const categories = (categoriesData?.categories || []).filter(
+    (cat) => cat.id
+  ) as any;
+  const services = (servicesData?.services || []).filter(
+    (service) => service.id
+  ) as any;
   const isLoading = isLoadingCategories || isLoadingServices;
 
   return (

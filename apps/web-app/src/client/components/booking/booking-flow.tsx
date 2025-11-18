@@ -12,7 +12,7 @@ import { ConfirmationStep } from "@/client/components/booking/confirmation-step"
 import { defaultStepConfig } from "@/client/lib/booking-steps";
 import { generateTimeSlots } from "@/client/lib/booking-utils";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
-import { MOCK_PROFESSIONALS, MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
+import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
 import type { StepConfig } from "@/client/types/booking";
 
 interface BookingFlowProps {
@@ -58,7 +58,7 @@ export function BookingFlow({ businessId }: BookingFlowProps) {
       case "professional":
         return (
           <ProfessionalSelection
-            professionals={MOCK_PROFESSIONALS}
+            businessId={businessId}
             onSelect={(professional) =>
               updateProfessional({
                 id: professional.id,
@@ -66,6 +66,7 @@ export function BookingFlow({ businessId }: BookingFlowProps) {
               })
             }
             selectedProfessionalId={bookingData.professional?.id}
+            serviceId={bookingData.service?.id}
           />
         );
 

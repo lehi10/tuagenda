@@ -29,6 +29,11 @@ async function BookingContent({ slug }: { slug: string }) {
 
   const business = result.business.toObject();
 
+  // Ensure business has an ID (should always be present from database)
+  if (!business.id) {
+    throw new Error("Business ID is missing");
+  }
+
   // Map business data to the expected format for BusinessProfile component
   const businessProfile = {
     name: business.title,

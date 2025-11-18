@@ -7,7 +7,10 @@
 import { Card, CardContent } from "@/client/components/ui/card";
 import { MapPin } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
-import { getGoogleMapsDirectionsUrl, getGoogleMapsEmbedUrl } from "@/client/lib/booking-utils";
+import {
+  getGoogleMapsDirectionsUrl,
+  getGoogleMapsEmbedUrl,
+} from "@/client/lib/booking-utils";
 import type { BusinessLocation } from "@/client/types/booking";
 
 interface LocationMapProps {
@@ -51,7 +54,7 @@ export function LocationMap({ location, googleMapsApiKey }: LocationMapProps) {
           <div className="mb-4 flex h-48 items-center justify-center rounded-lg bg-muted">
             <div className="text-center text-sm text-muted-foreground">
               <MapPin className="mx-auto mb-2 h-8 w-8" />
-              <p>{t.booking.confirmation.mapUnavailable || "Map unavailable"}</p>
+              <p>Map unavailable</p>
             </div>
           </div>
         )}
