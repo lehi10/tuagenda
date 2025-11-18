@@ -14,3 +14,11 @@ export {
 export { ServiceCategory, type ServiceCategoryProps } from "./ServiceCategory";
 export { Service, type ServiceProps } from "./Service";
 export { EmployeeService, type EmployeeServiceProps } from "./EmployeeService";
+export {
+  EmployeeAvailability,
+  type EmployeeAvailabilityProps,
+} from "./EmployeeAvailability";
+export {
+  EmployeeException,
+  type EmployeeExceptionProps,
+} from "./EmployeeException";

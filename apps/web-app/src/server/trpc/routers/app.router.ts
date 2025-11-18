@@ -6,6 +6,8 @@ import { businessUserRouter } from "./businessUser.router";
 import { serviceCategoryRouter } from "./serviceCategory.router";
 import { serviceRouter } from "./service.router";
 import { employeeServiceRouter } from "./employeeService.router";
+import { employeeAvailabilityRouter } from "./employeeAvailability.router";
+import { employeeExceptionRouter } from "./employeeException.router";
 
 /**
  * Main application router
@@ -62,6 +64,18 @@ export const appRouter = router({
    * Access: trpc.employeeService.assign, trpc.employeeService.getByEmployee, etc.
    */
   employeeService: employeeServiceRouter,
+
+  /**
+   * EmployeeAvailability domain procedures
+   * Access: trpc.employeeAvailability.getByEmployee, trpc.employeeAvailability.create, etc.
+   */
+  employeeAvailability: employeeAvailabilityRouter,
+
+  /**
+   * EmployeeException domain procedures
+   * Access: trpc.employeeException.getByEmployee, trpc.employeeException.create, etc.
+   */
+  employeeException: employeeExceptionRouter,
 
   // Future routers:
   // appointment: appointmentRouter,

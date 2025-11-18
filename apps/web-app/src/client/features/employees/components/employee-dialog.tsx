@@ -4,7 +4,15 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, Search, Plus, Trash2, Clock, DollarSign } from "lucide-react";
+import {
+  Loader2,
+  Search,
+  Plus,
+  Trash2,
+  Clock,
+  DollarSign,
+  Calendar,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useTrpc } from "@/client/lib/trpc";
 import { useBusiness } from "@/client/contexts";
@@ -46,6 +54,11 @@ import {
 import { BusinessRole } from "@/server/core/domain/entities";
 import { useDebounce } from "@/client/hooks/use-debounce";
 import { AddServiceModal } from "@/client/features/employee-service/components/add-service-modal";
+import {
+  AvailabilityManager,
+  ExceptionManager,
+  WeeklyScheduleDialog,
+} from "@/client/features/employee-availability/components";
 
 const formSchema = z.object({
   userId: z.string().min(1, "User is required"),
@@ -95,6 +108,7 @@ export function EmployeeDialog({
   const [submitting, setSubmitting] = useState(false);
   const [addServiceModalOpen, setAddServiceModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
+  const [scheduleCalendarOpen, setScheduleCalendarOpen] = useState(false);
 
   const debouncedSearch = useDebounce(searchTerm, 300);
 
@@ -230,9 +244,10 @@ export function EmployeeDialog({
               onValueChange={setActiveTab}
               className="flex-1 flex flex-col overflow-hidden"
             >
-              <TabsList className="mx-6 mt-4 grid w-auto grid-cols-2">
+              <TabsList className="mx-6 mt-4 grid w-auto grid-cols-3">
                 <TabsTrigger value="info">Información</TabsTrigger>
                 <TabsTrigger value="services">Servicios</TabsTrigger>
+                <TabsTrigger value="schedule">Horarios</TabsTrigger>
               </TabsList>
 
               <TabsContent
@@ -385,6 +400,49 @@ export function EmployeeDialog({
                   </Button>
                 </div>
               </TabsContent>
+
+              <TabsContent
+                value="schedule"
+                className="flex-1 flex flex-col overflow-hidden mt-0"
+              >
+                <div className="flex-1 overflow-y-auto px-6 py-4">
+                  {/* Calendar View Button */}
+                  <div className="mb-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setScheduleCalendarOpen(true)}
+                      className="w-full"
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Ver Calendario Semanal
+                    </Button>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-sm font-medium mb-3">
+                        Disponibilidad Semanal
+                      </h3>
+                      <AvailabilityManager businessUserId={editData.id} />
+                    </div>
+
+                    <div className="border-t pt-6">
+                      <h3 className="text-sm font-medium mb-3">Excepciones</h3>
+                      <ExceptionManager businessUserId={editData.id} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
+                  <Button
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    className="flex-1"
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+              </TabsContent>
             </Tabs>
           ) : (
             <Form {...form}>
@@ -505,12 +563,20 @@ export function EmployeeDialog({
       </Sheet>
 
       {editData && (
-        <AddServiceModal
-          open={addServiceModalOpen}
-          onOpenChange={setAddServiceModalOpen}
-          onAdd={handleAddServices}
-          excludeServiceIds={assignedServiceIds}
-        />
+        <>
+          <AddServiceModal
+            open={addServiceModalOpen}
+            onOpenChange={setAddServiceModalOpen}
+            onAdd={handleAddServices}
+            excludeServiceIds={assignedServiceIds}
+          />
+          <WeeklyScheduleDialog
+            open={scheduleCalendarOpen}
+            onOpenChange={setScheduleCalendarOpen}
+            businessUserId={editData.id}
+            employeeName={`${editData.firstName} ${editData.lastName}`}
+          />
+        </>
       )}
     </>
   );
