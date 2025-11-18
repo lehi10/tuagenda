@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { BusinessProfile } from "@/client/components/booking/business-profile";
+import { BusinessProfile } from "@/client/components/booking/shared/business-profile";
 import { PublicFooter } from "@/client/components/public-footer";
-import { BookingHeader } from "@/client/components/booking/booking-header";
-import { BookingPageSkeleton } from "@/client/components/booking/booking-page-skeleton";
+import { BookingHeader } from "@/client/components/booking/shared/booking-header";
+import { BookingPageSkeleton } from "@/client/components/booking/shared/booking-page-skeleton";
 import { BookingFlow } from "@/client/components/booking/booking-flow";
 import { GetBusinessBySlugUseCase } from "@/server/core/application/use-cases/business";
 import { PrismaBusinessRepository } from "@/server/infrastructure/repositories";
@@ -48,7 +48,7 @@ async function BookingContent({ slug }: { slug: string }) {
   return (
     <>
       <BusinessProfile business={businessProfile} />
-      <BookingFlow business={business} />
+      <BookingFlow businessId={business.id} />
     </>
   );
 }
@@ -63,7 +63,6 @@ export default async function BookingPage({ params }: PageProps) {
       <Suspense fallback={<BookingPageSkeleton />}>
         <BookingContent slug={slug} />
       </Suspense>
-
       <PublicFooter />
     </div>
   );
