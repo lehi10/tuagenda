@@ -8,7 +8,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, publicProcedure } from "../procedures";
 import { PrismaServiceRepository } from "@/server/infrastructure/repositories/PrismaServiceRepository";
 import {
   CreateServiceUseCase,
@@ -19,6 +19,45 @@ import {
 } from "@/server/core/application/use-cases/service";
 
 export const serviceRouter = router({
+  /**
+   * List active services for a business (PUBLIC)
+   * Returns only active services for public booking flow
+   */
+  listPublic: publicProcedure
+    .input(
+      z.object({
+        businessId: z.string().uuid("Business ID must be a valid UUID"),
+        categoryId: z.string().uuid().optional().nullable(),
+      })
+    )
+    .query(async ({ input }) => {
+      const repository = new PrismaServiceRepository();
+      const useCase = new ListServicesUseCase(repository);
+      const result = await useCase.execute({
+        businessId: input.businessId,
+        categoryId: input.categoryId,
+        active: true, // Only return active services for public
+      });
+
+      if (!result.success || !result.services) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error || "Failed to fetch services",
+        });
+      }
+
+      return {
+        services: result.services.map((s) => {
+          const serviceObj = s.toObject();
+          return {
+            ...serviceObj,
+            price: serviceObj.price.toNumber(),
+          };
+        }),
+        total: result.total || 0,
+      };
+    }),
+
   /**
    * Get a service by ID (PRIVATE)
    */

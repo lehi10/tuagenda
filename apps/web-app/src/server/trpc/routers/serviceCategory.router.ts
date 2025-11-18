@@ -8,7 +8,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, publicProcedure } from "../procedures";
 import { PrismaServiceCategoryRepository } from "@/server/infrastructure/repositories/PrismaServiceCategoryRepository";
 import {
   CreateServiceCategoryUseCase,
@@ -19,6 +19,34 @@ import {
 } from "@/server/core/application/use-cases/service-category";
 
 export const serviceCategoryRouter = router({
+  /**
+   * List service categories for a business (PUBLIC)
+   * Returns all categories for public booking flow
+   */
+  listPublic: publicProcedure
+    .input(
+      z.object({
+        businessId: z.string().uuid("Business ID must be a valid UUID"),
+      })
+    )
+    .query(async ({ input }) => {
+      const repository = new PrismaServiceCategoryRepository();
+      const useCase = new ListServiceCategoriesUseCase(repository);
+      const result = await useCase.execute({ businessId: input.businessId });
+
+      if (!result.success || !result.categories) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error || "Failed to fetch service categories",
+        });
+      }
+
+      return {
+        categories: result.categories.map((c) => c.toObject()),
+        total: result.total || 0,
+      };
+    }),
+
   /**
    * Get a service category by ID (PRIVATE)
    */
