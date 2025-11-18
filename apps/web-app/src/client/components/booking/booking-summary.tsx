@@ -11,22 +11,9 @@ import { Separator } from "@/client/components/ui/separator";
 import { useTranslation } from "@/client/i18n";
 import { X } from "lucide-react";
 import { format } from "date-fns";
-import { es, enUS } from "date-fns/locale";
-
-interface BookingData {
-  service?: {
-    id: string;
-    name: string;
-    duration: number;
-    price: number;
-  };
-  professional?: {
-    id: string;
-    name: string;
-  };
-  date?: Date;
-  timeSlot?: string;
-}
+import { useDateLocale } from "@/client/hooks/use-date-locale";
+import { formatPrice } from "@/client/lib/booking-utils";
+import type { BookingData } from "@/client/types/booking";
 
 interface BookingSummaryProps {
   bookingData: BookingData;
@@ -41,14 +28,13 @@ export function BookingSummary({
   onContinue,
   className,
 }: BookingSummaryProps) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
+  const dateLocale = useDateLocale();
   const hasAnySelection =
     bookingData.service ||
     bookingData.professional ||
     bookingData.date ||
     bookingData.timeSlot;
-
-  const dateLocale = locale === "es" ? es : enUS;
 
   return (
     <Card className={className}>
@@ -82,9 +68,10 @@ export function BookingSummary({
                 <p className="font-semibold">{bookingData.service.name}</p>
                 <div className="mt-1 flex items-center justify-between text-sm text-muted-foreground">
                   <span>
-                    {bookingData.service.duration} {t.booking.summary.minutes}
+                    {bookingData.service.durationMinutes}{" "}
+                    {t.booking.summary.minutes}
                   </span>
-                  <span>${bookingData.service.price}</span>
+                  <span>{formatPrice(bookingData.service.price)}</span>
                 </div>
               </div>
             )}

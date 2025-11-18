@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, Search, Building2, Users } from "lucide-react";
+import { MoreHorizontal, Search, Building2, Users, Phone } from "lucide-react";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import {
@@ -144,28 +144,50 @@ export function EmployeeList() {
     {
       header: t.pages.clients.name,
       accessor: (item: BusinessUserWithDetails) => (
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
+        <div className="flex items-center gap-3 min-w-[180px]">
+          <Avatar className="h-9 w-9 ring-2 ring-background">
             <AvatarImage src={item.user.pictureFullPath || undefined} />
-            <AvatarFallback>
+            <AvatarFallback className="text-xs font-medium">
               {getInitials(item.user.firstName, item.user.lastName)}
             </AvatarFallback>
           </Avatar>
-          <span className="font-medium">
-            {item.user.firstName} {item.user.lastName}
-          </span>
+          <div className="flex flex-col">
+            <span className="font-medium text-sm">
+              {item.user.firstName} {item.user.lastName}
+            </span>
+          </div>
         </div>
       ),
     },
     {
       header: t.pages.clients.email,
-      accessor: (item: BusinessUserWithDetails) => item.user.email,
+      accessor: (item: BusinessUserWithDetails) => (
+        <span className="text-sm text-muted-foreground">{item.user.email}</span>
+      ),
+    },
+    {
+      header: "Teléfono",
+      accessor: (item: BusinessUserWithDetails) => (
+        <div className="flex items-center gap-2">
+          {item.user.phone ? (
+            <>
+              <Phone className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-sm">{item.user.phone}</span>
+            </>
+          ) : (
+            <span className="text-sm text-muted-foreground italic">
+              Sin teléfono
+            </span>
+          )}
+        </div>
+      ),
     },
     {
       header: "Role",
       accessor: (item: BusinessUserWithDetails) => (
         <Badge
           variant={item.role === BusinessRole.MANAGER ? "default" : "secondary"}
+          className="font-medium"
         >
           {item.role}
         </Badge>

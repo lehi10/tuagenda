@@ -119,6 +119,7 @@ export const userRouter = router({
         phone: z.string().nullable().optional(),
         countryCode: z.string().nullable().optional(),
         timeZone: z.string().nullable().optional(),
+        pictureFullPath: z.string().url().nullable().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -133,6 +134,7 @@ export const userRouter = router({
         phone: input.phone || null,
         countryCode: input.countryCode || null,
         timeZone: input.timeZone || null,
+        pictureFullPath: input.pictureFullPath,
       };
 
       const result = await updateUserUseCase.execute(updateInput);

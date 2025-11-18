@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/client/components/ui/button";
-import { Card, CardContent } from "@/client/components/ui/card";
-import { CreditCard, Smartphone, Store, Check } from "lucide-react";
+import { CreditCard, Smartphone, Store } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
-
-export type PaymentMethod = "card" | "onsite" | "digital-wallet";
+import { SelectableCard } from "@/client/components/booking/shared/selectable-card";
+import type { PaymentMethod } from "@/client/types/booking";
 
 interface PaymentStepProps {
   onContinue: (_method: PaymentMethod) => void;
@@ -69,40 +68,30 @@ export function PaymentStep({
           const isSelected = selectedMethod === method.id;
 
           return (
-            <Card
+            <SelectableCard
               key={method.id}
-              className={`cursor-pointer transition-all hover:shadow-md ${
-                isSelected ? "ring-2 ring-primary" : ""
-              }`}
+              isSelected={isSelected}
               onClick={() => setSelectedMethod(method.id)}
+              showCheckmark
+              contentClassName="p-6"
             >
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center text-center">
-                  <div
-                    className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
-                      isSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-primary/10 text-primary"
-                    }`}
-                  >
-                    <Icon className="h-8 w-8" />
-                  </div>
-
-                  <h3 className="mb-2 font-semibold">{method.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {method.description}
-                  </p>
-
-                  {isSelected && (
-                    <div className="mt-4">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Check className="h-4 w-4" />
-                      </div>
-                    </div>
-                  )}
+              <div className="flex flex-col items-center text-center">
+                <div
+                  className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
+                    isSelected
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-primary/10 text-primary"
+                  }`}
+                >
+                  <Icon className="h-8 w-8" />
                 </div>
-              </CardContent>
-            </Card>
+
+                <h3 className="mb-2 font-semibold">{method.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {method.description}
+                </p>
+              </div>
+            </SelectableCard>
           );
         })}
       </div>

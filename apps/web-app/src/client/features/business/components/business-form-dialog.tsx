@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useTranslation } from "@/client/i18n";
 import { toast } from "sonner";
+import { Camera, Loader2, Building2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -22,8 +23,16 @@ import {
   SelectValue,
 } from "@/client/components/ui/select";
 import { Separator } from "@/client/components/ui/separator";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import { BusinessProps } from "@/server/core/domain/entities/Business";
 import { useTrpc } from "@/client/lib/trpc";
+import { useImageUpload } from "@/client/hooks/use-image-upload";
+import { STORAGE_PATHS } from "@/shared/constants/image.constants";
+import { logger } from "@/shared/lib/logger";
 
 interface BusinessFormDialogProps {
   open: boolean;
@@ -41,6 +50,33 @@ export function BusinessFormDialog({
   onSuccess,
 }: BusinessFormDialogProps) {
   const { t } = useTranslation();
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(business?.logo || null);
+
+  // Image upload hook for logo
+  const {
+    upload: uploadLogo,
+    isUploading: isUploadingLogo,
+    status: logoUploadStatus,
+    previewUrl: logoPreviewUrl,
+  } = useImageUpload({
+    storagePath: business?.id
+      ? STORAGE_PATHS.businessLogo(business.id)
+      : `businesses/temp_${Date.now()}/logo`,
+    preset: "logo",
+    onSuccess: (result) => {
+      logger.info(
+        "BusinessFormDialog",
+        "system",
+        `Logo uploaded: ${result.compressionRatio}% compression`
+      );
+      setLogoUrl(result.url);
+      toast.success("Logo subido exitosamente");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Error al subir el logo");
+    },
+  });
 
   const createMutation = useTrpc.business.create.useMutation({
     onSuccess: () => {
@@ -118,6 +154,39 @@ export function BusinessFormDialog({
     }
   };
 
+  const handleLogoChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    await uploadLogo(file);
+
+    // Reset input so same file can be selected again
+    if (logoInputRef.current) {
+      logoInputRef.current.value = "";
+    }
+  };
+
+  const handleLogoClick = () => {
+    logoInputRef.current?.click();
+  };
+
+  const getLogoStatusMessage = () => {
+    switch (logoUploadStatus) {
+      case "processing":
+        return "Procesando imagen...";
+      case "uploading":
+        return "Subiendo...";
+      default:
+        return "Cambiar logo";
+    }
+  };
+
+  // Determine which image to show for logo
+  const displayLogoSrc =
+    isUploadingLogo && logoPreviewUrl ? logoPreviewUrl : logoUrl || undefined;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -126,10 +195,14 @@ export function BusinessFormDialog({
       updateMutation.mutate({
         id: business.id,
         ...formData,
+        logo: logoUrl || undefined,
       });
     } else {
       // Create new business
-      createMutation.mutate(formData);
+      createMutation.mutate({
+        ...formData,
+        logo: logoUrl || undefined,
+      });
     }
   };
 
@@ -160,6 +233,89 @@ export function BusinessFormDialog({
                 <h3 className="text-sm font-semibold">
                   {t.pages.business.form.basicInfo}
                 </h3>
+
+                {/* Logo Upload */}
+                <div className="flex flex-col items-center space-y-3">
+                  <Label>Logo del negocio</Label>
+                  <div className="relative group">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage
+                        src={displayLogoSrc}
+                        alt="Logo del negocio"
+                        className={
+                          isUploadingLogo
+                            ? "blur-sm opacity-70 transition-all"
+                            : "transition-all"
+                        }
+                      />
+                      <AvatarFallback className="text-2xl bg-muted">
+                        <Building2 className="h-10 w-10 text-muted-foreground" />
+                      </AvatarFallback>
+                    </Avatar>
+
+                    {/* Upload overlay */}
+                    <button
+                      type="button"
+                      onClick={handleLogoClick}
+                      disabled={isUploadingLogo || isLoading}
+                      className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:cursor-not-allowed disabled:opacity-100"
+                    >
+                      {isUploadingLogo ? (
+                        <Loader2 className="h-6 w-6 text-white animate-spin" />
+                      ) : (
+                        <Camera className="h-6 w-6 text-white" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Status message */}
+                  {isUploadingLogo && (
+                    <p className="text-sm text-muted-foreground animate-pulse">
+                      {getLogoStatusMessage()}
+                    </p>
+                  )}
+
+                  {/* Hidden file input */}
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                    onChange={handleLogoChange}
+                    className="hidden"
+                    disabled={isUploadingLogo || isLoading}
+                  />
+
+                  {/* Upload button */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogoClick}
+                    disabled={isUploadingLogo || isLoading}
+                  >
+                    {isUploadingLogo ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {getLogoStatusMessage()}
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="mr-2 h-4 w-4" />
+                        {logoUrl ? "Cambiar logo" : "Subir logo"}
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Info text */}
+                  <p className="text-xs text-muted-foreground text-center">
+                    Formatos: JPG, PNG, WebP, GIF
+                    <br />
+                    Tamaño máximo: 10MB
+                    <br />
+                    Se redimensionará a 512x512px
+                  </p>
+                </div>
+
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="title">

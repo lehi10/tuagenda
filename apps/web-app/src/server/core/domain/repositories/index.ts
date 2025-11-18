@@ -13,3 +13,16 @@ export type {
   IBusinessUserRepository,
   BusinessUserRepositoryFilters,
 } from "./IBusinessUserRepository";
+export type {
+  IServiceCategoryRepository,
+  ServiceCategoryRepositoryFilters,
+} from "./IServiceCategoryRepository";
+export type {
+  IServiceRepository,
+  ServiceRepositoryFilters,
+} from "./IServiceRepository";
+export type {
+  IEmployeeServiceRepository,
+  EmployeeWithServices,
+  ServiceWithEmployees,
+} from "./IEmployeeServiceRepository";

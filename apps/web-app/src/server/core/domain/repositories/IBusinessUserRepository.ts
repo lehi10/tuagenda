@@ -141,6 +141,8 @@ export interface BusinessUserWithDetails {
   userId: string;
   businessId: string;
   role: BusinessRole;
+  displayName: string | null;
+  isActive: boolean;
   user: {
     id: string;
     email: string;

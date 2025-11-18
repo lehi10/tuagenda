@@ -1,272 +1,47 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BookingSummary } from "@/client/components/booking/booking-summary";
 import { ServiceSelection } from "@/client/components/booking/service-selection";
 import { ProfessionalSelection } from "@/client/components/booking/professional-selection";
 import { DateSelection } from "@/client/components/booking/date-selection";
 import { TimeSlotSelection } from "@/client/components/booking/time-slot-selection";
 import { ClientInfoStep } from "@/client/components/booking/client-info-step";
-import {
-  PaymentStep,
-  PaymentMethod,
-} from "@/client/components/booking/payment-step";
+import { PaymentStep } from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
-import {
-  defaultStepConfig,
-  getNextStep,
-  type StepType,
-  type StepConfig,
-} from "@/client/lib/booking-steps";
-import type { BusinessProps } from "@/server/core/domain/entities/Business";
-
-// Mock data - Replace with actual data fetching based on [username]
-const mockBusiness = {
-  name: "Salón de Belleza Elegance",
-  description:
-    "Tu destino para tratamientos de belleza profesionales y relajación",
-  avatar: "https://api.dicebear.com/7.x/initials/svg?seed=SalonElegance",
-  email: "contacto@elegance.com",
-  phone: "+51 999 888 777",
-  location: "Av. Principal 123, Lima",
-};
-
-const mockServices = [
-  {
-    id: "1",
-    name: "Corte de Cabello",
-    description: "Corte personalizado según tu estilo",
-    duration: 45,
-    price: 25,
-    category: "Cabello",
-    location: "in-person" as const,
-  },
-  {
-    id: "2",
-    name: "Manicure",
-    description: "Cuidado completo de uñas",
-    duration: 30,
-    price: 15,
-    category: "Uñas",
-    location: "in-person" as const,
-  },
-  {
-    id: "3",
-    name: "Masaje Relajante",
-    description: "Masaje de cuerpo completo para aliviar el estrés",
-    duration: 60,
-    price: 40,
-    category: "Masajes",
-    location: "in-person" as const,
-  },
-  {
-    id: "4",
-    name: "Consulta Virtual",
-    description: "Asesoría de imagen online",
-    duration: 30,
-    price: 20,
-    category: "Consultoría",
-    location: "virtual" as const,
-  },
-  {
-    id: "5",
-    name: "Facial",
-    description: "Tratamiento facial hidratante",
-    duration: 45,
-    price: 35,
-    category: "Faciales",
-    location: "in-person" as const,
-  },
-  {
-    id: "6",
-    name: "Pedicure",
-    description: "Cuidado completo de pies",
-    duration: 40,
-    price: 18,
-    category: "Uñas",
-    location: "in-person" as const,
-  },
-];
-
-const mockProfessionals = [
-  {
-    id: "1",
-    name: "María González",
-    role: "Estilista Senior",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maria",
-    available: true,
-  },
-  {
-    id: "2",
-    name: "Carlos Ruiz",
-    role: "Masajista",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos",
-    available: true,
-  },
-  {
-    id: "3",
-    name: "Ana Torres",
-    role: "Especialista en Uñas",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ana",
-    available: true,
-  },
-];
-
-// Generate time slots (9 AM to 6 PM)
-const generateTimeSlots = () => {
-  const slots = [];
-  for (let hour = 9; hour < 18; hour++) {
-    slots.push({
-      time: `${hour.toString().padStart(2, "0")}:00`,
-      available: Math.random() > 0.3,
-    });
-    slots.push({
-      time: `${hour.toString().padStart(2, "0")}:30`,
-      available: Math.random() > 0.3,
-    });
-  }
-  return slots;
-};
-
-interface BookingData {
-  service?: {
-    id: string;
-    name: string;
-    duration: number;
-    price: number;
-    location: "in-person" | "virtual";
-  };
-  professional?: {
-    id: string;
-    name: string;
-  };
-  date?: Date;
-  timeSlot?: string;
-  clientInfo?: {
-    fullName: string;
-    email: string;
-    phone: string;
-    password?: string;
-    createAccount: boolean;
-  };
-  paymentMethod?: PaymentMethod;
-}
+import { defaultStepConfig } from "@/client/lib/booking-steps";
+import { generateTimeSlots } from "@/client/lib/booking-utils";
+import { useBookingFlow } from "@/client/hooks/use-booking-flow";
+import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
+import type { StepConfig } from "@/client/types/booking";
 
 interface BookingFlowProps {
-  business: BusinessProps;
+  businessId: string;
 }
 
-export function BookingFlow({ business: _business }: BookingFlowProps) {
+export function BookingFlow({ businessId }: BookingFlowProps) {
   // You can modify this configuration based on business settings
   // For example, if business has only one professional:
   // const stepConfig = singleProfessionalConfig
   const stepConfig: StepConfig[] = defaultStepConfig;
 
-  const [bookingData, setBookingData] = useState<BookingData>({});
-  const [currentStep, setCurrentStep] = useState<StepType>("service");
   const [isAuthenticated] = useState(false); // TODO: Get from auth context
 
+  // Use the booking flow hook for state management
+  const {
+    bookingData,
+    currentStep,
+    updateService,
+    updateProfessional,
+    updateDate,
+    updateTimeSlot,
+    updateClientInfo,
+    updatePaymentMethod,
+    clearBooking,
+  } = useBookingFlow({ stepConfig });
+
+  // Generate time slots
   const timeSlots = generateTimeSlots();
-
-  // Auto-select professional if only one is available and step is disabled
-  useEffect(() => {
-    const professionalStep = stepConfig.find((s) => s.id === "professional");
-    if (!professionalStep?.enabled && mockProfessionals.length === 1) {
-      setBookingData((prev) => ({
-        ...prev,
-        professional: {
-          id: mockProfessionals[0].id,
-          name: mockProfessionals[0].name,
-        },
-      }));
-    }
-  }, [stepConfig]);
-
-  const goToNextStep = () => {
-    const next = getNextStep(currentStep, stepConfig);
-    if (next) {
-      setCurrentStep(next);
-    }
-  };
-
-  const handleServiceSelect = (service: (typeof mockServices)[0]) => {
-    setBookingData({
-      ...bookingData,
-      service: {
-        id: service.id,
-        name: service.name,
-        duration: service.duration,
-        price: service.price,
-        location: service.location,
-      },
-    });
-    goToNextStep();
-  };
-
-  const handleProfessionalSelect = (
-    professional: (typeof mockProfessionals)[0]
-  ) => {
-    setBookingData({
-      ...bookingData,
-      professional: {
-        id: professional.id,
-        name: professional.name,
-      },
-    });
-    goToNextStep();
-  };
-
-  const handleDateSelect = (date: Date | undefined) => {
-    setBookingData({
-      ...bookingData,
-      date: date,
-      timeSlot: undefined,
-    });
-    if (date) {
-      goToNextStep();
-    }
-  };
-
-  const handleTimeSlotSelect = (slot: string) => {
-    setBookingData({
-      ...bookingData,
-      timeSlot: slot,
-    });
-    goToNextStep();
-  };
-
-  const handleClientInfoSubmit = (data: {
-    fullName: string;
-    phone: string;
-    email: string;
-    password?: string;
-    createAccount: boolean;
-  }) => {
-    setBookingData({
-      ...bookingData,
-      clientInfo: data,
-    });
-    goToNextStep();
-  };
-
-  const handlePaymentMethodSelect = (method: PaymentMethod) => {
-    setBookingData({
-      ...bookingData,
-      paymentMethod: method,
-    });
-    goToNextStep();
-  };
-
-  const handleBackToHome = () => {
-    setBookingData({});
-    setCurrentStep("service");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleClear = () => {
-    setBookingData({});
-    setCurrentStep("service");
-  };
 
   // Render current step
   const renderStep = () => {
@@ -274,8 +49,8 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
       case "service":
         return (
           <ServiceSelection
-            services={mockServices}
-            onSelect={handleServiceSelect}
+            businessId={businessId}
+            onSelect={updateService}
             selectedServiceId={bookingData.service?.id}
           />
         );
@@ -283,9 +58,15 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
       case "professional":
         return (
           <ProfessionalSelection
-            professionals={mockProfessionals}
-            onSelect={handleProfessionalSelect}
+            businessId={businessId}
+            onSelect={(professional) =>
+              updateProfessional({
+                id: professional.id,
+                name: professional.name,
+              })
+            }
             selectedProfessionalId={bookingData.professional?.id}
+            serviceId={bookingData.service?.id}
           />
         );
 
@@ -293,7 +74,7 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
         return (
           <DateSelection
             selectedDate={bookingData.date}
-            onSelect={handleDateSelect}
+            onSelect={updateDate}
           />
         );
 
@@ -302,14 +83,14 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
           <TimeSlotSelection
             timeSlots={timeSlots}
             selectedSlot={bookingData.timeSlot}
-            onSelect={handleTimeSlotSelect}
+            onSelect={updateTimeSlot}
           />
         );
 
       case "client-info":
         return (
           <ClientInfoStep
-            onContinue={handleClientInfoSubmit}
+            onContinue={updateClientInfo}
             isAuthenticated={isAuthenticated}
           />
         );
@@ -317,8 +98,8 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
       case "payment":
         return (
           <PaymentStep
-            onContinue={handlePaymentMethodSelect}
-            isInPerson={bookingData.service?.location === "in-person"}
+            onContinue={updatePaymentMethod}
+            isInPerson={true} // Default to in-person for now
           />
         );
 
@@ -332,13 +113,9 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
               timeSlot: bookingData.timeSlot!,
               clientInfo: bookingData.clientInfo!,
               paymentMethod: bookingData.paymentMethod!,
-              businessLocation: {
-                address: mockBusiness.location,
-                lat: -12.0464, // Mock coordinates for Lima, Peru
-                lng: -77.0428,
-              },
+              businessLocation: MOCK_BUSINESS_LOCATION,
             }}
-            onBackToHome={handleBackToHome}
+            onBackToHome={clearBooking}
           />
         );
 
@@ -361,7 +138,10 @@ export function BookingFlow({ business: _business }: BookingFlowProps) {
           {/* Booking Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <BookingSummary bookingData={bookingData} onClear={handleClear} />
+              <BookingSummary
+                bookingData={bookingData}
+                onClear={clearBooking}
+              />
             </div>
           </div>
         </div>

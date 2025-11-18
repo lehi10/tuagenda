@@ -10,7 +10,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, publicProcedure } from "../procedures";
 import {
   PrismaBusinessUserRepository,
   PrismaUserRepository,
@@ -26,6 +26,59 @@ import {
 import { BusinessRole } from "@/server/core/domain/entities";
 
 export const businessUserRouter = router({
+  /**
+   * List active professionals for a business (PUBLIC)
+   * Returns only active employees and managers who can provide services for public booking flow
+   */
+  listPublicEmployees: publicProcedure
+    .input(
+      z.object({
+        businessId: z.string().uuid("Business ID must be a valid UUID"),
+        serviceId: z.string().uuid().optional(), // Optional: filter by service
+      })
+    )
+    .query(async ({ input }) => {
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const getBusinessUsersWithDetailsUseCase =
+        new GetBusinessUsersWithDetailsUseCase(businessUserRepository);
+
+      const result = await getBusinessUsersWithDetailsUseCase.execute({
+        businessId: input.businessId,
+      });
+
+      if (!result.success || !result.businessUsers) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error || "Failed to fetch professionals",
+        });
+      }
+
+      // Filter only active employees and managers (both can provide services)
+      const activeProfessionals = result.businessUsers.filter(
+        (bu) =>
+          (bu.role === BusinessRole.EMPLOYEE ||
+            bu.role === BusinessRole.MANAGER) &&
+          bu.isActive
+      );
+
+      // Map to public professional format
+      const employees = activeProfessionals.map((bu) => ({
+        id: bu.id,
+        name: bu.displayName || `${bu.user.firstName} ${bu.user.lastName}`,
+        firstName: bu.user.firstName,
+        lastName: bu.user.lastName,
+        avatar: bu.user.pictureFullPath || null,
+        email: bu.user.email,
+        phone: bu.user.phone || null,
+        role: bu.role, // Include role to differentiate if needed
+      }));
+
+      return {
+        employees,
+        total: employees.length,
+      };
+    }),
+
   /**
    * Create a business-user relationship
    * Uses authenticated user's ID
