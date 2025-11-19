@@ -52,6 +52,10 @@ export const en = {
     users: "Users",
     aboutUs: "About Us",
     pricing: "Pricing",
+    features: "Features",
+    industries: "Use Cases",
+    contact: "Contact",
+    integrations: "Integrations",
   },
   auth: {
     login: "Login",
@@ -440,6 +444,33 @@ export const en = {
         feature5: "Custom development",
         feature6: "SLA guarantee",
       },
+      comparison: {
+        title: "Compare Plans",
+        subtitle: "See what's included in each plan",
+        unlimited: "Unlimited",
+        perMonth: "/month",
+        categories: {
+          coreFeatures: "Core Features",
+          advancedFeatures: "Advanced Features",
+          support: "Support",
+        },
+        features: {
+          appointments: "Appointments",
+          locations: "Locations",
+          staffMembers: "Staff Members",
+          clientDatabase: "Client Database",
+          calendarSync: "Calendar Sync",
+          customBranding: "Custom Branding",
+          integrations: "Integrations",
+          apiAccess: "API Access",
+          advancedAnalytics: "Advanced Analytics",
+          customDevelopment: "Custom Development",
+          emailSupport: "Email Support",
+          prioritySupport: "Priority Support",
+          phoneSupport: "Phone Support",
+          dedicatedManager: "Dedicated Manager",
+        },
+      },
     },
     dashboard: {
       title: "Dashboard",
@@ -584,6 +615,419 @@ export const en = {
         profileUpdated: "Profile updated successfully",
         passwordChanged: "Password changed successfully",
       },
+    },
+    features: {
+      title: "All Features",
+      subtitle: "Everything you need to manage your business efficiently",
+      badge: "Complete Platform",
+      categories: {
+        scheduling: {
+          title: "Smart Scheduling",
+          description: "Intelligent appointment management",
+          features: {
+            calendar: {
+              title: "Interactive Calendar",
+              description:
+                "View and manage all your appointments in one place with drag-and-drop functionality",
+            },
+            autoReminders: {
+              title: "Automatic Reminders",
+              description:
+                "Reduce no-shows with automated email and SMS reminders",
+            },
+            multiLocation: {
+              title: "Multi-Location Support",
+              description:
+                "Manage appointments across multiple business locations",
+            },
+            recurring: {
+              title: "Recurring Appointments",
+              description:
+                "Set up weekly, monthly or custom recurring appointments",
+            },
+          },
+        },
+        clients: {
+          title: "Client Management",
+          description: "Build lasting relationships",
+          features: {
+            database: {
+              title: "Client Database",
+              description:
+                "Store and organize all client information in one secure place",
+            },
+            history: {
+              title: "Appointment History",
+              description:
+                "Track complete appointment and service history for each client",
+            },
+            notes: {
+              title: "Client Notes",
+              description:
+                "Add private notes and preferences for personalized service",
+            },
+            communication: {
+              title: "Automated Communication",
+              description:
+                "Send automated booking confirmations and follow-ups",
+            },
+          },
+        },
+        team: {
+          title: "Team Collaboration",
+          description: "Empower your team",
+          features: {
+            roles: {
+              title: "Role-Based Access",
+              description: "Control what each team member can see and do",
+            },
+            scheduling: {
+              title: "Staff Scheduling",
+              description: "Manage team availability and working hours",
+            },
+            performance: {
+              title: "Performance Tracking",
+              description: "Monitor individual and team performance metrics",
+            },
+            mobile: {
+              title: "Mobile Access",
+              description: "Team members can access schedules from anywhere",
+            },
+          },
+        },
+        analytics: {
+          title: "Analytics & Reports",
+          description: "Data-driven decisions",
+          features: {
+            dashboard: {
+              title: "Real-Time Dashboard",
+              description: "See your key metrics at a glance",
+            },
+            revenue: {
+              title: "Revenue Reports",
+              description: "Track income, expenses and profitability",
+            },
+            clients: {
+              title: "Client Analytics",
+              description: "Understand retention, acquisition and behavior",
+            },
+            export: {
+              title: "Export Reports",
+              description: "Download reports in CSV, PDF or Excel format",
+            },
+          },
+        },
+        payments: {
+          title: "Payment Processing",
+          description: "Get paid faster",
+          features: {
+            online: {
+              title: "Online Payments",
+              description:
+                "Accept credit cards, debit cards and digital wallets",
+            },
+            deposits: {
+              title: "Deposit Management",
+              description: "Require deposits to reduce no-shows",
+            },
+            invoicing: {
+              title: "Automated Invoicing",
+              description:
+                "Generate and send professional invoices automatically",
+            },
+            tracking: {
+              title: "Payment Tracking",
+              description: "Monitor all transactions in real-time",
+            },
+          },
+        },
+        integrations: {
+          title: "Integrations",
+          description: "Connect your tools",
+          features: {
+            calendar: {
+              title: "Calendar Sync",
+              description: "Sync with Google Calendar, Outlook and more",
+            },
+            payments: {
+              title: "Payment Gateways",
+              description: "Integrate with Stripe, PayPal and others",
+            },
+            marketing: {
+              title: "Marketing Tools",
+              description: "Connect with Mailchimp, HubSpot and more",
+            },
+            api: {
+              title: "Open API",
+              description: "Build custom integrations with our API",
+            },
+          },
+        },
+      },
+      cta: {
+        title: "Ready to get started?",
+        description: "Join thousands of businesses already using TuAgenda",
+        button: "Start Free Trial",
+      },
+      imagePlaceholder: "Feature illustration",
+    },
+    industries: {
+      title: "Real Use Cases",
+      subtitle: "Tailored solutions for every type of business",
+      badge: "Use Cases",
+      industries: {
+        salons: {
+          title: "Hair Salons & Barbershops",
+          description: "Perfect for styling businesses",
+          features: [
+            "Service menu management",
+            "Stylist scheduling",
+            "Product inventory",
+            "Client photo gallery",
+          ],
+          stats: "Used by 5,000+ salons worldwide",
+        },
+        spas: {
+          title: "Spas & Wellness",
+          description: "Relax and grow your spa business",
+          features: [
+            "Treatment packages",
+            "Room management",
+            "Membership programs",
+            "Gift certificates",
+          ],
+          stats: "Trusted by 3,000+ spas",
+        },
+        medical: {
+          title: "Medical & Dental",
+          description: "HIPAA-compliant scheduling",
+          features: [
+            "Patient records",
+            "Insurance tracking",
+            "Prescription management",
+            "Secure messaging",
+          ],
+          stats: "Serving 2,000+ healthcare providers",
+        },
+        fitness: {
+          title: "Fitness & Yoga",
+          description: "Energize your fitness business",
+          features: [
+            "Class scheduling",
+            "Membership management",
+            "Trainer assignments",
+            "Progress tracking",
+          ],
+          stats: "Powering 4,000+ fitness studios",
+        },
+        beauty: {
+          title: "Beauty & Cosmetics",
+          description: "Look good, feel great",
+          features: [
+            "Service customization",
+            "Before/after photos",
+            "Product recommendations",
+            "Loyalty programs",
+          ],
+          stats: "Chosen by 6,000+ beauty professionals",
+        },
+        consulting: {
+          title: "Consulting & Coaching",
+          description: "Professional service scheduling",
+          features: [
+            "Virtual meetings",
+            "Session notes",
+            "File sharing",
+            "Package deals",
+          ],
+          stats: "Used by 1,500+ consultants",
+        },
+      },
+      testimonials: {
+        title: "Success Stories",
+        subtitle: "See how businesses like yours are thriving",
+      },
+      cta: {
+        title: "Find your industry solution",
+        button: "Get Started Free",
+      },
+      imagePlaceholder: "Industry showcase",
+    },
+    contact: {
+      title: "Get in Touch",
+      subtitle: "We're here to help you succeed",
+      badge: "Contact Us",
+      form: {
+        title: "Send us a message",
+        description:
+          "Fill out the form and our team will get back to you within 24 hours",
+        name: "Full Name",
+        namePlaceholder: "John Doe",
+        email: "Email",
+        emailPlaceholder: "john@example.com",
+        subject: "Subject",
+        subjectPlaceholder: "How can we help?",
+        message: "Message",
+        messagePlaceholder: "Tell us more about your needs...",
+        send: "Send Message",
+        sending: "Sending...",
+        success: "Message sent successfully!",
+        error: "Failed to send message. Please try again.",
+      },
+      channels: {
+        title: "Other ways to reach us",
+        email: {
+          title: "Email",
+          value: "support@tuagenda.com",
+          description: "We'll respond within 24 hours",
+        },
+        phone: {
+          title: "Phone",
+          value: "+1 (555) 123-4567",
+          description: "Mon-Fri from 9am to 6pm",
+        },
+        chat: {
+          title: "Live Chat",
+          value: "Available now",
+          description: "Chat with our support team",
+        },
+      },
+      faq: {
+        title: "Frequently Asked Questions",
+        subtitle: "Find quick answers to common questions",
+        questions: {
+          trial: {
+            question: "How does the free trial work?",
+            answer:
+              "Our 14-day free trial gives you full access to all features. No credit card required. You can upgrade, downgrade, or cancel anytime.",
+          },
+          setup: {
+            question: "How long does setup take?",
+            answer:
+              "Most businesses are up and running in less than 15 minutes. Our onboarding wizard guides you through each step.",
+          },
+          support: {
+            question: "What kind of support do you offer?",
+            answer:
+              "All plans include email support. Pro and Enterprise plans get priority support and phone support respectively. We also have extensive documentation and video tutorials.",
+          },
+          data: {
+            question: "Is my data secure?",
+            answer:
+              "Absolutely. We use bank-level encryption, regular backups, and comply with GDPR and other data protection regulations.",
+          },
+          migration: {
+            question: "Can you help me migrate from another platform?",
+            answer:
+              "Yes! Our team can help you migrate your data from most major platforms. Contact us for a personalized migration plan.",
+          },
+          pricing: {
+            question: "Can I change plans later?",
+            answer:
+              "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate the difference.",
+          },
+        },
+      },
+      hours: {
+        title: "Business Hours",
+        timezone: "EST (Eastern Standard Time)",
+        schedule: {
+          weekdays: "Monday - Friday",
+          weekdaysHours: "9:00 AM - 6:00 PM",
+          saturday: "Saturday",
+          saturdayHours: "10:00 AM - 4:00 PM",
+          sunday: "Sunday",
+          sundayHours: "Closed",
+        },
+      },
+    },
+    integrations: {
+      title: "Integrations",
+      subtitle: "Connect TuAgenda with your favorite tools",
+      badge: "100+ Integrations",
+      categories: {
+        all: "All",
+        calendar: "Calendar",
+        payments: "Payments",
+        marketing: "Marketing",
+        communication: "Communication",
+        productivity: "Productivity",
+      },
+      featured: {
+        title: "Featured Integrations",
+        description: "Our most popular connections",
+      },
+      list: {
+        googleCalendar: {
+          name: "Google Calendar",
+          description:
+            "Sync appointments with your Google Calendar automatically",
+          category: "calendar",
+        },
+        outlook: {
+          name: "Microsoft Outlook",
+          description: "Two-way sync with Outlook calendar and contacts",
+          category: "calendar",
+        },
+        stripe: {
+          name: "Stripe",
+          description: "Accept payments securely with Stripe",
+          category: "payments",
+        },
+        paypal: {
+          name: "PayPal",
+          description: "Process payments through PayPal",
+          category: "payments",
+        },
+        mailchimp: {
+          name: "Mailchimp",
+          description: "Sync clients to your mailing lists",
+          category: "marketing",
+        },
+        zoom: {
+          name: "Zoom",
+          description:
+            "Automatically create Zoom meetings for virtual appointments",
+          category: "communication",
+        },
+        slack: {
+          name: "Slack",
+          description: "Get appointment notifications in Slack",
+          category: "communication",
+        },
+        zapier: {
+          name: "Zapier",
+          description: "Connect to 3,000+ apps through Zapier",
+          category: "productivity",
+        },
+        hubspot: {
+          name: "HubSpot",
+          description: "Sync customer data with HubSpot CRM",
+          category: "marketing",
+        },
+        quickbooks: {
+          name: "QuickBooks",
+          description: "Sync invoices and payments with QuickBooks",
+          category: "payments",
+        },
+      },
+      api: {
+        title: "Developer API",
+        description: "Build custom integrations with our powerful REST API",
+        features: [
+          "Comprehensive documentation",
+          "Webhooks for real-time updates",
+          "SDKs for popular languages",
+          "Sandbox environment",
+        ],
+        cta: "View API Docs",
+      },
+      cta: {
+        title: "Don't see your tool?",
+        description: "Request a new integration or build your own with our API",
+        button: "Request Integration",
+      },
+      imagePlaceholder: "Integration logo",
     },
   },
 };

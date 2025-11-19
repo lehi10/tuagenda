@@ -29,10 +29,42 @@ export function PublicFooter() {
           </div>
 
           {/* Links Section */}
-          <div className="grid grid-cols-2 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:col-span-2">
             <div className="flex flex-col gap-2 sm:gap-3">
               <h3 className="text-xs font-semibold text-foreground sm:text-sm">
-                Producto
+                {t.common.product}
+              </h3>
+              <div className="flex flex-col gap-1.5 sm:gap-2">
+                <Link
+                  href="/features"
+                  className="text-xs text-muted-foreground transition-colors hover:text-primary sm:text-sm"
+                >
+                  {t.navigation.features}
+                </Link>
+                <Link
+                  href="/industries"
+                  className="text-xs text-muted-foreground transition-colors hover:text-primary sm:text-sm"
+                >
+                  {t.navigation.industries}
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="text-xs text-muted-foreground transition-colors hover:text-primary sm:text-sm"
+                >
+                  {t.navigation.pricing}
+                </Link>
+                <Link
+                  href="/integrations"
+                  className="text-xs text-muted-foreground transition-colors hover:text-primary sm:text-sm"
+                >
+                  {t.navigation.integrations}
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:gap-3">
+              <h3 className="text-xs font-semibold text-foreground sm:text-sm">
+                {t.common.platform}
               </h3>
               <div className="flex flex-col gap-1.5 sm:gap-2">
                 <Link
@@ -42,17 +74,17 @@ export function PublicFooter() {
                   {t.navigation.aboutUs}
                 </Link>
                 <Link
-                  href="/pricing"
+                  href="/contact"
                   className="text-xs text-muted-foreground transition-colors hover:text-primary sm:text-sm"
                 >
-                  {t.navigation.pricing}
+                  {t.navigation.contact}
                 </Link>
               </div>
             </div>
 
             <div className="flex flex-col gap-2 sm:gap-3">
               <h3 className="text-xs font-semibold text-foreground sm:text-sm">
-                Legal
+                {t.common.legal}
               </h3>
               <div className="flex flex-col gap-1.5 sm:gap-2">
                 <Link

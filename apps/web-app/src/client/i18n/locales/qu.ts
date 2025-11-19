@@ -54,6 +54,10 @@ export const qu: Translations = {
     users: "Llamk'aqkuna",
     aboutUs: "Ñuqanchikpa",
     pricing: "Chaninkuna",
+    features: "Ruwanakuna",
+    industries: "Ruwaykunapa Liwrukuna",
+    contact: "Willanakuy",
+    integrations: "Integraciónes",
   },
   auth: {
     login: "Yaykuy",
@@ -447,6 +451,33 @@ export const qu: Translations = {
         feature5: "Kikin ruway",
         feature6: "SLA garantia",
       },
+      comparison: {
+        title: "Plankunata Tupachiy",
+        subtitle: "Qaway imakuna sapa planpi yapashan",
+        unlimited: "Mana tukukuq",
+        perMonth: "/killa",
+        categories: {
+          coreFeatures: "Ñawpaq Ruwanakuna",
+          advancedFeatures: "Avanzasqa Ruwanakuna",
+          support: "Yanapakuy",
+        },
+        features: {
+          appointments: "Citakuna",
+          locations: "Maykunapi",
+          staffMembers: "Personalpa runankunan",
+          clientDatabase: "Rantiqkunapa willakuna waqaychasqan",
+          calendarSync: "Calendario sincronización",
+          customBranding: "Kikin marca",
+          integrations: "Integraciónes",
+          apiAccess: "API yaykuy",
+          advancedAnalytics: "Avanzasqa análisis",
+          customDevelopment: "Kikin ruway",
+          emailSupport: "Email yanapakuy",
+          prioritySupport: "Prioridad yanapakuy",
+          phoneSupport: "Telefono yanapakuy",
+          dedicatedManager: "Dedicasqa kamachiq",
+        },
+      },
     },
     dashboard: {
       title: "Panel",
@@ -592,6 +623,428 @@ export const qu: Translations = {
         profileUpdated: "Perfilqa allillanmi musuqchasqa",
         passwordChanged: "Yaykuna rimayqa allillanmi tikrasqa",
       },
+    },
+    features: {
+      title: "Tukuy Ruwanakuna",
+      subtitle: "Tukuynin negocioykita allinta kamachinaykipaq",
+      badge: "Hunt'a Plataforma",
+      categories: {
+        scheduling: {
+          title: "Yuyaysapa Citakuna",
+          description: "Yuyaysapa citakuna kamachiy",
+          features: {
+            calendar: {
+              title: "Interactivo Calendario",
+              description:
+                "Tukuy citasniykita huk chiqaqpi qaway chaymanta kamachiy arrastrando chaymanta soltando",
+            },
+            autoReminders: {
+              title: "Kikin Yuyarichiqkuna",
+              description:
+                "Mana chayamuykunata pisiyachiy kikin email chaymanta SMS yuyarichiqkunawan",
+            },
+            multiLocation: {
+              title: "Achkha Maykunapi Yanapakuy",
+              description: "Negocioykipa achkha maykunapi citakuna kamachiy",
+            },
+            recurring: {
+              title: "Kutichiq Citakuna",
+              description:
+                "Sapa semana, sapa killa utaq kikin kutichiq citakuna churay",
+            },
+          },
+        },
+        clients: {
+          title: "Rantiqkunata Kamachiy",
+          description: "Unay rimanakuykuna ruway",
+          features: {
+            database: {
+              title: "Rantiqkunapa Base de Datos",
+              description:
+                "Tukuy rantiqkunapa willayninkunata huk allchasqa chiqaqpi waqaychay chaymanta organizay",
+            },
+            history: {
+              title: "Citakunapa Historia",
+              description:
+                "Sapa rantiqpaq hunt'a citakuna chaymanta yanapakuykunapa historianta qatiy",
+            },
+            notes: {
+              title: "Rantiqkunapa Willakuykunan",
+              description:
+                "Pakasqa willakuykuna chaymanta munaykunata yapay kikin yanapakuypaq",
+            },
+            communication: {
+              title: "Kikin Rimanakuy",
+              description:
+                "Kikin reserva takyachiykuna chaymanta qatipaykunata kachay",
+            },
+          },
+        },
+        team: {
+          title: "Equipopi Yanapanakuy",
+          description: "Equipoykita kallpachay",
+          features: {
+            roles: {
+              title: "Ruwaykunaman Hina Yaykuy",
+              description:
+                "Kamachiy sapa equipopa runan imata rikunanman chaymanta ruwayta atikunman",
+            },
+            scheduling: {
+              title: "Personal Programación",
+              description:
+                "Equipopa kashayninkunata chaymanta llamk'ay pachata kamachiy",
+            },
+            performance: {
+              title: "Rendimientota Qatiy",
+              description:
+                "Sapan chaymanta equipopa rendimiento métricasta qhaway",
+            },
+            mobile: {
+              title: "Móvil Yaykuy",
+              description:
+                "Equipopa runankunaqa maymantas horariokuna yaykuyta atinku",
+            },
+          },
+        },
+        analytics: {
+          title: "Análisis & Willakuykuna",
+          description: "Willayman hina tanteasqakuna",
+          features: {
+            dashboard: {
+              title: "Pacha Realpi Panel",
+              description: "Métricas principalniykikunata huk qhawawapi riy",
+            },
+            revenue: {
+              title: "Qullqi Chayamuyninkuna Willakuykuna",
+              description: "Qullqi chayamuy, gastos chaymanta ganancia qatiy",
+            },
+            clients: {
+              title: "Rantiqkunapa Análisis",
+              description:
+                "Retención, chaskiy chaymanta comportamiento hamut'ay",
+            },
+            export: {
+              title: "Willakuykunata Exportay",
+              description:
+                "Willakuykunata CSV, PDF utaq Excel formatopi urayachiy",
+            },
+          },
+        },
+        payments: {
+          title: "Qullqi Ruwasqakuna",
+          description: "Aswan utqaylla qullqita chaskinaykipaq",
+          features: {
+            online: {
+              title: "Online Qullqikuna",
+              description:
+                "Tarjetas de crédito, débito chaymanta digital carteras chaskiy",
+            },
+            deposits: {
+              title: "Depósitos Kamachiy",
+              description:
+                "Depósitos mañakuy mana chayamuykunata pisiyachinapaq",
+            },
+            invoicing: {
+              title: "Kikin Facturación",
+              description:
+                "Kikin profesional facturakuna ruway chaymanta kachay",
+            },
+            tracking: {
+              title: "Qullqikunata Qatiy",
+              description: "Tukuy transaccionkunata pacha realpi qhaway",
+            },
+          },
+        },
+        integrations: {
+          title: "Integraciónes",
+          description: "Yaramientosniykikunata tinkinachiy",
+          features: {
+            calendar: {
+              title: "Calendario Sincronización",
+              description:
+                "Google Calendar, Outlook chaymanta aswanwan sincronizay",
+            },
+            payments: {
+              title: "Qullqi Pasarelakuna",
+              description: "Stripe, PayPal chaymanta wakinkunawan integray",
+            },
+            marketing: {
+              title: "Marketing Yaramientokuna",
+              description: "Mailchimp, HubSpot chaymanta aswanwan tinkinachiy",
+            },
+            api: {
+              title: "Kichay API",
+              description: "APIwanwan kikin integraciónes ruway",
+            },
+          },
+        },
+      },
+      cta: {
+        title: "¿Listochu kanki qallayta?",
+        description: "Waranqa negociokunaman huñukuy TuAgendawan llamk'ashanña",
+        button: "Mana Qullqiyuq Prueba Qallariy",
+      },
+      imagePlaceholder: "Ruwanapa ilustración",
+    },
+    industries: {
+      title: "Ruwaykunapa Liwrukuna Kashan",
+      subtitle: "Sapa laya negociopaq kikin allichaykuna",
+      badge: "Ruwaykunapa Liwrukuna",
+      industries: {
+        salons: {
+          title: "Salones de Belleza chaymanta Barberías",
+          description: "Perfecto negociokuna estilopaq",
+          features: [
+            "Yanapakuykunapa menú kamachiy",
+            "Estilistakuna programación",
+            "Ruruchiqkunapa inventario",
+            "Rantiqkunapa foto galería",
+          ],
+          stats: "5,000+ salones pachantinpi llamk'achisqa",
+        },
+        spas: {
+          title: "Spas & Allin Kay",
+          description: "Samarikuy chaymanta spawaykita wiñachiy",
+          features: [
+            "Tratamientos paquetekuna",
+            "Cuartos kamachiy",
+            "Membresía programakuna",
+            "Certificados regalopaq",
+          ],
+          stats: "3,000+ spaswan confiasqa",
+        },
+        medical: {
+          title: "Qhali Hampiykuna & Dientes",
+          description: "HIPAA-man hina agendamiento",
+          features: [
+            "Pacientekunapa qillqasqankuna",
+            "Seguros qatiy",
+            "Recetas kamachiy",
+            "Allchasqa mensajería",
+          ],
+          stats: "2,000+ qhali yanapaqkunata yanapaspa",
+        },
+        fitness: {
+          title: "Fitness & Yoga",
+          description: "Fitness negocioykita kallpachay",
+          features: [
+            "Clases programación",
+            "Membresías kamachiy",
+            "Entrenadores quy",
+            "Ñawpaqman puriy qatiy",
+          ],
+          stats: "4,000+ fitness estudios kallpachaspa",
+        },
+        beauty: {
+          title: "Sumaq Kay & Cosméticos",
+          description: "Allin rikuy, allin sientekuy",
+          features: [
+            "Yanapakuykuna personalización",
+            "Ñawpaqmanta/qhipamanta fotos",
+            "Ruruchiqkuna yuyaychaykuna",
+            "Fidelidad programakuna",
+          ],
+          stats: "6,000+ sumaq kay profesionalkuna akllasqan",
+        },
+        consulting: {
+          title: "Consultoría & Coaching",
+          description: "Profesional yanapakuykuna agendamiento",
+          features: [
+            "Virtual reunionkuna",
+            "Sesión willakuykuna",
+            "Archivokuna rakiy",
+            "Yanapakuykunapa paquetekuna",
+          ],
+          stats: "1,500+ consultoras llamk'achisqa",
+        },
+      },
+      testimonials: {
+        title: "Allin Ruway Historiakuna",
+        subtitle: "Qaway imayna negociokuna qampa hina allinta purishanku",
+      },
+      cta: {
+        title: "Industriaykipaq allichayta tariy",
+        button: "Mana Qullqiyuq Qallariy",
+      },
+      imagePlaceholder: "Industriapa qhawariynin",
+    },
+    contact: {
+      title: "Ñuqanchikwan Rimanakuy",
+      subtitle: "Kaypiykum allin ruwanaykipaq yanapanaykipaq",
+      badge: "Willanakuy",
+      form: {
+        title: "Willayta kachawaykiku",
+        description:
+          "Formulariota hunt'achiy chaymanta equiponchikqa 24 horaspi kutichisunki",
+        name: "Hunt'a Suti",
+        namePlaceholder: "Juan Pérez",
+        email: "Correo Electrónico",
+        emailPlaceholder: "juan@ejemplo.com",
+        subject: "Asunto",
+        subjectPlaceholder: "¿Imaynatataq yanapasunman?",
+        message: "Willakuy",
+        messagePlaceholder: "Aswan willaway necesidadesniykimanta...",
+        send: "Willayta Kachay",
+        sending: "Kachaspa...",
+        success: "¡Willayqa allillanmi kachasqa!",
+        error:
+          "Willayta kachayta mana atisqachu. Ama hina kaspa wakmanta ruwakuy.",
+      },
+      channels: {
+        title: "Wak imaynakuna ñuqanchikwan willanakuypaq",
+        email: {
+          title: "Email",
+          value: "support@tuagenda.com",
+          description: "24 horaspi kutichiykiku",
+        },
+        phone: {
+          title: "Telefono",
+          value: "+1 (555) 123-4567",
+          description: "Lunes-Viernes 9am-manta 6pm-kama",
+        },
+        chat: {
+          title: "Kunan Chat",
+          value: "Kunantaq kashan",
+          description: "Yanapakuy equiponchiwan rimanakuy",
+        },
+      },
+      faq: {
+        title: "Sapa Kuti Tapuykunapa Kutichiykunan",
+        subtitle: "Utqaylla kutichiykuna tariy común tapuykunapaq",
+        questions: {
+          trial: {
+            question: "¿Imaynatataq mana qullqiyuq prueba llamk'an?",
+            answer:
+              "Mana qullqiyuq 14 p'unchaw pruebanchiqa tukuy ruwanakunaman hunt'a yaykuyta qusunki. Mana tarjeta de crédito necesitakunchu. Maypacha actualizayta, bajayta utaq qichuyta atikunki.",
+          },
+          setup: {
+            question: "¿Hayk'a pachatataq allichay horqon?",
+            answer:
+              "Aswan negociokunaqa 15 minutuskama pisi pachapiña ruwashanku. Onboarding yanapaqninchistaq sapa pasoykipi pusasunki.",
+          },
+          support: {
+            question: "¿Ima laya yanapakuytaq qunkichik?",
+            answer:
+              "Tukuy plankunaqa email yanapakuyta yaparanku. Pro chaymanta Enterprise plankunaqa prioridad chaymanta telefono yanapakuyta respectivamente chaskinku. Chaymantapas achka qillqasqa willakuykuna chaymanta video yachachiykunayuqmi kayku.",
+          },
+          data: {
+            question: "¿Willayniytaq allchasqachu?",
+            answer:
+              "Chiqamanta. Banco nivel cifrado, sapa kuti waqaychaykuna chaymanta GDPR chaymanta wak willakuyta waqaychay kamachikuna hunt'ayku.",
+          },
+          migration: {
+            question: "¿Huk plataformamanta astarinayta yanapawankimanchu?",
+            answer:
+              "¡Arí! Equiponchikqa aswan hatun plataformakunamanta willayniykikunata astariy yanapasunkiman. Kikin migración planpaq ñuqanchikwan rimanakuy.",
+          },
+          pricing: {
+            question: "¿Qhipaman plantata tikrayta atiymanchu?",
+            answer:
+              "Arí, maypacha planniykita actualizayta utaq bajayta atikunki. Tikraykuna chiqaptapunin llamk'anku chaymanta diferenciata prorratearqayku.",
+          },
+        },
+      },
+      hours: {
+        title: "Yanapakuy Pachakuna",
+        timezone: "EST (Hora Estándar del Este)",
+        schedule: {
+          weekdays: "Lunes - Viernes",
+          weekdaysHours: "9:00 AM - 6:00 PM",
+          saturday: "Sábado",
+          saturdayHours: "10:00 AM - 4:00 PM",
+          sunday: "Domingo",
+          sundayHours: "Wichq'asqa",
+        },
+      },
+    },
+    integrations: {
+      title: "Integraciónes",
+      subtitle: "TuAgendawan munasqayki yaramientokuna tinkinachiy",
+      badge: "100+ Integraciónes",
+      categories: {
+        all: "Tukuynin",
+        calendar: "Calendario",
+        payments: "Qullqikuna",
+        marketing: "Marketing",
+        communication: "Rimanakuy",
+        productivity: "Ruruchiq",
+      },
+      featured: {
+        title: "Destacasqa Integraciónes",
+        description: "Aswan popular tinkiyninchikkuna",
+      },
+      list: {
+        googleCalendar: {
+          name: "Google Calendar",
+          description: "Google Calendarniykiwan citakuna kikin sincronizay",
+          category: "calendar",
+        },
+        outlook: {
+          name: "Microsoft Outlook",
+          description:
+            "Outlook calendariomanta chaymanta contactoswan iskay ñanta sincronización",
+          category: "calendar",
+        },
+        stripe: {
+          name: "Stripe",
+          description: "Stripewan allchasqa qullqikunata chaskiy",
+          category: "payments",
+        },
+        paypal: {
+          name: "PayPal",
+          description: "PayPal nisqanwan qullqikunata ruwachiy",
+          category: "payments",
+        },
+        mailchimp: {
+          name: "Mailchimp",
+          description: "Rantiqkunata correo listasniykikunawan sincronizay",
+          category: "marketing",
+        },
+        zoom: {
+          name: "Zoom",
+          description: "Virtual citakunapaq Zoom reunionkuna kikin ruway",
+          category: "communication",
+        },
+        slack: {
+          name: "Slack",
+          description: "Slackpi citakunapa willakuykunata chaskiy",
+          category: "communication",
+        },
+        zapier: {
+          name: "Zapier",
+          description: "Zapier nisqanwan 3,000+ aplicacionkunaman tinkinakuy",
+          category: "productivity",
+        },
+        hubspot: {
+          name: "HubSpot",
+          description:
+            "HubSpot CRM nisqanwan rantiqkunapa willayninkunata sincronizay",
+          category: "marketing",
+        },
+        quickbooks: {
+          name: "QuickBooks",
+          description:
+            "QuickBooks nisqanwan facturakuna chaymanta qullqikunata sincronizay",
+          category: "payments",
+        },
+      },
+      api: {
+        title: "Desarrolladores API",
+        description: "Kallpasapa REST APIwanwan kikin integraciónes ruway",
+        features: [
+          "Hunt'a qillqasqa willakuykuna",
+          "Webhooks pacha realpi musuqchaykunapaq",
+          "SDKs popular simikunapaq",
+          "Sandbox pachapi",
+        ],
+        cta: "API Qillqasqata Qaway",
+      },
+      cta: {
+        title: "¿Manachu yaramientaykita tarinki?",
+        description: "Musuq integración mañakuy utaq kikimanta APIwan ruwakuy",
+        button: "Integración Mañakuy",
+      },
+      imagePlaceholder: "Integración logo",
     },
   },
 };

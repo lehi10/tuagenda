@@ -54,6 +54,10 @@ export const fr: Translations = {
     users: "Utilisateurs",
     aboutUs: "À propos",
     pricing: "Tarifs",
+    features: "Fonctionnalités",
+    industries: "Cas d'Usage",
+    contact: "Contact",
+    integrations: "Intégrations",
   },
   auth: {
     login: "Se connecter",
@@ -448,6 +452,33 @@ export const fr: Translations = {
         feature5: "Développement personnalisé",
         feature6: "Garantie SLA",
       },
+      comparison: {
+        title: "Comparer les Plans",
+        subtitle: "Voir ce qui est inclus dans chaque plan",
+        unlimited: "Illimité",
+        perMonth: "/mois",
+        categories: {
+          coreFeatures: "Fonctionnalités Principales",
+          advancedFeatures: "Fonctionnalités Avancées",
+          support: "Support",
+        },
+        features: {
+          appointments: "Rendez-vous",
+          locations: "Emplacements",
+          staffMembers: "Membres du personnel",
+          clientDatabase: "Base de données clients",
+          calendarSync: "Synchronisation calendrier",
+          customBranding: "Marque personnalisée",
+          integrations: "Intégrations",
+          apiAccess: "Accès API",
+          advancedAnalytics: "Analyses avancées",
+          customDevelopment: "Développement personnalisé",
+          emailSupport: "Support par e-mail",
+          prioritySupport: "Support prioritaire",
+          phoneSupport: "Support téléphonique",
+          dedicatedManager: "Gestionnaire dédié",
+        },
+      },
     },
     dashboard: {
       title: "Tableau de bord",
@@ -594,6 +625,432 @@ export const fr: Translations = {
         profileUpdated: "Profil mis à jour avec succès",
         passwordChanged: "Mot de passe changé avec succès",
       },
+    },
+    features: {
+      title: "Toutes les Fonctionnalités",
+      subtitle:
+        "Tout ce dont vous avez besoin pour gérer votre entreprise efficacement",
+      badge: "Plateforme Complète",
+      categories: {
+        scheduling: {
+          title: "Planification Intelligente",
+          description: "Gestion intelligente des rendez-vous",
+          features: {
+            calendar: {
+              title: "Calendrier Interactif",
+              description:
+                "Visualisez et gérez tous vos rendez-vous en un seul endroit avec fonctionnalité glisser-déposer",
+            },
+            autoReminders: {
+              title: "Rappels Automatiques",
+              description:
+                "Réduisez les absences avec des rappels automatiques par e-mail et SMS",
+            },
+            multiLocation: {
+              title: "Support Multi-emplacements",
+              description:
+                "Gérez les rendez-vous dans plusieurs emplacements de votre entreprise",
+            },
+            recurring: {
+              title: "Rendez-vous Récurrents",
+              description:
+                "Configurez des rendez-vous récurrents hebdomadaires, mensuels ou personnalisés",
+            },
+          },
+        },
+        clients: {
+          title: "Gestion des Clients",
+          description: "Construisez des relations durables",
+          features: {
+            database: {
+              title: "Base de Données Clients",
+              description:
+                "Stockez et organisez toutes les informations clients en un lieu sécurisé",
+            },
+            history: {
+              title: "Historique des Rendez-vous",
+              description:
+                "Suivez l'historique complet des rendez-vous et services pour chaque client",
+            },
+            notes: {
+              title: "Notes Clients",
+              description:
+                "Ajoutez des notes privées et des préférences pour un service personnalisé",
+            },
+            communication: {
+              title: "Communication Automatisée",
+              description:
+                "Envoyez des confirmations de réservation et suivis automatiques",
+            },
+          },
+        },
+        team: {
+          title: "Collaboration d'Équipe",
+          description: "Renforcez votre équipe",
+          features: {
+            roles: {
+              title: "Accès Basé sur les Rôles",
+              description:
+                "Contrôlez ce que chaque membre de l'équipe peut voir et faire",
+            },
+            scheduling: {
+              title: "Planification du Personnel",
+              description:
+                "Gérez la disponibilité et les horaires de travail de l'équipe",
+            },
+            performance: {
+              title: "Suivi des Performances",
+              description:
+                "Surveillez les métriques de performance individuelles et d'équipe",
+            },
+            mobile: {
+              title: "Accès Mobile",
+              description:
+                "Les membres de l'équipe peuvent accéder aux plannings depuis n'importe où",
+            },
+          },
+        },
+        analytics: {
+          title: "Analyses et Rapports",
+          description: "Décisions basées sur les données",
+          features: {
+            dashboard: {
+              title: "Tableau de Bord en Temps Réel",
+              description: "Visualisez vos métriques clés d'un coup d'œil",
+            },
+            revenue: {
+              title: "Rapports de Revenus",
+              description: "Suivez les revenus, dépenses et rentabilité",
+            },
+            clients: {
+              title: "Analyse Clients",
+              description:
+                "Comprenez la rétention, l'acquisition et le comportement",
+            },
+            export: {
+              title: "Exporter les Rapports",
+              description:
+                "Téléchargez les rapports au format CSV, PDF ou Excel",
+            },
+          },
+        },
+        payments: {
+          title: "Traitement des Paiements",
+          description: "Soyez payé plus rapidement",
+          features: {
+            online: {
+              title: "Paiements en Ligne",
+              description:
+                "Acceptez les cartes de crédit, débit et portefeuilles numériques",
+            },
+            deposits: {
+              title: "Gestion des Acomptes",
+              description: "Exigez des acomptes pour réduire les absences",
+            },
+            invoicing: {
+              title: "Facturation Automatisée",
+              description:
+                "Générez et envoyez des factures professionnelles automatiquement",
+            },
+            tracking: {
+              title: "Suivi des Paiements",
+              description: "Surveillez toutes les transactions en temps réel",
+            },
+          },
+        },
+        integrations: {
+          title: "Intégrations",
+          description: "Connectez vos outils",
+          features: {
+            calendar: {
+              title: "Synchronisation Calendrier",
+              description: "Synchronisez avec Google Calendar, Outlook et plus",
+            },
+            payments: {
+              title: "Passerelles de Paiement",
+              description: "Intégrez avec Stripe, PayPal et autres",
+            },
+            marketing: {
+              title: "Outils Marketing",
+              description: "Connectez avec Mailchimp, HubSpot et plus",
+            },
+            api: {
+              title: "API Ouverte",
+              description:
+                "Créez des intégrations personnalisées avec notre API",
+            },
+          },
+        },
+      },
+      cta: {
+        title: "Prêt à commencer ?",
+        description:
+          "Rejoignez des milliers d'entreprises qui utilisent déjà TuAgenda",
+        button: "Commencer l'Essai Gratuit",
+      },
+      imagePlaceholder: "Illustration de fonctionnalité",
+    },
+    industries: {
+      title: "Cas d'Usage Réels",
+      subtitle: "Solutions personnalisées pour chaque type d'entreprise",
+      badge: "Cas d'Usage",
+      industries: {
+        salons: {
+          title: "Salons de Coiffure et Barbiers",
+          description: "Parfait pour les entreprises de stylisme",
+          features: [
+            "Gestion du menu de services",
+            "Planification des stylistes",
+            "Inventaire des produits",
+            "Galerie photos clients",
+          ],
+          stats: "Utilisé par plus de 5 000 salons dans le monde",
+        },
+        spas: {
+          title: "Spas et Bien-être",
+          description: "Détendez-vous et développez votre spa",
+          features: [
+            "Forfaits de soins",
+            "Gestion des salles",
+            "Programmes d'adhésion",
+            "Certificats cadeaux",
+          ],
+          stats: "Approuvé par plus de 3 000 spas",
+        },
+        medical: {
+          title: "Médical et Dentaire",
+          description: "Planification conforme HIPAA",
+          features: [
+            "Dossiers patients",
+            "Suivi des assurances",
+            "Gestion des ordonnances",
+            "Messagerie sécurisée",
+          ],
+          stats: "Au service de plus de 2 000 prestataires de santé",
+        },
+        fitness: {
+          title: "Fitness et Yoga",
+          description: "Dynamisez votre entreprise de fitness",
+          features: [
+            "Planification des cours",
+            "Gestion des adhésions",
+            "Attribution des entraîneurs",
+            "Suivi des progrès",
+          ],
+          stats: "Propulse plus de 4 000 studios de fitness",
+        },
+        beauty: {
+          title: "Beauté et Cosmétiques",
+          description: "Paraissez bien, sentez-vous bien",
+          features: [
+            "Personnalisation des services",
+            "Photos avant/après",
+            "Recommandations de produits",
+            "Programmes de fidélité",
+          ],
+          stats: "Choisi par plus de 6 000 professionnels de la beauté",
+        },
+        consulting: {
+          title: "Conseil et Coaching",
+          description: "Planification de services professionnels",
+          features: [
+            "Réunions virtuelles",
+            "Notes de session",
+            "Partage de fichiers",
+            "Forfaits de services",
+          ],
+          stats: "Utilisé par plus de 1 500 consultants",
+        },
+      },
+      testimonials: {
+        title: "Histoires de Succès",
+        subtitle: "Découvrez comment des entreprises comme la vôtre prospèrent",
+      },
+      cta: {
+        title: "Trouvez votre solution par industrie",
+        button: "Commencer Gratuitement",
+      },
+      imagePlaceholder: "Vitrine de l'industrie",
+    },
+    contact: {
+      title: "Contactez-nous",
+      subtitle: "Nous sommes là pour vous aider à réussir",
+      badge: "Nous Contacter",
+      form: {
+        title: "Envoyez-nous un message",
+        description:
+          "Remplissez le formulaire et notre équipe vous répondra sous 24 heures",
+        name: "Nom Complet",
+        namePlaceholder: "Jean Dupont",
+        email: "E-mail",
+        emailPlaceholder: "jean@exemple.com",
+        subject: "Objet",
+        subjectPlaceholder: "Comment pouvons-nous vous aider ?",
+        message: "Message",
+        messagePlaceholder: "Parlez-nous de vos besoins...",
+        send: "Envoyer le Message",
+        sending: "Envoi...",
+        success: "Message envoyé avec succès !",
+        error: "Échec de l'envoi du message. Veuillez réessayer.",
+      },
+      channels: {
+        title: "Autres moyens de nous contacter",
+        email: {
+          title: "E-mail",
+          value: "support@tuagenda.com",
+          description: "Nous répondons sous 24 heures",
+        },
+        phone: {
+          title: "Téléphone",
+          value: "+1 (555) 123-4567",
+          description: "Lun-Ven de 9h à 18h",
+        },
+        chat: {
+          title: "Chat en Direct",
+          value: "Disponible maintenant",
+          description: "Discutez avec notre équipe de support",
+        },
+      },
+      faq: {
+        title: "Questions Fréquemment Posées",
+        subtitle: "Trouvez des réponses rapides aux questions courantes",
+        questions: {
+          trial: {
+            question: "Comment fonctionne l'essai gratuit ?",
+            answer:
+              "Notre essai gratuit de 14 jours vous donne un accès complet à toutes les fonctionnalités. Aucune carte de crédit requise. Vous pouvez mettre à niveau, rétrograder ou annuler à tout moment.",
+          },
+          setup: {
+            question: "Combien de temps prend la configuration ?",
+            answer:
+              "La plupart des entreprises sont opérationnelles en moins de 15 minutes. Notre assistant d'intégration vous guide à chaque étape.",
+          },
+          support: {
+            question: "Quel type de support offrez-vous ?",
+            answer:
+              "Tous les plans incluent le support par e-mail. Les plans Pro et Enterprise bénéficient respectivement d'un support prioritaire et téléphonique. Nous avons également une documentation complète et des tutoriels vidéo.",
+          },
+          data: {
+            question: "Mes données sont-elles sécurisées ?",
+            answer:
+              "Absolument. Nous utilisons un cryptage de niveau bancaire, des sauvegardes régulières et respectons le RGPD et autres réglementations de protection des données.",
+          },
+          migration: {
+            question:
+              "Pouvez-vous m'aider à migrer depuis une autre plateforme ?",
+            answer:
+              "Oui ! Notre équipe peut vous aider à migrer vos données depuis la plupart des principales plateformes. Contactez-nous pour un plan de migration personnalisé.",
+          },
+          pricing: {
+            question: "Puis-je changer de plan plus tard ?",
+            answer:
+              "Oui, vous pouvez mettre à niveau ou rétrograder votre plan à tout moment. Les modifications prennent effet immédiatement et nous calculerons la différence au prorata.",
+          },
+        },
+      },
+      hours: {
+        title: "Heures d'Ouverture",
+        timezone: "EST (Heure Normale de l'Est)",
+        schedule: {
+          weekdays: "Lundi - Vendredi",
+          weekdaysHours: "9h00 - 18h00",
+          saturday: "Samedi",
+          saturdayHours: "10h00 - 16h00",
+          sunday: "Dimanche",
+          sundayHours: "Fermé",
+        },
+      },
+    },
+    integrations: {
+      title: "Intégrations",
+      subtitle: "Connectez TuAgenda à vos outils préférés",
+      badge: "Plus de 100 Intégrations",
+      categories: {
+        all: "Toutes",
+        calendar: "Calendrier",
+        payments: "Paiements",
+        marketing: "Marketing",
+        communication: "Communication",
+        productivity: "Productivité",
+      },
+      featured: {
+        title: "Intégrations en Vedette",
+        description: "Nos connexions les plus populaires",
+      },
+      list: {
+        googleCalendar: {
+          name: "Google Calendar",
+          description:
+            "Synchronisez automatiquement les rendez-vous avec votre Google Calendar",
+          category: "calendar",
+        },
+        outlook: {
+          name: "Microsoft Outlook",
+          description:
+            "Synchronisation bidirectionnelle avec le calendrier et les contacts Outlook",
+          category: "calendar",
+        },
+        stripe: {
+          name: "Stripe",
+          description: "Acceptez les paiements en toute sécurité avec Stripe",
+          category: "payments",
+        },
+        paypal: {
+          name: "PayPal",
+          description: "Traitez les paiements via PayPal",
+          category: "payments",
+        },
+        mailchimp: {
+          name: "Mailchimp",
+          description: "Synchronisez les clients avec vos listes de diffusion",
+          category: "marketing",
+        },
+        zoom: {
+          name: "Zoom",
+          description:
+            "Créez automatiquement des réunions Zoom pour les rendez-vous virtuels",
+          category: "communication",
+        },
+        slack: {
+          name: "Slack",
+          description: "Recevez des notifications de rendez-vous dans Slack",
+          category: "communication",
+        },
+        zapier: {
+          name: "Zapier",
+          description: "Connectez-vous à plus de 3 000 applications via Zapier",
+          category: "productivity",
+        },
+        hubspot: {
+          name: "HubSpot",
+          description: "Synchronisez les données clients avec HubSpot CRM",
+          category: "marketing",
+        },
+        quickbooks: {
+          name: "QuickBooks",
+          description: "Synchronisez les factures et paiements avec QuickBooks",
+          category: "payments",
+        },
+      },
+      api: {
+        title: "API Développeur",
+        description:
+          "Créez des intégrations personnalisées avec notre puissante API REST",
+        features: [
+          "Documentation complète",
+          "Webhooks pour les mises à jour en temps réel",
+          "SDK pour les langages populaires",
+          "Environnement sandbox",
+        ],
+        cta: "Voir la Documentation API",
+      },
+      cta: {
+        title: "Vous ne trouvez pas votre outil ?",
+        description:
+          "Demandez une nouvelle intégration ou créez la vôtre avec notre API",
+        button: "Demander une Intégration",
+      },
+      imagePlaceholder: "Logo d'intégration",
     },
   },
 };
