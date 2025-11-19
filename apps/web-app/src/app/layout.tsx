@@ -4,10 +4,7 @@ import { I18nProvider } from "@/client/i18n";
 import { AuthProvider, BusinessProvider } from "@/client/contexts";
 import { TRPCProvider } from "@/client/lib/trpc";
 import { Toaster } from "@/client/components/ui/toaster";
-import {
-  GoogleTagManagerHead,
-  GoogleTagManagerBody,
-} from "@/client/components/scripts";
+import { GoogleAnalytics } from "@/client/components/scripts";
 import type { Metadata } from "next";
 
 const poppins = Poppins({
@@ -27,13 +24,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
     <html lang="es">
-      <head>{gtmId && <GoogleTagManagerHead gtmId={gtmId} />}</head>
+      <head>{gaId && <GoogleAnalytics measurementId={gaId} />}</head>
       <body className={`${poppins.variable} antialiased font-sans`}>
-        {gtmId && <GoogleTagManagerBody gtmId={gtmId} />}
         <TRPCProvider>
           <AuthProvider>
             <BusinessProvider>
