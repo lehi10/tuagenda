@@ -2,15 +2,35 @@
 
 import { useState } from "react";
 import { Button } from "@/client/components/ui/button";
-import { Card, CardContent } from "@/client/components/ui/card";
+import { Card } from "@/client/components/ui/card";
 import { Badge } from "@/client/components/ui/badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/client/components/ui/avatar";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/client/components/ui/tabs";
-import { Calendar, Clock, MapPin, User, X, CalendarClock } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/client/components/ui/popover";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  X,
+  CalendarClock,
+  Phone,
+  Mail,
+  Globe,
+  Info,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,93 +41,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
-
-// Mock data for appointments
-const mockAppointments = {
-  upcoming: [
-    {
-      id: "1",
-      service: "Corte de Cabello",
-      provider: "Juan Pérez",
-      date: "2025-11-05",
-      time: "10:00 AM",
-      duration: "30 min",
-      location: "Barbería Central",
-      address: "Av. Principal 123",
-      status: "confirmed",
-      price: "$15.00",
-    },
-    {
-      id: "2",
-      service: "Masaje Relajante",
-      provider: "María González",
-      date: "2025-11-08",
-      time: "2:00 PM",
-      duration: "60 min",
-      location: "Spa Wellness",
-      address: "Calle Paz 456",
-      status: "confirmed",
-      price: "$45.00",
-    },
-    {
-      id: "3",
-      service: "Consulta Dental",
-      provider: "Dr. Carlos Ruiz",
-      date: "2025-11-12",
-      time: "9:30 AM",
-      duration: "45 min",
-      location: "Clínica Dental",
-      address: "Centro Médico, Piso 3",
-      status: "pending",
-      price: "$60.00",
-    },
-  ],
-  past: [
-    {
-      id: "4",
-      service: "Corte de Cabello",
-      provider: "Juan Pérez",
-      date: "2025-10-15",
-      time: "11:00 AM",
-      duration: "30 min",
-      location: "Barbería Central",
-      address: "Av. Principal 123",
-      status: "completed",
-      price: "$15.00",
-    },
-    {
-      id: "5",
-      service: "Limpieza Facial",
-      provider: "Ana Martínez",
-      date: "2025-10-08",
-      time: "3:00 PM",
-      duration: "90 min",
-      location: "Estética Bella",
-      address: "Plaza Shopping, Local 12",
-      status: "completed",
-      price: "$35.00",
-    },
-    {
-      id: "6",
-      service: "Masaje Relajante",
-      provider: "María González",
-      date: "2025-09-20",
-      time: "4:00 PM",
-      duration: "60 min",
-      location: "Spa Wellness",
-      address: "Calle Paz 456",
-      status: "cancelled",
-      price: "$45.00",
-    },
-  ],
-};
-
-type Appointment = (typeof mockAppointments.upcoming)[0];
+import { useTrpc } from "@/client/lib/trpc";
+import { Skeleton } from "@/client/components/ui/skeleton";
+import type { Appointment } from "@/server/core/domain/entities/Appointment";
 
 export default function AppointmentsPage() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
+
+  const { data: upcomingAppointments, isLoading: isLoadingUpcoming } =
+    useTrpc.appointment.getUpcomingAppointments.useQuery();
+  const { data: pastAppointments, isLoading: isLoadingPast } =
+    useTrpc.appointment.getPastAppointments.useQuery();
 
   const handleCancelClick = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -115,23 +61,23 @@ export default function AppointmentsPage() {
   };
 
   const handleCancelConfirm = () => {
-    // TODO: Implement cancel logic
     console.log("Cancelling appointment:", selectedAppointment?.id);
     setCancelDialogOpen(false);
     setSelectedAppointment(null);
   };
 
   const handleReschedule = (appointment: Appointment) => {
-    // TODO: Implement reschedule logic
     console.log("Rescheduling appointment:", appointment.id);
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "confirmed":
-        return <Badge className="bg-green-500">Confirmada</Badge>;
-      case "pending":
-        return <Badge variant="secondary">Pendiente</Badge>;
+        return (
+          <Badge className="bg-green-500 hover:bg-green-600">Confirmada</Badge>
+        );
+      case "scheduled":
+        return <Badge variant="secondary">Agendada</Badge>;
       case "completed":
         return <Badge variant="outline">Completada</Badge>;
       case "cancelled":
@@ -141,6 +87,68 @@ export default function AppointmentsPage() {
     }
   };
 
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString("es-ES", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const formatTime = (date: Date) => {
+    return new Date(date).toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const formatDuration = (minutes: number) => {
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return remainingMinutes > 0
+      ? `${hours}h ${remainingMinutes}min`
+      : `${hours}h`;
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("es-ES", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
+
+  const getProviderName = (appointment: Appointment) => {
+    if (appointment.providerBusinessUser?.displayName) {
+      return appointment.providerBusinessUser.displayName;
+    }
+    if (appointment.providerBusinessUser?.user) {
+      const { firstName, lastName } = appointment.providerBusinessUser.user;
+      return `${firstName}${lastName ? " " + lastName : ""}`;
+    }
+    return "No asignado";
+  };
+
+  const getProviderInitials = (appointment: Appointment) => {
+    if (appointment.providerBusinessUser?.user) {
+      const { firstName, lastName } = appointment.providerBusinessUser.user;
+      return `${firstName[0]}${lastName?.[0] || ""}`.toUpperCase();
+    }
+    return "NA";
+  };
+
+  const getBusinessInitials = (businessTitle: string) => {
+    const words = businessTitle.split(" ");
+    if (words.length >= 2) {
+      return `${words[0][0]}${words[1][0]}`.toUpperCase();
+    }
+    return businessTitle.substring(0, 2).toUpperCase();
+  };
+
   const AppointmentCard = ({
     appointment,
     showActions = true,
@@ -148,150 +156,276 @@ export default function AppointmentsPage() {
     appointment: Appointment;
     showActions?: boolean;
   }) => (
-    <Card className="overflow-hidden">
-      <div className="px-3 py-2">
-        <div className="flex items-start justify-between gap-2 mb-1.5">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold leading-tight mb-0.5">
-              {appointment.service}
-            </h3>
-            <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <User className="h-3 w-3 shrink-0" />
-              <span className="truncate">{appointment.provider}</span>
-            </p>
+    <Card className="p-4">
+      <div className="flex gap-4">
+        {/* Left: Date Badge */}
+        <div className="flex flex-col items-center justify-start pt-1 min-w-[60px]">
+          <div className="text-2xl font-bold">
+            {new Date(appointment.startTime).getDate()}
           </div>
-          <div className="shrink-0">{getStatusBadge(appointment.status)}</div>
+          <div className="text-xs text-muted-foreground uppercase">
+            {new Date(appointment.startTime).toLocaleDateString("es-ES", {
+              month: "short",
+            })}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {formatTime(appointment.startTime)}
+          </div>
         </div>
 
-        <div className="space-y-0.5 text-xs mb-1.5">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Calendar className="h-3 w-3 shrink-0" />
-            <span>
-              {new Date(appointment.date).toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
+        {/* Divider */}
+        <div className="w-px bg-border" />
+
+        {/* Center: Service & Provider Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-base mb-1">
+                {appointment.service?.name || "Servicio"}
+              </h3>
+              {appointment.service?.description && (
+                <p className="text-sm text-muted-foreground line-clamp-1 mb-2">
+                  {appointment.service.description}
+                </p>
+              )}
+            </div>
+            {getStatusBadge(appointment.status)}
           </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Clock className="h-3 w-3 shrink-0" />
-            <span>
-              {appointment.time} • {appointment.duration}
-            </span>
-          </div>
-          <div className="flex items-start gap-2 text-muted-foreground">
-            <MapPin className="h-3 w-3 shrink-0 mt-0.5" />
-            <div className="min-w-0">
-              <span className="font-medium text-foreground text-xs block">
-                {appointment.location}
+
+          {/* Provider */}
+          <div className="flex items-center gap-2 mb-3">
+            <Avatar className="h-8 w-8">
+              <AvatarImage
+                src={
+                  appointment.providerBusinessUser?.user?.pictureFullPath || ""
+                }
+                alt={getProviderName(appointment)}
+              />
+              <AvatarFallback className="text-xs">
+                {getProviderInitials(appointment)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-sm">
+              <span className="text-muted-foreground">con </span>
+              <span className="font-medium">
+                {getProviderName(appointment)}
               </span>
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1.5 border-t">
-          <span className="text-sm font-semibold">{appointment.price}</span>
-          {showActions && appointment.status === "confirmed" && (
-            <div className="flex gap-1.5 w-full sm:w-auto">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleReschedule(appointment)}
-                className="flex-1 sm:flex-initial h-7 text-xs px-2"
-              >
-                <CalendarClock className="mr-1 h-3 w-3" />
-                Reprogramar
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleCancelClick(appointment)}
-                className="flex-1 sm:flex-initial h-7 text-xs px-2"
-              >
-                <X className="mr-1 h-3 w-3" />
-                Cancelar
-              </Button>
+          {/* Business Info */}
+          {appointment.business && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <Avatar className="h-7 w-7">
+                  <AvatarImage
+                    src={appointment.business.logo || ""}
+                    alt={appointment.business.title}
+                  />
+                  <AvatarFallback className="text-[10px]">
+                    {getBusinessInitials(appointment.business.title)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">
+                    {appointment.business.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {appointment.business.city}
+                  </p>
+                </div>
+              </div>
+
+              {/* Business Info Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                    <Info className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80" align="end">
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage
+                          src={appointment.business.logo || ""}
+                          alt={appointment.business.title}
+                        />
+                        <AvatarFallback>
+                          {getBusinessInitials(appointment.business.title)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold">
+                          {appointment.business.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground flex items-start gap-1 mt-1">
+                          <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
+                          <span>
+                            {appointment.business.address},{" "}
+                            {appointment.business.city}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 text-sm border-t pt-3">
+                      {appointment.business.phone && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Phone className="h-4 w-4 shrink-0" />
+                          <span>{appointment.business.phone}</span>
+                        </div>
+                      )}
+                      {appointment.business.email && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Mail className="h-4 w-4 shrink-0" />
+                          <span className="truncate">
+                            {appointment.business.email}
+                          </span>
+                        </div>
+                      )}
+                      {appointment.business.website && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Globe className="h-4 w-4 shrink-0" />
+                          <span className="truncate">
+                            {appointment.business.website}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           )}
-          {showActions && appointment.status === "pending" && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleCancelClick(appointment)}
-              className="w-full sm:w-auto h-7 text-xs px-2"
-            >
-              <X className="mr-1 h-3 w-3" />
-              Cancelar
-            </Button>
-          )}
+
+          {/* Details */}
+          <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4" />
+              {appointment.service?.durationMinutes &&
+                formatDuration(appointment.service.durationMinutes)}
+            </div>
+            <div className="font-semibold text-foreground">
+              {appointment.service?.price &&
+                formatPrice(appointment.service.price)}
+            </div>
+          </div>
+
+          {/* Actions */}
+          {showActions &&
+            (appointment.status === "confirmed" ||
+              appointment.status === "scheduled") && (
+              <div className="flex gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleReschedule(appointment)}
+                >
+                  <CalendarClock className="mr-2 h-4 w-4" />
+                  Reprogramar
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleCancelClick(appointment)}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Cancelar
+                </Button>
+              </div>
+            )}
         </div>
       </div>
     </Card>
   );
 
+  const LoadingState = () => (
+    <div className="space-y-3">
+      {[1, 2, 3].map((i) => (
+        <Card key={i} className="p-4">
+          <div className="flex gap-4">
+            <div className="flex flex-col items-center min-w-[60px]">
+              <Skeleton className="h-8 w-12" />
+              <Skeleton className="h-3 w-10 mt-1" />
+            </div>
+            <div className="w-px bg-border" />
+            <div className="flex-1 space-y-3">
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const EmptyState = ({ message }: { message: string }) => (
+    <Card className="p-8">
+      <div className="flex flex-col items-center text-center">
+        <div className="rounded-full bg-muted p-3 mb-3">
+          <Calendar className="h-6 w-6 text-muted-foreground" />
+        </div>
+        <p className="text-sm text-muted-foreground">{message}</p>
+      </div>
+    </Card>
+  );
+
   return (
-    <div className="p-4 space-y-4 sm:p-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Mis Citas</h1>
-        <p className="text-sm text-muted-foreground">
-          Gestiona tus citas programadas y revisa tu historial
-        </p>
+    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold sm:text-2xl">Mis Citas</h1>
+          <p className="text-xs text-muted-foreground sm:text-sm">
+            Gestiona tus citas programadas y revisa tu historial
+          </p>
+        </div>
       </div>
 
+      {/* Tabs */}
       <Tabs defaultValue="upcoming">
         <TabsList>
           <TabsTrigger value="upcoming">
-            Próximas ({mockAppointments.upcoming.length})
+            Próximas ({upcomingAppointments?.length || 0})
           </TabsTrigger>
           <TabsTrigger value="past">
-            Anteriores ({mockAppointments.past.length})
+            Anteriores ({pastAppointments?.length || 0})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="upcoming" className="mt-4">
-          {mockAppointments.upcoming.length > 0 ? (
-            <div className="space-y-3">
-              {mockAppointments.upcoming.map((appointment) => (
-                <AppointmentCard
-                  key={appointment.id}
-                  appointment={appointment}
-                  showActions={true}
-                />
-              ))}
-            </div>
+        <TabsContent value="upcoming" className="mt-4 space-y-3">
+          {isLoadingUpcoming ? (
+            <LoadingState />
+          ) : upcomingAppointments && upcomingAppointments.length > 0 ? (
+            upcomingAppointments.map((appointment) => (
+              <AppointmentCard
+                key={appointment.id!}
+                appointment={appointment}
+                showActions={true}
+              />
+            ))
           ) : (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-10">
-                <Calendar className="h-10 w-10 text-muted-foreground mb-3" />
-                <p className="text-sm text-muted-foreground">
-                  No tienes citas próximas
-                </p>
-              </CardContent>
-            </Card>
+            <EmptyState message="No tienes citas próximas programadas" />
           )}
         </TabsContent>
 
-        <TabsContent value="past" className="mt-4">
-          {mockAppointments.past.length > 0 ? (
-            <div className="space-y-3">
-              {mockAppointments.past.map((appointment) => (
-                <AppointmentCard
-                  key={appointment.id}
-                  appointment={appointment}
-                  showActions={false}
-                />
-              ))}
-            </div>
+        <TabsContent value="past" className="mt-4 space-y-3">
+          {isLoadingPast ? (
+            <LoadingState />
+          ) : pastAppointments && pastAppointments.length > 0 ? (
+            pastAppointments.map((appointment) => (
+              <AppointmentCard
+                key={appointment.id!}
+                appointment={appointment}
+                showActions={false}
+              />
+            ))
           ) : (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-10">
-                <Calendar className="h-10 w-10 text-muted-foreground mb-3" />
-                <p className="text-sm text-muted-foreground">
-                  No tienes citas anteriores
-                </p>
-              </CardContent>
-            </Card>
+            <EmptyState message="No tienes citas anteriores" />
           )}
         </TabsContent>
       </Tabs>
@@ -303,9 +437,13 @@ export default function AppointmentsPage() {
             <AlertDialogTitle>¿Cancelar cita?</AlertDialogTitle>
             <AlertDialogDescription>
               ¿Estás seguro de que deseas cancelar tu cita de{" "}
-              <strong>{selectedAppointment?.service}</strong> el{" "}
+              <strong>{selectedAppointment?.service?.name}</strong> el{" "}
               <strong>
-                {selectedAppointment?.date} a las {selectedAppointment?.time}
+                {selectedAppointment &&
+                  formatDate(selectedAppointment.startTime)}{" "}
+                a las{" "}
+                {selectedAppointment &&
+                  formatTime(selectedAppointment.startTime)}
               </strong>
               ? Esta acción no se puede deshacer.
             </AlertDialogDescription>

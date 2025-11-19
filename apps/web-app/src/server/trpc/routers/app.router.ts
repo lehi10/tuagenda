@@ -8,6 +8,7 @@ import { serviceRouter } from "./service.router";
 import { employeeServiceRouter } from "./employeeService.router";
 import { employeeAvailabilityRouter } from "./employeeAvailability.router";
 import { employeeExceptionRouter } from "./employeeException.router";
+import { appointmentRouter } from "./appointment.router";
 
 /**
  * Main application router
@@ -77,8 +78,11 @@ export const appRouter = router({
    */
   employeeException: employeeExceptionRouter,
 
-  // Future routers:
-  // appointment: appointmentRouter,
+  /**
+   * Appointment domain procedures
+   * Access: trpc.appointment.getUpcomingAppointments, trpc.appointment.getPastAppointments, etc.
+   */
+  appointment: appointmentRouter,
 });
 
 /**
