@@ -20,7 +20,6 @@ import { Button } from "@/client/components/ui/button";
 
 const STORAGE_KEY = "waitlist-banner-dismissed";
 const WAITLIST_URL = "https://forms.gle/A8857tkP3b5j1iug6";
-const BADGE_DELAY_MS = 30000; // 30 seconds
 
 export function WaitlistBanner() {
   const [isDismissed, setIsDismissed] = useState(true); // Start as true to avoid flash
@@ -48,11 +47,8 @@ export function WaitlistBanner() {
     setTimeout(() => {
       setIsDismissed(true);
       localStorage.setItem(STORAGE_KEY, "true");
-
-      // Show badge after delay
-      setTimeout(() => {
-        setShowBadge(true);
-      }, BADGE_DELAY_MS);
+      // Show badge immediately after banner is dismissed
+      setShowBadge(true);
     }, 300);
   };
 
