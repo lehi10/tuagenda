@@ -116,17 +116,17 @@ export default function AboutUsPage() {
           />
         </div>
 
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
+        <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm">
-                <Heart className="h-4 w-4" />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
+                <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
                 Our Story
               </div>
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl">
+              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.pages.aboutUs.title}
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
                 {t.pages.aboutUs.subtitle}
               </p>
             </div>
@@ -135,20 +135,20 @@ export default function AboutUsPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, index) => (
               <ScrollReveal key={index} delay={index * 100}>
-                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 text-center transition-all hover:border-primary/30 hover:shadow-lg">
+                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 text-center transition-all hover:border-primary/30 hover:shadow-lg sm:p-8">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                   <div className="relative">
                     <div
-                      className={`mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.color} shadow-lg transition-transform group-hover:scale-110`}
+                      className={`mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br sm:h-14 sm:w-14 md:h-16 md:w-16 ${stat.color} shadow-lg transition-transform group-hover:scale-110`}
                     >
-                      <stat.icon className="h-7 w-7 text-white" />
+                      <stat.icon className="h-6 w-6 text-white sm:h-7 sm:w-7 md:h-8 md:w-8" />
                     </div>
-                    <div className="text-3xl font-bold md:text-4xl">
+                    <div className="text-2xl font-bold sm:text-3xl md:text-4xl">
                       {stat.number}
                     </div>
                     <div className="mt-2 text-sm text-muted-foreground">
@@ -163,18 +163,18 @@ export default function AboutUsPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="bg-muted/30 py-16 md:py-24">
+      <section className="bg-muted/30 py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 md:gap-10 lg:gap-12 lg:grid-cols-2">
             <ScrollReveal>
               <div>
-                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
-                  <Target className="h-8 w-8 text-white" />
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg sm:h-14 sm:w-14 md:h-16 md:w-16">
+                  <Target className="h-6 w-6 text-white sm:h-7 sm:w-7 md:h-8 md:w-8" />
                 </div>
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                   {t.pages.aboutUs.mission.title}
                 </h2>
-                <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
+                <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
                   {t.pages.aboutUs.mission.description}
                 </p>
               </div>
@@ -199,14 +199,14 @@ export default function AboutUsPage() {
       </section>
 
       {/* Timeline Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 {t.pages.aboutUs.story.title}
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-base text-muted-foreground sm:text-lg">
                 {t.pages.aboutUs.story.description}
               </p>
             </div>
@@ -239,11 +239,11 @@ export default function AboutUsPage() {
       </section>
 
       {/* Values Section */}
-      <section className="bg-muted/30 py-16 md:py-24">
+      <section className="bg-muted/30 py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 {t.pages.aboutUs.values.title}
               </h2>
             </div>
@@ -252,13 +252,13 @@ export default function AboutUsPage() {
           <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
             {values.map((value, index) => (
               <ScrollReveal key={index} delay={index * 100}>
-                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-8 text-center transition-all hover:border-primary/30 hover:shadow-xl">
+                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 text-center transition-all hover:border-primary/30 hover:shadow-xl sm:p-8">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                   <div className="relative">
                     <div
-                      className={`mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${value.color} shadow-lg transition-transform group-hover:scale-110`}
+                      className={`mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br sm:h-14 sm:w-14 md:h-16 md:w-16 ${value.color} shadow-lg transition-transform group-hover:scale-110`}
                     >
-                      <value.icon className="h-8 w-8 text-white" />
+                      <value.icon className="h-6 w-6 text-white sm:h-7 sm:w-7 md:h-8 md:w-8" />
                     </div>
                     <h3 className="mb-3 text-xl font-bold">{value.title}</h3>
                     <p className="leading-relaxed text-muted-foreground">
@@ -273,14 +273,14 @@ export default function AboutUsPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 Meet Our Team
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-base text-muted-foreground sm:text-lg">
                 The people behind TuAgenda
               </p>
             </div>

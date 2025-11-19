@@ -72,17 +72,17 @@ export default function ClientsPage() {
     <>
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-background via-purple-500/5 to-background">
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
+        <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/5 px-4 py-2 text-sm font-medium text-purple-600 backdrop-blur-sm dark:text-purple-400">
                 <Database className="h-4 w-4" />
                 {t.pages.features.categories.clients.title}
               </div>
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl">
+              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.pages.features.categories.clients.title}
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
                 {t.pages.features.categories.clients.description}
               </p>
             </div>
@@ -91,23 +91,23 @@ export default function ClientsPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="space-y-24">
+          <div className="space-y-16 md:space-y-20 lg:space-y-24">
             {features.map((feature, index) => (
               <ScrollReveal key={index} delay={index * 100}>
                 <div
-                  className={`grid items-center gap-12 lg:grid-cols-2 ${index % 2 === 1 ? "lg:grid-flow-dense" : ""}`}
+                  className={`grid items-center gap-8 md:gap-10 lg:gap-12 lg:grid-cols-2 ${index % 2 === 1 ? "lg:grid-flow-dense" : ""}`}
                 >
                   {/* Content */}
                   <div className={index % 2 === 1 ? "lg:col-start-2" : ""}>
-                    <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg">
-                      <feature.icon className="h-8 w-8 text-white" />
+                    <div className="mb-6 inline-flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg">
+                      <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-white" />
                     </div>
-                    <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+                    <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                       {feature.title}
                     </h2>
-                    <p className="mb-6 text-lg text-muted-foreground">
+                    <p className="mb-6 text-base text-muted-foreground sm:text-lg">
                       {feature.description}
                     </p>
                     <ul className="space-y-3">
@@ -123,7 +123,7 @@ export default function ClientsPage() {
                   {/* Image Placeholder */}
                   <div className={index % 2 === 1 ? "lg:col-start-1" : ""}>
                     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
-                      <div className="aspect-[4/3] bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10 p-8">
+                      <div className="aspect-[4/3] bg-gradient-to-br from-purple-500/10 via-background to-pink-500/10 p-4 sm:p-6 md:p-8">
                         <div className="h-full w-full rounded-xl border-2 border-dashed border-purple-500/20 bg-background/50 backdrop-blur-sm">
                           <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
                             <ImageIcon className="h-12 w-12 text-muted-foreground/50" />
@@ -143,15 +143,15 @@ export default function ClientsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-background via-purple-500/5 to-background py-16 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-background via-purple-500/5 to-background py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container relative mx-auto px-4">
           <ScrollReveal>
             <div className="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-pink-500 shadow-2xl sm:rounded-3xl">
-              <div className="relative px-6 py-12 text-center text-white sm:px-8 sm:py-16 md:px-12 md:py-20">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              <div className="relative px-4 py-10 text-center text-white sm:px-6 sm:py-12 md:px-8 md:py-16 lg:px-12 lg:py-20">
+                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
                   Ready to build stronger client relationships?
                 </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-lg opacity-95 md:text-xl">
+                <p className="mx-auto mt-4 max-w-2xl text-base opacity-95 sm:text-lg md:text-xl">
                   Start managing your clients more effectively today
                 </p>
                 <div className="mt-8">

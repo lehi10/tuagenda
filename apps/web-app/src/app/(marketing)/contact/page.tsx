@@ -101,17 +101,17 @@ export default function ContactPage() {
           />
         </div>
 
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
+        <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm">
-                <HeadphonesIcon className="h-4 w-4" />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
+                <HeadphonesIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.pages.contact.badge}
               </div>
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl">
+              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.pages.contact.title}
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
                 {t.pages.contact.subtitle}
               </p>
             </div>
@@ -120,12 +120,12 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Form & Channels */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="mx-auto grid max-w-6xl gap-8 md:gap-10 lg:grid-cols-2 lg:gap-12">
             {/* Contact Form */}
             <ScrollReveal>
-              <div className="rounded-2xl border border-border bg-card p-6 shadow-lg lg:p-8">
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-lg sm:p-8">
                 <h2 className="mb-2 text-2xl font-bold">
                   {t.pages.contact.form.title}
                 </h2>
@@ -150,7 +150,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       required
-                      className="h-12"
+                      className="h-12 sm:h-14"
                     />
                   </div>
 
@@ -170,7 +170,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
-                      className="h-12"
+                      className="h-12 sm:h-14"
                     />
                   </div>
 
@@ -190,7 +190,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, subject: e.target.value })
                       }
                       required
-                      className="h-12"
+                      className="h-12 sm:h-14"
                     />
                   </div>
 
@@ -210,7 +210,7 @@ export default function ContactPage() {
                       }
                       required
                       rows={5}
-                      className="resize-none"
+                      className="resize-none min-h-[120px] sm:min-h-[140px]"
                     />
                   </div>
 
@@ -218,7 +218,7 @@ export default function ContactPage() {
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
-                    className="w-full gap-2"
+                    className="w-full gap-2 h-12 sm:h-14"
                   >
                     {isSubmitting ? (
                       <>
@@ -248,14 +248,14 @@ export default function ContactPage() {
                     {channels.map((channel, index) => (
                       <div
                         key={index}
-                        className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg"
+                        className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg sm:p-8"
                       >
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                         <div className="relative flex items-start gap-4">
                           <div
-                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${channel.color} shadow-md`}
+                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br sm:h-14 sm:w-14 ${channel.color} shadow-md`}
                           >
-                            <channel.icon className="h-6 w-6 text-white" />
+                            <channel.icon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                           </div>
                           <div className="flex-1">
                             <h3 className="mb-1 font-semibold">
@@ -277,10 +277,10 @@ export default function ContactPage() {
 
               {/* Business Hours */}
               <ScrollReveal delay={300}>
-                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 shadow-md">
-                      <Clock className="h-6 w-6 text-white" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 shadow-md sm:h-14 sm:w-14">
+                      <Clock className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                     </div>
                     <div>
                       <h3 className="font-semibold">
@@ -325,14 +325,14 @@ export default function ContactPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-muted/30 py-16 md:py-24">
+      <section className="bg-muted/30 py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="mx-auto mb-12 max-w-3xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 {t.pages.contact.faq.title}
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-base text-muted-foreground sm:text-lg">
                 {t.pages.contact.faq.subtitle}
               </p>
             </div>
@@ -346,7 +346,7 @@ export default function ContactPage() {
                     onClick={() =>
                       setExpandedFaq(expandedFaq === index ? null : index)
                     }
-                    className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-muted/20"
+                    className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/20 sm:p-6 min-h-[56px]"
                   >
                     <span className="pr-8 font-semibold">{faq.question}</span>
                     {expandedFaq === index ? (
@@ -356,7 +356,7 @@ export default function ContactPage() {
                     )}
                   </button>
                   {expandedFaq === index && (
-                    <div className="border-t border-border bg-muted/10 px-6 py-4">
+                    <div className="border-t border-border bg-muted/10 px-4 py-4 sm:px-6">
                       <p className="leading-relaxed text-muted-foreground">
                         {faq.answer}
                       </p>

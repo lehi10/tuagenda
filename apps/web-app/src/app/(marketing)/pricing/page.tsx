@@ -177,25 +177,25 @@ export default function PricingPage() {
           />
         </div>
 
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
+        <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm">
-                <Sparkles className="h-4 w-4" />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
                 Simple, transparent pricing
               </div>
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl">
+              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.pages.pricing.title}
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
                 {t.pages.pricing.subtitle}
               </p>
 
               {/* Billing Toggle */}
-              <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-border bg-card p-1 shadow-sm">
+              <div className="mt-6 inline-flex w-full max-w-sm items-center gap-2 rounded-full border border-border bg-card p-1 shadow-sm sm:mt-8 sm:w-auto sm:gap-3">
                 <button
                   onClick={() => setIsAnnual(false)}
-                  className={`rounded-full px-6 py-2 text-sm font-medium transition-all ${
+                  className={`flex-1 rounded-full px-4 py-2 text-xs font-medium transition-all sm:flex-none sm:px-6 sm:text-sm ${
                     !isAnnual
                       ? "bg-primary text-primary-foreground shadow-md"
                       : "text-muted-foreground hover:text-foreground"
@@ -205,14 +205,14 @@ export default function PricingPage() {
                 </button>
                 <button
                   onClick={() => setIsAnnual(true)}
-                  className={`flex items-center gap-2 rounded-full px-6 py-2 text-sm font-medium transition-all ${
+                  className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all sm:flex-none sm:gap-2 sm:px-6 sm:text-sm ${
                     isAnnual
                       ? "bg-primary text-primary-foreground shadow-md"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {t.pages.pricing.annual}
-                  <span className="rounded-full bg-green-500 px-2 py-0.5 text-xs font-semibold text-white">
+                  <span className="rounded-full bg-green-500 px-1.5 py-0.5 text-[10px] font-semibold text-white sm:px-2 sm:text-xs">
                     {t.pages.pricing.save20}
                   </span>
                 </button>
@@ -223,9 +223,9 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Cards */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-3 mt-12">
+          <div className="mx-auto grid max-w-6xl gap-6 sm:gap-8 lg:grid-cols-3 mt-8 sm:mt-10 lg:mt-12">
             {plans.map((plan, index) => (
               <ScrollReveal key={index} delay={index * 100}>
                 <div className="relative">
@@ -239,7 +239,7 @@ export default function PricingPage() {
                   )}
 
                   <div
-                    className={`relative overflow-hidden rounded-2xl border p-8 transition-all ${
+                    className={`relative overflow-hidden rounded-2xl border p-6 sm:p-8 transition-all ${
                       plan.highlighted
                         ? "border-primary shadow-2xl ring-2 ring-primary/20 hover:shadow-2xl"
                         : "border-border shadow-sm hover:border-primary/30 hover:shadow-lg"
@@ -249,15 +249,17 @@ export default function PricingPage() {
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity hover:opacity-100" />
 
                     <div className="relative text-center">
-                      <h3 className="text-2xl font-bold">{plan.name}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground">
+                      <h3 className="text-xl font-bold sm:text-2xl">
+                        {plan.name}
+                      </h3>
+                      <p className="mt-2 text-xs text-muted-foreground sm:text-sm">
                         {plan.description}
                       </p>
-                      <div className="mt-6">
-                        <span className="text-5xl font-bold">
+                      <div className="mt-4 sm:mt-6">
+                        <span className="text-4xl font-bold sm:text-5xl">
                           ${isAnnual ? plan.annualPrice : plan.monthlyPrice}
                         </span>
-                        <span className="text-muted-foreground">
+                        <span className="text-sm text-muted-foreground sm:text-base">
                           {t.pages.pricing.perMonth}
                         </span>
                       </div>
@@ -302,14 +304,14 @@ export default function PricingPage() {
       </section>
 
       {/* Feature Comparison Table */}
-      <section className="bg-muted/30 py-16 md:py-24">
+      <section className="bg-muted/30 py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+            <div className="mb-8 text-center sm:mb-10 md:mb-12">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 {t.pages.pricing.comparison.title}
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-3 text-base text-muted-foreground sm:mt-4 sm:text-lg">
                 {t.pages.pricing.comparison.subtitle}
               </p>
             </div>
@@ -320,10 +322,16 @@ export default function PricingPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="p-4 text-left font-semibold">Features</th>
-                    <th className="p-4 text-center font-semibold">Free</th>
-                    <th className="p-4 text-center font-semibold">Pro</th>
-                    <th className="p-4 text-center font-semibold">
+                    <th className="p-3 text-left text-xs font-semibold sm:p-4 sm:text-sm">
+                      Features
+                    </th>
+                    <th className="p-3 text-center text-xs font-semibold sm:p-4 sm:text-sm">
+                      Free
+                    </th>
+                    <th className="p-3 text-center text-xs font-semibold sm:p-4 sm:text-sm">
+                      Pro
+                    </th>
+                    <th className="p-3 text-center text-xs font-semibold sm:p-4 sm:text-sm">
                       Enterprise
                     </th>
                   </tr>
@@ -334,7 +342,7 @@ export default function PricingPage() {
                       <tr className="border-b border-border bg-muted/20">
                         <td
                           colSpan={4}
-                          className="p-4 font-semibold text-primary"
+                          className="p-3 text-xs font-semibold text-primary sm:p-4 sm:text-sm"
                         >
                           {category.category}
                         </td>
@@ -344,35 +352,37 @@ export default function PricingPage() {
                           key={`${categoryIndex}-${itemIndex}`}
                           className="border-b border-border transition-colors hover:bg-muted/10"
                         >
-                          <td className="p-4 text-sm">{item.name}</td>
-                          <td className="p-4 text-center text-sm">
+                          <td className="p-3 text-xs sm:p-4 sm:text-sm">
+                            {item.name}
+                          </td>
+                          <td className="p-3 text-center text-xs sm:p-4 sm:text-sm">
                             {typeof item.free === "boolean" ? (
                               item.free ? (
-                                <Check className="mx-auto h-5 w-5 text-primary" />
+                                <Check className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                               ) : (
-                                <X className="mx-auto h-5 w-5 text-muted-foreground" />
+                                <X className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                               )
                             ) : (
                               item.free
                             )}
                           </td>
-                          <td className="p-4 text-center text-sm">
+                          <td className="p-3 text-center text-xs sm:p-4 sm:text-sm">
                             {typeof item.pro === "boolean" ? (
                               item.pro ? (
-                                <Check className="mx-auto h-5 w-5 text-primary" />
+                                <Check className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                               ) : (
-                                <X className="mx-auto h-5 w-5 text-muted-foreground" />
+                                <X className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                               )
                             ) : (
                               item.pro
                             )}
                           </td>
-                          <td className="p-4 text-center text-sm">
+                          <td className="p-3 text-center text-xs sm:p-4 sm:text-sm">
                             {typeof item.enterprise === "boolean" ? (
                               item.enterprise ? (
-                                <Check className="mx-auto h-5 w-5 text-primary" />
+                                <Check className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                               ) : (
-                                <X className="mx-auto h-5 w-5 text-muted-foreground" />
+                                <X className="mx-auto h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                               )
                             ) : (
                               item.enterprise

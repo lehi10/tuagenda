@@ -140,17 +140,17 @@ export default function IntegrationsPage() {
           />
         </div>
 
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
+        <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm">
-                <Link2 className="h-4 w-4" />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
+                <Link2 className="h-3 w-3 sm:h-4 sm:w-4" />
                 {t.pages.integrations.badge}
               </div>
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl">
+              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.pages.integrations.title}
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-muted-foreground md:text-xl">
+              <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
                 {t.pages.integrations.subtitle}
               </p>
             </div>
@@ -159,14 +159,14 @@ export default function IntegrationsPage() {
       </section>
 
       {/* Featured Integrations */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 {t.pages.integrations.featured.title}
               </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-base text-muted-foreground sm:text-lg">
                 {t.pages.integrations.featured.description}
               </p>
             </div>
@@ -187,12 +187,12 @@ export default function IntegrationsPage() {
                   {/* Gradient background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
-                  <div className="relative p-6">
+                  <div className="relative p-6 sm:p-8">
                     {/* Logo placeholder */}
                     <div
-                      className={`mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br ${integration.color} shadow-lg transition-transform group-hover:scale-110`}
+                      className={`mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br sm:h-20 sm:w-20 md:h-24 md:w-24 ${integration.color} shadow-lg transition-transform group-hover:scale-110`}
                     >
-                      <integration.icon className="h-12 w-12 text-white" />
+                      <integration.icon className="h-8 w-8 text-white sm:h-10 sm:w-10 md:h-12 md:w-12" />
                     </div>
 
                     <h3 className="mb-2 text-xl font-bold">
@@ -215,11 +215,11 @@ export default function IntegrationsPage() {
       </section>
 
       {/* All Integrations */}
-      <section className="bg-muted/30 py-16 md:py-24">
+      <section className="bg-muted/30 py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="mb-8 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                 {t.pages.integrations.categories.all}
               </h2>
             </div>
@@ -232,7 +232,7 @@ export default function IntegrationsPage() {
                 <button
                   key={category.id}
                   onClick={() => setActiveCategory(category.id)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all sm:px-4 sm:py-2 sm:text-sm min-h-[36px] ${
                     activeCategory === category.id
                       ? "bg-primary text-primary-foreground shadow-md"
                       : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -248,12 +248,12 @@ export default function IntegrationsPage() {
           <div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {filteredIntegrations.map((integration, index) => (
               <ScrollReveal key={index} delay={index * 50}>
-                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/20 hover:shadow-lg">
+                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/20 hover:shadow-lg sm:p-8">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
                   <div className="relative">
                     {/* Logo placeholder */}
-                    <div className="mb-4 h-16 w-16 overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted/20">
+                    <div className="mb-4 h-12 w-12 overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted/20 sm:h-14 sm:w-14 md:h-16 md:w-16">
                       <div className="flex h-full items-center justify-center">
                         <ImageIcon className="h-6 w-6 text-muted-foreground/50" />
                       </div>
@@ -281,18 +281,18 @@ export default function IntegrationsPage() {
       </section>
 
       {/* API Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="container mx-auto px-4">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 md:gap-10 lg:grid-cols-2 lg:gap-12">
             <ScrollReveal>
               <div>
-                <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg">
-                  <Code2 className="h-8 w-8 text-white" />
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg sm:h-14 sm:w-14 md:h-16 md:w-16">
+                  <Code2 className="h-6 w-6 text-white sm:h-7 sm:w-7 md:h-8 md:w-8" />
                 </div>
-                <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+                <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                   {t.pages.integrations.api.title}
                 </h2>
-                <p className="mb-6 text-lg text-muted-foreground">
+                <p className="mb-6 text-base text-muted-foreground sm:text-lg">
                   {t.pages.integrations.api.description}
                 </p>
 
@@ -338,7 +338,7 @@ export default function IntegrationsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-background via-primary/5 to-background py-16 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-background via-primary/5 to-background py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="absolute inset-0">
           <div className="absolute left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-primary/20 blur-3xl" />
           <div
@@ -350,11 +350,11 @@ export default function IntegrationsPage() {
         <div className="container relative mx-auto px-4">
           <ScrollReveal>
             <div className="mx-auto max-w-4xl overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-primary/90 shadow-2xl sm:rounded-3xl">
-              <div className="relative px-6 py-12 text-center text-primary-foreground sm:px-8 sm:py-16 md:px-12 md:py-20">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              <div className="relative px-4 py-10 text-center text-primary-foreground sm:px-6 sm:py-12 md:px-8 md:py-16 lg:px-12 lg:py-20">
+                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
                   {t.pages.integrations.cta.title}
                 </h2>
-                <p className="mx-auto mt-4 max-w-2xl text-lg opacity-95 md:text-xl">
+                <p className="mx-auto mt-4 max-w-2xl text-base opacity-95 sm:text-lg md:text-xl">
                   {t.pages.integrations.cta.description}
                 </p>
 
@@ -363,7 +363,7 @@ export default function IntegrationsPage() {
                     <Button
                       size="lg"
                       variant="secondary"
-                      className="group h-14 gap-2 bg-white px-8 text-base font-semibold text-primary shadow-2xl transition-all hover:scale-105 hover:bg-white hover:shadow-2xl"
+                      className="group h-12 gap-2 bg-white px-6 text-sm font-semibold text-primary shadow-2xl transition-all hover:scale-105 hover:bg-white hover:shadow-2xl sm:h-14 sm:px-8 sm:text-base"
                     >
                       {t.pages.integrations.cta.button}
                       <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
