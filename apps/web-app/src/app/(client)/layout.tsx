@@ -15,6 +15,7 @@ import {
   BreadcrumbItem,
   BreadcrumbPage,
 } from "@/client/components/ui/breadcrumb";
+import { WaitlistBanner } from "@/client/components/waitlist-banner";
 
 export default function ClientLayout({
   children,
@@ -23,6 +24,7 @@ export default function ClientLayout({
 }) {
   return (
     <ClientRoute>
+      <WaitlistBanner />
       <SidebarProvider>
         <ClientSidebar />
         <SidebarInset>
