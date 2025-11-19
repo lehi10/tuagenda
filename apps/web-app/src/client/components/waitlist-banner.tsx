@@ -6,8 +6,8 @@
  *
  * Features:
  * - Only shows in production
- * - Can be dismissed (saved in localStorage)
- * - Shows floating badge 30s after dismissing banner
+ * - Banner can be dismissed (saved in localStorage)
+ * - Badge always visible
  * - Links to Google Form waitlist
  * - Uses brand colors
  */
@@ -24,13 +24,15 @@ const WAITLIST_URL = "https://forms.gle/A8857tkP3b5j1iug6";
 export function WaitlistBanner() {
   const [isDismissed, setIsDismissed] = useState(true); // Start as true to avoid flash
   const [isVisible, setIsVisible] = useState(false);
-  const [showBadge, setShowBadge] = useState(false);
+  const [isProduction, setIsProduction] = useState(false);
 
   useEffect(() => {
     // Only show in production
     if (process.env.NODE_ENV !== "production") {
       return;
     }
+
+    setIsProduction(true);
 
     // Check if user has already dismissed the banner
     const dismissed = localStorage.getItem(STORAGE_KEY);
@@ -47,8 +49,6 @@ export function WaitlistBanner() {
     setTimeout(() => {
       setIsDismissed(true);
       localStorage.setItem(STORAGE_KEY, "true");
-      // Show badge immediately after banner is dismissed
-      setShowBadge(true);
     }, 300);
   };
 
@@ -113,8 +113,8 @@ export function WaitlistBanner() {
         </div>
       )}
 
-      {/* Floating Badge */}
-      {showBadge && (
+      {/* Floating Badge - Always visible in production */}
+      {isProduction && (
         <button
           onClick={handleJoinWaitlist}
           className={`
