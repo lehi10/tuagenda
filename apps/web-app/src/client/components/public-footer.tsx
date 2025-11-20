@@ -111,17 +111,12 @@ export function PublicFooter() {
             <select
               value={locale}
               onChange={(e) =>
-                setLocale(
-                  e.target.value as "en" | "es" | "fr" | "pt" | "qu" | "gn"
-                )
+                setLocale(e.target.value as "en" | "es")
               }
               className="h-9 w-full max-w-[140px] rounded-lg border border-input bg-background px-3 py-1 text-xs shadow-sm transition-all hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:text-sm"
             >
               <option value="en">🇺🇸 English</option>
               <option value="es">🇪🇸 Español</option>
-              <option value="fr">🇫🇷 Français</option>
-              <option value="pt">🇧🇷 Português</option>
-              <option value="qu">🇵🇪 Qhichwa</option>
             </select>
           </div>
         </div>

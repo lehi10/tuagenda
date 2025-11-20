@@ -19,6 +19,11 @@ export const en = {
     noOrganizationSelected: "No organization selected",
     noOrganizationMessage:
       "You don't have an assigned organization. Please contact your administrator.",
+    learnMore: "Learn more",
+    startFreeTrial: "Start Free Trial",
+    featured: "Featured",
+    connect: "Connect",
+    screenshot: "Screenshot",
     placeholders: {
       search: "Search...",
       searchByEmail: "Search by email or name...",
@@ -408,11 +413,16 @@ export const en = {
     pricing: {
       title: "Pricing",
       subtitle: "Choose the perfect plan for your business",
+      badge: "Simple, transparent pricing",
+      popular: "Popular",
       monthly: "Monthly",
       annual: "Annual",
       save20: "Save 20%",
+      save: "Save",
+      year: "year",
       perMonth: "/month",
       getStarted: "Get Started",
+      featuresHeader: "Features",
       free: {
         name: "Free",
         price: "0",
@@ -800,7 +810,7 @@ export const en = {
         },
         medical: {
           title: "Medical & Dental",
-          description: "HIPAA-compliant scheduling",
+          description: "Secure and private scheduling",
           features: [
             "Patient records",
             "Insurance tracking",

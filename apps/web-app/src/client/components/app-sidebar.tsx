@@ -95,12 +95,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           url: "/services",
           icon: Sparkles,
         },
+        /*
         {
           id: "locations",
           title: t.navigation.locations,
           url: "/locations",
           icon: MapPin,
-        },
+        },*/
         {
           id: "clients",
           title: t.navigation.clients,

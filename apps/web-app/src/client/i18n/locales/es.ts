@@ -21,6 +21,11 @@ export const es: Translations = {
     noOrganizationSelected: "No hay organización seleccionada",
     noOrganizationMessage:
       "No tienes una organización asignada. Por favor contacta a tu administrador.",
+    learnMore: "Más información",
+    startFreeTrial: "Comenzar Prueba Gratuita",
+    featured: "Destacado",
+    connect: "Conectar",
+    screenshot: "Captura de pantalla",
     placeholders: {
       search: "Buscar...",
       searchByEmail: "Buscar por correo o nombre...",
@@ -415,11 +420,16 @@ export const es: Translations = {
     pricing: {
       title: "Precios",
       subtitle: "Elige el plan perfecto para tu negocio",
+      badge: "Precios simples y transparentes",
+      popular: "Popular",
       monthly: "Mensual",
       annual: "Anual",
       save20: "Ahorra 20%",
+      save: "Ahorra",
+      year: "año",
       perMonth: "/mes",
       getStarted: "Comenzar",
+      featuresHeader: "Características",
       free: {
         name: "Gratis",
         price: "0",
@@ -815,7 +825,7 @@ export const es: Translations = {
         },
         medical: {
           title: "Médico y Dental",
-          description: "Agendamiento compatible con HIPAA",
+          description: "Agendamiento seguro y privado",
           features: [
             "Registros de pacientes",
             "Seguimiento de seguros",

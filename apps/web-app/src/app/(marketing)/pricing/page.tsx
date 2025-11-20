@@ -182,7 +182,7 @@ export default function PricingPage() {
             <div className="mx-auto max-w-3xl text-center">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                Simple, transparent pricing
+                {t.pages.pricing.badge}
               </div>
               <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
                 {t.pages.pricing.title}
@@ -233,7 +233,7 @@ export default function PricingPage() {
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-lg">
                         <Sparkles className="h-3 w-3" />
-                        Popular
+                        {t.pages.pricing.popular}
                       </span>
                     </div>
                   )}
@@ -265,11 +265,11 @@ export default function PricingPage() {
                       </div>
                       {isAnnual && plan.monthlyPrice !== plan.annualPrice && (
                         <p className="mt-2 text-sm text-green-600">
-                          Save $
+                          {t.pages.pricing.save} $
                           {(parseFloat(plan.monthlyPrice) -
                             parseFloat(plan.annualPrice)) *
                             12}
-                          /year
+                          /{t.pages.pricing.year}
                         </p>
                       )}
                     </div>
@@ -323,16 +323,16 @@ export default function PricingPage() {
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
                     <th className="p-3 text-left text-xs font-semibold sm:p-4 sm:text-sm">
-                      Features
+                      {t.pages.pricing.featuresHeader}
                     </th>
                     <th className="p-3 text-center text-xs font-semibold sm:p-4 sm:text-sm">
-                      Free
+                      {t.pages.pricing.free.name}
                     </th>
                     <th className="p-3 text-center text-xs font-semibold sm:p-4 sm:text-sm">
-                      Pro
+                      {t.pages.pricing.pro.name}
                     </th>
                     <th className="p-3 text-center text-xs font-semibold sm:p-4 sm:text-sm">
-                      Enterprise
+                      {t.pages.pricing.enterprise.name}
                     </th>
                   </tr>
                 </thead>

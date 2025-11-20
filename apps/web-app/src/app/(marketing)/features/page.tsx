@@ -114,7 +114,7 @@ export default function FeaturesPage() {
 
                       {/* Learn more link */}
                       <div className="flex items-center gap-2 text-xs font-medium text-primary sm:text-sm">
-                        <span>Learn more</span>
+                        <span>{t.common.learnMore}</span>
                         <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1 sm:h-4 sm:w-4" />
                       </div>
                     </div>

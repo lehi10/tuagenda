@@ -3,20 +3,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { en } from "./locales/en";
 import { es } from "./locales/es";
-import { pt } from "./locales/pt";
-import { qu } from "./locales/qu";
-import { fr } from "./locales/fr";
 import type { Translations } from "./locales/en";
 
-export type Locale = "en" | "es" | "pt" | "qu" | "fr" | "gn";
+export type Locale = "en" | "es";
 
 const translations: Record<Locale, Translations> = {
   en,
   es,
-  pt,
-  qu,
-  fr,
-  gn: es, // Temporal hasta crear el archivo
 };
 
 const LOCALE_STORAGE_KEY = "tuagenda-locale";
@@ -40,15 +33,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-      if (
-        stored &&
-        (stored === "en" ||
-          stored === "es" ||
-          stored === "pt" ||
-          stored === "qu" ||
-          stored === "fr" ||
-          stored === "gn")
-      ) {
+      if (stored && (stored === "en" || stored === "es")) {
         setLocaleState(stored as Locale);
       }
     } catch (error) {

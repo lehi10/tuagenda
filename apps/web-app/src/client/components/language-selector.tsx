@@ -21,9 +21,6 @@ import { Languages, Check } from "lucide-react";
 export const languages = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "es", name: "Español", flag: "🇪🇸" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "pt", name: "Português", flag: "🇧🇷" },
-  { code: "qu", name: "Qhichwa", flag: "🇵🇪" },
 ] as const;
 
 // Sidebar version - must be used inside SidebarProvider
