@@ -33,7 +33,7 @@ g2 = _, _
 e = some(where (p.eft == allow))
 
 [matchers]
-m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && r.dom == p.dom && r.obj == p.obj && r.act == p.act)
+m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && (r.dom == p.dom || p.dom == '*') && r.obj == p.obj && r.act == p.act)
 `;
 
 export class AuthorizationService {
@@ -135,13 +135,16 @@ export class AuthorizationService {
     const enforcer = await this.getEnforcer();
 
     // Remove old role
-    await enforcer.removeGroupingPolicy(userId, oldRole, businessId);
+    const removed = await enforcer.removeGroupingPolicy(userId, oldRole, businessId);
 
     // Add new role
     const added = await enforcer.addGroupingPolicy(userId, newRole, businessId);
 
-    if (added) {
+    // Always save policy after changes
+    if (removed || added) {
       await enforcer.savePolicy();
+      // Reload to ensure cache is updated
+      await enforcer.loadPolicy();
     }
 
     return added;
@@ -153,18 +156,11 @@ export class AuthorizationService {
   async assignUserType(userId: string, userType: UserType): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
-    console.log(`[Casbin] assignUserType: ${userId} -> ${userType}`);
-
     // Add grouping policy g2: user, userType
     const added = await enforcer.addNamedGroupingPolicy("g2", userId, userType);
 
-    console.log(`[Casbin] addNamedGroupingPolicy result: ${added}`);
-
     if (added) {
       await enforcer.savePolicy();
-      console.log(`[Casbin] Policy saved successfully`);
-    } else {
-      console.log(`[Casbin] Policy NOT added (might already exist)`);
     }
 
     return added;
@@ -176,21 +172,14 @@ export class AuthorizationService {
   async removeUserType(userId: string, userType: UserType): Promise<boolean> {
     const enforcer = await this.getEnforcer();
 
-    console.log(`[Casbin] removeUserType: ${userId} from ${userType}`);
-
     const removed = await enforcer.removeNamedGroupingPolicy(
       "g2",
       userId,
       userType,
     );
 
-    console.log(`[Casbin] removeNamedGroupingPolicy result: ${removed}`);
-
     if (removed) {
       await enforcer.savePolicy();
-      console.log(`[Casbin] Policy removal saved successfully`);
-    } else {
-      console.log(`[Casbin] Policy NOT removed (might not exist)`);
     }
 
     return removed;
