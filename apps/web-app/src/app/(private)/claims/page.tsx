@@ -226,7 +226,9 @@ export default function PermissionsPage() {
                     {userInfo.userType}
                   </Badge>
                 ) : (
-                  <span className="text-sm text-muted-foreground">Customer</span>
+                  <span className="text-sm text-muted-foreground">
+                    Customer
+                  </span>
                 )}
               </div>
             </div>
@@ -371,18 +373,23 @@ export default function PermissionsPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Tabs defaultValue={Object.keys(
-                      business.permissions.reduce(
-                        (acc, perm) => {
-                          if (!acc[perm.resource]) {
-                            acc[perm.resource] = [];
-                          }
-                          acc[perm.resource].push(perm);
-                          return acc;
-                        },
-                        {} as Record<string, typeof business.permissions>
-                      )
-                    )[0]} className="w-full">
+                    <Tabs
+                      defaultValue={
+                        Object.keys(
+                          business.permissions.reduce(
+                            (acc, perm) => {
+                              if (!acc[perm.resource]) {
+                                acc[perm.resource] = [];
+                              }
+                              acc[perm.resource].push(perm);
+                              return acc;
+                            },
+                            {} as Record<string, typeof business.permissions>
+                          )
+                        )[0]
+                      }
+                      className="w-full"
+                    >
                       <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto">
                         {Object.keys(
                           business.permissions.reduce(
@@ -468,7 +475,8 @@ export default function PermissionsPage() {
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
-                Green badges indicate permissions that are <strong>allowed</strong>
+                Green badges indicate permissions that are{" "}
+                <strong>allowed</strong>
               </li>
               <li>
                 Red badges indicate permissions that are <strong>denied</strong>
@@ -478,7 +486,8 @@ export default function PermissionsPage() {
                 making changes
               </li>
               <li>
-                Permissions are scoped per business and role (MANAGER or EMPLOYEE)
+                Permissions are scoped per business and role (MANAGER or
+                EMPLOYEE)
               </li>
             </ul>
           </CardContent>

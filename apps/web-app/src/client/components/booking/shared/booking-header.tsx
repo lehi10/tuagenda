@@ -19,9 +19,10 @@ import { LogOut, User as UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { UserMenuSkeleton } from "./skeletons";
 
 export function BookingHeader() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -63,7 +64,8 @@ export function BookingHeader() {
 
         {/* User Menu or Login Button */}
         <div className="flex items-center gap-2">
-          {user ? (
+          {loading && <UserMenuSkeleton />}
+          {user && !loading && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -109,7 +111,9 @@ export function BookingHeader() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : (
+          )}
+
+          {!user && !loading && (
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"

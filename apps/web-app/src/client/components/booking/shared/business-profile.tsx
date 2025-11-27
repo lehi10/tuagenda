@@ -12,7 +12,7 @@ interface BusinessProfileProps {
   business: {
     name: string;
     description: string;
-    avatar: string;
+    avatar?: string | null;
     email: string;
     phone: string;
     location: string;
@@ -51,7 +51,7 @@ export function BusinessProfile({ business }: BusinessProfileProps) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
           {/* Avatar */}
           <Avatar className="h-20 w-20 shrink-0 ring-2 ring-primary/10 sm:h-24 sm:w-24">
-            <AvatarImage src={business.avatar} alt={business.name} />
+            <AvatarImage src={business.avatar || ""} alt={business.name} />
             <AvatarFallback className="text-2xl bg-gradient-to-br from-primary/20 to-secondary/20">
               {business.name.charAt(0)}
             </AvatarFallback>

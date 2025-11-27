@@ -1,6 +1,18 @@
 import { Skeleton } from "@/client/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/client/components/ui/card";
 
+const UserMenuSkeleton = () => {
+  return (
+    <div className="flex items-center">
+      <Skeleton className="h-8 w-8 rounded-full" />
+      <div className="space-y-1">
+        <Skeleton className="h-3 w-[100px]" />
+        <Skeleton className="h-2 w-[120px]" />
+      </div>
+    </div>
+  );
+};
+
 export function BookingPageSkeleton() {
   return (
     <>
@@ -110,3 +122,5 @@ export function BookingPageSkeleton() {
     </>
   );
 }
+
+export { UserMenuSkeleton };

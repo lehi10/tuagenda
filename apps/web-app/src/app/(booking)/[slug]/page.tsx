@@ -1,12 +1,10 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { TRPCError } from "@trpc/server";
 import { BusinessProfile } from "@/client/components/booking/shared/business-profile";
-import { PublicFooter } from "@/client/components/public-footer";
-import { BookingHeader } from "@/client/components/booking/shared/booking-header";
-import { BookingPageSkeleton } from "@/client/components/booking/shared/booking-page-skeleton";
 import { BookingFlow } from "@/client/components/booking/booking-flow";
-import { GetBusinessBySlugUseCase } from "@/server/core/application/use-cases/business";
-import { PrismaBusinessRepository } from "@/server/infrastructure/repositories";
+import { serverTrpc } from "@/server/trpc";
+import { BookingPageSkeleton } from "@/client/components/booking/shared/skeletons";
 
 interface PageProps {
   params: Promise<{
@@ -15,19 +13,17 @@ interface PageProps {
 }
 
 async function BookingContent({ slug }: { slug: string }) {
-  // Fetch business data on the server using the use case directly
-  const businessRepository = new PrismaBusinessRepository();
-  const getBusinessBySlugUseCase = new GetBusinessBySlugUseCase(
-    businessRepository
-  );
-  const result = await getBusinessBySlugUseCase.execute({ slug });
-
-  // Redirect to 404 if business not found
-  if (!result.success || !result.business) {
-    notFound();
+  // Fetch business data using server-side tRPC caller
+  // This respects hexagonal architecture by going through the tRPC layer
+  let business;
+  try {
+    business = await serverTrpc.business.getBySlug({ slug });
+  } catch (error) {
+    if (error instanceof TRPCError && error.code === "NOT_FOUND") {
+      notFound();
+    }
+    throw error;
   }
-
-  const business = result.business.toObject();
 
   // Ensure business has an ID (should always be present from database)
   if (!business.id) {
@@ -39,9 +35,7 @@ async function BookingContent({ slug }: { slug: string }) {
     name: business.title,
     description:
       business.description || "Tu destino para servicios profesionales",
-    avatar:
-      business.logo ||
-      `https://api.dicebear.com/7.x/initials/svg?seed=${business.title}`,
+    avatar: business.logo,
     email: business.email,
     phone: business.phone || "",
     location: [business.address, business.city, business.country]
@@ -60,15 +54,9 @@ async function BookingContent({ slug }: { slug: string }) {
 
 export default async function BookingPage({ params }: PageProps) {
   const { slug } = await params;
-
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <BookingHeader />
-
-      <Suspense fallback={<BookingPageSkeleton />}>
-        <BookingContent slug={slug} />
-      </Suspense>
-      <PublicFooter />
-    </div>
+    <Suspense fallback={<BookingPageSkeleton />}>
+      <BookingContent slug={slug} />
+    </Suspense>
   );
 }
