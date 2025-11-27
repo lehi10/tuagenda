@@ -162,21 +162,14 @@ export default function Home() {
                 <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 blur-3xl" />
                 <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card to-muted shadow-2xl">
                   {/* Placeholder for hero image/screenshot */}
-                  <div className="aspect-[4/3] bg-gradient-to-br from-primary/5 via-secondary/5 to-background p-8">
-                    <div className="h-full w-full rounded-xl border-2 border-dashed border-primary/20 bg-card/50 backdrop-blur-sm">
-                      <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-                        <div className="rounded-full bg-primary/10 p-4">
-                          <Calendar className="h-12 w-12 text-primary" />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Agrega aquí tu screenshot principal
-                          <br />
-                          <span className="text-xs">
-                            (Dashboard, calendario, etc.)
-                          </span>
-                        </p>
-                      </div>
-                    </div>
+                  <div className="aspect-[4/3] bg-gradient-to-br from-primary/5 via-secondary/5 to-background">
+                    <Image
+                      src={"/images/banner3.png"}
+                      width={400}
+                      height={400}
+                      className="h-full w-full  object-cover"
+                      alt={"Hero image"}
+                    />
                   </div>
                 </div>
               </div>
@@ -362,18 +355,21 @@ export default function Home() {
                   title: t.landing.howItWorks.steps.createAccount.title,
                   description:
                     t.landing.howItWorks.steps.createAccount.description,
+                  image: "/images/banner1.png",
                 },
                 {
                   step: "02",
                   title: t.landing.howItWorks.steps.setupBusiness.title,
                   description:
                     t.landing.howItWorks.steps.setupBusiness.description,
+                  image: "/images/banner3.png",
                 },
                 {
                   step: "03",
                   title: t.landing.howItWorks.steps.startManaging.title,
                   description:
                     t.landing.howItWorks.steps.startManaging.description,
+                  image: "/images/banner2.png",
                 },
               ].map((item, index) => (
                 <ScrollReveal key={index} delay={index * 150}>
@@ -393,21 +389,15 @@ export default function Home() {
                       </p>
                     </div>
                     <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                      <div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-xl transition-all hover:shadow-2xl sm:rounded-2xl">
-                        <div className="aspect-[4/3] bg-gradient-to-br from-primary/5 via-background to-secondary/5 p-4 sm:p-6 lg:p-8">
-                          <div className="h-full w-full rounded-lg border-2 border-dashed border-primary/20 bg-background/50 backdrop-blur-sm sm:rounded-xl">
-                            <div className="flex h-full flex-col items-center justify-center gap-3 text-center sm:gap-4">
-                              <div className="rounded-full bg-primary/10 p-3 sm:p-4">
-                                <span className="text-2xl font-bold text-primary sm:text-3xl lg:text-4xl">
-                                  {item.step}
-                                </span>
-                              </div>
-                              <p className="text-xs text-muted-foreground sm:text-sm">
-                                {t.landing.howItWorks.illustrationPlaceholder}{" "}
-                                {item.step}
-                              </p>
-                            </div>
-                          </div>
+                      <div className="relative overflow-hidden rounded-xl bg-card shadow-xl transition-all hover:shadow-2xl sm:rounded-2xl">
+                        <div className="from-primary/5 via-background to-secondary/5">
+                          <Image
+                            src={item.image}
+                            width={400}
+                            height={400}
+                            className="h-full w-full  object-cover"
+                            alt={"Hero image"}
+                          />
                         </div>
                       </div>
                     </div>

@@ -55,11 +55,12 @@ export function PaymentStep({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">{t.booking.payment.title}</h2>
-        <p className="mt-2 text-muted-foreground">
-          {t.booking.payment.description}
-        </p>
+      {/* Header - Standardized */}
+      <div className="space-y-1">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {t.booking.payment.title}
+        </h2>
+        <p className="text-muted-foreground">{t.booking.payment.description}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

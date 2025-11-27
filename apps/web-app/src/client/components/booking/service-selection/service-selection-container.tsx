@@ -7,10 +7,10 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTrpc } from "@/client/lib/trpc";
 import { ServiceSelectionView } from "./service-selection-view";
-import type { BookingService } from "@/client/types/booking";
+import type { BookingService, ServiceCategory } from "@/client/types/booking";
 
 interface ServiceSelectionContainerProps {
   businessId: string;
@@ -33,29 +33,41 @@ export function ServiceSelectionContainer({
       { enabled: !!businessId }
     );
 
-  // Fetch services (filtered by category if selected)
-  const { data: servicesData, isLoading: isLoadingServices } =
+  // Fetch all services (for counting and filtering locally)
+  const { data: allServicesData, isLoading: isLoadingServices } =
     useTrpc.service.listPublic.useQuery(
-      {
-        businessId,
-        ...(categoryFilter !== "all" ? { categoryId: categoryFilter } : {}),
-      },
+      { businessId },
       { enabled: !!businessId }
     );
 
-  // Extract data with defaults and filter out any without IDs
-  const categories = (categoriesData?.categories || []).filter(
-    (cat) => cat.id
-  ) as any;
-  const services = (servicesData?.services || []).filter(
-    (service) => service.id
-  ) as any;
+  // Extract data with defaults
+  const categories = useMemo(() => {
+    return (categoriesData?.categories || []).filter(
+      (cat) => cat.id
+    ) as ServiceCategory[];
+  }, [categoriesData]);
+
+  const allServices = useMemo(() => {
+    return (allServicesData?.services || []).filter(
+      (service) => service.id
+    ) as BookingService[];
+  }, [allServicesData]);
+
+  // Filter services locally based on category
+  const filteredServices = useMemo(() => {
+    if (categoryFilter === "all") return allServices;
+    return allServices.filter(
+      (service) => service.categoryId === categoryFilter
+    );
+  }, [allServices, categoryFilter]);
+
   const isLoading = isLoadingCategories || isLoadingServices;
 
   return (
     <ServiceSelectionView
       categories={categories}
-      services={services}
+      services={filteredServices}
+      allServices={allServices}
       isLoading={isLoading}
       categoryFilter={categoryFilter}
       selectedServiceId={selectedServiceId}

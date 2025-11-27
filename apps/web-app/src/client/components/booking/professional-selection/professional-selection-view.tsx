@@ -13,13 +13,12 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/client/components/ui/avatar";
-import { Badge } from "@/client/components/ui/badge";
 import { useTranslation } from "@/client/i18n";
-import { UserX } from "lucide-react";
-import { SelectableCard } from "@/client/components/booking/shared/selectable-card";
+import { UserX, Check } from "lucide-react";
 import { EmptyState } from "@/client/components/booking/shared/empty-state";
 import { LoadingSpinner } from "@/client/components/booking/shared/loading-spinner";
 import { getInitials } from "@/client/lib/booking-utils";
+import { cn } from "@/client/lib/utils";
 import type { Professional } from "@/client/types/booking";
 
 export interface ProfessionalSelectionViewProps {
@@ -40,14 +39,20 @@ export function ProfessionalSelectionView({
   selectedProfessionalId,
   onProfessionalSelect,
 }: ProfessionalSelectionViewProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-bold sm:text-2xl">
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="space-y-1">
+        <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.professional.title}
         </h2>
+        <p className="text-muted-foreground">
+          {locale === "es"
+            ? "Elige quién te atenderá"
+            : "Choose who will serve you"}
+        </p>
       </div>
 
       {/* Loading State */}
@@ -58,48 +63,67 @@ export function ProfessionalSelectionView({
         <EmptyState icon={UserX} message={t.booking.professional.noStaff} />
       )}
 
-      {/* Professionals Grid */}
+      {/* Professionals Grid - Responsive */}
       {!isLoading && professionals.length > 0 && (
-        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {professionals.map((professional) => (
-            <SelectableCard
-              key={professional.id}
-              isSelected={selectedProfessionalId === professional.id}
-              onClick={() =>
-                professional.available && onProfessionalSelect(professional)
-              }
-              disabled={!professional.available}
-            >
-              <div className="flex flex-col items-center text-center">
-                <Avatar className="h-14 w-14 sm:h-16 sm:w-16">
-                  <AvatarImage
-                    src={professional.avatar}
-                    alt={professional.name}
-                  />
-                  <AvatarFallback className="text-xs sm:text-sm">
-                    {getInitials(professional.name)}
-                  </AvatarFallback>
-                </Avatar>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {professionals.map((professional) => {
+            const isSelected = selectedProfessionalId === professional.id;
+            const isDisabled = !professional.available;
 
-                <h3 className="mt-2 font-semibold text-xs sm:text-sm line-clamp-1">
-                  {professional.name}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-1">
-                  {professional.role}
-                </p>
-
-                {professional.available ? (
-                  <Badge variant="secondary" className="mt-2 text-xs">
-                    {t.booking.professional.available}
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="mt-2 text-xs">
-                    No {t.booking.professional.available.toLowerCase()}
-                  </Badge>
+            return (
+              <button
+                key={professional.id}
+                onClick={() =>
+                  !isDisabled && onProfessionalSelect(professional)
+                }
+                disabled={isDisabled}
+                className={cn(
+                  "w-full text-left p-4 rounded-xl border transition-all",
+                  "hover:border-primary/50 hover:bg-muted/30",
+                  "active:scale-[0.99]",
+                  isSelected
+                    ? "border-primary bg-primary/5 ring-2 ring-primary"
+                    : "border-border bg-card",
+                  isDisabled && "opacity-50 cursor-not-allowed"
                 )}
-              </div>
-            </SelectableCard>
-          ))}
+              >
+                <div className="flex items-center gap-4">
+                  {/* Avatar */}
+                  <div className="relative flex-shrink-0">
+                    <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
+                      <AvatarImage
+                        src={professional.avatar}
+                        alt={professional.name}
+                      />
+                      <AvatarFallback className="text-sm font-medium bg-muted">
+                        {getInitials(professional.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    {isSelected && (
+                      <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
+                        <Check className="h-3 w-3 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-sm sm:text-base truncate">
+                      {professional.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {professional.role}
+                    </p>
+                  </div>
+
+                  {/* Selection indicator for non-selected */}
+                  {!isSelected && !isDisabled && (
+                    <div className="flex-shrink-0 h-5 w-5 rounded-full border-2 border-muted-foreground/30" />
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

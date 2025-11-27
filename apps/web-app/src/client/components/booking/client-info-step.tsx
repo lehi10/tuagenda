@@ -53,11 +53,12 @@ export function ClientInfoStep({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">{t.booking.contact.title}</h2>
-        <p className="mt-2 text-muted-foreground">
-          {t.booking.contact.description}
-        </p>
+      {/* Header - Standardized */}
+      <div className="space-y-1">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {t.booking.contact.title}
+        </h2>
+        <p className="text-muted-foreground">{t.booking.contact.description}</p>
       </div>
 
       {!isAuthenticated && (

@@ -1,12 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/client/components/ui/avatar";
 import { Button } from "@/client/components/ui/button";
-import { MapPin, Phone, Mail, Globe, MessageCircle } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Globe,
+  MessageCircle,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 interface BusinessProfileProps {
   business: {
@@ -18,25 +27,34 @@ interface BusinessProfileProps {
     location: string;
     website?: string;
   };
+  collapsed?: boolean;
 }
 
-export function BusinessProfile({ business }: BusinessProfileProps) {
-  const handleWhatsAppClick = () => {
-    // Remove all non-numeric characters from phone
+export function BusinessProfile({
+  business,
+  collapsed = false,
+}: BusinessProfileProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleWhatsAppClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const cleanPhone = business.phone.replace(/\D/g, "");
     const whatsappUrl = `https://wa.me/${cleanPhone}`;
     window.open(whatsappUrl, "_blank");
   };
 
-  const handlePhoneClick = () => {
+  const handlePhoneClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     window.location.href = `tel:${business.phone}`;
   };
 
-  const handleEmailClick = () => {
+  const handleEmailClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     window.location.href = `mailto:${business.email}`;
   };
 
-  const handleWebsiteClick = () => {
+  const handleWebsiteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (business.website) {
       const url = business.website.startsWith("http")
         ? business.website
@@ -45,6 +63,37 @@ export function BusinessProfile({ business }: BusinessProfileProps) {
     }
   };
 
+  // Show collapsed version
+  if (collapsed && !isExpanded) {
+    return (
+      <div className="border-b bg-background">
+        <div className="container mx-auto px-4">
+          <button
+            onClick={() => setIsExpanded(true)}
+            className="w-full py-3 flex items-center justify-between gap-3 hover:bg-muted/50 transition-colors rounded-lg"
+          >
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10 shrink-0 ring-1 ring-primary/10">
+                <AvatarImage src={business.avatar || ""} alt={business.name} />
+                <AvatarFallback className="text-sm bg-gradient-to-br from-primary/20 to-secondary/20">
+                  {business.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="text-left">
+                <h1 className="text-base font-semibold">{business.name}</h1>
+                <p className="text-xs text-muted-foreground">
+                  {business.location}
+                </p>
+              </div>
+            </div>
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show expanded version
   return (
     <div className="border-b bg-gradient-to-br from-muted/30 via-background to-muted/20">
       <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -59,13 +108,24 @@ export function BusinessProfile({ business }: BusinessProfileProps) {
 
           {/* Business Info */}
           <div className="flex-1 space-y-3">
-            <div>
-              <h1 className="text-2xl font-bold sm:text-3xl">
-                {business.name}
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground sm:text-base line-clamp-2">
-                {business.description}
-              </p>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h1 className="text-2xl font-bold sm:text-3xl">
+                  {business.name}
+                </h1>
+                <p className="mt-1 text-sm text-muted-foreground sm:text-base line-clamp-2">
+                  {business.description}
+                </p>
+              </div>
+              {/* Collapse button - only show if collapsed prop is true */}
+              {collapsed && (
+                <button
+                  onClick={() => setIsExpanded(false)}
+                  className="p-2 hover:bg-muted rounded-lg transition-colors shrink-0"
+                >
+                  <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                </button>
+              )}
             </div>
 
             {/* Contact Info */}

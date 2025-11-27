@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { TRPCError } from "@trpc/server";
-import { BusinessProfile } from "@/client/components/booking/shared/business-profile";
 import { BookingFlow } from "@/client/components/booking/booking-flow";
 import { serverTrpc } from "@/server/trpc";
 import { BookingPageSkeleton } from "@/client/components/booking/shared/skeletons";
@@ -45,10 +44,7 @@ async function BookingContent({ slug }: { slug: string }) {
   };
 
   return (
-    <>
-      <BusinessProfile business={businessProfile} />
-      <BookingFlow businessId={business.id} />
-    </>
+    <BookingFlow businessId={business.id} businessProfile={businessProfile} />
   );
 }
 

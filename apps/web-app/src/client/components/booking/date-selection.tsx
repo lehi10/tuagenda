@@ -90,10 +90,16 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
     }
   };
 
+  // Abbreviated weekday labels for mobile
+  const weekDaysShort =
+    locale === "es"
+      ? ["D", "L", "M", "X", "J", "V", "S"]
+      : ["S", "M", "T", "W", "T", "F", "S"];
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-1">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header - Standardized */}
+      <div className="space-y-1">
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.date.title}
         </h2>
@@ -104,63 +110,67 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
         </p>
       </div>
 
-      {/* Quick date selection */}
-      <div className="flex justify-center">
-        <div className="inline-flex gap-2 p-1.5 bg-muted/50 rounded-xl overflow-x-auto max-w-full">
-          {quickDates.map((item, index) => (
-            <button
-              key={index}
-              onClick={() => onSelect(item.date)}
-              className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
-                "hover:bg-background/80",
-                isDateSelected(item.date)
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {item.label}
-            </button>
-          ))}
+      {/* Quick date selection - scrollable on mobile */}
+      <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex sm:justify-center">
+          <div className="inline-flex gap-1.5 sm:gap-2 p-1 sm:p-1.5 bg-muted/50 rounded-xl">
+            {quickDates.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => onSelect(item.date)}
+                className={cn(
+                  "px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap",
+                  "hover:bg-background/80",
+                  isDateSelected(item.date)
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Calendar */}
-      <div className="flex justify-center">
-        <div className="w-full max-w-[420px] bg-card rounded-2xl border shadow-sm p-5 sm:p-6">
+      <div className="flex justify-center px-1 sm:px-0">
+        <div className="w-full max-w-sm sm:max-w-[380px] bg-card rounded-2xl border shadow-sm p-3 sm:p-5">
           {/* Month navigation */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <button
               onClick={handlePrevMonth}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              className="p-1.5 sm:p-2 hover:bg-muted rounded-lg transition-colors"
             >
-              <ChevronLeft className="h-5 w-5 text-muted-foreground" />
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
             </button>
-            <h3 className="text-lg font-semibold capitalize">
+            <h3 className="text-base sm:text-lg font-semibold capitalize">
               {format(currentMonth, "MMMM yyyy", { locale: dateLocale })}
             </h3>
             <button
               onClick={handleNextMonth}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              className="p-1.5 sm:p-2 hover:bg-muted rounded-lg transition-colors"
             >
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
             </button>
           </div>
 
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 mb-2">
-            {weekDays.map((day) => (
+          <div className="grid grid-cols-7 mb-1 sm:mb-2">
+            {/* Show short labels on mobile, full on larger screens */}
+            {weekDays.map((day, index) => (
               <div
                 key={day}
-                className="text-center text-sm font-medium text-muted-foreground py-2"
+                className="text-center text-xs sm:text-sm font-medium text-muted-foreground py-1 sm:py-2"
               >
-                {day}
+                <span className="sm:hidden">{weekDaysShort[index]}</span>
+                <span className="hidden sm:inline">{day}</span>
               </div>
             ))}
           </div>
 
           {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
             {/* Empty cells for days before the first day of month */}
             {Array.from({ length: startDayOfWeek }).map((_, index) => (
               <div key={`empty-${index}`} className="aspect-square" />
@@ -179,7 +189,7 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
                   disabled={isDisabled}
                   className={cn(
                     "aspect-square flex items-center justify-center rounded-full",
-                    "text-sm sm:text-base font-medium transition-all",
+                    "text-xs sm:text-sm font-medium transition-all",
                     "hover:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                     isSelected &&
                       "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -196,8 +206,8 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
 
           {/* Selected date display */}
           {selectedDate && (
-            <div className="mt-6 pt-4 border-t">
-              <p className="text-center text-sm">
+            <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t">
+              <p className="text-center text-xs sm:text-sm">
                 <span className="text-muted-foreground">
                   {locale === "es" ? "Seleccionado: " : "Selected: "}
                 </span>

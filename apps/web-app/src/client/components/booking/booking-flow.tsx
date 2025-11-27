@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { BookingSummary } from "@/client/components/booking/booking-summary";
+import {
+  BookingSummary,
+  MobileBookingSummary,
+} from "@/client/components/booking/booking-summary";
 import { ServiceSelection } from "@/client/components/booking/service-selection";
 import { ProfessionalSelection } from "@/client/components/booking/professional-selection";
 import { DateSelection } from "@/client/components/booking/date-selection";
@@ -9,17 +12,29 @@ import { TimeSlotSelection } from "@/client/components/booking/time-slot-selecti
 import { ClientInfoStep } from "@/client/components/booking/client-info-step";
 import { PaymentStep } from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
+import { BusinessProfile } from "@/client/components/booking/shared/business-profile";
 import { defaultStepConfig } from "@/client/lib/booking-steps";
 import { generateTimeSlots } from "@/client/lib/booking-utils";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
 import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
 import type { StepConfig } from "@/client/types/booking";
 
-interface BookingFlowProps {
-  businessId: string;
+interface BusinessProfileData {
+  name: string;
+  description: string;
+  avatar?: string | null;
+  email: string;
+  phone: string;
+  location: string;
+  website?: string;
 }
 
-export function BookingFlow({ businessId }: BookingFlowProps) {
+interface BookingFlowProps {
+  businessId: string;
+  businessProfile: BusinessProfileData;
+}
+
+export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
   // You can modify this configuration based on business settings
   // For example, if business has only one professional:
   // const stepConfig = singleProfessionalConfig
@@ -39,6 +54,9 @@ export function BookingFlow({ businessId }: BookingFlowProps) {
     updatePaymentMethod,
     clearBooking,
   } = useBookingFlow({ stepConfig });
+
+  // Collapse business profile after the first step
+  const isProfileCollapsed = currentStep !== "service";
 
   // Generate time slots
   const timeSlots = generateTimeSlots();
@@ -125,27 +143,44 @@ export function BookingFlow({ businessId }: BookingFlowProps) {
   };
 
   return (
-    <div className="container mx-auto flex-1 px-4 py-6 sm:py-8">
-      {currentStep === "confirmation" ? (
-        // Full width for confirmation step
-        <div className="w-full">{renderStep()}</div>
-      ) : (
-        // Two column layout for booking steps
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Main Content */}
-          <div className="lg:col-span-2">{renderStep()}</div>
+    <>
+      {/* Business Profile - collapsible after step 1 */}
+      <BusinessProfile
+        business={businessProfile}
+        collapsed={isProfileCollapsed}
+      />
 
-          {/* Booking Summary */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-4">
-              <BookingSummary
-                bookingData={bookingData}
-                onClear={clearBooking}
-              />
+      <div className="container mx-auto flex-1 px-4 py-6 sm:py-8">
+        {currentStep === "confirmation" ? (
+          // Full width for confirmation step
+          <div className="w-full">{renderStep()}</div>
+        ) : (
+          // Two column layout for booking steps
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Main Content */}
+            <div className="lg:col-span-2">{renderStep()}</div>
+
+            {/* Booking Summary - Desktop only */}
+            <div className="hidden lg:block lg:col-span-1">
+              <div className="sticky top-4">
+                <BookingSummary
+                  bookingData={bookingData}
+                  onClear={clearBooking}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
+      </div>
+
+      {/* Mobile Bottom Sheet Summary */}
+      {currentStep !== "confirmation" && (
+        <MobileBookingSummary
+          bookingData={bookingData}
+          currentStep={currentStep}
+          onClear={clearBooking}
+        />
       )}
-    </div>
+    </>
   );
 }
