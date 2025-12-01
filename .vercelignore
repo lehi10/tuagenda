@@ -44,6 +44,9 @@ Thumbs.db
 coverage
 **/.coverage
 
+# Documentation (only for local development)
+docs
+
 # Lock files (pnpm will use pnpm-lock.yaml if present)
 package-lock.json
 yarn.lock
