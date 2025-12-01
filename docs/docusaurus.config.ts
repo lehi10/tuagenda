@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'TuAgenda Docs',
   tagline: 'Documentación técnica del proyecto TuAgenda',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.jpg',
 
   future: {
     v4: true,
@@ -60,7 +60,7 @@ const config: Config = {
       title: 'TuAgenda',
       logo: {
         alt: 'TuAgenda Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo.png',
       },
       items: [
         {
