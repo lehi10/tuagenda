@@ -152,9 +152,9 @@ flowchart LR
         PService["PrismaServiceRepository"]
     end
 
-    IUser <|.. PUser
-    IBusiness <|.. PBusiness
-    IService <|.. PService
+    PUser -.->|implementa| IUser
+    PBusiness -.->|implementa| IBusiness
+    PService -.->|implementa| IService
 ```
 
 ### 3. Aplicación (Use Cases)
@@ -290,18 +290,18 @@ export class UserMapper {
 
 ```mermaid
 flowchart TB
-    subgraph Bad["❌ Incorrecto"]
+    subgraph Bad["Incorrecto"]
         UC1["Use Case"]
         Prisma1["prisma.user.create()"]
         UC1 --> Prisma1
     end
 
-    subgraph Good["✅ Correcto"]
+    subgraph Good["Correcto"]
         UC2["Use Case"]
         Port["IUserRepository"]
         Repo["PrismaUserRepository"]
         UC2 --> Port
-        Port <|.. Repo
+        Repo -.->|implementa| Port
     end
 ```
 

@@ -173,7 +173,7 @@ flowchart TB
     end
 
     UC --> Port
-    Port <|.. Repo
+    Repo -.->|implementa| Port
 
     style Port fill:#f9f,stroke:#333
 ```
