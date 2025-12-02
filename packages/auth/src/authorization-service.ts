@@ -18,6 +18,7 @@ import {
 } from "./types";
 
 // Casbin model configuration as string (more reliable than file path)
+// Note: 'manage' action in a policy grants all permissions on a resource (wildcard)
 const CASBIN_MODEL = `
 [request_definition]
 r = sub, dom, obj, act
@@ -33,7 +34,7 @@ g2 = _, _
 e = some(where (p.eft == allow))
 
 [matchers]
-m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && (r.dom == p.dom || p.dom == '*') && r.obj == p.obj && r.act == p.act)
+m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && (r.dom == p.dom || p.dom == '*') && r.obj == p.obj && (r.act == p.act || p.act == 'manage'))
 `;
 
 export class AuthorizationService {
@@ -295,22 +296,23 @@ export class AuthorizationService {
 
   /**
    * Initialize default policies for roles
+   *
+   * Uses MANAGE action where appropriate to grant full CRUD access.
+   * MANAGE = wildcard that matches any action (create, read, update, delete)
    */
   async initializeDefaultPolicies(): Promise<void> {
     const enforcer = await this.getEnforcer();
 
-    // MANAGER permissions (can do everything)
+    // MANAGER permissions (full control on most resources)
     const managerPolicies = [
+      // Business: read and update only (no create/delete - business is created separately)
       [Role.MANAGER, "*", Resource.BUSINESS, Action.READ],
       [Role.MANAGER, "*", Resource.BUSINESS, Action.UPDATE],
-      [Role.MANAGER, "*", Resource.EMPLOYEE, Action.CREATE],
-      [Role.MANAGER, "*", Resource.EMPLOYEE, Action.READ],
-      [Role.MANAGER, "*", Resource.EMPLOYEE, Action.UPDATE],
-      [Role.MANAGER, "*", Resource.EMPLOYEE, Action.DELETE],
-      [Role.MANAGER, "*", Resource.APPOINTMENT, Action.CREATE],
-      [Role.MANAGER, "*", Resource.APPOINTMENT, Action.READ],
-      [Role.MANAGER, "*", Resource.APPOINTMENT, Action.UPDATE],
-      [Role.MANAGER, "*", Resource.APPOINTMENT, Action.DELETE],
+      // Employee: full CRUD via MANAGE
+      [Role.MANAGER, "*", Resource.EMPLOYEE, Action.MANAGE],
+      // Appointment: full CRUD via MANAGE
+      [Role.MANAGER, "*", Resource.APPOINTMENT, Action.MANAGE],
+      // Settings: read and update only
       [Role.MANAGER, "*", Resource.SETTINGS, Action.READ],
       [Role.MANAGER, "*", Resource.SETTINGS, Action.UPDATE],
     ];
@@ -319,6 +321,7 @@ export class AuthorizationService {
     const employeePolicies = [
       [Role.EMPLOYEE, "*", Resource.BUSINESS, Action.READ],
       [Role.EMPLOYEE, "*", Resource.EMPLOYEE, Action.READ],
+      // Appointment: create, read, update (no delete)
       [Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.CREATE],
       [Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.READ],
       [Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.UPDATE],

@@ -22,15 +22,16 @@ async function seedPolicies() {
     console.log("✅ Default policies seeded successfully!");
     console.log("\nPolicies created:");
     console.log("📋 MANAGER role:");
-    console.log("  - Full access to business (read, update)");
-    console.log("  - Full access to employees (CRUD)");
-    console.log("  - Full access to appointments (CRUD)");
-    console.log("  - Full access to settings (read, update)");
+    console.log("  - Business: read, update");
+    console.log("  - Employee: MANAGE (full CRUD)");
+    console.log("  - Appointment: MANAGE (full CRUD)");
+    console.log("  - Settings: read, update");
     console.log("\n📋 EMPLOYEE role:");
-    console.log("  - Read access to business");
-    console.log("  - Read access to employees");
-    console.log("  - Create, read, update appointments");
-    console.log("  - Read access to settings");
+    console.log("  - Business: read");
+    console.log("  - Employee: read");
+    console.log("  - Appointment: create, read, update");
+    console.log("  - Settings: read");
+    console.log("\nNote: MANAGE action = wildcard for all CRUD operations");
   } catch (error) {
     console.error("❌ Error seeding policies:", error);
     throw error;

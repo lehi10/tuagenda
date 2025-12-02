@@ -14,7 +14,7 @@ export enum Action {
   READ = "read",
   UPDATE = "update",
   DELETE = "delete",
-  MANAGE = "manage", // Full control
+  MANAGE = "manage", // Wildcard: grants all actions (create, read, update, delete) on a resource
 }
 
 export enum Role {

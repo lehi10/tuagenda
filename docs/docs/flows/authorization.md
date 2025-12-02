@@ -6,7 +6,7 @@ sidebar_position: 4
 
 ## Visión General
 
-TuAgenda usa **Casbin** para control de acceso basado en roles (RBAC) y atributos (ABAC).
+TuAgenda usa **Casbin** para control de acceso basado en roles (RBAC) con soporte multi-tenant.
 
 ```mermaid
 flowchart TB
@@ -48,14 +48,21 @@ r = sub, dom, obj, act
 p = sub, dom, obj, act
 
 [role_definition]
-g = _, _, _
+g = _, _, _    # role inheritance: user, role, domain
+g2 = _, _      # user type inheritance: user, userType
 
 [policy_effect]
 e = some(where (p.eft == allow))
 
 [matchers]
-m = g(r.sub, p.sub, r.dom) && r.dom == p.dom && r.obj == p.obj && r.act == p.act
+m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && (r.dom == p.dom || p.dom == '*') && r.obj == p.obj && (r.act == p.act || p.act == 'manage'))
 ```
+
+### Características del Matcher
+
+- **Superadmin**: Los usuarios con tipo `superadmin` tienen acceso total
+- **Dominio wildcard**: Políticas con `*` aplican a todos los negocios
+- **Acción MANAGE**: Actúa como wildcard para todas las acciones CRUD
 
 ### Componentes
 
@@ -63,8 +70,40 @@ m = g(r.sub, p.sub, r.dom) && r.dom == p.dom && r.obj == p.obj && r.act == p.act
 |------------|-------------|---------|
 | `sub` (subject) | Usuario | `user_123` |
 | `dom` (domain) | Negocio/Tenant | `business_456` |
-| `obj` (object) | Recurso | `service`, `appointment` |
-| `act` (action) | Acción | `create`, `read`, `update`, `delete` |
+| `obj` (object) | Recurso | `business`, `employee`, `appointment`, `settings` |
+| `act` (action) | Acción | `create`, `read`, `update`, `delete`, `manage` |
+
+### Tipos y Enums
+
+```typescript
+// packages/auth/src/types.ts
+
+enum Resource {
+  BUSINESS = "business",
+  EMPLOYEE = "employee",
+  APPOINTMENT = "appointment",
+  SETTINGS = "settings",
+}
+
+enum Action {
+  CREATE = "create",
+  READ = "read",
+  UPDATE = "update",
+  DELETE = "delete",
+  MANAGE = "manage",  // Wildcard: otorga todos los permisos CRUD
+}
+
+enum Role {
+  MANAGER = "MANAGER",
+  EMPLOYEE = "EMPLOYEE",
+}
+
+enum UserType {
+  SUPERADMIN = "superadmin",
+  ADMIN = "admin",
+  CUSTOMER = "customer",
+}
+```
 
 ## Políticas
 
@@ -99,25 +138,40 @@ VALUES ('g', 'user_456', 'manager', 'business_123');
 ```mermaid
 flowchart TB
     subgraph MANAGER["MANAGER"]
-        M1["service:*"]
-        M2["appointment:*"]
-        M3["employee:*"]
-        M4["client:*"]
-        M5["settings:*"]
+        M1["business: read, update"]
+        M2["employee: MANAGE"]
+        M3["appointment: MANAGE"]
+        M4["settings: read, update"]
     end
 
     subgraph EMPLOYEE["EMPLOYEE"]
-        E1["appointment:read"]
-        E2["appointment:update (propias)"]
-        E3["availability:*"]
-        E4["client:read"]
+        E1["business: read"]
+        E2["employee: read"]
+        E3["appointment: create, read, update"]
+        E4["settings: read"]
     end
+```
 
-    subgraph CUSTOMER["CUSTOMER"]
-        C1["appointment:create"]
-        C2["appointment:read (propias)"]
-        C3["appointment:cancel (propias)"]
-    end
+### Políticas por Defecto
+
+Las políticas se inicializan con `initializeDefaultPolicies()`:
+
+```typescript
+// MANAGER: control total en employee y appointment
+[Role.MANAGER, "*", Resource.BUSINESS, Action.READ],
+[Role.MANAGER, "*", Resource.BUSINESS, Action.UPDATE],
+[Role.MANAGER, "*", Resource.EMPLOYEE, Action.MANAGE],    // CRUD completo
+[Role.MANAGER, "*", Resource.APPOINTMENT, Action.MANAGE], // CRUD completo
+[Role.MANAGER, "*", Resource.SETTINGS, Action.READ],
+[Role.MANAGER, "*", Resource.SETTINGS, Action.UPDATE],
+
+// EMPLOYEE: acceso limitado
+[Role.EMPLOYEE, "*", Resource.BUSINESS, Action.READ],
+[Role.EMPLOYEE, "*", Resource.EMPLOYEE, Action.READ],
+[Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.CREATE],
+[Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.READ],
+[Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.UPDATE],
+[Role.EMPLOYEE, "*", Resource.SETTINGS, Action.READ],
 ```
 
 ## Flujo de Verificación
@@ -141,7 +195,99 @@ sequenceDiagram
     H-->>C: { canCreate: boolean }
 ```
 
-## Implementación
+## Arquitectura Hexagonal
+
+La autorización se integra siguiendo arquitectura hexagonal con puertos y adaptadores:
+
+```mermaid
+flowchart TB
+    subgraph UseCase["Use Case"]
+        UC["DeleteBusinessUseCase"]
+    end
+
+    subgraph Port["Puerto (Dominio)"]
+        IAuth["IAuthorizationPort<br/>canPerform()"]
+    end
+
+    subgraph Adapter["Adaptador (Infraestructura)"]
+        Casbin["CasbinAuthorizationAdapter"]
+    end
+
+    subgraph External["Externo"]
+        Service["AuthorizationService<br/>(packages/auth)"]
+    end
+
+    UC -->|"usa"| IAuth
+    Casbin -.->|"implementa"| IAuth
+    Casbin --> Service
+```
+
+### Puerto de Autorización
+
+```typescript
+// src/server/core/domain/ports/IAuthorizationPort.ts
+
+export interface AuthorizationRequest {
+  userId: string;
+  businessId: string;
+  resource: Resource;
+  action: Action;
+}
+
+export interface IAuthorizationPort {
+  canPerform(request: AuthorizationRequest): Promise<boolean>;
+}
+```
+
+### Adaptador Casbin
+
+```typescript
+// src/server/infrastructure/adapters/CasbinAuthorizationAdapter.ts
+
+export class CasbinAuthorizationAdapter implements IAuthorizationPort {
+  async canPerform(request: AuthorizationRequest): Promise<boolean> {
+    return canUserPerform(
+      request.userId,
+      request.businessId,
+      request.resource,
+      request.action
+    );
+  }
+}
+```
+
+### Uso en Use Cases
+
+```typescript
+// src/server/core/application/use-cases/business/DeleteBusinessUseCase.ts
+
+export class DeleteBusinessUseCase {
+  constructor(
+    private readonly authPort: IAuthorizationPort,
+    private readonly businessRepo: IBusinessRepository
+  ) {}
+
+  async execute(userId: string, businessId: string) {
+    // 1. Verificar autorización
+    const allowed = await this.authPort.canPerform({
+      userId,
+      businessId,
+      resource: Resource.BUSINESS,
+      action: Action.DELETE,
+    });
+
+    if (!allowed) {
+      return { success: false, error: "Forbidden" };
+    }
+
+    // 2. Ejecutar lógica de negocio
+    await this.businessRepo.delete(businessId);
+    return { success: true };
+  }
+}
+```
+
+## Implementación Cliente
 
 ### Server Action
 
@@ -149,18 +295,25 @@ sequenceDiagram
 // src/server/api/authorization/check-permission.action.ts
 'use server';
 
-import { getEnforcer } from '@tuagenda/auth';
+import { getAuthorizationService } from "@/server/lib/auth/authorization";
+import { Resource, Action } from "auth";
 
-export async function checkPermission(
-  userId: string,
-  businessId: string,
-  object: string,
-  action: string
-): Promise<boolean> {
-  const enforcer = await getEnforcer();
+export async function checkPermission(input: {
+  businessId: string;
+  resource: Resource;
+  action: Action;
+}): Promise<{ allowed: boolean; error?: string }> {
+  const authService = getAuthorizationService();
+  const currentUser = await getCurrentUser();
 
-  // Verificar permiso directo o por rol
-  return enforcer.enforce(userId, businessId, object, action);
+  const allowed = await authService.can({
+    userId: currentUser.uid,
+    businessId: input.businessId,
+    resource: input.resource,
+    action: input.action,
+  });
+
+  return { allowed };
 }
 ```
 
@@ -168,47 +321,22 @@ export async function checkPermission(
 
 ```typescript
 // src/client/hooks/usePermission.ts
-import { useQuery } from '@tanstack/react-query';
-import { checkPermission } from '@/server/api/authorization/check-permission.action';
-import { useAuth } from './use-auth';
-import { useBusiness } from './use-business';
 
-export function usePermission(object: string, action: string) {
-  const { user } = useAuth();
-  const { currentBusiness } = useBusiness();
+export function usePermission(options: {
+  businessId: string;
+  resource: Resource;
+  action: Action;
+}): { allowed: boolean; loading: boolean } {
+  const [allowed, setAllowed] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const { data: hasPermission = false } = useQuery({
-    queryKey: ['permission', user?.id, currentBusiness?.id, object, action],
-    queryFn: () => checkPermission(
-      user!.id,
-      currentBusiness!.id,
-      object,
-      action
-    ),
-    enabled: !!user && !!currentBusiness,
-  });
+  useEffect(() => {
+    checkPermission(options)
+      .then((result) => setAllowed(result.allowed))
+      .finally(() => setLoading(false));
+  }, [options]);
 
-  return hasPermission;
-}
-
-// Versión con múltiples permisos
-export function usePermissions(permissions: Array<{ object: string; action: string }>) {
-  const { user } = useAuth();
-  const { currentBusiness } = useBusiness();
-
-  const results = useQueries({
-    queries: permissions.map((p) => ({
-      queryKey: ['permission', user?.id, currentBusiness?.id, p.object, p.action],
-      queryFn: () => checkPermission(user!.id, currentBusiness!.id, p.object, p.action),
-      enabled: !!user && !!currentBusiness,
-    })),
-  });
-
-  return {
-    canCreateService: results[0]?.data ?? false,
-    canUpdateService: results[1]?.data ?? false,
-    // ...
-  };
+  return { allowed, loading };
 }
 ```
 
@@ -287,19 +415,22 @@ async function assignBusinessRole(
 
 ## Matriz de Permisos
 
-| Recurso | Acción | MANAGER | EMPLOYEE | CUSTOMER |
-|---------|--------|---------|----------|----------|
-| service | create | ✅ | ❌ | ❌ |
-| service | read | ✅ | ✅ | ✅ |
-| service | update | ✅ | ❌ | ❌ |
-| service | delete | ✅ | ❌ | ❌ |
-| appointment | create | ✅ | ✅ | ✅ |
-| appointment | read | ✅ (todas) | ✅ (propias) | ✅ (propias) |
-| appointment | update | ✅ | ✅ (propias) | ❌ |
-| appointment | delete | ✅ | ❌ | ❌ |
-| employee | create | ✅ | ❌ | ❌ |
-| employee | read | ✅ | ✅ | ❌ |
-| settings | * | ✅ | ❌ | ❌ |
+| Recurso | Acción | MANAGER | EMPLOYEE |
+|---------|--------|---------|----------|
+| business | read | ✅ | ✅ |
+| business | update | ✅ | ❌ |
+| employee | create | ✅ | ❌ |
+| employee | read | ✅ | ✅ |
+| employee | update | ✅ | ❌ |
+| employee | delete | ✅ | ❌ |
+| appointment | create | ✅ | ✅ |
+| appointment | read | ✅ | ✅ |
+| appointment | update | ✅ | ✅ |
+| appointment | delete | ✅ | ❌ |
+| settings | read | ✅ | ✅ |
+| settings | update | ✅ | ❌ |
+
+> **Nota**: MANAGER tiene `MANAGE` en employee y appointment, lo que equivale a todos los permisos CRUD.
 
 ## Best Practices
 

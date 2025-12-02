@@ -31,7 +31,7 @@ export const businessRouter = router({
   getById: publicProcedure
     .input(
       z.object({
-        id: z.string().uuid("Business ID must be a valid UUID"),
+        id: z.uuid("Business ID must be a valid UUID"),
       })
     )
     .query(async ({ input }) => {
@@ -175,10 +175,10 @@ export const businessRouter = router({
   delete: privateProcedure
     .input(
       z.object({
-        id: z.string().uuid("Business ID must be a valid UUID"),
+        id: z.uuid("Business ID must be a valid UUID"),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const businessRepository = new PrismaBusinessRepository();
       const deleteBusinessUseCase = new DeleteBusinessUseCase(
         businessRepository

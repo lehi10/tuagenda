@@ -42,31 +42,42 @@ flowchart TB
 ## Estructura de Carpetas
 
 ```
-src/server/core/
-├── domain/
-│   ├── entities/
-│   │   ├── User.ts
-│   │   ├── Business.ts
-│   │   ├── Service.ts
-│   │   └── Appointment.ts
-│   └── repositories/
-│       ├── IUserRepository.ts
-│       ├── IBusinessRepository.ts
-│       ├── IServiceRepository.ts
-│       └── IAppointmentRepository.ts
+src/server/
+├── core/
+│   ├── domain/
+│   │   ├── entities/
+│   │   │   ├── User.ts
+│   │   │   ├── Business.ts
+│   │   │   ├── Service.ts
+│   │   │   └── Appointment.ts
+│   │   ├── repositories/          # Puertos de persistencia
+│   │   │   ├── IUserRepository.ts
+│   │   │   ├── IBusinessRepository.ts
+│   │   │   └── IAppointmentRepository.ts
+│   │   └── ports/                 # Puertos de servicios externos
+│   │       └── IAuthorizationPort.ts
+│   │
+│   └── application/
+│       └── use-cases/
+│           ├── user/
+│           │   └── CreateUser.ts
+│           └── business/
+│               └── DeleteBusiness.ts
 │
-└── application/
-    └── use-cases/
-        ├── user/
-        │   ├── CreateUser.ts
-        │   └── GetUser.ts
-        ├── business/
-        │   ├── CreateBusiness.ts
-        │   └── UpdateBusiness.ts
-        └── appointment/
-            ├── CreateAppointment.ts
-            └── GetAppointments.ts
+└── infrastructure/
+    ├── repositories/              # Adaptadores de persistencia
+    │   ├── PrismaUserRepository.ts
+    │   └── PrismaBusinessRepository.ts
+    └── adapters/                  # Adaptadores de servicios externos
+        └── CasbinAuthorizationAdapter.ts
 ```
+
+### Diferencia entre Repositories y Ports
+
+| Carpeta | Propósito | Ejemplo |
+|---------|-----------|---------|
+| `repositories/` | Persistencia de entidades (CRUD) | `IBusinessRepository` |
+| `ports/` | Servicios externos (no-persistencia) | `IAuthorizationPort` |
 
 ## Capas en Detalle
 
@@ -125,7 +136,9 @@ classDiagram
 
 ### 2. Puertos (Interfaces)
 
-Los puertos definen contratos que la infraestructura debe implementar.
+Los puertos definen contratos que la infraestructura debe implementar. Hay dos tipos:
+
+#### Repositorios (Persistencia)
 
 ```typescript
 // src/server/core/domain/repositories/IUserRepository.ts
@@ -138,23 +151,38 @@ export interface IUserRepository {
 }
 ```
 
+#### Puertos de Servicios (No-persistencia)
+
+```typescript
+// src/server/core/domain/ports/IAuthorizationPort.ts
+export interface IAuthorizationPort {
+  canPerform(request: AuthorizationRequest): Promise<boolean>;
+}
+```
+
 ```mermaid
 flowchart LR
-    subgraph Ports["Puertos (Interfaces)"]
+    subgraph Repositories["Repositorios (Persistencia)"]
         IUser["IUserRepository"]
         IBusiness["IBusinessRepository"]
-        IService["IServiceRepository"]
     end
 
-    subgraph Adapters["Adaptadores (Implementaciones)"]
+    subgraph Ports["Puertos (Servicios)"]
+        IAuth["IAuthorizationPort"]
+    end
+
+    subgraph RepoAdapters["Adaptadores de Repositorio"]
         PUser["PrismaUserRepository"]
         PBusiness["PrismaBusinessRepository"]
-        PService["PrismaServiceRepository"]
+    end
+
+    subgraph ServiceAdapters["Adaptadores de Servicio"]
+        CasbinAuth["CasbinAuthorizationAdapter"]
     end
 
     PUser -.->|implementa| IUser
     PBusiness -.->|implementa| IBusiness
-    PService -.->|implementa| IService
+    CasbinAuth -.->|implementa| IAuth
 ```
 
 ### 3. Aplicación (Use Cases)
