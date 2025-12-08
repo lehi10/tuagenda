@@ -1,45 +1,20 @@
 /**
  * Authorization Service
  *
- * Central service for handling authorization using Casbin.
- * Provides methods to check permissions, manage roles, and policies.
+ * Stub implementation - Casbin has been removed.
+ * Replace with your own authorization logic as needed.
  */
 
-import { newEnforcer, Enforcer, newModel } from "casbin";
 import { PrismaClient } from "db";
-import { PrismaAdapter } from "./casbin/prisma-adapter";
 import {
   AuthorizationRequest,
   PolicyRule,
   Role,
   UserType,
-  Resource,
-  Action,
 } from "./types";
-
-// Casbin model configuration as string (more reliable than file path)
-// Note: 'manage' action in a policy grants all permissions on a resource (wildcard)
-const CASBIN_MODEL = `
-[request_definition]
-r = sub, dom, obj, act
-
-[policy_definition]
-p = sub, dom, obj, act
-
-[role_definition]
-g = _, _, _
-g2 = _, _
-
-[policy_effect]
-e = some(where (p.eft == allow))
-
-[matchers]
-m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && (r.dom == p.dom || p.dom == '*') && r.obj == p.obj && (r.act == p.act || p.act == 'manage'))
-`;
 
 export class AuthorizationService {
   private static instance: AuthorizationService;
-  private enforcer: Enforcer | null = null;
   private prisma: PrismaClient;
 
   private constructor(prisma: PrismaClient) {
@@ -57,75 +32,50 @@ export class AuthorizationService {
   }
 
   /**
-   * Initialize the enforcer with model and adapter
-   */
-  private async getEnforcer(): Promise<Enforcer> {
-    if (!this.enforcer) {
-      const model = newModel();
-      model.loadModelFromText(CASBIN_MODEL);
-      const adapter = new PrismaAdapter(this.prisma);
-      this.enforcer = await newEnforcer(model, adapter);
-    }
-    return this.enforcer;
-  }
-
-  /**
    * Check if user has permission to perform action on resource in business
+   *
+   * TODO: Implement your authorization logic here
+   * Currently returns true for all requests
    */
   async can(request: AuthorizationRequest): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    const { userId, businessId, resource, action } = request;
-
-    // Check permission: enforce(sub, dom, obj, act)
-    return enforcer.enforce(userId, businessId, resource, action);
+    // TODO: Implement your authorization logic
+    // Example: Check BusinessUser role, user type, etc.
+    return true;
   }
 
   /**
    * Assign role to user in a business domain
+   *
+   * TODO: Implement if needed (role is already stored in BusinessUser)
    */
   async assignRole(
     userId: string,
     role: Role,
     businessId: string,
   ): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    // Add grouping policy: g, user, role, domain
-    const added = await enforcer.addGroupingPolicy(userId, role, businessId);
-
-    if (added) {
-      await enforcer.savePolicy();
-    }
-
-    return added;
+    // TODO: Implement if you need additional role tracking
+    // The role is already stored in BusinessUser table
+    return true;
   }
 
   /**
    * Remove role from user in a business domain
+   *
+   * TODO: Implement if needed
    */
   async removeRole(
     userId: string,
     role: Role,
     businessId: string,
   ): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    const removed = await enforcer.removeGroupingPolicy(
-      userId,
-      role,
-      businessId,
-    );
-
-    if (removed) {
-      await enforcer.savePolicy();
-    }
-
-    return removed;
+    // TODO: Implement if needed
+    return true;
   }
 
   /**
    * Update user role in a business (remove old, add new)
+   *
+   * TODO: Implement if needed
    */
   async updateRole(
     userId: string,
@@ -133,214 +83,115 @@ export class AuthorizationService {
     newRole: Role,
     businessId: string,
   ): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    // Remove old role
-    const removed = await enforcer.removeGroupingPolicy(userId, oldRole, businessId);
-
-    // Add new role
-    const added = await enforcer.addGroupingPolicy(userId, newRole, businessId);
-
-    // Always save policy after changes
-    if (removed || added) {
-      await enforcer.savePolicy();
-      // Reload to ensure cache is updated
-      await enforcer.loadPolicy();
-    }
-
-    return added;
+    // TODO: Implement if needed
+    return true;
   }
 
   /**
    * Assign user type (superadmin, admin, customer)
+   *
+   * TODO: Implement if needed (user type is already stored in User table)
    */
   async assignUserType(userId: string, userType: UserType): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    // Add grouping policy g2: user, userType
-    const added = await enforcer.addNamedGroupingPolicy("g2", userId, userType);
-
-    if (added) {
-      await enforcer.savePolicy();
-    }
-
-    return added;
+    // TODO: Implement if you need additional user type tracking
+    // The user type is already stored in User table
+    return true;
   }
 
   /**
    * Remove user type
+   *
+   * TODO: Implement if needed
    */
   async removeUserType(userId: string, userType: UserType): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    const removed = await enforcer.removeNamedGroupingPolicy(
-      "g2",
-      userId,
-      userType,
-    );
-
-    if (removed) {
-      await enforcer.savePolicy();
-    }
-
-    return removed;
+    // TODO: Implement if needed
+    return true;
   }
 
   /**
    * Get user types for a user
+   *
+   * TODO: Implement - query User table
    */
   async getUserTypes(userId: string): Promise<string[]> {
-    const enforcer = await this.getEnforcer();
-
-    // Get all g2 policies for this user
-    const policies = await enforcer.getFilteredNamedGroupingPolicy(
-      "g2",
-      0,
-      userId,
-    );
-
-    return policies.map((policy) => policy[1]);
+    // TODO: Query User table to get user type
+    return [];
   }
 
   /**
    * Add a policy rule (role permission)
+   *
+   * TODO: Implement if you need policy management
    */
   async addPolicy(policy: PolicyRule): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    const { role, businessId, resource, action } = policy;
-
-    const added = await enforcer.addPolicy(role, businessId, resource, action);
-
-    if (added) {
-      await enforcer.savePolicy();
-    }
-
-    return added;
+    // TODO: Implement if needed
+    return true;
   }
 
   /**
    * Remove a policy rule
+   *
+   * TODO: Implement if needed
    */
   async removePolicy(policy: PolicyRule): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    const { role, businessId, resource, action } = policy;
-
-    const removed = await enforcer.removePolicy(
-      role,
-      businessId,
-      resource,
-      action,
-    );
-
-    if (removed) {
-      await enforcer.savePolicy();
-    }
-
-    return removed;
+    // TODO: Implement if needed
+    return true;
   }
 
   /**
    * Get all roles for a user in a specific business
+   *
+   * TODO: Implement - query BusinessUser table
    */
   async getRolesForUserInBusiness(
     userId: string,
     businessId: string,
   ): Promise<string[]> {
-    const enforcer = await this.getEnforcer();
-
-    // Get all roles for user
-    const allRoles = await enforcer.getImplicitRolesForUser(userId, businessId);
-
-    return allRoles;
+    // TODO: Query BusinessUser table to get roles
+    return [];
   }
 
   /**
    * Get all users with a specific role in a business
+   *
+   * TODO: Implement - query BusinessUser table
    */
   async getUsersForRoleInBusiness(
     role: Role,
     businessId: string,
   ): Promise<string[]> {
-    const enforcer = await this.getEnforcer();
-
-    const users = await enforcer.getFilteredGroupingPolicy(1, role, businessId);
-
-    return users.map((user) => user[0]);
+    // TODO: Query BusinessUser table
+    return [];
   }
 
   /**
    * Remove all roles and permissions for a user in a business
+   *
+   * TODO: Implement if needed
    */
   async removeUserFromBusiness(
     userId: string,
     businessId: string,
   ): Promise<boolean> {
-    const enforcer = await this.getEnforcer();
-
-    // Remove all grouping policies for this user in this business
-    const removed = await enforcer.removeFilteredGroupingPolicy(
-      0,
-      userId,
-      "",
-      businessId,
-    );
-
-    if (removed) {
-      await enforcer.savePolicy();
-    }
-
-    return removed;
+    // TODO: Implement if needed
+    return true;
   }
 
   /**
    * Initialize default policies for roles
    *
-   * Uses MANAGE action where appropriate to grant full CRUD access.
-   * MANAGE = wildcard that matches any action (create, read, update, delete)
+   * TODO: Implement if needed
    */
   async initializeDefaultPolicies(): Promise<void> {
-    const enforcer = await this.getEnforcer();
-
-    // MANAGER permissions (full control on most resources)
-    const managerPolicies = [
-      // Business: read and update only (no create/delete - business is created separately)
-      [Role.MANAGER, "*", Resource.BUSINESS, Action.READ],
-      [Role.MANAGER, "*", Resource.BUSINESS, Action.UPDATE],
-      // Employee: full CRUD via MANAGE
-      [Role.MANAGER, "*", Resource.EMPLOYEE, Action.MANAGE],
-      // Appointment: full CRUD via MANAGE
-      [Role.MANAGER, "*", Resource.APPOINTMENT, Action.MANAGE],
-      // Settings: read and update only
-      [Role.MANAGER, "*", Resource.SETTINGS, Action.READ],
-      [Role.MANAGER, "*", Resource.SETTINGS, Action.UPDATE],
-    ];
-
-    // EMPLOYEE permissions (limited)
-    const employeePolicies = [
-      [Role.EMPLOYEE, "*", Resource.BUSINESS, Action.READ],
-      [Role.EMPLOYEE, "*", Resource.EMPLOYEE, Action.READ],
-      // Appointment: create, read, update (no delete)
-      [Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.CREATE],
-      [Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.READ],
-      [Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.UPDATE],
-      [Role.EMPLOYEE, "*", Resource.SETTINGS, Action.READ],
-    ];
-
-    // Add all policies
-    for (const policy of [...managerPolicies, ...employeePolicies]) {
-      await enforcer.addPolicy(...policy);
-    }
-
-    await enforcer.savePolicy();
+    // TODO: Implement if you need to initialize default policies
   }
 
   /**
    * Reload policies from database
+   *
+   * TODO: Implement if needed
    */
   async reloadPolicies(): Promise<void> {
-    const enforcer = await this.getEnforcer();
-    await enforcer.loadPolicy();
+    // TODO: Implement if needed
   }
 }

@@ -2,11 +2,13 @@
 sidebar_position: 4
 ---
 
-# Autorización con Casbin
+# Sistema de Autorización
 
 ## Visión General
 
-TuAgenda usa **Casbin** para control de acceso basado en roles (RBAC) con soporte multi-tenant.
+TuAgenda implementa control de acceso basado en roles (RBAC) con soporte multi-tenant.
+
+> **Nota**: La implementación de Casbin ha sido removida. El sistema actual es un stub que retorna `true` para todas las verificaciones de permisos. Necesitas implementar tu propia lógica de autorización.
 
 ```mermaid
 flowchart TB
@@ -16,10 +18,9 @@ flowchart TB
         Resource["Recurso"]
     end
 
-    subgraph Casbin["Casbin"]
-        Enforcer["Enforcer"]
-        Model["Model (RBAC)"]
-        Policy["Policies (DB)"]
+    subgraph AuthService["Authorization Service"]
+        Service["AuthorizationService"]
+        Port["IAuthorizationPort"]
     end
 
     subgraph Result["Resultado"]
@@ -27,51 +28,15 @@ flowchart TB
         Deny["❌ Denegado"]
     end
 
-    User --> Enforcer
-    Action --> Enforcer
-    Resource --> Enforcer
-    Model --> Enforcer
-    Policy --> Enforcer
+    User --> Service
+    Action --> Service
+    Resource --> Service
 
-    Enforcer --> Allow
-    Enforcer --> Deny
+    Service --> Allow
+    Service --> Deny
 ```
 
-## Modelo RBAC
-
-```
-# packages/auth/src/casbin/model.conf
-[request_definition]
-r = sub, dom, obj, act
-
-[policy_definition]
-p = sub, dom, obj, act
-
-[role_definition]
-g = _, _, _    # role inheritance: user, role, domain
-g2 = _, _      # user type inheritance: user, userType
-
-[policy_effect]
-e = some(where (p.eft == allow))
-
-[matchers]
-m = g2(r.sub, 'superadmin') || (g(r.sub, p.sub, r.dom) && (r.dom == p.dom || p.dom == '*') && r.obj == p.obj && (r.act == p.act || p.act == 'manage'))
-```
-
-### Características del Matcher
-
-- **Superadmin**: Los usuarios con tipo `superadmin` tienen acceso total
-- **Dominio wildcard**: Políticas con `*` aplican a todos los negocios
-- **Acción MANAGE**: Actúa como wildcard para todas las acciones CRUD
-
-### Componentes
-
-| Componente | Descripción | Ejemplo |
-|------------|-------------|---------|
-| `sub` (subject) | Usuario | `user_123` |
-| `dom` (domain) | Negocio/Tenant | `business_456` |
-| `obj` (object) | Recurso | `business`, `employee`, `appointment`, `settings` |
-| `act` (action) | Acción | `create`, `read`, `update`, `delete`, `manage` |
+## Modelo de Datos
 
 ### Tipos y Enums
 
@@ -105,35 +70,41 @@ enum UserType {
 }
 ```
 
-## Políticas
+### Componentes
 
-Las políticas se almacenan en la tabla `CasbinRule`:
+| Componente | Descripción | Ejemplo |
+|------------|-------------|---------|
+| `userId` | Usuario | `user_123` |
+| `businessId` | Negocio/Tenant | `business_456` |
+| `resource` | Recurso | `business`, `employee`, `appointment`, `settings` |
+| `action` | Acción | `create`, `read`, `update`, `delete`, `manage` |
 
-```mermaid
-erDiagram
-    CasbinRule {
-        int id PK
-        string ptype "p, g, g2"
-        string v0 "subject/role"
-        string v1 "domain/role"
-        string v2 "object"
-        string v3 "action"
-    }
+## Almacenamiento de Roles
+
+Los roles se almacenan en la base de datos en las siguientes tablas:
+
+### BusinessUser (Roles por negocio)
+
+```typescript
+// Un usuario puede tener diferentes roles en diferentes negocios
+model BusinessUser {
+  userId      String       // ID del usuario
+  businessId  String       // ID del negocio
+  role        BusinessRole // MANAGER o EMPLOYEE
+}
 ```
 
-### Tipos de Reglas
+### User (Tipo de usuario)
 
-```sql
--- Política directa: usuario tiene permiso
-INSERT INTO casbin_rule (ptype, v0, v1, v2, v3)
-VALUES ('p', 'manager', 'business_123', 'service', 'create');
-
--- Agrupación: usuario tiene rol en dominio
-INSERT INTO casbin_rule (ptype, v0, v1, v2)
-VALUES ('g', 'user_456', 'manager', 'business_123');
+```typescript
+// El tipo de usuario es global (no por negocio)
+model User {
+  id    String   // Firebase UID
+  type  UserType // customer, admin, superadmin
+}
 ```
 
-### Permisos por Rol
+## Permisos por Rol
 
 ```mermaid
 flowchart TB
@@ -152,52 +123,28 @@ flowchart TB
     end
 ```
 
-### Políticas por Defecto
+### Matriz de Permisos Sugerida
 
-Las políticas se inicializan con `initializeDefaultPolicies()`:
+| Recurso | Acción | MANAGER | EMPLOYEE |
+|---------|--------|---------|----------|
+| business | read | ✅ | ✅ |
+| business | update | ✅ | ❌ |
+| employee | create | ✅ | ❌ |
+| employee | read | ✅ | ✅ |
+| employee | update | ✅ | ❌ |
+| employee | delete | ✅ | ❌ |
+| appointment | create | ✅ | ✅ |
+| appointment | read | ✅ | ✅ |
+| appointment | update | ✅ | ✅ |
+| appointment | delete | ✅ | ❌ |
+| settings | read | ✅ | ✅ |
+| settings | update | ✅ | ❌ |
 
-```typescript
-// MANAGER: control total en employee y appointment
-[Role.MANAGER, "*", Resource.BUSINESS, Action.READ],
-[Role.MANAGER, "*", Resource.BUSINESS, Action.UPDATE],
-[Role.MANAGER, "*", Resource.EMPLOYEE, Action.MANAGE],    // CRUD completo
-[Role.MANAGER, "*", Resource.APPOINTMENT, Action.MANAGE], // CRUD completo
-[Role.MANAGER, "*", Resource.SETTINGS, Action.READ],
-[Role.MANAGER, "*", Resource.SETTINGS, Action.UPDATE],
-
-// EMPLOYEE: acceso limitado
-[Role.EMPLOYEE, "*", Resource.BUSINESS, Action.READ],
-[Role.EMPLOYEE, "*", Resource.EMPLOYEE, Action.READ],
-[Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.CREATE],
-[Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.READ],
-[Role.EMPLOYEE, "*", Resource.APPOINTMENT, Action.UPDATE],
-[Role.EMPLOYEE, "*", Resource.SETTINGS, Action.READ],
-```
-
-## Flujo de Verificación
-
-```mermaid
-sequenceDiagram
-    participant C as Component
-    participant H as usePermission
-    participant A as Server Action
-    participant E as Casbin Enforcer
-    participant DB as CasbinRule Table
-
-    C->>H: usePermission('service', 'create')
-    H->>A: checkPermission(userId, businessId, 'service', 'create')
-    A->>E: enforce(userId, businessId, 'service', 'create')
-    E->>DB: Load policies
-    DB-->>E: Policies
-    E->>E: Evaluar matcher
-    E-->>A: true/false
-    A-->>H: hasPermission
-    H-->>C: { canCreate: boolean }
-```
+> **Nota**: MANAGER podría tener `MANAGE` en employee y appointment, lo que equivale a todos los permisos CRUD.
 
 ## Arquitectura Hexagonal
 
-La autorización se integra siguiendo arquitectura hexagonal con puertos y adaptadores:
+La autorización sigue arquitectura hexagonal con puertos y adaptadores:
 
 ```mermaid
 flowchart TB
@@ -210,7 +157,7 @@ flowchart TB
     end
 
     subgraph Adapter["Adaptador (Infraestructura)"]
-        Casbin["CasbinAuthorizationAdapter"]
+        AuthAdapter["AuthorizationAdapter"]
     end
 
     subgraph External["Externo"]
@@ -218,8 +165,8 @@ flowchart TB
     end
 
     UC -->|"usa"| IAuth
-    Casbin -.->|"implementa"| IAuth
-    Casbin --> Service
+    AuthAdapter -.->|"implementa"| IAuth
+    AuthAdapter --> Service
 ```
 
 ### Puerto de Autorización
@@ -239,12 +186,12 @@ export interface IAuthorizationPort {
 }
 ```
 
-### Adaptador Casbin
+### Adaptador de Autorización
 
 ```typescript
-// src/server/infrastructure/adapters/CasbinAuthorizationAdapter.ts
+// src/server/infrastructure/adapters/AuthorizationAdapter.ts
 
-export class CasbinAuthorizationAdapter implements IAuthorizationPort {
+export class AuthorizationAdapter implements IAuthorizationPort {
   async canPerform(request: AuthorizationRequest): Promise<boolean> {
     return canUserPerform(
       request.userId,
@@ -368,73 +315,82 @@ function SettingsPage() {
 }
 ```
 
-## Asignación de Roles
+## Implementando Tu Propia Lógica de Autorización
 
-```mermaid
-sequenceDiagram
-    participant M as Manager
-    participant UI as UI
-    participant A as Server Action
-    participant E as Enforcer
-    participant DB as Database
+El `AuthorizationService` actual es un stub. Para implementar tu lógica:
 
-    M->>UI: Asignar rol EMPLOYEE a usuario
-    UI->>A: assignRole(userId, businessId, 'EMPLOYEE')
-
-    A->>DB: INSERT INTO business_users (role = 'EMPLOYEE')
-    A->>E: addRoleForUserInDomain(userId, 'employee', businessId)
-    E->>DB: INSERT INTO casbin_rule (ptype='g', ...)
-
-    DB-->>A: Success
-    A-->>UI: Role assigned
-    UI-->>M: Confirmación
-```
-
-### Código de Asignación
+### Opción 1: Lógica Simple Basada en Roles
 
 ```typescript
-// Al crear BusinessUser, asignar rol en Casbin
-async function assignBusinessRole(
-  userId: string,
-  businessId: string,
-  role: BusinessRole
-) {
-  const enforcer = await getEnforcer();
+// packages/auth/src/authorization-service.ts
 
-  // Agregar usuario al rol en el dominio
-  await enforcer.addRoleForUserInDomain(
-    userId,
-    role.toLowerCase(), // 'manager' o 'employee'
-    businessId
-  );
+async can(request: AuthorizationRequest): Promise<boolean> {
+  // 1. Obtener el rol del usuario en el negocio
+  const businessUser = await this.prisma.businessUser.findUnique({
+    where: {
+      userId_businessId: {
+        userId: request.userId,
+        businessId: request.businessId,
+      }
+    }
+  });
 
-  // Guardar políticas
-  await enforcer.savePolicy();
+  if (!businessUser) return false;
+
+  // 2. Verificar permisos según el rol
+  const { role } = businessUser;
+  const { resource, action } = request;
+
+  // MANAGER tiene acceso completo
+  if (role === 'MANAGER') {
+    return true;
+  }
+
+  // EMPLOYEE tiene acceso limitado
+  if (role === 'EMPLOYEE') {
+    // Solo lectura en business y employee
+    if (resource === 'business' && action === 'read') return true;
+    if (resource === 'employee' && action === 'read') return true;
+
+    // CRUD en appointments (excepto delete)
+    if (resource === 'appointment') {
+      return ['create', 'read', 'update'].includes(action);
+    }
+
+    // Solo lectura en settings
+    if (resource === 'settings' && action === 'read') return true;
+  }
+
+  return false;
 }
 ```
 
-## Matriz de Permisos
+### Opción 2: Sistema de Permisos con Base de Datos
 
-| Recurso | Acción | MANAGER | EMPLOYEE |
-|---------|--------|---------|----------|
-| business | read | ✅ | ✅ |
-| business | update | ✅ | ❌ |
-| employee | create | ✅ | ❌ |
-| employee | read | ✅ | ✅ |
-| employee | update | ✅ | ❌ |
-| employee | delete | ✅ | ❌ |
-| appointment | create | ✅ | ✅ |
-| appointment | read | ✅ | ✅ |
-| appointment | update | ✅ | ✅ |
-| appointment | delete | ✅ | ❌ |
-| settings | read | ✅ | ✅ |
-| settings | update | ✅ | ❌ |
+Crear tablas para almacenar permisos:
 
-> **Nota**: MANAGER tiene `MANAGE` en employee y appointment, lo que equivale a todos los permisos CRUD.
+```prisma
+model Permission {
+  id       String @id @default(uuid())
+  role     String
+  resource String
+  action   String
+
+  @@unique([role, resource, action])
+}
+```
+
+### Opción 3: Usar otra librería
+
+Alternativas a Casbin:
+- **CASL**: Sistema de autorización más ligero
+- **accesscontrol**: RBAC simple
+- **permit.io**: Servicio externo de autorización
 
 ## Best Practices
 
 1. **Verificar en servidor**: Siempre verificar permisos en el servidor, no solo en UI
-2. **Cache de políticas**: Casbin cachea políticas, refrescar al cambiar roles
+2. **Principio de menor privilegio**: Asignar solo permisos necesarios
 3. **Audit log**: Registrar cambios de permisos
-4. **Principio de menor privilegio**: Asignar solo permisos necesarios
+4. **Testing**: Probar todos los escenarios de autorización
+5. **Documentar**: Mantener documentada la matriz de permisos

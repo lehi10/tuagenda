@@ -134,23 +134,6 @@ model BusinessUser {
   @@map("business_users")
 }
 
-// Casbin Policy Rules
-// Stores the policy rules for Casbin (p, p2, p3, etc.)
-model CasbinRule {
-  id    Int     @id @default(autoincrement())
-  ptype String  @db.VarChar(100) // Policy type: p, g, g2, etc.
-  v0    String? @db.VarChar(100) // Subject (user ID or role)
-  v1    String? @db.VarChar(100) // Domain (business ID)
-  v2    String? @db.VarChar(100) // Object (resource)
-  v3    String? @db.VarChar(100) // Action (read, write, delete, etc.)
-  v4    String? @db.VarChar(100) // Additional field
-  v5    String? @db.VarChar(100) // Additional field
-
-  @@index([ptype])
-  @@index([v0, v1])
-  @@map("casbin_rule")
-}
-
 // -----------------------------------------------------
 // Categorías de Servicios
 // -----------------------------------------------------

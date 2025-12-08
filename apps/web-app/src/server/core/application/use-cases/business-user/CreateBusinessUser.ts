@@ -76,7 +76,7 @@ export class CreateBusinessUserUseCase {
       const createdBusinessUser =
         await this.businessUserRepository.create(businessUser);
 
-      // 4. Sync role with Casbin authorization service
+      // 4. Sync role with authorization service
       const roleSynced = await syncUserRole(
         input.userId,
         input.role,

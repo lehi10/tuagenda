@@ -8,12 +8,10 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit",
-    "seed": "tsx src/seed-policies.ts"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
-    "casbin": "^5.40.0",
     "db": "workspace:*"
   },
   "devDependencies": {

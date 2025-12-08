@@ -1,9 +1,8 @@
 /**
- * Casbin Authorization Adapter
+ * Authorization Adapter
  *
  * This is an ADAPTER in hexagonal architecture.
- * It implements the IAuthorizationPort interface using Casbin
- * as the underlying authorization engine.
+ * It implements the IAuthorizationPort interface.
  *
  * @module infrastructure/adapters
  */
@@ -15,13 +14,13 @@ import {
 import { canUserPerform } from "@/server/lib/auth/authorization";
 
 /**
- * Casbin Authorization Adapter
+ * Authorization Adapter
  *
- * Implements authorization checks using the Casbin library.
+ * Implements authorization checks.
  * This adapter bridges the domain's IAuthorizationPort with
- * the Casbin authorization service.
+ * the authorization service.
  */
-export class CasbinAuthorizationAdapter implements IAuthorizationPort {
+export class AuthorizationAdapter implements IAuthorizationPort {
   /**
    * Check if a user can perform an action on a resource within a business
    *

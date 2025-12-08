@@ -69,7 +69,7 @@ src/server/
     │   ├── PrismaUserRepository.ts
     │   └── PrismaBusinessRepository.ts
     └── adapters/                  # Adaptadores de servicios externos
-        └── CasbinAuthorizationAdapter.ts
+        └── AuthorizationAdapter.ts
 ```
 
 ### Diferencia entre Repositories y Ports
@@ -177,12 +177,12 @@ flowchart LR
     end
 
     subgraph ServiceAdapters["Adaptadores de Servicio"]
-        CasbinAuth["CasbinAuthorizationAdapter"]
+        AuthAdapter["AuthorizationAdapter"]
     end
 
     PUser -.->|implementa| IUser
     PBusiness -.->|implementa| IBusiness
-    CasbinAuth -.->|implementa| IAuth
+    AuthAdapter -.->|implementa| IAuth
 ```
 
 ### 3. Aplicación (Use Cases)

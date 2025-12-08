@@ -9,8 +9,6 @@ import {
   Bell,
   MapPin,
   Repeat,
-  Clock,
-  Sparkles,
   ArrowRight,
   Check,
   Image as ImageIcon,

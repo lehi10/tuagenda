@@ -3,7 +3,6 @@
 import { useTranslation } from "@/client/i18n";
 import { ScrollReveal } from "@/client/components/ui/scroll-reveal";
 import {
-  CheckCircle2,
   Target,
   Users,
   Heart,

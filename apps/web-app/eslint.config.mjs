@@ -1,19 +1,8 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tseslint from "@typescript-eslint/eslint-plugin";
+import tsparser from "@typescript-eslint/parser";
 import prettierPlugin from "eslint-plugin-prettier";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  // Global ignores must be in a separate config object
+export default [
   {
     ignores: [
       "node_modules/**",
@@ -24,23 +13,27 @@ const eslintConfig = [
       "src/client/components/ui/**",
     ],
   },
-  ...compat.extends(
-    "next/core-web-vitals",
-    "next/typescript",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-    "prettier"
-  ),
   {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    languageOptions: {
+      parser: tsparser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
     plugins: {
-      "@typescript-eslint": tsPlugin,
+      "@typescript-eslint": tseslint,
       prettier: prettierPlugin,
     },
     rules: {
       "prettier/prettier": "error",
       quotes: ["error", "double"],
       semi: ["error", "always"],
-      "no-unused-vars": "off", // Desactivar la regla de JS base
+      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         {
@@ -56,5 +49,3 @@ const eslintConfig = [
     },
   },
 ];
-
-export default eslintConfig;

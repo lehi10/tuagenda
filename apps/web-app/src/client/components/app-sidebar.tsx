@@ -9,7 +9,6 @@ import {
   Clock,
   CreditCard,
   LayoutDashboard,
-  MapPin,
   Settings,
   Sparkles,
   UserCheck,

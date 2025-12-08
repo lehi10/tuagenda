@@ -178,7 +178,7 @@ export const businessRouter = router({
         id: z.uuid("Business ID must be a valid UUID"),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx: _ctx }) => {
       const businessRepository = new PrismaBusinessRepository();
       const deleteBusinessUseCase = new DeleteBusinessUseCase(
         businessRepository
