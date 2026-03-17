@@ -16,6 +16,7 @@ import {
   GetCustomerUpcomingAppointmentsUseCase,
   GetCustomerPastAppointmentsUseCase,
   CreateAppointmentUseCase,
+  GetBusinessAppointmentsUseCase,
 } from "@/server/core/application/use-cases/appointment";
 
 export const appointmentRouter = router({
@@ -149,5 +150,74 @@ export const appointmentRouter = router({
               : "Failed to create appointment",
         });
       }
+    }),
+
+  /**
+   * Get all appointments for a business (PRIVATE)
+   * Returns paginated appointments with filters
+   */
+  getBusinessAppointments: privateProcedure
+    .input(
+      z.object({
+        businessId: z.string().uuid(),
+        filters: z
+          .object({
+            status: z
+              .union([
+                z.enum(["scheduled", "confirmed", "completed", "cancelled"]),
+                z
+                  .array(
+                    z.enum(["scheduled", "confirmed", "completed", "cancelled"])
+                  )
+                  .min(1),
+              ])
+              .optional(),
+            providerBusinessUserId: z.string().uuid().optional(),
+            serviceId: z.string().uuid().optional(),
+            startAfter: z.string().datetime().optional(),
+            startBefore: z.string().datetime().optional(),
+          })
+          .optional(),
+        pagination: z
+          .object({
+            limit: z.number().int().positive().max(100).default(10),
+            offset: z.number().int().nonnegative().default(0),
+          })
+          .optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const appointmentRepository = new PrismaAppointmentRepository();
+      const getBusinessAppointmentsUseCase = new GetBusinessAppointmentsUseCase(
+        appointmentRepository
+      );
+
+      const result = await getBusinessAppointmentsUseCase.execute({
+        businessId: input.businessId,
+        filters: input.filters
+          ? {
+              ...input.filters,
+              startAfter: input.filters.startAfter
+                ? new Date(input.filters.startAfter)
+                : undefined,
+              startBefore: input.filters.startBefore
+                ? new Date(input.filters.startBefore)
+                : undefined,
+            }
+          : undefined,
+        pagination: input.pagination,
+      });
+
+      if (!result.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error || "Failed to fetch business appointments",
+        });
+      }
+
+      return {
+        appointments: result.appointments || [],
+        total: result.total || 0,
+      };
     }),
 });

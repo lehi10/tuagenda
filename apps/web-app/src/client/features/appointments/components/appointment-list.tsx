@@ -11,6 +11,10 @@ import {
 } from "@/client/components/ui/dropdown-menu";
 import { DataTableWithFilters } from "@/client/components/shared/data-table-with-filters";
 import { useTranslation } from "@/client/i18n";
+import { useBusiness } from "@/client/contexts/business-context";
+import { useTrpc } from "@/client/lib/trpc";
+import { format } from "date-fns";
+import type { Appointment as AppointmentEntity } from "@/server/core/domain/entities/Appointment";
 
 interface Appointment {
   [key: string]: unknown;
@@ -20,104 +24,44 @@ interface Appointment {
   employee: string;
   date: string;
   time: string;
-  status: "pending" | "completed" | "cancelled";
+  status: "scheduled" | "confirmed" | "completed" | "cancelled";
 }
 
 export function AppointmentList() {
   const { t } = useTranslation();
+  const { currentBusiness } = useBusiness();
 
-  const appointments: Appointment[] = [
-    {
-      id: "1",
-      client: "John Doe",
-      service: "Haircut",
-      employee: "Sarah Johnson",
-      date: "2024-10-24",
-      time: "10:00 AM",
-      status: "pending",
-    },
-    {
-      id: "2",
-      client: "Jane Smith",
-      service: "Manicure",
-      employee: "Emily Davis",
-      date: "2024-10-24",
-      time: "11:30 AM",
-      status: "pending",
-    },
-    {
-      id: "3",
-      client: "Bob Wilson",
-      service: "Massage",
-      employee: "Mike Brown",
-      date: "2024-10-23",
-      time: "2:00 PM",
-      status: "completed",
-    },
-    {
-      id: "4",
-      client: "Alice Brown",
-      service: "Facial",
-      employee: "Lisa Anderson",
-      date: "2024-10-25",
-      time: "9:00 AM",
-      status: "pending",
-    },
-    {
-      id: "5",
-      client: "Charlie Green",
-      service: "Haircut",
-      employee: "Tom Harris",
-      date: "2024-10-22",
-      time: "3:00 PM",
-      status: "completed",
-    },
-    {
-      id: "6",
-      client: "Diana Prince",
-      service: "Manicure",
-      employee: "Amy Chen",
-      date: "2024-10-21",
-      time: "1:00 PM",
-      status: "cancelled",
-    },
-    {
-      id: "7",
-      client: "Ethan Hunt",
-      service: "Massage",
-      employee: "David Martinez",
-      date: "2024-10-25",
-      time: "11:00 AM",
-      status: "pending",
-    },
-    {
-      id: "8",
-      client: "Fiona White",
-      service: "Haircut",
-      employee: "Sarah Johnson",
-      date: "2024-10-26",
-      time: "2:00 PM",
-      status: "pending",
-    },
-    {
-      id: "9",
-      client: "George Clark",
-      service: "Facial",
-      employee: "Emma Taylor",
-      date: "2024-10-20",
-      time: "10:00 AM",
-      status: "completed",
-    },
-    {
-      id: "10",
-      client: "Helen Moore",
-      service: "Manicure",
-      employee: "Emily Davis",
-      date: "2024-10-19",
-      time: "4:00 PM",
-      status: "completed",
-    },
-  ];
+  // Fetch appointments from tRPC
+  const { data, isLoading } =
+    useTrpc.appointment.getBusinessAppointments.useQuery(
+      {
+        businessId: currentBusiness?.id || "",
+        pagination: {
+          limit: 10,
+          offset: 0,
+        },
+      },
+      {
+        enabled: !!currentBusiness?.id,
+      }
+    );
+
+  // Transform API data to table format
+  const appointments: Appointment[] =
+    data?.appointments?.map((apt: AppointmentEntity) => ({
+      id: apt.id!,
+      client:
+        apt.customer
+          ? `${apt.customer.firstName} ${apt.customer.lastName || ""}`.trim()
+          : "N/A",
+      service: apt.service?.name || "N/A",
+      employee: apt.providerBusinessUser?.user
+        ? `${apt.providerBusinessUser.user.firstName} ${apt.providerBusinessUser.user.lastName || ""}`.trim()
+        : "N/A",
+      date: format(new Date(apt.startTime), "yyyy-MM-dd"),
+      time: format(new Date(apt.startTime), "h:mm a"),
+      status: apt.status,
+    })) || [];
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -164,6 +108,24 @@ export function AppointmentList() {
     },
   ];
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <p className="text-muted-foreground">Loading appointments...</p>
+      </div>
+    );
+  }
+
+  // No business selected
+  if (!currentBusiness) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <p className="text-muted-foreground">Please select a business</p>
+      </div>
+    );
+  }
+
   return (
     <DataTableWithFilters
       data={appointments}
@@ -174,23 +136,14 @@ export function AppointmentList() {
           placeholder: "Filter by status",
           accessor: "status",
           options: [
-            { value: "pending", label: "Pending" },
+            { value: "scheduled", label: "Scheduled" },
+            { value: "confirmed", label: "Confirmed" },
             { value: "completed", label: "Completed" },
             { value: "cancelled", label: "Cancelled" },
           ],
         },
-        {
-          placeholder: "Filter by service",
-          accessor: "service",
-          options: [
-            { value: "Haircut", label: "Haircut" },
-            { value: "Manicure", label: "Manicure" },
-            { value: "Massage", label: "Massage" },
-            { value: "Facial", label: "Facial" },
-          ],
-        },
       ]}
-      pageSize={7}
+      pageSize={10}
     />
   );
 }
