@@ -1,26 +1,13 @@
 "use client";
 
-import {
-  Menu,
-  X,
-  ChevronDown,
-  Calendar,
-  Users,
-  Shield,
-  BarChart3,
-  CreditCard,
-  Building2,
-  Phone,
-  Sparkles,
-  Puzzle,
-  Info,
-} from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
 import { LanguageSelectorButton } from "@/client/components/language-selector";
 import { useTranslation } from "@/client/i18n";
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { headerConfig } from "./public-header.config";
 
 export function PublicHeader() {
   const { t } = useTranslation();
@@ -40,76 +27,56 @@ export function PublicHeader() {
     };
   }, [mobileMenuOpen]);
 
-  const productItems = [
-    {
-      href: "/features",
-      label: t.navigation.features,
-      description: t.pages.features.subtitle,
-      icon: Sparkles,
-      featured: true,
-    },
-    {
-      href: "/features/scheduling",
-      label: t.pages.features.categories.scheduling.title,
-      description: t.pages.features.categories.scheduling.description,
-      icon: Calendar,
-      featured: false,
-    },
-    {
-      href: "/features/clients",
-      label: t.pages.features.categories.clients.title,
-      description: t.pages.features.categories.clients.description,
-      icon: Users,
-      featured: false,
-    },
-    {
-      href: "/features/team",
-      label: t.pages.features.categories.team.title,
-      description: t.pages.features.categories.team.description,
-      icon: Shield,
-      featured: false,
-    },
-    {
-      href: "/features/analytics",
-      label: t.pages.features.categories.analytics.title,
-      description: t.pages.features.categories.analytics.description,
-      icon: BarChart3,
-      featured: false,
-    },
-    {
-      href: "/features/payments",
-      label: t.pages.features.categories.payments.title,
-      description: t.pages.features.categories.payments.description,
-      icon: CreditCard,
-      featured: false,
-    },
-  ];
+  // Función auxiliar para obtener el valor traducido desde las claves de traducción
+  const getTranslation = (key: string) => {
+    const keys = key.split(".");
+    let value: any = t;
 
-  const solutionsItems = [
-    {
-      href: "/industries",
-      label: t.navigation.industries,
-      icon: Building2,
-    },
-    {
-      href: "/integrations",
-      label: t.navigation.integrations,
-      icon: Puzzle,
-    },
-  ];
+    for (const k of keys) {
+      if (value && typeof value === "object" && k in value) {
+        value = value[k];
+      } else {
+        // Si la clave no existe, devolver la clave original
+        return t.navigation[key as keyof typeof t.navigation] || key;
+      }
+    }
 
-  const companyItems = [
-    {
-      href: "/about-us",
-      label: t.navigation.aboutUs,
-      icon: Info,
-    },
-    {
-      href: "/contact",
-      label: t.navigation.contact,
-      icon: Phone,
-    },
-  ];
+    return typeof value === "string" ? value : key;
+  };
+
+  // Filtrar items habilitados de cada sección
+  const productItems = useMemo(() => {
+    if (!headerConfig.sections.product.enabled) return [];
+    return headerConfig.sections.product.items
+      .filter((item) => item.enabled)
+      .map((item) => ({
+        ...item,
+        label: getTranslation(item.label),
+        description: item.description
+          ? getTranslation(item.description)
+          : undefined,
+      }));
+  }, [t]);
+
+  const solutionsItems = useMemo(() => {
+    if (!headerConfig.sections.solutions.enabled) return [];
+    return headerConfig.sections.solutions.items
+      .filter((item) => item.enabled)
+      .map((item) => ({
+        ...item,
+        label: getTranslation(item.label),
+      }));
+  }, [t]);
+
+  const companyItems = useMemo(() => {
+    if (!headerConfig.sections.company.enabled) return [];
+    return headerConfig.sections.company.items
+      .filter((item) => item.enabled)
+      .map((item) => ({
+        ...item,
+        label: getTranslation(item.label),
+      }));
+  }, [t]);
 
   return (
     <>

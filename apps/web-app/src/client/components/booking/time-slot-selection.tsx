@@ -12,12 +12,16 @@ interface TimeSlotSelectionProps {
   timeSlots: TimeSlot[];
   selectedSlot?: string;
   onSelect: (_slot: string) => void;
+  isLoading?: boolean;
+  error?: string;
 }
 
 export function TimeSlotSelection({
   timeSlots,
   selectedSlot,
   onSelect,
+  isLoading = false,
+  error,
 }: TimeSlotSelectionProps) {
   const { t, locale } = useTranslation();
 
@@ -37,7 +41,26 @@ export function TimeSlotSelection({
         </p>
       </div>
 
-      {availableSlots.length === 0 ? (
+      {/* Error state */}
+      {error && (
+        <div className="rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+          {locale === "es"
+            ? "Error al cargar los horarios disponibles. Por favor, intenta nuevamente."
+            : "Error loading available time slots. Please try again."}
+        </div>
+      )}
+
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-11 animate-pulse rounded-md bg-muted"
+            />
+          ))}
+        </div>
+      ) : availableSlots.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
           {t.booking.time.noSlots}
         </div>

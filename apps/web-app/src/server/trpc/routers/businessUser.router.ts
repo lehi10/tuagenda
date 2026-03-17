@@ -15,6 +15,10 @@ import {
   PrismaBusinessUserRepository,
   PrismaUserRepository,
 } from "@/server/infrastructure/repositories";
+import { PrismaEmployeeAvailabilityRepository } from "@/server/infrastructure/repositories/PrismaEmployeeAvailabilityRepository";
+import { PrismaEmployeeExceptionRepository } from "@/server/infrastructure/repositories/PrismaEmployeeExceptionRepository";
+import { PrismaAppointmentRepository } from "@/server/infrastructure/repositories/PrismaAppointmentRepository";
+import { PrismaServiceRepository } from "@/server/infrastructure/repositories/PrismaServiceRepository";
 import {
   CreateBusinessUserUseCase,
   UpdateBusinessUserUseCase,
@@ -23,7 +27,9 @@ import {
   GetBusinessUsersByUserUseCase,
   GetBusinessUsersWithDetailsUseCase,
 } from "@/server/core/application/use-cases/business-user";
+import { GetAvailableTimeSlotsUseCase } from "@/server/core/application/use-cases/availability";
 import { BusinessRole } from "@/server/core/domain/entities";
+import { prisma } from "db";
 
 export const businessUserRouter = router({
   /**
@@ -268,5 +274,53 @@ export const businessUserRouter = router({
       }
 
       return result.businessUsers;
+    }),
+
+  /**
+   * Get available time slots for a business user (PUBLIC)
+   * Used in booking flow step 4 (time selection)
+   * Calculates availability based on employee schedule, exceptions, and existing appointments
+   * Note: intervalMinutes is automatically set to service.durationMinutes
+   */
+  getAvailableTimeSlots: publicProcedure
+    .input(
+      z.object({
+        businessUserId: z
+          .string()
+          .uuid("Business User ID must be a valid UUID"),
+        serviceId: z.string().uuid("Service ID must be a valid UUID"),
+        date: z.date(),
+      })
+    )
+    .query(async ({ input }) => {
+      const employeeAvailabilityRepository =
+        new PrismaEmployeeAvailabilityRepository(prisma);
+      const employeeExceptionRepository = new PrismaEmployeeExceptionRepository(
+        prisma
+      );
+      const appointmentRepository = new PrismaAppointmentRepository();
+      const serviceRepository = new PrismaServiceRepository();
+
+      const getAvailableTimeSlotsUseCase = new GetAvailableTimeSlotsUseCase(
+        employeeAvailabilityRepository,
+        employeeExceptionRepository,
+        appointmentRepository,
+        serviceRepository
+      );
+
+      const result = await getAvailableTimeSlotsUseCase.execute(input);
+
+      if (!result.success || !result.slots) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error || "Failed to calculate available time slots",
+        });
+      }
+
+      return {
+        slots: result.slots,
+        total: result.slots.length,
+        available: result.slots.filter((s) => s.available).length,
+      };
     }),
 });

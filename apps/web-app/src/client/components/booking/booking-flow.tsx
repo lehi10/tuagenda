@@ -14,9 +14,9 @@ import { PaymentStep } from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
 import { BusinessProfile } from "@/client/components/booking/shared/business-profile";
 import { defaultStepConfig } from "@/client/lib/booking-steps";
-import { generateTimeSlots } from "@/client/lib/booking-utils";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
 import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
+import { useTrpc } from "@/client/lib/trpc";
 import type { StepConfig } from "@/client/types/booking";
 
 interface BusinessProfileData {
@@ -58,8 +58,28 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
   // Collapse business profile after the first step
   const isProfileCollapsed = currentStep !== "service";
 
-  // Generate time slots
-  const timeSlots = generateTimeSlots();
+  // Fetch available time slots from the server
+  // intervalMinutes is calculated server-side using service.durationMinutes
+  const {
+    data: timeSlotsData,
+    isLoading: isLoadingSlots,
+    error: slotsError,
+  } = useTrpc.businessUser.getAvailableTimeSlots.useQuery(
+    {
+      businessUserId: bookingData.professional?.id || "",
+      serviceId: bookingData.service?.id || "",
+      date: bookingData.date || new Date(),
+    },
+    {
+      enabled:
+        !!bookingData.professional?.id &&
+        !!bookingData.service?.id &&
+        !!bookingData.date &&
+        currentStep === "time",
+    }
+  );
+
+  const timeSlots = timeSlotsData?.slots || [];
 
   // Render current step
   const renderStep = () => {
@@ -102,6 +122,8 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
             timeSlots={timeSlots}
             selectedSlot={bookingData.timeSlot}
             onSelect={updateTimeSlot}
+            isLoading={isLoadingSlots}
+            error={slotsError?.message}
           />
         );
 
