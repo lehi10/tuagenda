@@ -289,7 +289,11 @@ export const userRouter = router({
       const createGuestUserUseCase = new CreateGuestUserUseCase(userRepository);
 
       try {
-        const user = await createGuestUserUseCase.execute(input);
+        const user = await createGuestUserUseCase.execute({
+          ...input,
+          phone: input.phone ?? undefined,
+          countryCode: input.countryCode ?? undefined,
+        });
         return { user };
       } catch (error) {
         throw new TRPCError({

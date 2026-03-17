@@ -55,6 +55,7 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
         email: user.email,
         phone: user.phone || "",
         password: "",
+        confirmPassword: "",
         createAccount: false,
       });
     }
@@ -250,8 +251,12 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
       {!isAuthenticated && (
         <Tabs defaultValue="guest" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="guest">{t.booking.contact.guestTab}</TabsTrigger>
-            <TabsTrigger value="login">{t.booking.contact.loginTab}</TabsTrigger>
+            <TabsTrigger value="guest">
+              {t.booking.contact.guestTab}
+            </TabsTrigger>
+            <TabsTrigger value="login">
+              {t.booking.contact.loginTab}
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Guest user / No account */}

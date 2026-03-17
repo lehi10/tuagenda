@@ -44,8 +44,8 @@ export class CreateGuestUserUseCase {
       email: input.email.toLowerCase().trim(),
       firstName: input.firstName.trim(),
       lastName: input.lastName.trim(),
-      phone: input.phone?.trim() || null,
-      countryCode: input.countryCode || null,
+      phone: input.phone?.trim() || undefined,
+      countryCode: input.countryCode || undefined,
     });
 
     // 3. Persist to database
