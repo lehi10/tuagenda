@@ -1,44 +1,155 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/client/components/ui/button";
 import { Input } from "@/client/components/ui/input";
 import { Label } from "@/client/components/ui/label";
 import { Checkbox } from "@/client/components/ui/checkbox";
-import { Separator } from "@/client/components/ui/separator";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/client/components/ui/tabs";
 import { useTranslation } from "@/client/i18n";
+import { useAuth } from "@/client/contexts";
+import { useTrpc } from "@/client/lib/trpc";
 
 interface ClientInfoStepProps {
   onContinue: (_data: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     phone: string;
     email: string;
     password?: string;
     createAccount: boolean;
+    userId?: string;
   }) => void;
-  isAuthenticated?: boolean;
 }
 
-export function ClientInfoStep({
-  onContinue,
-  isAuthenticated = false,
-}: ClientInfoStepProps) {
+export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
   const { t } = useTranslation();
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [createAccount, setCreateAccount] = useState(false);
+  const { user, loading: authLoading, signUp, refreshUser } = useAuth();
+  const createGuestMutation = useTrpc.user.createGuest.useMutation();
+  const createUserMutation = useTrpc.user.create.useMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    createAccount: false,
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Auto-fill data if user is authenticated
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        firstName: user.firstName,
+        lastName: user.lastName || "",
+        email: user.email,
+        phone: user.phone || "",
+        password: "",
+        createAccount: false,
+      });
+    }
+  }, [user]);
+
+  // Helper to update form data
+  const updateField = (
+    field: keyof typeof formData,
+    value: string | boolean
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onContinue({
-      fullName,
-      phone,
-      email,
-      password: createAccount ? password : undefined,
-      createAccount,
-    });
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // If authenticated user, just continue
+      if (user) {
+        onContinue({
+          firstName: user.firstName,
+          lastName: user.lastName || "",
+          phone: user.phone || "",
+          email: user.email,
+          createAccount: false,
+          userId: user.id,
+        });
+        return;
+      }
+
+      // If user wants to create account with email/password
+      if (formData.createAccount) {
+        // Validate password match
+        if (formData.password !== formData.confirmPassword) {
+          setError(t.auth.errors.passwordsDoNotMatch);
+          return;
+        }
+
+        // Validate password length
+        if (formData.password.length < 6) {
+          setError(t.auth.errors.passwordTooShort);
+          return;
+        }
+
+        // Step 1: Create Firebase account
+        const firebaseUser = await signUp({
+          email: formData.email,
+          password: formData.password,
+          displayName: `${formData.firstName} ${formData.lastName}`,
+        });
+
+        // Step 2: Create user in database with all info (including phone)
+        // This prevents the auth-context from creating a user without phone
+        await createUserMutation.mutateAsync({
+          id: firebaseUser.uid,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone || null,
+        });
+
+        // Step 3: Refresh user data to load the newly created user
+        await refreshUser();
+
+        // The component will re-render and show the authenticated user
+        // so we don't call onContinue here
+        return;
+      }
+
+      // Otherwise, create guest user
+      const result = await createGuestMutation.mutateAsync({
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone || null,
+      });
+
+      onContinue({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        email: formData.email,
+        createAccount: false,
+        userId: result.user.id,
+      });
+    } catch (error) {
+      console.error("Error submitting client info:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : t.auth.errors.signUpFailed;
+      setError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLoginClick = () => {
@@ -51,6 +162,22 @@ export function ClientInfoStep({
     console.log(`${provider} login clicked`);
   };
 
+  const isAuthenticated = !!user;
+
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+          <p className="text-sm text-muted-foreground">
+            {t.booking.contact.loading}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header - Standardized */}
@@ -61,193 +188,299 @@ export function ClientInfoStep({
         <p className="text-muted-foreground">{t.booking.contact.description}</p>
       </div>
 
-      {!isAuthenticated && (
+      {/* Show authenticated user info */}
+      {isAuthenticated && user && (
         <>
-          {/* TODO: ANALIZAR COMPORTAMIENTO DE LOGIN/SIGNUP CON REDES SOCIALES
-           * Consideraciones:
-           * 1. Los botones de Google/Apple deben funcionar tanto para login como para signup
-           * 2. Si el usuario hace click en Google/Apple:
-           *    - Si ya tiene cuenta: hacer login y preservar datos del formulario
-           *    - Si no tiene cuenta: crear cuenta automáticamente
-           * 3. Usar modal/popup para OAuth para no perder progreso del booking
-           * 4. Al completar OAuth, volver a este paso con la info autocompletada
-           */}
-          <div className="mx-auto max-w-md rounded-lg border bg-muted/50 p-4">
-            <p className="mb-3 text-center text-sm font-medium">
-              {t.booking.contact.alreadyHaveAccount}
-            </p>
-            <div className="flex flex-col gap-2">
+          <div className="rounded-lg border bg-muted/50 p-6">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <span className="text-lg font-medium">
+                  {user.firstName[0]}
+                  {user.lastName?.[0] || ""}
+                </span>
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-lg font-semibold">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                  {user.email}
+                </p>
+                {user.phone && (
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                    </svg>
+                    {user.phone}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? t.booking.contact.loading
+              : t.booking.summary.continue}
+          </Button>
+        </>
+      )}
+
+      {/* Only show tabs if user is NOT authenticated */}
+      {!isAuthenticated && (
+        <Tabs defaultValue="guest" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="guest">{t.booking.contact.guestTab}</TabsTrigger>
+            <TabsTrigger value="login">{t.booking.contact.loginTab}</TabsTrigger>
+          </TabsList>
+
+          {/* Tab 1: Guest user / No account */}
+          <TabsContent value="guest" className="space-y-4">
+            {/* Error message display */}
+            {error && (
+              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+                {error}
+              </div>
+            )}
+
+            {/* Contact form for guest users */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">
+                    {t.booking.contact.firstName}
+                  </Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    placeholder={t.booking.contact.placeholders.firstName}
+                    value={formData.firstName}
+                    onChange={(e) => updateField("firstName", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">{t.booking.contact.lastName}</Label>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    placeholder={t.booking.contact.placeholders.lastName}
+                    value={formData.lastName}
+                    onChange={(e) => updateField("lastName", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">{t.booking.contact.phoneNumber}</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder={t.booking.contact.placeholders.phone}
+                    value={formData.phone}
+                    onChange={(e) => updateField("phone", e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">
+                    {t.booking.contact.emailAddress}
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder={t.booking.contact.placeholders.email}
+                    value={formData.email}
+                    onChange={(e) => updateField("email", e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* TODO: ANALIZAR FLUJO DE CREACIÓN DE CUENTA
+               * Consideraciones:
+               * 1. ¿El checkbox "crear cuenta" debe ser la única forma de crear cuenta con email/password?
+               * 2. ¿Qué pasa si el usuario quiere crear cuenta con Google/Apple?
+               *    - Opción A: Los botones de arriba pueden crear cuenta automáticamente (sin checkbox)
+               *    - Opción B: Mostrar un modal/popup para no perder el progreso del usuario
+               * 3. ¿Necesitamos distinguir entre "continuar como invitado" vs "crear cuenta"?
+               * 4. ¿El flujo de Google/Apple debe preservar los datos ya ingresados en el formulario?
+               *
+               * Flujo actual:
+               * - Checkbox desmarcado + no autenticado = continuar como invitado
+               * - Checkbox marcado = crear cuenta con email/password (requiere contraseña)
+               * - Botones sociales arriba = ¿crear cuenta o solo login? (por definir)
+               */}
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="createAccount"
+                  checked={formData.createAccount}
+                  onCheckedChange={(checked) =>
+                    updateField("createAccount", checked === true)
+                  }
+                />
+                <Label
+                  htmlFor="createAccount"
+                  className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {t.booking.contact.createAccountOption}
+                </Label>
+              </div>
+
+              {formData.createAccount && (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="password">
+                      {t.booking.contact.currentPassword}
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder={t.booking.contact.placeholders.password}
+                      value={formData.password}
+                      onChange={(e) => updateField("password", e.target.value)}
+                      required={formData.createAccount}
+                      minLength={6}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t.booking.contact.passwordHelp}
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">
+                      {t.booking.contact.confirmPassword}
+                    </Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder={t.booking.contact.placeholders.password}
+                      value={formData.confirmPassword}
+                      onChange={(e) =>
+                        updateField("confirmPassword", e.target.value)
+                      }
+                      required={formData.createAccount}
+                      minLength={6}
+                    />
+                  </div>
+                </div>
+              )}
+
               <Button
-                variant="outline"
+                type="submit"
                 className="w-full"
-                onClick={handleLoginClick}
+                size="lg"
+                disabled={isSubmitting}
               >
-                {t.auth.login}
+                {isSubmitting
+                  ? t.booking.contact.loading
+                  : t.booking.summary.continue}
               </Button>
+            </form>
+          </TabsContent>
+
+          {/* Tab 2: Login / I have an account */}
+          <TabsContent value="login" className="space-y-4">
+            {/* Error message display */}
+            {error && (
+              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="loginEmail">
+                  {t.booking.contact.emailAddress}
+                </Label>
+                <Input
+                  id="loginEmail"
+                  type="email"
+                  placeholder={t.booking.contact.placeholders.email}
+                  value={formData.email}
+                  onChange={(e) => updateField("email", e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="loginPassword">
+                  {t.booking.contact.currentPassword}
+                </Label>
+                <Input
+                  id="loginPassword"
+                  type="password"
+                  placeholder={t.booking.contact.placeholders.password}
+                  value={formData.password}
+                  onChange={(e) => updateField("password", e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? t.booking.contact.loading : t.auth.login}
+              </Button>
+
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-muted/50 px-2 text-muted-foreground">
+                  <span className="bg-background px-2 text-muted-foreground">
                     {t.auth.orContinueWith}
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSocialLogin("Google")}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="mr-2 h-4 w-4"
-                  >
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Google
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSocialLogin("Apple")}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="mr-2 h-4 w-4"
-                  >
-                    <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Apple
-                </Button>
-              </div>
-            </div>
-          </div>
 
-          <Separator />
-        </>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="fullName">{t.booking.contact.fullName}</Label>
-            <Input
-              id="fullName"
-              type="text"
-              placeholder={t.booking.contact.placeholders.fullName}
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="phone">{t.booking.contact.phoneNumber}</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder={t.booking.contact.placeholders.phone}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">{t.booking.contact.emailAddress}</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder={t.booking.contact.placeholders.email}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-
-        {!isAuthenticated && (
-          <>
-            {/* TODO: ANALIZAR FLUJO DE CREACIÓN DE CUENTA
-             * Consideraciones:
-             * 1. ¿El checkbox "crear cuenta" debe ser la única forma de crear cuenta con email/password?
-             * 2. ¿Qué pasa si el usuario quiere crear cuenta con Google/Apple?
-             *    - Opción A: Los botones de arriba pueden crear cuenta automáticamente (sin checkbox)
-             *    - Opción B: Mostrar un modal/popup para no perder el progreso del usuario
-             * 3. ¿Necesitamos distinguir entre "continuar como invitado" vs "crear cuenta"?
-             * 4. ¿El flujo de Google/Apple debe preservar los datos ya ingresados en el formulario?
-             *
-             * Flujo actual:
-             * - Checkbox desmarcado + no autenticado = continuar como invitado
-             * - Checkbox marcado = crear cuenta con email/password (requiere contraseña)
-             * - Botones sociales arriba = ¿crear cuenta o solo login? (por definir)
-             */}
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="createAccount"
-                checked={createAccount}
-                onCheckedChange={(checked) =>
-                  setCreateAccount(checked === true)
-                }
-              />
-              <Label
-                htmlFor="createAccount"
-                className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => handleSocialLogin("Google")}
               >
-                {t.booking.contact.createAccountOption}
-              </Label>
-            </div>
-
-            {createAccount && (
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="password">
-                    {t.booking.contact.currentPassword}
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder={t.booking.contact.placeholders.password}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required={createAccount}
-                    minLength={6}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  className="mr-2 h-4 w-4"
+                >
+                  <path
+                    d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                    fill="currentColor"
                   />
-                  <p className="text-xs text-muted-foreground">
-                    {t.booking.contact.passwordHelp}
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">
-                    {t.booking.contact.confirmPassword}
-                  </Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder={t.booking.contact.placeholders.password}
-                    required={createAccount}
-                    minLength={6}
-                  />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        <Button type="submit" className="w-full" size="lg">
-          {t.booking.summary.continue}
-        </Button>
-      </form>
+                </svg>
+                Google
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 }

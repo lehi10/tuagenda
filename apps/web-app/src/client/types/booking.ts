@@ -76,11 +76,13 @@ export interface TimeSlot {
  * Client information for booking
  */
 export interface ClientInfo {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   password?: string;
   createAccount: boolean;
+  userId?: string; // User ID for guest or authenticated users
 }
 
 /**

@@ -88,6 +88,17 @@ export const changePasswordSchema = z
   });
 
 /**
+ * Schema for creating a guest user (no authentication)
+ */
+export const createGuestUserSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  firstName: z.string().min(1, "First name is required").max(255),
+  lastName: z.string().min(1, "Last name is required").max(255),
+  phone: z.string().max(63).nullable().optional(),
+  countryCode: z.string().max(10).nullable().optional(),
+});
+
+/**
  * Type inference from the schemas
  * Use these types throughout your application for type safety
  */
@@ -97,3 +108,4 @@ export type UpdateProfilePersonalInfoInput = z.infer<
   typeof updateProfilePersonalInfoSchema
 >;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+export type CreateGuestUserInput = z.infer<typeof createGuestUserSchema>;

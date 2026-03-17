@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, publicProcedure } from "../procedures";
 import {
   GetUserUseCase,
   CreateUserUseCase,
@@ -10,6 +10,7 @@ import {
   DeleteUserUseCase,
   GetAllUsersUseCase,
   SearchUsersUseCase,
+  CreateGuestUserUseCase,
 } from "@/server/core/application/use-cases/user";
 import { UserType, UserStatus } from "@/server/core/domain/entities/User";
 import { PrismaUserRepository } from "@/server/infrastructure/repositories";
@@ -73,6 +74,8 @@ export const userRouter = router({
         firstName: z.string().min(1, "First name is required"),
         lastName: z.string(),
         pictureFullPath: z.string().url().nullish(),
+        phone: z.string().nullish(),
+        countryCode: z.string().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -91,6 +94,8 @@ export const userRouter = router({
         ...input,
         firstName: input.firstName.substring(0, 255),
         lastName: input.lastName.substring(0, 255),
+        phone: input.phone || null,
+        countryCode: input.countryCode || null,
       };
 
       const result = await createUserUseCase.execute(truncatedData);
@@ -263,5 +268,37 @@ export const userRouter = router({
       }
 
       return { users: result.users || [] };
+    }),
+
+  /**
+   * Create or find guest user (PUBLIC - for booking flow)
+   * Creates a guest user if doesn't exist, or returns existing guest user
+   */
+  createGuest: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        firstName: z.string().min(1).max(255),
+        lastName: z.string().min(1).max(255),
+        phone: z.string().max(63).nullable().optional(),
+        countryCode: z.string().max(10).nullable().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const userRepository = new PrismaUserRepository();
+      const createGuestUserUseCase = new CreateGuestUserUseCase(userRepository);
+
+      try {
+        const user = await createGuestUserUseCase.execute(input);
+        return { user };
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            error instanceof Error
+              ? error.message
+              : "Failed to create guest user",
+        });
+      }
     }),
 });

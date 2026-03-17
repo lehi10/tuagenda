@@ -96,6 +96,20 @@ export interface IUserRepository {
    * @returns void
    */
   updateAdmin(_userId: string, _data: UpdateUserAdminData): Promise<void>;
+
+  /**
+   * Find a guest user by email
+   * @param email - User email
+   * @returns Guest user entity or null if not found or user is registered
+   */
+  findGuestByEmail(_email: string): Promise<User | null>;
+
+  /**
+   * Check if a guest user exists by email
+   * @param email - Email to check
+   * @returns true if guest user exists, false otherwise
+   */
+  guestEmailExists(_email: string): Promise<boolean>;
 }
 
 /**

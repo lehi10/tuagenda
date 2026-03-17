@@ -45,3 +45,8 @@ export {
   type UpdateUserAdminInput,
   type UpdateUserAdminResult,
 } from "./UpdateUserAdmin";
+
+export {
+  CreateGuestUserUseCase,
+  type CreateGuestUserInput,
+} from "./CreateGuestUser";

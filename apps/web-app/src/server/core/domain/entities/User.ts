@@ -21,7 +21,7 @@ export enum UserType {
 }
 
 export interface UserProps {
-  id: string; // Firebase UID
+  id: string; // Firebase UID for registered users, UUID for guests
   email: string;
   firstName: string;
   lastName: string;
@@ -34,6 +34,9 @@ export interface UserProps {
   description?: string | null;
   pictureFullPath?: string | null;
   timeZone?: string | null;
+  isGuest?: boolean;
+  guestCreatedAt?: Date | null;
+  convertedAt?: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -58,6 +61,9 @@ export class User {
   private _description: string | null;
   private _pictureFullPath: string | null;
   private _timeZone: string | null;
+  private _isGuest: boolean;
+  private _guestCreatedAt: Date | null;
+  private _convertedAt: Date | null;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
 
@@ -89,6 +95,9 @@ export class User {
     this._description = props.description || null;
     this._pictureFullPath = props.pictureFullPath || null;
     this._timeZone = props.timeZone || null;
+    this._isGuest = props.isGuest || false;
+    this._guestCreatedAt = props.guestCreatedAt || null;
+    this._convertedAt = props.convertedAt || null;
     this._createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -156,6 +165,18 @@ export class User {
 
   get updatedAt(): Date {
     return this._updatedAt;
+  }
+
+  get isGuest(): boolean {
+    return this._isGuest;
+  }
+
+  get guestCreatedAt(): Date | null {
+    return this._guestCreatedAt;
+  }
+
+  get convertedAt(): Date | null {
+    return this._convertedAt;
   }
 
   // Business Logic Methods
@@ -343,6 +364,60 @@ export class User {
     this.touch();
   }
 
+  /**
+   * Check if user is a guest (no login credentials)
+   */
+  isGuestUser(): boolean {
+    return this._isGuest;
+  }
+
+  /**
+   * Check if user is registered (has login credentials)
+   */
+  isRegisteredUser(): boolean {
+    return !this._isGuest;
+  }
+
+  /**
+   * Convert guest user to registered user
+   * This should be called when a guest creates an account
+   */
+  convertToRegistered(firebaseUid: string): void {
+    if (!this._isGuest) {
+      throw new Error("User is already registered");
+    }
+    if (!firebaseUid || firebaseUid.trim() === "") {
+      throw new Error("Firebase UID is required for registered users");
+    }
+
+    // Note: The ID change must be handled at the repository level
+    // This method only updates the flags
+    this._isGuest = false;
+    this._convertedAt = new Date();
+    this.touch();
+  }
+
+  /**
+   * Create a guest user (factory method)
+   */
+  static createGuest(props: {
+    id: string; // UUID
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    countryCode?: string;
+  }): User {
+    return new User({
+      ...props,
+      lastName: props.lastName || "",
+      isGuest: true,
+      guestCreatedAt: new Date(),
+      type: UserType.CUSTOMER,
+      status: UserStatus.VISIBLE,
+    });
+  }
+
   // Private helper methods
 
   private isValidEmail(email: string): boolean {
@@ -372,6 +447,9 @@ export class User {
       description: this._description,
       pictureFullPath: this._pictureFullPath,
       timeZone: this._timeZone,
+      isGuest: this._isGuest,
+      guestCreatedAt: this._guestCreatedAt,
+      convertedAt: this._convertedAt,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
     };

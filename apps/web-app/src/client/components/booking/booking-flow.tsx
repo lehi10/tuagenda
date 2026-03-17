@@ -128,12 +128,7 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
         );
 
       case "client-info":
-        return (
-          <ClientInfoStep
-            onContinue={updateClientInfo}
-            isAuthenticated={isAuthenticated}
-          />
-        );
+        return <ClientInfoStep onContinue={updateClientInfo} />;
 
       case "payment":
         return (

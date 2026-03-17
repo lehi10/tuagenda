@@ -29,6 +29,9 @@ export class UserMapper {
       description: prismaUser.description,
       pictureFullPath: prismaUser.pictureFullPath,
       timeZone: prismaUser.timeZone,
+      isGuest: prismaUser.isGuest,
+      guestCreatedAt: prismaUser.guestCreatedAt,
+      convertedAt: prismaUser.convertedAt,
       createdAt: prismaUser.createdAt,
       updatedAt: prismaUser.updatedAt,
     });
@@ -53,6 +56,9 @@ export class UserMapper {
       description: userObj.description,
       pictureFullPath: userObj.pictureFullPath,
       timeZone: userObj.timeZone,
+      isGuest: userObj.isGuest,
+      guestCreatedAt: userObj.guestCreatedAt,
+      convertedAt: userObj.convertedAt,
     };
   }
 
@@ -74,6 +80,9 @@ export class UserMapper {
       description: userObj.description,
       pictureFullPath: userObj.pictureFullPath,
       timeZone: userObj.timeZone,
+      isGuest: userObj.isGuest,
+      guestCreatedAt: userObj.guestCreatedAt,
+      convertedAt: userObj.convertedAt,
       updatedAt: new Date(),
     };
   }

@@ -296,4 +296,36 @@ export class PrismaUserRepository implements IUserRepository {
       data: updateData,
     });
   }
+
+  /**
+   * Find a guest user by email
+   */
+  async findGuestByEmail(email: string): Promise<User | null> {
+    const prismaUser = await prisma.user.findFirst({
+      where: {
+        email,
+        isGuest: true,
+      },
+    });
+
+    if (!prismaUser) {
+      return null;
+    }
+
+    return UserMapper.toDomain(prismaUser);
+  }
+
+  /**
+   * Check if a guest user exists by email
+   */
+  async guestEmailExists(email: string): Promise<boolean> {
+    const count = await prisma.user.count({
+      where: {
+        email,
+        isGuest: true,
+      },
+    });
+
+    return count > 0;
+  }
 }
