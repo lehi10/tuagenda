@@ -29,7 +29,7 @@ interface ClientInfoStepProps {
 
 export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
   const { t } = useTranslation();
-  const { user, loading: authLoading, signUp, refreshUser } = useAuth();
+  const { user, loading: authLoading, signUp, signIn, signInWithGoogle, refreshUser } = useAuth();
   const createGuestMutation = useTrpc.user.createGuest.useMutation();
   const createUserMutation = useTrpc.user.create.useMutation();
 
@@ -45,6 +45,7 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"guest" | "login">("guest");
 
   // Auto-fill data if user is authenticated
   useEffect(() => {
@@ -85,6 +86,25 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
           createAccount: false,
           userId: user.id,
         });
+        return;
+      }
+
+      // If we're in the login tab, handle login
+      if (activeTab === "login") {
+        // Validate we have email and password
+        if (!formData.email || !formData.password) {
+          setError(t.auth.errors.invalidCredentials || "Please enter email and password");
+          return;
+        }
+
+        // Login with email/password
+        await signIn({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        // The auth context will automatically update and the component will re-render
+        // with the authenticated user, so we don't call onContinue here
         return;
       }
 
@@ -153,14 +173,29 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
     }
   };
 
-  const handleLoginClick = () => {
-    // TODO: Implement login modal/redirect
-    console.log("Login clicked");
-  };
+  const handleSocialLogin = async (provider: string) => {
+    if (provider !== "Google") {
+      setError(`${provider} login not implemented yet`);
+      return;
+    }
 
-  const handleSocialLogin = (provider: string) => {
-    // TODO: Implement social login
-    console.log(`${provider} login clicked`);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Sign in with Google
+      await signInWithGoogle();
+
+      // The auth context will automatically update and the component will re-render
+      // with the authenticated user
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : t.auth.errors.signInFailed || "Failed to sign in with Google";
+      setError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isAuthenticated = !!user;
@@ -249,7 +284,14 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
       {/* Only show tabs if user is NOT authenticated */}
       {!isAuthenticated && (
-        <Tabs defaultValue="guest" className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => {
+            setActiveTab(value as "guest" | "login");
+            setError(null); // Clear errors when switching tabs
+          }}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="guest">
               {t.booking.contact.guestTab}

@@ -107,6 +107,7 @@ export const es: Translations = {
         "Error al registrarse con Google. Por favor intenta de nuevo.",
       passwordsDoNotMatch: "Las contraseñas no coinciden",
       passwordTooShort: "La contraseña debe tener al menos 6 caracteres",
+      invalidCredentials: "Correo o contraseña inválidos",
     },
     messages: {
       signingInWithGoogle: "Iniciando sesión con Google...",

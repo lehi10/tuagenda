@@ -102,6 +102,7 @@ export const en = {
       googleSignUpFailed: "Failed to sign up with Google. Please try again.",
       passwordsDoNotMatch: "Passwords do not match",
       passwordTooShort: "Password must be at least 6 characters",
+      invalidCredentials: "Invalid email or password",
     },
     messages: {
       signingInWithGoogle: "Signing in with Google...",
