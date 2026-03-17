@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import { prisma } from "db";
 import type { IEmployeeExceptionRepository } from "@/server/core/domain/repositories/IEmployeeExceptionRepository";
 import type { EmployeeException } from "@/server/core/domain/entities";
 import { EmployeeExceptionMapper } from "../mappers/EmployeeExceptionMapper";
@@ -6,17 +6,15 @@ import { EmployeeExceptionMapper } from "../mappers/EmployeeExceptionMapper";
 export class PrismaEmployeeExceptionRepository
   implements IEmployeeExceptionRepository
 {
-  constructor(private readonly prisma: PrismaClient) {}
-
   async create(exception: EmployeeException): Promise<EmployeeException> {
     const data = EmployeeExceptionMapper.toPrisma(exception);
-    const created = await this.prisma.employeeException.create({ data });
+    const created = await prisma.employeeException.create({ data });
     return EmployeeExceptionMapper.toDomain(created);
   }
 
   async update(exception: EmployeeException): Promise<EmployeeException> {
     const data = EmployeeExceptionMapper.toPrisma(exception);
-    const updated = await this.prisma.employeeException.update({
+    const updated = await prisma.employeeException.update({
       where: { id: exception.id },
       data,
     });
@@ -24,18 +22,18 @@ export class PrismaEmployeeExceptionRepository
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.employeeException.delete({ where: { id } });
+    await prisma.employeeException.delete({ where: { id } });
   }
 
   async findById(id: string): Promise<EmployeeException | null> {
-    const found = await this.prisma.employeeException.findUnique({
+    const found = await prisma.employeeException.findUnique({
       where: { id },
     });
     return found ? EmployeeExceptionMapper.toDomain(found) : null;
   }
 
   async findByEmployee(businessUserId: string): Promise<EmployeeException[]> {
-    const found = await this.prisma.employeeException.findMany({
+    const found = await prisma.employeeException.findMany({
       where: { businessUserId },
       orderBy: { date: "desc" },
     });
@@ -46,7 +44,7 @@ export class PrismaEmployeeExceptionRepository
     businessUserId: string,
     date: Date
   ): Promise<EmployeeException[]> {
-    const found = await this.prisma.employeeException.findMany({
+    const found = await prisma.employeeException.findMany({
       where: { businessUserId, date },
       orderBy: { startTime: "asc" },
     });
@@ -58,7 +56,7 @@ export class PrismaEmployeeExceptionRepository
     startDate: Date,
     endDate: Date
   ): Promise<EmployeeException[]> {
-    const found = await this.prisma.employeeException.findMany({
+    const found = await prisma.employeeException.findMany({
       where: {
         businessUserId,
         date: {
@@ -72,7 +70,7 @@ export class PrismaEmployeeExceptionRepository
   }
 
   async deleteByEmployee(businessUserId: string): Promise<void> {
-    await this.prisma.employeeException.deleteMany({
+    await prisma.employeeException.deleteMany({
       where: { businessUserId },
     });
   }

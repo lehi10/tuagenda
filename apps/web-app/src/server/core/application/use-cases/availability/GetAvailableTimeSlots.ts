@@ -328,7 +328,9 @@ export class GetAvailableTimeSlotsUseCase {
         // If exception is a block (isAvailable = false)
         if (!exception.isAvailable) {
           // Check if slot overlaps with blocked period
-          if (this.timesOverlap(slotStart, slotEnd, exceptionStart, exceptionEnd)) {
+          if (
+            this.timesOverlap(slotStart, slotEnd, exceptionStart, exceptionEnd)
+          ) {
             return false;
           }
         }

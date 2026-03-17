@@ -4,9 +4,8 @@ import { privateProcedure } from "../procedures";
 import { PrismaEmployeeAvailabilityRepository } from "@/server/infrastructure/repositories/PrismaEmployeeAvailabilityRepository";
 import { EmployeeAvailability } from "@/server/core/domain/entities";
 import { randomUUID } from "crypto";
-import { prisma } from "db";
 
-const availabilityRepository = new PrismaEmployeeAvailabilityRepository(prisma);
+const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
 
 export const employeeAvailabilityRouter = router({
   getByEmployee: privateProcedure

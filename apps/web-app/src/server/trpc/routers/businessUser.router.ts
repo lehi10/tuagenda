@@ -29,7 +29,6 @@ import {
 } from "@/server/core/application/use-cases/business-user";
 import { GetAvailableTimeSlotsUseCase } from "@/server/core/application/use-cases/availability";
 import { BusinessRole } from "@/server/core/domain/entities";
-import { prisma } from "db";
 
 export const businessUserRouter = router({
   /**
@@ -294,10 +293,9 @@ export const businessUserRouter = router({
     )
     .query(async ({ input }) => {
       const employeeAvailabilityRepository =
-        new PrismaEmployeeAvailabilityRepository(prisma);
-      const employeeExceptionRepository = new PrismaEmployeeExceptionRepository(
-        prisma
-      );
+        new PrismaEmployeeAvailabilityRepository();
+      const employeeExceptionRepository =
+        new PrismaEmployeeExceptionRepository();
       const appointmentRepository = new PrismaAppointmentRepository();
       const serviceRepository = new PrismaServiceRepository();
 

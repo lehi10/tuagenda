@@ -4,9 +4,8 @@ import { privateProcedure } from "../procedures";
 import { PrismaEmployeeExceptionRepository } from "@/server/infrastructure/repositories/PrismaEmployeeExceptionRepository";
 import { EmployeeException } from "@/server/core/domain/entities";
 import { randomUUID } from "crypto";
-import { prisma } from "db";
 
-const exceptionRepository = new PrismaEmployeeExceptionRepository(prisma);
+const exceptionRepository = new PrismaEmployeeExceptionRepository();
 
 export const employeeExceptionRouter = router({
   getByEmployee: privateProcedure

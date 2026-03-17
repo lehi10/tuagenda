@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import { prisma } from "db";
 import type { IEmployeeAvailabilityRepository } from "@/server/core/domain/repositories/IEmployeeAvailabilityRepository";
 import type { EmployeeAvailability } from "@/server/core/domain/entities";
 import { EmployeeAvailabilityMapper } from "../mappers/EmployeeAvailabilityMapper";
@@ -6,13 +6,11 @@ import { EmployeeAvailabilityMapper } from "../mappers/EmployeeAvailabilityMappe
 export class PrismaEmployeeAvailabilityRepository
   implements IEmployeeAvailabilityRepository
 {
-  constructor(private readonly prisma: PrismaClient) {}
-
   async create(
     availability: EmployeeAvailability
   ): Promise<EmployeeAvailability> {
     const data = EmployeeAvailabilityMapper.toPrisma(availability);
-    const created = await this.prisma.employeeAvailability.create({ data });
+    const created = await prisma.employeeAvailability.create({ data });
     return EmployeeAvailabilityMapper.toDomain(created);
   }
 
@@ -20,7 +18,7 @@ export class PrismaEmployeeAvailabilityRepository
     availability: EmployeeAvailability
   ): Promise<EmployeeAvailability> {
     const data = EmployeeAvailabilityMapper.toPrisma(availability);
-    const updated = await this.prisma.employeeAvailability.update({
+    const updated = await prisma.employeeAvailability.update({
       where: { id: availability.id },
       data,
     });
@@ -28,11 +26,11 @@ export class PrismaEmployeeAvailabilityRepository
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.employeeAvailability.delete({ where: { id } });
+    await prisma.employeeAvailability.delete({ where: { id } });
   }
 
   async findById(id: string): Promise<EmployeeAvailability | null> {
-    const found = await this.prisma.employeeAvailability.findUnique({
+    const found = await prisma.employeeAvailability.findUnique({
       where: { id },
     });
     return found ? EmployeeAvailabilityMapper.toDomain(found) : null;
@@ -41,7 +39,7 @@ export class PrismaEmployeeAvailabilityRepository
   async findByEmployee(
     businessUserId: string
   ): Promise<EmployeeAvailability[]> {
-    const found = await this.prisma.employeeAvailability.findMany({
+    const found = await prisma.employeeAvailability.findMany({
       where: { businessUserId },
       orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }],
     });
@@ -52,7 +50,7 @@ export class PrismaEmployeeAvailabilityRepository
     businessUserId: string,
     dayOfWeek: number
   ): Promise<EmployeeAvailability[]> {
-    const found = await this.prisma.employeeAvailability.findMany({
+    const found = await prisma.employeeAvailability.findMany({
       where: { businessUserId, dayOfWeek },
       orderBy: { startTime: "asc" },
     });
@@ -60,7 +58,7 @@ export class PrismaEmployeeAvailabilityRepository
   }
 
   async deleteByEmployee(businessUserId: string): Promise<void> {
-    await this.prisma.employeeAvailability.deleteMany({
+    await prisma.employeeAvailability.deleteMany({
       where: { businessUserId },
     });
   }
@@ -71,7 +69,7 @@ export class PrismaEmployeeAvailabilityRepository
     availabilities: EmployeeAvailability[]
   ): Promise<EmployeeAvailability[]> {
     // Delete existing availabilities and create new ones in a transaction
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       await tx.employeeAvailability.deleteMany({
         where: { businessUserId },
       });
