@@ -139,7 +139,7 @@ export function ServiceFormModal({
     const minutesNum = minutes ? parseInt(minutes, 10) : 0;
     const totalMinutes = hoursNum * 60 + minutesNum;
 
-    if (totalMinutes <= 0) {
+    if (hoursNum === 0 && minutesNum === 0) {
       setError("La duracion debe ser mayor a 0");
       return;
     }
@@ -203,6 +203,108 @@ export function ServiceFormModal({
   const assignedEmployeeIds =
     serviceEmployeesData?.employees.map((e) => e.id) || [];
 
+  const renderServiceForm = () => (
+    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="service-name">Nombre *</Label>
+        <Input
+          id="service-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Ej: Corte clasico"
+          maxLength={255}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="service-description">Descripcion</Label>
+        <Textarea
+          id="service-description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Descripcion opcional del servicio"
+          rows={3}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="service-price">Precio *</Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+            $
+          </span>
+          <Input
+            id="service-price"
+            type="number"
+            step="0.01"
+            min="0"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder="0.00"
+            className="pl-7"
+            disabled={isSubmitting}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Duracion *</Label>
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <div className="relative">
+              <Input
+                type="number"
+                min="0"
+                max="24"
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="0"
+                disabled={isSubmitting}
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                horas
+              </span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="relative">
+              <Input
+                type="number"
+                min="0"
+                max="59"
+                value={minutes}
+                onChange={(e) => setMinutes(e.target.value)}
+                placeholder="30"
+                disabled={isSubmitting}
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                min
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="space-y-0.5">
+          <Label>Estado</Label>
+          <p className="text-xs text-muted-foreground">
+            Los servicios inactivos no se muestran a clientes
+          </p>
+        </div>
+        <Switch
+          checked={active}
+          onCheckedChange={setActive}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </div>
+  );
+
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
@@ -235,107 +337,7 @@ export function ServiceFormModal({
                   onSubmit={handleSubmit}
                   className="flex flex-col flex-1 overflow-hidden"
                 >
-                  <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="service-name">Nombre *</Label>
-                      <Input
-                        id="service-name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Ej: Corte clasico"
-                        maxLength={255}
-                        disabled={isSubmitting}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="service-description">Descripcion</Label>
-                      <Textarea
-                        id="service-description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Descripcion opcional del servicio"
-                        rows={3}
-                        disabled={isSubmitting}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="service-price">Precio *</Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                          $
-                        </span>
-                        <Input
-                          id="service-price"
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          value={price}
-                          onChange={(e) => setPrice(e.target.value)}
-                          placeholder="0.00"
-                          className="pl-7"
-                          disabled={isSubmitting}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Duracion *</Label>
-                      <div className="flex gap-2">
-                        <div className="flex-1">
-                          <div className="relative">
-                            <Input
-                              type="number"
-                              min="0"
-                              max="24"
-                              value={hours}
-                              onChange={(e) => setHours(e.target.value)}
-                              placeholder="0"
-                              disabled={isSubmitting}
-                            />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                              horas
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex-1">
-                          <div className="relative">
-                            <Input
-                              type="number"
-                              min="0"
-                              max="59"
-                              value={minutes}
-                              onChange={(e) => setMinutes(e.target.value)}
-                              placeholder="30"
-                              disabled={isSubmitting}
-                            />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                              min
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <Label>Estado</Label>
-                        <p className="text-xs text-muted-foreground">
-                          Los servicios inactivos no se muestran a clientes
-                        </p>
-                      </div>
-                      <Switch
-                        checked={active}
-                        onCheckedChange={setActive}
-                        disabled={isSubmitting}
-                      />
-                    </div>
-
-                    {error && (
-                      <p className="text-sm text-destructive">{error}</p>
-                    )}
-                  </div>
+                  {renderServiceForm()}
 
                   <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
                     <Button
@@ -442,105 +444,7 @@ export function ServiceFormModal({
               onSubmit={handleSubmit}
               className="flex flex-col flex-1 overflow-hidden"
             >
-              <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="service-name">Nombre *</Label>
-                  <Input
-                    id="service-name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Ej: Corte clasico"
-                    maxLength={255}
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="service-description">Descripcion</Label>
-                  <Textarea
-                    id="service-description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Descripcion opcional del servicio"
-                    rows={3}
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="service-price">Precio *</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      $
-                    </span>
-                    <Input
-                      id="service-price"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      placeholder="0.00"
-                      className="pl-7"
-                      disabled={isSubmitting}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Duracion *</Label>
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="24"
-                          value={hours}
-                          onChange={(e) => setHours(e.target.value)}
-                          placeholder="0"
-                          disabled={isSubmitting}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                          horas
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="relative">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="59"
-                          value={minutes}
-                          onChange={(e) => setMinutes(e.target.value)}
-                          placeholder="30"
-                          disabled={isSubmitting}
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                          min
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Estado</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Los servicios inactivos no se muestran a clientes
-                    </p>
-                  </div>
-                  <Switch
-                    checked={active}
-                    onCheckedChange={setActive}
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                {error && <p className="text-sm text-destructive">{error}</p>}
-              </div>
+              {renderServiceForm()}
 
               <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
                 <Button
