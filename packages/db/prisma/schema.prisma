@@ -83,7 +83,7 @@ model Business {
 }
 
 model User {
-  id              String     @id // Firebase UID
+  id              String     @id // Firebase UID for registered users, UUID for guests
   status          UserStatus @default(visible)
   type            UserType   @default(customer)
   firstName       String     @db.VarChar(255)
@@ -96,6 +96,9 @@ model User {
   description     String?    @db.Text
   pictureFullPath String?    @db.Text
   timeZone        String?    @db.VarChar(255)
+  isGuest         Boolean    @default(false) @map("is_guest") // true = guest user (no login), false = registered user
+  guestCreatedAt  DateTime?  @map("guest_created_at") // When created as guest
+  convertedAt     DateTime?  @map("converted_at") // When converted from guest to registered
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
