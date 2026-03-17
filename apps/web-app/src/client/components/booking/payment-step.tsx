@@ -5,14 +5,19 @@ import { Button } from "@/client/components/ui/button";
 import { CreditCard, Smartphone, Store } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
 import { SelectableCard } from "@/client/components/booking/shared/selectable-card";
-import type { PaymentMethod } from "@/client/types/booking";
+import { useTrpc } from "@/client/lib/trpc";
+import type { PaymentMethod, BookingData } from "@/client/types/booking";
 
 interface PaymentStepProps {
-  onContinue: (_method: PaymentMethod) => void;
+  bookingData: BookingData;
+  businessId: string;
+  onContinue: (_appointmentId: string) => void;
   isInPerson?: boolean; // To show/hide onsite payment option
 }
 
 export function PaymentStep({
+  bookingData,
+  businessId,
   onContinue,
   isInPerson = true,
 }: PaymentStepProps) {
@@ -20,6 +25,8 @@ export function PaymentStep({
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
     null
   );
+  const [isCreating, setIsCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const paymentMethods = [
     {
@@ -47,9 +54,65 @@ export function PaymentStep({
 
   const availableMethods = paymentMethods.filter((method) => method.available);
 
-  const handleContinue = () => {
-    if (selectedMethod) {
-      onContinue(selectedMethod);
+  const createAppointmentMutation = useTrpc.appointment.create.useMutation();
+
+  const handleContinue = async () => {
+    if (!selectedMethod) {
+      return;
+    }
+
+    // Validate that we have all required booking data
+    if (
+      !bookingData.service ||
+      !bookingData.date ||
+      !bookingData.timeSlot ||
+      !bookingData.clientInfo
+    ) {
+      setError("Missing required booking information");
+      return;
+    }
+
+    setIsCreating(true);
+    setError(null);
+
+    try {
+      // Parse the time slot (format: "HH:mm")
+      const [hours, minutes] = bookingData.timeSlot.split(":").map(Number);
+
+      // Create start time by combining date and time slot
+      const startTime = new Date(bookingData.date);
+      startTime.setHours(hours, minutes, 0, 0);
+
+      // Calculate end time based on service duration
+      const endTime = new Date(startTime);
+      endTime.setMinutes(
+        startTime.getMinutes() + bookingData.service.durationMinutes
+      );
+
+      // Create the appointment
+      const result = await createAppointmentMutation.mutateAsync({
+        customerId: bookingData.clientInfo.userId!,
+        businessId: businessId,
+        serviceId: bookingData.service.id,
+        providerBusinessUserId: bookingData.professional?.id || null,
+        startTime: startTime.toISOString(),
+        endTime: endTime.toISOString(),
+        notes: null,
+        isGroup: false,
+        capacity: null,
+      });
+
+      // Continue to confirmation with the appointment ID
+      onContinue(result.appointment.id!);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to create appointment. Please try again."
+      );
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -62,6 +125,13 @@ export function PaymentStep({
         </h2>
         <p className="text-muted-foreground">{t.booking.payment.description}</p>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {availableMethods.map((method) => {
@@ -99,11 +169,13 @@ export function PaymentStep({
 
       <Button
         onClick={handleContinue}
-        disabled={!selectedMethod}
+        disabled={!selectedMethod || isCreating}
         className="w-full"
         size="lg"
       >
-        {t.booking.summary.continue}
+        {isCreating
+          ? t.booking.payment.creatingAppointment || "Creating appointment..."
+          : t.booking.payment.confirmAndBook || t.booking.summary.continue}
       </Button>
     </div>
   );

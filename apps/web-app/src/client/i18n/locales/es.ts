@@ -210,6 +210,8 @@ export const es: Translations = {
         wallet: "Billetera Digital",
         walletDescription: "Yape, Plin u otras billeteras",
       },
+      confirmAndBook: "Confirmar y Reservar",
+      creatingAppointment: "Creando cita...",
     },
     confirmation: {
       title: "¡Reserva Confirmada!",

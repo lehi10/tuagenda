@@ -10,11 +10,12 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, publicProcedure } from "../procedures";
 import { PrismaAppointmentRepository } from "@/server/infrastructure/repositories/PrismaAppointmentRepository";
 import {
   GetCustomerUpcomingAppointmentsUseCase,
   GetCustomerPastAppointmentsUseCase,
+  CreateAppointmentUseCase,
 } from "@/server/core/application/use-cases/appointment";
 
 export const appointmentRouter = router({
@@ -99,5 +100,54 @@ export const appointmentRouter = router({
       }
 
       return result.appointments || [];
+    }),
+
+  /**
+   * Create a new appointment (PUBLIC)
+   * This allows both authenticated and guest users to book appointments
+   */
+  create: publicProcedure
+    .input(
+      z.object({
+        customerId: z.string(), // Can be authenticated user ID or guest user ID
+        businessId: z.string().uuid(),
+        serviceId: z.string().uuid(),
+        providerBusinessUserId: z.string().uuid().nullable().optional(),
+        startTime: z.string().datetime(), // ISO string
+        endTime: z.string().datetime(), // ISO string
+        notes: z.string().nullable().optional(),
+        isGroup: z.boolean().optional(),
+        capacity: z.number().int().positive().nullable().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const appointmentRepository = new PrismaAppointmentRepository();
+      const createAppointmentUseCase = new CreateAppointmentUseCase(
+        appointmentRepository
+      );
+
+      try {
+        const appointment = await createAppointmentUseCase.execute({
+          customerId: input.customerId,
+          businessId: input.businessId,
+          serviceId: input.serviceId,
+          providerBusinessUserId: input.providerBusinessUserId || null,
+          startTime: new Date(input.startTime),
+          endTime: new Date(input.endTime),
+          notes: input.notes || null,
+          isGroup: input.isGroup || false,
+          capacity: input.capacity || null,
+        });
+
+        return { appointment };
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            error instanceof Error
+              ? error.message
+              : "Failed to create appointment",
+        });
+      }
     }),
 });

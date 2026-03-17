@@ -29,7 +29,14 @@ interface ClientInfoStepProps {
 
 export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
   const { t } = useTranslation();
-  const { user, loading: authLoading, signUp, signIn, signInWithGoogle, refreshUser } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    signUp,
+    signIn,
+    signInWithGoogle,
+    refreshUser,
+  } = useAuth();
   const createGuestMutation = useTrpc.user.createGuest.useMutation();
   const createUserMutation = useTrpc.user.create.useMutation();
 
@@ -93,7 +100,10 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
       if (activeTab === "login") {
         // Validate we have email and password
         if (!formData.email || !formData.password) {
-          setError(t.auth.errors.invalidCredentials || "Please enter email and password");
+          setError(
+            t.auth.errors.invalidCredentials ||
+              "Please enter email and password"
+          );
           return;
         }
 
@@ -191,7 +201,9 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
     } catch (error) {
       console.error("Error signing in with Google:", error);
       const errorMessage =
-        error instanceof Error ? error.message : t.auth.errors.signInFailed || "Failed to sign in with Google";
+        error instanceof Error
+          ? error.message
+          : t.auth.errors.signInFailed || "Failed to sign in with Google";
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);

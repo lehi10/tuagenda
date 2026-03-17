@@ -205,6 +205,8 @@ export const en = {
         wallet: "Digital Wallet",
         walletDescription: "Pay with digital wallets",
       },
+      confirmAndBook: "Confirm and Book",
+      creatingAppointment: "Creating appointment...",
     },
     confirmation: {
       title: "Booking Confirmed!",

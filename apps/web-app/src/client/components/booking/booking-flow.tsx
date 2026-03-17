@@ -42,6 +42,8 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
 
   const [isAuthenticated] = useState(false); // TODO: Get from auth context
 
+  const [appointmentId, setAppointmentId] = useState<string | null>(null);
+
   // Use the booking flow hook for state management
   const {
     bookingData,
@@ -133,7 +135,12 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
       case "payment":
         return (
           <PaymentStep
-            onContinue={updatePaymentMethod}
+            bookingData={bookingData}
+            businessId={businessId}
+            onContinue={(createdAppointmentId) => {
+              setAppointmentId(createdAppointmentId);
+              updatePaymentMethod("card"); // Placeholder, we already selected the method
+            }}
             isInPerson={true} // Default to in-person for now
           />
         );
