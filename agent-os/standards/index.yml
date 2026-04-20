@@ -1,0 +1,31 @@
+# Agent OS Standards Index
+
+architecture:
+  entity-structure:
+    description: Domain entity class structure — private fields, Props interface, constructor validation, touch(), toObject()/fromObject(), static factories
+  mapper-convention:
+    description: Mapper static methods (toDomain, toPrismaCreate, toPrismaUpdate, toDomainList) bridging Prisma models and domain entities
+  trpc-use-case-wiring:
+    description: tRPC router as composition root — inline repository and use case instantiation, .toObject() before returning
+  use-case-result:
+    description: Use case result shape — { success, data?, error? }, never throw, caller decides how to surface errors
+
+auth:
+  auth-service-interface:
+    description: Client auth singleton behind IAuthService — always use authService, never import FirebaseAuthService directly
+  authentication-flow:
+    description: Firebase token verified on every request via Bearer header — stateless, no server-side sessions
+  authorization-stub:
+    description: AuthorizationService.can() returns true for everything — authorization NOT implemented yet
+  guest-user-pattern:
+    description: Guest users (isGuest: true, UUID id) for booking without account — idempotent creation by email
+
+trpc:
+  router-structure:
+    description: One router per domain entity, all merged in app.router.ts — AppRouter type exported for client type safety
+  superjson-transformer:
+    description: Date/Map/Set survive serialization automatically — never convert manually. Decimal must use .toNumber()
+  token-auto-attach:
+    description: Firebase token auto-added as Bearer header on every request — never pass manually
+  trpc-clients:
+    description: Three clients — useTrpc (React hooks), trpc (imperative), serverTrpc (Server Components only)
