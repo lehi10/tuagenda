@@ -10,6 +10,7 @@ import { Badge } from "@/client/components/ui/badge";
 import type { Appointment } from "../types/appointment";
 import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import { formatInTz } from "@/client/lib/timezone-utils";
+import { useTranslation } from "@/client/i18n";
 
 export interface AppointmentDetailModalProps {
   appointment: Appointment | null;
@@ -23,6 +24,7 @@ export function AppointmentDetailModal({
   onOpenChange,
 }: AppointmentDetailModalProps) {
   const { timezone } = useBusinessTimezone();
+  const { t } = useTranslation();
 
   if (!appointment) return null;
 
@@ -63,7 +65,7 @@ export function AppointmentDetailModal({
 
         <div className="space-y-3">
           <div>
-            <p className="font-medium">Date & Time</p>
+            <p className="font-medium">{t.pages.calendar.dateAndTime}</p>
             <p className="text-sm text-muted-foreground">
               {formatInTz(startDate, timezone, "MMMM d, yyyy")} •{" "}
               {formatInTz(startDate, timezone, "h:mm a")} -{" "}
@@ -72,21 +74,21 @@ export function AppointmentDetailModal({
           </div>
 
           <div>
-            <p className="font-medium">Client</p>
+            <p className="font-medium">{t.pages.calendar.client}</p>
             <p className="text-sm text-muted-foreground">
               {appointment.client}
             </p>
           </div>
 
           <div>
-            <p className="font-medium">Service</p>
+            <p className="font-medium">{t.pages.calendar.service}</p>
             <p className="text-sm text-muted-foreground">
               {appointment.service}
             </p>
           </div>
 
           <div>
-            <p className="font-medium">Employee</p>
+            <p className="font-medium">{t.pages.calendar.employee}</p>
             <p className="text-sm text-muted-foreground">
               {appointment.employee}
             </p>
@@ -94,7 +96,7 @@ export function AppointmentDetailModal({
 
           {appointment.description && (
             <div className="pt-2 border-t">
-              <p className="font-medium">Description</p>
+              <p className="font-medium">{t.pages.calendar.description}</p>
               <p className="text-sm text-muted-foreground">
                 {appointment.description}
               </p>

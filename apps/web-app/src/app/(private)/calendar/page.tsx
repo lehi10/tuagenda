@@ -16,13 +16,13 @@ export default function CalendarPage() {
     useState<Appointment | null>(null);
 
   return (
-    <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
+    <div className="p-4 space-y-3 sm:p-6 sm:space-y-4">
       <div>
         <h1 className="text-xl font-bold sm:text-2xl">
           {t.pages.calendar.title}
         </h1>
-        <p className="text-xs text-muted-foreground sm:text-sm">
-          Manage your appointments and schedule
+        <p className="text-xs text-muted-foreground">
+          {t.pages.calendar.subtitle}
         </p>
       </div>
       <CalendarStats />

@@ -1,14 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/client/components/ui/card";
-import { Button } from "@/client/components/ui/button";
-import { Calendar, List } from "lucide-react";
+import { CardContent } from "@/client/components/ui/card";
 import { FullCalendarView } from "./full-calendar";
 import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import type { Appointment } from "../types/appointment";
@@ -24,12 +16,10 @@ export interface AppointmentsCalendarProps {
 }
 
 export function AppointmentsCalendar({
-  title,
   appointments,
   onAppointmentClick,
   onDateRangeSelect,
 }: AppointmentsCalendarProps) {
-  const [view, setView] = useState<"calendar" | "list">("calendar");
   const { timezone } = useBusinessTimezone();
   const events = appointmentsToEvents(appointments);
 
@@ -51,39 +41,15 @@ export function AppointmentsCalendar({
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle>{title}</CardTitle>
-        <div className="flex gap-1">
-          <Button
-            variant={view === "calendar" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("calendar")}
-            className="gap-2"
-          >
-            <Calendar className="h-4 w-4" />
-            <span className="hidden sm:inline">Calendario</span>
-          </Button>
-          <Button
-            variant={view === "list" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setView("list")}
-            className="gap-2"
-          >
-            <List className="h-4 w-4" />
-            <span className="hidden sm:inline">Lista</span>
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
+    <div className="sticky top-[58px] z-[8] rounded-xl border bg-card shadow-sm overflow-hidden">
+      <CardContent className="p-4 sm:p-6">
         <FullCalendarView
           events={events}
           timezone={timezone}
           onEventClick={handleEventClick}
           onDateSelect={handleDateSelect}
-          viewType={view}
         />
       </CardContent>
-    </Card>
+    </div>
   );
 }
