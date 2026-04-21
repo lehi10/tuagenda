@@ -227,7 +227,11 @@
 
 /* Today cell background */
 .fc .fc-daygrid-day.fc-day-today {
-  background-color: color-mix(in oklch, var(--primary) 8%, transparent) !important;
+  background-color: color-mix(
+    in oklch,
+    var(--primary) 8%,
+    transparent
+  ) !important;
 }
 
 /* Today day number circle */
@@ -393,7 +397,11 @@
 
 /* Today column in week view */
 .fc .fc-timegrid-col.fc-day-today {
-  background-color: color-mix(in oklch, var(--primary) 6%, transparent) !important;
+  background-color: color-mix(
+    in oklch,
+    var(--primary) 6%,
+    transparent
+  ) !important;
 }
 
 /* Events in week/day timegrid */
@@ -401,7 +409,7 @@
   position: absolute;
   border-radius: calc(var(--radius) - 2px);
   border-left-width: 3px !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .fc .fc-timegrid-event .fc-event-main {

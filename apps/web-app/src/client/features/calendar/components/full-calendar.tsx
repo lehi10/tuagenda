@@ -93,7 +93,9 @@ export function FullCalendarView({
               <span className="fc-week-header-weekday">
                 {args.date.toLocaleDateString(locale, { weekday: "short" })}
               </span>
-              <span className={`fc-week-header-number${isToday ? " fc-week-header-number--today" : ""}`}>
+              <span
+                className={`fc-week-header-number${isToday ? " fc-week-header-number--today" : ""}`}
+              >
                 {args.date.getDate()}
               </span>
             </div>
