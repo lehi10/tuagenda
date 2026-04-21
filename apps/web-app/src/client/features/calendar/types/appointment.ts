@@ -9,7 +9,7 @@ export interface Appointment {
   client: string;
   service: string;
   employee: string;
-  status: "pending" | "completed" | "cancelled";
+  status: "scheduled" | "confirmed" | "completed" | "cancelled";
   description?: string;
 }
 

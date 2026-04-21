@@ -6,6 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
+import luxonPlugin from "@fullcalendar/luxon3";
 import type { CalendarEvent } from "../types/appointment";
 import type { EventClickArg, DateSelectArg } from "@fullcalendar/core";
 import allLocales from "@fullcalendar/core/locales-all";
@@ -16,6 +17,7 @@ export interface FullCalendarProps {
   timezone?: string;
   onEventClick?: (_eventInfo: EventClickArg) => void;
   onDateSelect?: (_selectInfo: DateSelectArg) => void;
+  onDatesSet?: (_start: Date, _end: Date) => void;
 }
 
 export function FullCalendarView({
@@ -23,6 +25,7 @@ export function FullCalendarView({
   timezone = "UTC",
   onEventClick,
   onDateSelect,
+  onDatesSet,
 }: FullCalendarProps) {
   const { t, locale } = useTranslation();
   const [isMobile, setIsMobile] = useState(false);
@@ -36,13 +39,14 @@ export function FullCalendarView({
 
   return (
     <FullCalendar
-      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, luxonPlugin]}
       locales={allLocales}
       locale={locale}
       timeZone={timezone}
       events={events}
       eventClick={onEventClick}
       select={onDateSelect}
+      datesSet={(info) => onDatesSet?.(info.start, info.end)}
       selectable={true}
       allDaySlot={false}
       headerToolbar={
@@ -122,7 +126,7 @@ export function FullCalendarView({
       initialView={isMobile ? "listWeek" : "timeGridWeek"}
       dayMaxEvents={isMobile ? 2 : 3}
       eventContent={(eventInfo) => (
-        <div className="fc-event-inner">
+        <div className="fc-event-inner" title={eventInfo.event.title}>
           <span className="fc-event-inner-time">{eventInfo.timeText}</span>
           <span className="fc-event-inner-title">{eventInfo.event.title}</span>
         </div>

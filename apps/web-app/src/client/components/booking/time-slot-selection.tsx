@@ -25,16 +25,12 @@ export function TimeSlotSelection({
 }: TimeSlotSelectionProps) {
   const { t, locale } = useTranslation();
   const { timezone: userTimezone } = useUserTimezone();
-
-  // Show slots in user's timezone if it differs from business timezone
-  const displayTimezone =
-    userTimezone !== businessTimezone ? userTimezone : businessTimezone;
-  const showingInUserTz = displayTimezone !== businessTimezone;
+  const showingInUserTz = userTimezone !== businessTimezone;
 
   const availableSlots = timeSlots.filter((slot) => slot.available);
 
   function getDisplayTime(slot: TimeSlot): string {
-    return formatInTz(slot.startTime, displayTimezone, "h:mm a");
+    return formatInTz(slot.startTime, userTimezone, "h:mm a");
   }
 
   return (

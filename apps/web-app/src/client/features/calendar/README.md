@@ -16,8 +16,6 @@ calendar/
 │   └── appointment.ts  # Appointment and CalendarEvent types
 ├── utils/              # Utility functions
 │   └── event-adapter.ts # Convert appointments to calendar events
-├── data/               # Mock data
-│   └── mock-appointments.ts # Sample appointment data
 └── styles/             # CSS styles
     └── calendar.css    # FullCalendar custom styles
 
@@ -107,7 +105,7 @@ interface Appointment {
   client: string;
   service: string;
   employee: string;
-  status: "pending" | "completed" | "cancelled";
+  status: "scheduled" | "confirmed" | "completed" | "cancelled";
   description?: string;
 }
 ```
@@ -168,21 +166,6 @@ const colors = getStatusColor("pending");
 
 ## Customization
 
-### Changing Colors
-
-Edit `src/features/calendar/utils/event-adapter.ts`:
-
-```typescript
-const colors = {
-  pending: {
-    backgroundColor: "#3b82f6", // Change this
-    borderColor: "#2563eb",
-    textColor: "#ffffff",
-  },
-  // ...
-};
-```
-
 ### Styling
 
 Edit `src/features/calendar/styles/calendar.css` to customize the calendar appearance.
@@ -197,29 +180,8 @@ FullCalendar supports additional plugins:
 
 Install and add to the plugins array in `full-calendar.tsx`.
 
-## Integration with API
-
-Replace mock data with real API calls:
-
-```typescript
-// In your page component
-const [appointments, setAppointments] = useState<Appointment[]>([]);
-
-useEffect(() => {
-  async function fetchAppointments() {
-    const data = await fetch("/api/appointments").then((r) => r.json());
-    setAppointments(data);
-  }
-  fetchAppointments();
-}, []);
-```
-
 ## Next Steps
 
-1. Connect to your backend API
-2. Add appointment creation modal
-3. Add appointment details modal
-4. Implement drag-and-drop rescheduling
-5. Add filtering by employee/service
-6. Add search functionality
-7. Add print/export features
+1. Add appointment creation modal
+2. Implement drag-and-drop rescheduling
+3. Add filtering by employee/service

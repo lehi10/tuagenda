@@ -35,11 +35,12 @@ export function AppointmentDetailModal({
       Appointment["status"],
       "default" | "destructive" | "secondary"
     > = {
+      scheduled: "secondary",
+      confirmed: "secondary",
       completed: "default",
-      pending: "secondary",
       cancelled: "destructive",
     };
-    return variants[status] || "outline";
+    return variants[status] ?? "outline";
   };
 
   const startDate =

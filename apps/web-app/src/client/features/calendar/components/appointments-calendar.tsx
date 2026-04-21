@@ -13,12 +13,14 @@ export interface AppointmentsCalendarProps {
   appointments: Appointment[];
   onAppointmentClick?: (_appointment: Appointment) => void;
   onDateRangeSelect?: (_start: Date, _end: Date) => void;
+  onDatesChange?: (_start: Date, _end: Date) => void;
 }
 
 export function AppointmentsCalendar({
   appointments,
   onAppointmentClick,
   onDateRangeSelect,
+  onDatesChange,
 }: AppointmentsCalendarProps) {
   const { timezone } = useBusinessTimezone();
   const events = appointmentsToEvents(appointments);
@@ -48,6 +50,7 @@ export function AppointmentsCalendar({
           timezone={timezone}
           onEventClick={handleEventClick}
           onDateSelect={handleDateSelect}
+          onDatesSet={onDatesChange}
         />
       </CardContent>
     </div>
