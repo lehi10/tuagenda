@@ -17,7 +17,9 @@ describe("timezone-utils", () => {
     });
 
     it("formats UTC date in Buenos Aires timezone correctly (UTC-3)", () => {
-      expect(formatInTz(utcDate, "America/Argentina/Buenos_Aires", "HH:mm")).toBe("12:00");
+      expect(
+        formatInTz(utcDate, "America/Argentina/Buenos_Aires", "HH:mm")
+      ).toBe("12:00");
     });
 
     it("formats UTC date in Madrid timezone correctly (UTC+2 in summer)", () => {
@@ -25,13 +27,17 @@ describe("timezone-utils", () => {
     });
 
     it("formats date string correctly", () => {
-      expect(formatInTz(utcDate, "America/Bogota", "yyyy-MM-dd")).toBe("2026-04-20");
+      expect(formatInTz(utcDate, "America/Bogota", "yyyy-MM-dd")).toBe(
+        "2026-04-20"
+      );
     });
 
     it("formats date crossing midnight correctly", () => {
       // 2026-04-20T03:00:00.000Z = 2026-04-19 22:00 in Bogotá (UTC-5)
       const midnight = new Date("2026-04-20T03:00:00.000Z");
-      expect(formatInTz(midnight, "America/Bogota", "yyyy-MM-dd")).toBe("2026-04-19");
+      expect(formatInTz(midnight, "America/Bogota", "yyyy-MM-dd")).toBe(
+        "2026-04-19"
+      );
     });
   });
 
@@ -84,7 +90,11 @@ describe("timezone-utils", () => {
     });
 
     it("converts '09:00' in Buenos Aires (UTC-3) to correct UTC (12:00 UTC)", () => {
-      const result = slotToUtcDate(baseDate, "09:00", "America/Argentina/Buenos_Aires");
+      const result = slotToUtcDate(
+        baseDate,
+        "09:00",
+        "America/Argentina/Buenos_Aires"
+      );
       expect(result.toISOString()).toBe("2026-04-20T12:00:00.000Z");
     });
 
@@ -108,8 +118,8 @@ describe("timezone-utils", () => {
 
     it("returns a valid IANA timezone that can be used by Intl", () => {
       const tz = getBrowserTimezone();
-      expect(() =>
-        new Intl.DateTimeFormat("en", { timeZone: tz })
+      expect(
+        () => new Intl.DateTimeFormat("en", { timeZone: tz })
       ).not.toThrow();
     });
   });
@@ -134,8 +144,8 @@ describe("timezone-utils", () => {
 
     it("all IANA timezone values are valid", () => {
       SUPPORTED_TIMEZONES.forEach((tz) => {
-        expect(() =>
-          new Intl.DateTimeFormat("en", { timeZone: tz.value })
+        expect(
+          () => new Intl.DateTimeFormat("en", { timeZone: tz.value })
         ).not.toThrow();
       });
     });

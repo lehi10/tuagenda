@@ -8,7 +8,8 @@ import {
 } from "@/client/components/ui/dialog";
 import { Badge } from "@/client/components/ui/badge";
 import type { Appointment } from "../types/appointment";
-import { format } from "date-fns";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
+import { formatInTz } from "@/client/lib/timezone-utils";
 
 export interface AppointmentDetailModalProps {
   appointment: Appointment | null;
@@ -21,6 +22,8 @@ export function AppointmentDetailModal({
   open,
   onOpenChange,
 }: AppointmentDetailModalProps) {
+  const { timezone } = useBusinessTimezone();
+
   if (!appointment) return null;
 
   const getStatusVariant = (
@@ -62,8 +65,9 @@ export function AppointmentDetailModal({
           <div>
             <p className="font-medium">Date & Time</p>
             <p className="text-sm text-muted-foreground">
-              {format(startDate, "MMMM d, yyyy")} •{" "}
-              {format(startDate, "h:mm a")} - {format(endDate, "h:mm a")}
+              {formatInTz(startDate, timezone, "MMMM d, yyyy")} •{" "}
+              {formatInTz(startDate, timezone, "h:mm a")} -{" "}
+              {formatInTz(endDate, timezone, "h:mm a")}
             </p>
           </div>
 

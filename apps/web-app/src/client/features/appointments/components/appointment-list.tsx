@@ -52,10 +52,9 @@ export function AppointmentList() {
   const appointments: Appointment[] =
     data?.appointments?.map((apt: AppointmentEntity) => ({
       id: apt.id!,
-      client:
-        apt.customer
-          ? `${apt.customer.firstName} ${apt.customer.lastName || ""}`.trim()
-          : "N/A",
+      client: apt.customer
+        ? `${apt.customer.firstName} ${apt.customer.lastName || ""}`.trim()
+        : "N/A",
       service: apt.service?.name || "N/A",
       employee: apt.providerBusinessUser?.user
         ? `${apt.providerBusinessUser.user.firstName} ${apt.providerBusinessUser.user.lastName || ""}`.trim()

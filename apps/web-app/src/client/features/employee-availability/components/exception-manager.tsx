@@ -195,7 +195,11 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">
-                      {formatInTz(new Date(exception.date), timezone, "d 'de' MMMM yyyy")}
+                      {formatInTz(
+                        new Date(exception.date),
+                        timezone,
+                        "d 'de' MMMM yyyy"
+                      )}
                     </span>
                     <Badge
                       variant={exception.isAvailable ? "default" : "secondary"}
@@ -209,8 +213,17 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
                     exception.startTime &&
                     exception.endTime && (
                       <div className="text-xs text-muted-foreground">
-                        {formatInTz(new Date(exception.startTime), timezone, "HH:mm")} -{" "}
-                        {formatInTz(new Date(exception.endTime), timezone, "HH:mm")}
+                        {formatInTz(
+                          new Date(exception.startTime),
+                          timezone,
+                          "HH:mm"
+                        )}{" "}
+                        -{" "}
+                        {formatInTz(
+                          new Date(exception.endTime),
+                          timezone,
+                          "HH:mm"
+                        )}
                       </div>
                     )}
 

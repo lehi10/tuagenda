@@ -60,7 +60,10 @@ export function AvailabilityManager({
     try {
       // Times entered by the employee are in the business timezone.
       // Convert to UTC before sending to the backend.
-      const start = fromZonedTime(new Date(`2000-01-01T${startTime}:00`), timezone);
+      const start = fromZonedTime(
+        new Date(`2000-01-01T${startTime}:00`),
+        timezone
+      );
       const end = fromZonedTime(new Date(`2000-01-01T${endTime}:00`), timezone);
 
       await createMutation.mutateAsync({
@@ -168,8 +171,8 @@ export function AvailabilityManager({
                     className="flex items-center gap-2 p-2 rounded-md border group"
                   >
                     <div className="flex-1 text-sm">
-                      {formatInTz(new Date(avail.startTime), timezone, "HH:mm")} -{" "}
-                      {formatInTz(new Date(avail.endTime), timezone, "HH:mm")}
+                      {formatInTz(new Date(avail.startTime), timezone, "HH:mm")}{" "}
+                      - {formatInTz(new Date(avail.endTime), timezone, "HH:mm")}
                     </div>
                     <Button
                       variant="ghost"

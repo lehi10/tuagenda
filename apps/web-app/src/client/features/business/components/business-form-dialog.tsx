@@ -33,7 +33,10 @@ import { useTrpc } from "@/client/lib/trpc";
 import { useImageUpload } from "@/client/hooks/use-image-upload";
 import { STORAGE_PATHS } from "@/shared/constants/image.constants";
 import { logger } from "@/shared/lib/logger";
-import { getBrowserTimezone, SUPPORTED_TIMEZONES } from "@/client/lib/timezone-utils";
+import {
+  getBrowserTimezone,
+  SUPPORTED_TIMEZONES,
+} from "@/client/lib/timezone-utils";
 
 interface BusinessFormDialogProps {
   open: boolean;

@@ -68,9 +68,9 @@ export interface BookingProfessional {
  * Time slot availability — matches the server TimeSlot shape (via superjson)
  */
 export interface TimeSlot {
-  time: string;      // "HH:mm" for display
-  startTime: Date;   // UTC Date — use this when sending to backend
-  endTime: Date;     // UTC Date — use this when sending to backend
+  time: string; // "HH:mm" for display
+  startTime: Date; // UTC Date — use this when sending to backend
+  endTime: Date; // UTC Date — use this when sending to backend
   available: boolean;
 }
 
@@ -108,9 +108,9 @@ export interface BookingData {
   service?: BookingService;
   professional?: BookingProfessional;
   date?: Date;
-  timeSlot?: string;      // "HH:mm" for display only
-  slotStartTime?: Date;   // UTC — used when creating the appointment
-  slotEndTime?: Date;     // UTC — used when creating the appointment
+  timeSlot?: string; // "HH:mm" for display only
+  slotStartTime?: Date; // UTC — used when creating the appointment
+  slotEndTime?: Date; // UTC — used when creating the appointment
   clientInfo?: ClientInfo;
   paymentMethod?: PaymentMethod;
 }

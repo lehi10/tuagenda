@@ -12,7 +12,11 @@ import {
 } from "@/client/components/ui/dialog";
 import { useTrpc } from "@/client/lib/trpc";
 import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
-import { startOfDayInTz, endOfDayInTz, formatInTz } from "@/client/lib/timezone-utils";
+import {
+  startOfDayInTz,
+  endOfDayInTz,
+  formatInTz,
+} from "@/client/lib/timezone-utils";
 import { WeeklyScheduleCalendar } from "./weekly-schedule-calendar";
 
 interface WeeklyScheduleDialogProps {
@@ -114,7 +118,8 @@ export function WeeklyScheduleDialog({
 
           <div className="flex items-center gap-1 sm:gap-2 flex-1 justify-center">
             <span className="text-xs sm:text-sm font-medium text-center">
-              {formatInTz(weekStart, timezone, "d MMM")} – {formatInTz(weekEnd, timezone, "d MMM yyyy")}
+              {formatInTz(weekStart, timezone, "d MMM")} –{" "}
+              {formatInTz(weekEnd, timezone, "d MMM yyyy")}
             </span>
             <Button
               variant="ghost"

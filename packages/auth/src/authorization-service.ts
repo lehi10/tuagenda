@@ -6,12 +6,7 @@
  */
 
 import { PrismaClient } from "db";
-import {
-  AuthorizationRequest,
-  PolicyRule,
-  Role,
-  UserType,
-} from "./types";
+import { AuthorizationRequest, PolicyRule, Role, UserType } from "./types";
 
 export class AuthorizationService {
   private static instance: AuthorizationService;

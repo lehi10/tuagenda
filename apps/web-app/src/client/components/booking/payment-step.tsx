@@ -21,7 +21,6 @@ export function PaymentStep({
   onContinue,
   isInPerson = true,
 }: PaymentStepProps) {
-
   const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
     null
