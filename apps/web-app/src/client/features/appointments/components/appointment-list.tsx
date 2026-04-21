@@ -13,7 +13,8 @@ import { DataTableWithFilters } from "@/client/components/shared/data-table-with
 import { useTranslation } from "@/client/i18n";
 import { useBusiness } from "@/client/contexts/business-context";
 import { useTrpc } from "@/client/lib/trpc";
-import { format } from "date-fns";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
+import { formatInTz } from "@/client/lib/timezone-utils";
 import type { Appointment as AppointmentEntity } from "@/server/core/domain/entities/Appointment";
 
 interface Appointment {
@@ -29,6 +30,7 @@ interface Appointment {
 
 export function AppointmentList() {
   const { t } = useTranslation();
+  const { timezone } = useBusinessTimezone();
   const { currentBusiness } = useBusiness();
 
   // Fetch appointments from tRPC
@@ -58,8 +60,8 @@ export function AppointmentList() {
       employee: apt.providerBusinessUser?.user
         ? `${apt.providerBusinessUser.user.firstName} ${apt.providerBusinessUser.user.lastName || ""}`.trim()
         : "N/A",
-      date: format(new Date(apt.startTime), "yyyy-MM-dd"),
-      time: format(new Date(apt.startTime), "h:mm a"),
+      date: formatInTz(new Date(apt.startTime), timezone, "yyyy-MM-dd"),
+      time: formatInTz(new Date(apt.startTime), timezone, "h:mm a"),
       status: apt.status,
     })) || [];
 

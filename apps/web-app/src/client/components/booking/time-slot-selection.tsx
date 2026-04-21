@@ -2,18 +2,17 @@
 
 import { Button } from "@/client/components/ui/button";
 import { useTranslation } from "@/client/i18n";
-
-interface TimeSlot {
-  time: string;
-  available: boolean;
-}
+import { useUserTimezone } from "@/client/contexts/user-timezone-context";
+import { formatInTz } from "@/client/lib/timezone-utils";
+import type { TimeSlot } from "@/client/types/booking";
 
 interface TimeSlotSelectionProps {
   timeSlots: TimeSlot[];
   selectedSlot?: string;
-  onSelect: (_slot: string) => void;
+  onSelect: (_slot: TimeSlot) => void;
   isLoading?: boolean;
   error?: string;
+  businessTimezone: string;
 }
 
 export function TimeSlotSelection({
@@ -22,14 +21,25 @@ export function TimeSlotSelection({
   onSelect,
   isLoading = false,
   error,
+  businessTimezone,
 }: TimeSlotSelectionProps) {
   const { t, locale } = useTranslation();
+  const { timezone: userTimezone } = useUserTimezone();
+
+  // Show slots in user's timezone if it differs from business timezone
+  const displayTimezone =
+    userTimezone !== businessTimezone ? userTimezone : businessTimezone;
+  const showingInUserTz = displayTimezone !== businessTimezone;
 
   const availableSlots = timeSlots.filter((slot) => slot.available);
 
+  function getDisplayTime(slot: TimeSlot): string {
+    return formatInTz(slot.startTime, displayTimezone, "h:mm a");
+  }
+
   return (
     <div className="space-y-5">
-      {/* Header - Standardized */}
+      {/* Header */}
       <div className="space-y-1">
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.time.title}
@@ -40,6 +50,15 @@ export function TimeSlotSelection({
             : "Select the time that suits you best"}
         </p>
       </div>
+
+      {/* Timezone indicator */}
+      {!isLoading && availableSlots.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          {showingInUserTz
+            ? `Horarios en tu zona horaria (${displayTimezone})`
+            : `Horarios en zona horaria del negocio (${businessTimezone})`}
+        </p>
+      )}
 
       {/* Error state */}
       {error && (
@@ -67,10 +86,10 @@ export function TimeSlotSelection({
             <Button
               key={slot.time}
               variant={selectedSlot === slot.time ? "default" : "outline"}
-              onClick={() => onSelect(slot.time)}
+              onClick={() => onSelect(slot)}
               className="h-11"
             >
-              {slot.time}
+              {getDisplayTime(slot)}
             </Button>
           ))}
         </div>

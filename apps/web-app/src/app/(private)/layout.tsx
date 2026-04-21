@@ -16,6 +16,7 @@ import {
   BreadcrumbPage,
 } from "@/client/components/ui/breadcrumb";
 import { ProtectedRoute } from "@/client/components/protected-route";
+import { BusinessTimezoneProvider } from "@/client/contexts/business-timezone-context";
 
 export default function RootLayout({
   children,
@@ -24,6 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <ProtectedRoute>
+      <BusinessTimezoneProvider>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
@@ -58,6 +60,7 @@ export default function RootLayout({
           </div>
         </SidebarInset>
       </SidebarProvider>
+      </BusinessTimezoneProvider>
     </ProtectedRoute>
   );
 }

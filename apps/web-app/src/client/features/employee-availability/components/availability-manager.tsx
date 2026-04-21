@@ -5,7 +5,9 @@ import { Plus, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/client/components/ui/button";
 import { useBusiness } from "@/client/contexts";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import { useTrpc } from "@/client/lib/trpc";
+import { fromZonedTime, formatInTz } from "@/client/lib/timezone-utils";
 
 interface AvailabilityManagerProps {
   businessUserId: string;
@@ -21,18 +23,11 @@ const DAYS_OF_WEEK = [
   { value: 0, label: "Domingo" },
 ];
 
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString("es-MX", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
-
 export function AvailabilityManager({
   businessUserId,
 }: AvailabilityManagerProps) {
   const { currentBusiness } = useBusiness();
+  const { timezone } = useBusinessTimezone();
   const utils = useTrpc.useUtils();
 
   const [selectedDay, setSelectedDay] = useState<number>(1);
@@ -63,8 +58,10 @@ export function AvailabilityManager({
     if (!currentBusiness?.id) return;
 
     try {
-      const start = new Date(`2000-01-01T${startTime}:00`);
-      const end = new Date(`2000-01-01T${endTime}:00`);
+      // Times entered by the employee are in the business timezone.
+      // Convert to UTC before sending to the backend.
+      const start = fromZonedTime(new Date(`2000-01-01T${startTime}:00`), timezone);
+      const end = fromZonedTime(new Date(`2000-01-01T${endTime}:00`), timezone);
 
       await createMutation.mutateAsync({
         businessUserId,
@@ -171,8 +168,8 @@ export function AvailabilityManager({
                     className="flex items-center gap-2 p-2 rounded-md border group"
                   >
                     <div className="flex-1 text-sm">
-                      {formatTime(new Date(avail.startTime))} -{" "}
-                      {formatTime(new Date(avail.endTime))}
+                      {formatInTz(new Date(avail.startTime), timezone, "HH:mm")} -{" "}
+                      {formatInTz(new Date(avail.endTime), timezone, "HH:mm")}
                     </div>
                     <Button
                       variant="ghost"

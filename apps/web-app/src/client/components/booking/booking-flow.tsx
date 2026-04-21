@@ -82,6 +82,7 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
   );
 
   const timeSlots = timeSlotsData?.slots || [];
+  const businessTimezone = timeSlotsData?.businessTimezone || "UTC";
 
   // Render current step
   const renderStep = () => {
@@ -126,8 +127,10 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
             onSelect={updateTimeSlot}
             isLoading={isLoadingSlots}
             error={slotsError?.message}
+            businessTimezone={businessTimezone}
           />
         );
+
 
       case "client-info":
         return <ClientInfoStep onContinue={updateClientInfo} />;

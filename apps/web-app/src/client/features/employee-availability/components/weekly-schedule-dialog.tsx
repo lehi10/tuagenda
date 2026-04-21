@@ -11,6 +11,8 @@ import {
   DialogTitle,
 } from "@/client/components/ui/dialog";
 import { useTrpc } from "@/client/lib/trpc";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
+import { startOfDayInTz, endOfDayInTz, formatInTz } from "@/client/lib/timezone-utils";
 import { WeeklyScheduleCalendar } from "./weekly-schedule-calendar";
 
 interface WeeklyScheduleDialogProps {
@@ -20,33 +22,12 @@ interface WeeklyScheduleDialogProps {
   employeeName: string;
 }
 
-function getWeekRange(date: Date): { start: Date; end: Date } {
-  const current = new Date(date);
-  const day = current.getDay();
-  const diff = current.getDate() - day + (day === 0 ? -6 : 1);
-
-  const start = new Date(current);
-  start.setDate(diff);
-  start.setHours(0, 0, 0, 0);
-
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  end.setHours(23, 59, 59, 999);
-
-  return { start, end };
-}
-
-function formatWeekRange(start: Date, end: Date): string {
-  const startStr = start.toLocaleDateString("es-MX", {
-    day: "numeric",
-    month: "short",
-  });
-  const endStr = end.toLocaleDateString("es-MX", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-  return `${startStr} - ${endStr}`;
+function getMondayOfWeek(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getUTCDay(); // use UTC to avoid local-timezone day shift
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setUTCDate(d.getUTCDate() + diff);
+  return d;
 }
 
 export function WeeklyScheduleDialog({
@@ -56,8 +37,15 @@ export function WeeklyScheduleDialog({
   employeeName,
 }: WeeklyScheduleDialogProps) {
   const [currentWeek, setCurrentWeek] = useState(new Date());
+  const { timezone } = useBusinessTimezone();
 
-  const weekRange = getWeekRange(currentWeek);
+  const monday = getMondayOfWeek(currentWeek);
+  const sunday = new Date(monday);
+  sunday.setUTCDate(monday.getUTCDate() + 6);
+
+  // UTC-correct week boundaries based on business timezone
+  const weekStart = startOfDayInTz(monday, timezone);
+  const weekEnd = endOfDayInTz(sunday, timezone);
 
   // Fetch availabilities
   const { data: availabilities, isLoading: loadingAvailabilities } =
@@ -71,8 +59,8 @@ export function WeeklyScheduleDialog({
     useTrpc.employeeException.getByDateRange.useQuery(
       {
         businessUserId,
-        startDate: weekRange.start,
-        endDate: weekRange.end,
+        startDate: weekStart,
+        endDate: weekEnd,
       },
       { enabled: !!businessUserId && open }
     );
@@ -126,7 +114,7 @@ export function WeeklyScheduleDialog({
 
           <div className="flex items-center gap-1 sm:gap-2 flex-1 justify-center">
             <span className="text-xs sm:text-sm font-medium text-center">
-              {formatWeekRange(weekRange.start, weekRange.end)}
+              {formatInTz(weekStart, timezone, "d MMM")} – {formatInTz(weekEnd, timezone, "d MMM yyyy")}
             </span>
             <Button
               variant="ghost"

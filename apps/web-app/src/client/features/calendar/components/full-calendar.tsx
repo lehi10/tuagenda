@@ -11,6 +11,7 @@ import type { EventClickArg, DateSelectArg } from "@fullcalendar/core";
 
 export interface FullCalendarProps {
   events: CalendarEvent[];
+  timezone?: string;
   onEventClick?: (_eventInfo: EventClickArg) => void;
   onDateSelect?: (_selectInfo: DateSelectArg) => void;
   viewType?: "calendar" | "list";
@@ -18,6 +19,7 @@ export interface FullCalendarProps {
 
 export function FullCalendarView({
   events,
+  timezone = "UTC",
   onEventClick,
   onDateSelect,
   viewType = "calendar",
@@ -35,6 +37,7 @@ export function FullCalendarView({
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
       key={viewType}
+      timeZone={timezone}
       events={events}
       eventClick={onEventClick}
       select={onDateSelect}

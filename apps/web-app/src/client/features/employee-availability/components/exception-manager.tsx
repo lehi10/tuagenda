@@ -9,30 +9,17 @@ import { Label } from "@/client/components/ui/label";
 import { Switch } from "@/client/components/ui/switch";
 import { Badge } from "@/client/components/ui/badge";
 import { useBusiness } from "@/client/contexts";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import { useTrpc } from "@/client/lib/trpc";
+import { fromZonedTime, formatInTz } from "@/client/lib/timezone-utils";
 
 interface ExceptionManagerProps {
   businessUserId: string;
 }
 
-function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatTime(date: Date): string {
-  return new Date(date).toLocaleTimeString("es-MX", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
-
 export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
   const { currentBusiness } = useBusiness();
+  const { timezone } = useBusinessTimezone();
   const utils = useTrpc.useUtils();
 
   const [date, setDate] = useState("");
@@ -71,9 +58,15 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
     if (!currentBusiness?.id || !date) return;
 
     try {
+      // `date` is "YYYY-MM-DD" — parsed as UTC midnight per the ISO 8601 spec. ✓
       const exceptionDate = new Date(date);
-      const start = isAllDay ? undefined : new Date(`${date}T${startTime}:00`);
-      const end = isAllDay ? undefined : new Date(`${date}T${endTime}:00`);
+      // Times entered by employee are in the business timezone → convert to UTC.
+      const start = isAllDay
+        ? undefined
+        : fromZonedTime(new Date(`${date}T${startTime}:00`), timezone);
+      const end = isAllDay
+        ? undefined
+        : fromZonedTime(new Date(`${date}T${endTime}:00`), timezone);
 
       await createMutation.mutateAsync({
         businessUserId,
@@ -202,7 +195,7 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">
-                      {formatDate(new Date(exception.date))}
+                      {formatInTz(new Date(exception.date), timezone, "d 'de' MMMM yyyy")}
                     </span>
                     <Badge
                       variant={exception.isAvailable ? "default" : "secondary"}
@@ -216,8 +209,8 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
                     exception.startTime &&
                     exception.endTime && (
                       <div className="text-xs text-muted-foreground">
-                        {formatTime(new Date(exception.startTime))} -{" "}
-                        {formatTime(new Date(exception.endTime))}
+                        {formatInTz(new Date(exception.startTime), timezone, "HH:mm")} -{" "}
+                        {formatInTz(new Date(exception.endTime), timezone, "HH:mm")}
                       </div>
                     )}
 

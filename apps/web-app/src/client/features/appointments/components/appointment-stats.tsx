@@ -4,20 +4,33 @@ import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react";
 import { StatCard } from "@/client/components/shared/stat-card";
 import { useTranslation } from "@/client/i18n";
 import { useBusiness } from "@/client/contexts/business-context";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import { useTrpc } from "@/client/lib/trpc";
+import { startOfDayInTz, endOfDayInTz } from "@/client/lib/timezone-utils";
 
 export function AppointmentStats() {
   const { t } = useTranslation();
   const { currentBusiness } = useBusiness();
+  const { timezone } = useBusinessTimezone();
 
-  // Calculate date ranges
+  // Build UTC-correct date ranges based on the business timezone.
+  // startOfDayInTz/endOfDayInTz convert "midnight in business tz" to UTC.
   const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const endOf30Days = new Date(startOfToday);
-  endOf30Days.setDate(endOf30Days.getDate() + 30);
 
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  const startOfToday = startOfDayInTz(now, timezone);
+  const endOf30Days = endOfDayInTz(
+    new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+    timezone
+  );
+
+  const startOfMonth = startOfDayInTz(
+    new Date(now.getFullYear(), now.getMonth(), 1),
+    timezone
+  );
+  const endOfMonth = endOfDayInTz(
+    new Date(now.getFullYear(), now.getMonth() + 1, 0),
+    timezone
+  );
 
   // Query for all appointments (total)
   const { data: totalData } =

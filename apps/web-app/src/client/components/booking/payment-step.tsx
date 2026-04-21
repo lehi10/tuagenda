@@ -21,6 +21,7 @@ export function PaymentStep({
   onContinue,
   isInPerson = true,
 }: PaymentStepProps) {
+
   const { t } = useTranslation();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
     null
@@ -64,8 +65,8 @@ export function PaymentStep({
     // Validate that we have all required booking data
     if (
       !bookingData.service ||
-      !bookingData.date ||
-      !bookingData.timeSlot ||
+      !bookingData.slotStartTime ||
+      !bookingData.slotEndTime ||
       !bookingData.clientInfo
     ) {
       setError("Missing required booking information");
@@ -76,27 +77,15 @@ export function PaymentStep({
     setError(null);
 
     try {
-      // Parse the time slot (format: "HH:mm")
-      const [hours, minutes] = bookingData.timeSlot.split(":").map(Number);
-
-      // Create start time by combining date and time slot
-      const startTime = new Date(bookingData.date);
-      startTime.setHours(hours, minutes, 0, 0);
-
-      // Calculate end time based on service duration
-      const endTime = new Date(startTime);
-      endTime.setMinutes(
-        startTime.getMinutes() + bookingData.service.durationMinutes
-      );
-
-      // Create the appointment
+      // slotStartTime and slotEndTime are UTC Date objects received from the server.
+      // No timezone conversion needed — send them directly as UTC ISO strings.
       const result = await createAppointmentMutation.mutateAsync({
         customerId: bookingData.clientInfo.userId!,
         businessId: businessId,
         serviceId: bookingData.service.id,
         providerBusinessUserId: bookingData.professional?.id || null,
-        startTime: startTime.toISOString(),
-        endTime: endTime.toISOString(),
+        startTime: bookingData.slotStartTime.toISOString(),
+        endTime: bookingData.slotEndTime.toISOString(),
         notes: null,
         isGroup: false,
         capacity: null,

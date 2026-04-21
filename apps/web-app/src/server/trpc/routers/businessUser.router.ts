@@ -13,6 +13,7 @@ import { router } from "../trpc";
 import { privateProcedure, publicProcedure } from "../procedures";
 import {
   PrismaBusinessUserRepository,
+  PrismaBusinessRepository,
   PrismaUserRepository,
 } from "@/server/infrastructure/repositories";
 import { PrismaEmployeeAvailabilityRepository } from "@/server/infrastructure/repositories/PrismaEmployeeAvailabilityRepository";
@@ -298,6 +299,8 @@ export const businessUserRouter = router({
         new PrismaEmployeeExceptionRepository();
       const appointmentRepository = new PrismaAppointmentRepository();
       const serviceRepository = new PrismaServiceRepository();
+      const businessUserRepository = new PrismaBusinessUserRepository();
+      const businessRepository = new PrismaBusinessRepository();
 
       const getAvailableTimeSlotsUseCase = new GetAvailableTimeSlotsUseCase(
         employeeAvailabilityRepository,
@@ -306,7 +309,10 @@ export const businessUserRouter = router({
         serviceRepository
       );
 
-      const result = await getAvailableTimeSlotsUseCase.execute(input);
+      const [result, businessUser] = await Promise.all([
+        getAvailableTimeSlotsUseCase.execute(input),
+        businessUserRepository.findById(input.businessUserId),
+      ]);
 
       if (!result.success || !result.slots) {
         throw new TRPCError({
@@ -315,10 +321,21 @@ export const businessUserRouter = router({
         });
       }
 
+      let businessTimezone = "UTC";
+      if (businessUser) {
+        const business = await businessRepository.findById(
+          businessUser.businessId
+        );
+        if (business) {
+          businessTimezone = business.timeZone;
+        }
+      }
+
       return {
         slots: result.slots,
         total: result.slots.length,
         available: result.slots.filter((s) => s.available).length,
+        businessTimezone,
       };
     }),
 });

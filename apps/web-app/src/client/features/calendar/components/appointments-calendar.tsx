@@ -10,6 +10,7 @@ import {
 import { Button } from "@/client/components/ui/button";
 import { Calendar, List } from "lucide-react";
 import { FullCalendarView } from "./full-calendar";
+import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import type { Appointment } from "../types/appointment";
 import { appointmentsToEvents } from "../utils/event-adapter";
 import type { EventClickArg, DateSelectArg } from "@fullcalendar/core";
@@ -29,6 +30,7 @@ export function AppointmentsCalendar({
   onDateRangeSelect,
 }: AppointmentsCalendarProps) {
   const [view, setView] = useState<"calendar" | "list">("calendar");
+  const { timezone } = useBusinessTimezone();
   const events = appointmentsToEvents(appointments);
 
   const handleEventClick = (eventInfo: EventClickArg) => {
@@ -76,6 +78,7 @@ export function AppointmentsCalendar({
       <CardContent>
         <FullCalendarView
           events={events}
+          timezone={timezone}
           onEventClick={handleEventClick}
           onDateSelect={handleDateSelect}
           viewType={view}

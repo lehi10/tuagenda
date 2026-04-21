@@ -16,6 +16,7 @@ import {
   BreadcrumbPage,
 } from "@/client/components/ui/breadcrumb";
 import { WaitlistBanner } from "@/client/components/waitlist-banner";
+import { UserTimezoneProvider } from "@/client/contexts/user-timezone-context";
 
 export default function ClientLayout({
   children,
@@ -24,6 +25,7 @@ export default function ClientLayout({
 }) {
   return (
     <ClientRoute>
+      <UserTimezoneProvider>
       <WaitlistBanner />
       <SidebarProvider>
         <ClientSidebar />
@@ -51,6 +53,7 @@ export default function ClientLayout({
           </div>
         </SidebarInset>
       </SidebarProvider>
+      </UserTimezoneProvider>
     </ClientRoute>
   );
 }

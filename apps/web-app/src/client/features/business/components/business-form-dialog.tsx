@@ -33,6 +33,7 @@ import { useTrpc } from "@/client/lib/trpc";
 import { useImageUpload } from "@/client/hooks/use-image-upload";
 import { STORAGE_PATHS } from "@/shared/constants/image.constants";
 import { logger } from "@/shared/lib/logger";
+import { getBrowserTimezone, SUPPORTED_TIMEZONES } from "@/client/lib/timezone-utils";
 
 interface BusinessFormDialogProps {
   open: boolean;
@@ -132,7 +133,7 @@ export function BusinessFormDialog({
     state: business?.state || "",
     country: business?.country || "",
     postalCode: business?.postalCode || "",
-    timeZone: business?.timeZone || "America/New_York",
+    timeZone: business?.timeZone || getBrowserTimezone(),
     locale: business?.locale || "en",
     currency: business?.currency || "USD",
     status:
@@ -483,24 +484,11 @@ export function BusinessFormDialog({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="America/New_York">
-                          EST (New York)
-                        </SelectItem>
-                        <SelectItem value="America/Chicago">
-                          CST (Chicago)
-                        </SelectItem>
-                        <SelectItem value="America/Denver">
-                          MST (Denver)
-                        </SelectItem>
-                        <SelectItem value="America/Los_Angeles">
-                          PST (Los Angeles)
-                        </SelectItem>
-                        <SelectItem value="Europe/Madrid">
-                          CET (Madrid)
-                        </SelectItem>
-                        <SelectItem value="Europe/London">
-                          GMT (London)
-                        </SelectItem>
+                        {SUPPORTED_TIMEZONES.map((tz) => (
+                          <SelectItem key={tz.value} value={tz.value}>
+                            {tz.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

@@ -11,6 +11,7 @@ import type {
   BookingData,
   BookingService,
   BookingProfessional,
+  TimeSlot,
   ClientInfo,
   PaymentMethod,
   StepType,
@@ -35,7 +36,7 @@ interface UseBookingFlowReturn {
   updateService: (service: BookingService) => void;
   updateProfessional: (professional: BookingProfessional) => void;
   updateDate: (date: Date | undefined) => void;
-  updateTimeSlot: (timeSlot: string) => void;
+  updateTimeSlot: (slot: TimeSlot) => void;
   updateClientInfo: (clientInfo: ClientInfo) => void;
   updatePaymentMethod: (paymentMethod: PaymentMethod) => void;
 
@@ -125,11 +126,17 @@ export function useBookingFlow({
   );
 
   /**
-   * Update time slot selection
+   * Update time slot selection.
+   * Stores both the display string and the UTC Date objects from the server.
    */
   const updateTimeSlot = useCallback(
-    (timeSlot: string) => {
-      setBookingData((prev) => ({ ...prev, timeSlot }));
+    (slot: TimeSlot) => {
+      setBookingData((prev) => ({
+        ...prev,
+        timeSlot: slot.time,
+        slotStartTime: slot.startTime,
+        slotEndTime: slot.endTime,
+      }));
       goToNextStep();
     },
     [goToNextStep]

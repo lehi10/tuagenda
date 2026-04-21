@@ -48,6 +48,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "db": "workspace:*",
     "decimal.js": "^10.6.0",
     "firebase": "^12.4.0",

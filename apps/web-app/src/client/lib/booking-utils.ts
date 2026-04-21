@@ -59,17 +59,30 @@ export function generateTimeSlots(
 ): TimeSlot[] {
   const slots: TimeSlot[] = [];
 
+  const baseDate = new Date();
+  baseDate.setUTCHours(0, 0, 0, 0);
+
   for (let hour = startHour; hour < endHour; hour++) {
-    // Add on-the-hour slot
+    const startTime = new Date(baseDate);
+    startTime.setUTCHours(hour, 0, 0, 0);
+    const endTime = new Date(startTime.getTime() + intervalMinutes * 60000);
+
     slots.push({
       time: `${hour.toString().padStart(2, "0")}:00`,
+      startTime,
+      endTime,
       available: Math.random() > 0.3, // TODO: Replace with actual availability check
     });
 
-    // Add half-hour slot if interval is 30 minutes
     if (intervalMinutes === 30) {
+      const halfStart = new Date(baseDate);
+      halfStart.setUTCHours(hour, 30, 0, 0);
+      const halfEnd = new Date(halfStart.getTime() + intervalMinutes * 60000);
+
       slots.push({
         time: `${hour.toString().padStart(2, "0")}:30`,
+        startTime: halfStart,
+        endTime: halfEnd,
         available: Math.random() > 0.3, // TODO: Replace with actual availability check
       });
     }
