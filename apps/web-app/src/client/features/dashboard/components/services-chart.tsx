@@ -9,75 +9,138 @@ import {
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
   ChartConfig,
-  ChartLegend,
-  ChartLegendContent,
 } from "@/client/components/ui/chart";
-import { Pie, PieChart, Cell } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Cell,
+  LabelList,
+} from "recharts";
+import { ServiceDataPoint } from "@/server/core/domain/repositories/IAnalyticsRepository";
 
-const chartData = [
-  { name: "Haircut", value: 45, fill: "#3b82f6" },
-  { name: "Coloring", value: 30, fill: "#8b5cf6" },
-  { name: "Manicure", value: 15, fill: "#ec4899" },
-  { name: "Massage", value: 10, fill: "#14b8a6" },
+const CHART_COLORS = [
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+  "#f59e0b",
+  "#ef4444",
 ];
 
-const chartConfig = {
-  value: {
-    label: "Bookings",
-  },
-  haircut: {
-    label: "Haircut",
-    color: "#3b82f6",
-  },
-  coloring: {
-    label: "Coloring",
-    color: "#8b5cf6",
-  },
-  manicure: {
-    label: "Manicure",
-    color: "#ec4899",
-  },
-  massage: {
-    label: "Massage",
-    color: "#14b8a6",
-  },
-} satisfies ChartConfig;
-
 interface ServicesChartProps {
-  period: string;
+  data: ServiceDataPoint[];
+  isLoading?: boolean;
 }
 
-export function ServicesChart({ period: _period }: ServicesChartProps) {
+const chartConfig = {} satisfies ChartConfig;
+
+export function ServicesChart({ data, isLoading }: ServicesChartProps) {
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold">Popular Services</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="h-[220px] animate-pulse bg-muted rounded" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold">Popular Services</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <p className="text-sm text-muted-foreground py-8 text-center">No data for this period.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const total = data.reduce((sum, d) => sum + d.count, 0);
+
+  const chartData = data.map((item, i) => ({
+    name: item.name,
+    count: item.count,
+    pct: total > 0 ? Math.round((item.count / total) * 100) : 0,
+    fill: CHART_COLORS[i % CHART_COLORS.length],
+  }));
+
+  // Dynamic height: 38px per bar, min 160px
+  const chartHeight = Math.max(160, chartData.length * 40);
+
+  // Truncate long service names for Y axis
+  const formatName = (name: string) =>
+    name.length > 18 ? name.slice(0, 16) + "…" : name;
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-base sm:text-lg">Popular Services</CardTitle>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-semibold">Popular Services</CardTitle>
+          <span className="text-xs text-muted-foreground">{total} bookings</span>
+        </div>
       </CardHeader>
-      <CardContent className="overflow-x-auto">
+      <CardContent className="pt-0 pr-2">
         <ChartContainer
           config={chartConfig}
-          className="h-[250px] sm:h-[300px] w-full min-w-[280px]"
+          style={{ height: chartHeight }}
+          className="w-full"
         >
-          <PieChart>
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={50}
-              outerRadius={80}
-              paddingAngle={2}
-            >
+          <BarChart
+            data={chartData}
+            layout="vertical"
+            margin={{ top: 0, right: 48, bottom: 0, left: 0 }}
+          >
+            <XAxis type="number" hide />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={110}
+              tickLine={false}
+              axisLine={false}
+              tick={{ fontSize: 12 }}
+              tickFormatter={formatName}
+            />
+            <ChartTooltip
+              cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div className="rounded-lg border bg-background px-3 py-2 text-xs shadow-md">
+                    <p className="font-medium mb-1">{d.name}</p>
+                    <p className="text-muted-foreground">
+                      {d.count} bookings &nbsp;·&nbsp; {d.pct}%
+                    </p>
+                  </div>
+                );
+              }}
+            />
+            <Bar dataKey="count" radius={[0, 4, 4, 0]} maxBarSize={28}>
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.fill} />
+                <Cell key={index} fill={entry.fill} />
               ))}
-            </Pie>
-            <ChartLegend content={<ChartLegendContent />} />
-          </PieChart>
+              <LabelList
+                dataKey="count"
+                position="right"
+                className="fill-foreground"
+                fontSize={11}
+                formatter={(v) => {
+                  const n = Number(v);
+                  const pct = total > 0 ? Math.round((n / total) * 100) : 0;
+                  return `${n} (${pct}%)`;
+                }}
+              />
+            </Bar>
+          </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>

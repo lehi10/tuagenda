@@ -19,8 +19,15 @@ import {
   SelectValue,
 } from "@/client/components/ui/select";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/client/components/ui/table";
+import {
   Calendar,
-  Clock,
   CheckCircle2,
   AlertCircle,
   XCircle,
@@ -29,489 +36,309 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import { useTrpc } from "@/client/lib/trpc";
+import { useBusiness } from "@/client/contexts/business-context";
 
-interface Appointment {
-  id: string;
-  client: string;
-  service: string;
-  employee: string;
-  date: string;
-  time: string;
-  duration: string;
-  status: "pending" | "completed" | "cancelled";
-  price?: number;
+const ITEMS_PER_PAGE = 8;
+
+type DisplayStatus = "pending" | "completed" | "cancelled";
+
+function toDisplayStatus(
+  status: "scheduled" | "confirmed" | "completed" | "cancelled"
+): DisplayStatus {
+  if (status === "completed") return "completed";
+  if (status === "cancelled") return "cancelled";
+  return "pending";
 }
 
-// Mock data - move outside component for stable reference
-const MOCK_APPOINTMENTS: Appointment[] = [
-  {
-    id: "1",
-    client: "John Doe",
-    service: "Haircut",
-    employee: "Sarah Johnson",
-    date: "2024-10-24",
-    time: "10:00 AM",
-    duration: "30 min",
-    status: "completed",
-    price: 45,
-  },
-  {
-    id: "2",
-    client: "Jane Smith",
-    service: "Manicure",
-    employee: "Emily Davis",
-    date: "2024-10-24",
-    time: "11:30 AM",
-    duration: "45 min",
-    status: "pending",
-    price: 35,
-  },
-  {
-    id: "3",
-    client: "Bob Johnson",
-    service: "Massage",
-    employee: "Mike Chen",
-    date: "2024-10-23",
-    time: "2:00 PM",
-    duration: "60 min",
-    status: "completed",
-    price: 80,
-  },
-  {
-    id: "4",
-    client: "Alice Williams",
-    service: "Coloring",
-    employee: "Sarah Johnson",
-    date: "2024-10-23",
-    time: "9:00 AM",
-    duration: "90 min",
-    status: "completed",
-    price: 120,
-  },
-  {
-    id: "5",
-    client: "Charlie Brown",
-    service: "Haircut",
-    employee: "James Wilson",
-    date: "2024-10-22",
-    time: "3:30 PM",
-    duration: "30 min",
-    status: "cancelled",
-    price: 45,
-  },
-  {
-    id: "6",
-    client: "Diana Prince",
-    service: "Spa Treatment",
-    employee: "Emily Davis",
-    date: "2024-10-22",
-    time: "1:00 PM",
-    duration: "120 min",
-    status: "completed",
-    price: 150,
-  },
-  {
-    id: "7",
-    client: "Erik Mason",
-    service: "Haircut",
-    employee: "Mike Chen",
-    date: "2024-10-21",
-    time: "4:00 PM",
-    duration: "30 min",
-    status: "completed",
-    price: 45,
-  },
-  {
-    id: "8",
-    client: "Fiona Green",
-    service: "Manicure",
-    employee: "Sarah Johnson",
-    date: "2024-10-21",
-    time: "2:30 PM",
-    duration: "45 min",
-    status: "pending",
-    price: 35,
-  },
-  {
-    id: "9",
-    client: "George Harris",
-    service: "Massage",
-    employee: "Emily Davis",
-    date: "2024-10-21",
-    time: "11:00 AM",
-    duration: "60 min",
-    status: "completed",
-    price: 80,
-  },
-  {
-    id: "10",
-    client: "Hannah Lee",
-    service: "Coloring",
-    employee: "Sarah Johnson",
-    date: "2024-10-20",
-    time: "10:00 AM",
-    duration: "90 min",
-    status: "completed",
-    price: 120,
-  },
-  {
-    id: "11",
-    client: "Ian Foster",
-    service: "Haircut",
-    employee: "James Wilson",
-    date: "2024-10-20",
-    time: "3:00 PM",
-    duration: "30 min",
-    status: "cancelled",
-    price: 45,
-  },
-  {
-    id: "12",
-    client: "Julia Roberts",
-    service: "Spa Treatment",
-    employee: "Mike Chen",
-    date: "2024-10-19",
-    time: "1:30 PM",
-    duration: "120 min",
-    status: "completed",
-    price: 150,
-  },
-];
+function getStatusConfig(status: DisplayStatus) {
+  switch (status) {
+    case "completed":
+      return { icon: CheckCircle2, variant: "default" as const, label: "Completed" };
+    case "pending":
+      return { icon: AlertCircle, variant: "secondary" as const, label: "Pending" };
+    case "cancelled":
+      return { icon: XCircle, variant: "destructive" as const, label: "Cancelled" };
+  }
+}
+
+function getInitials(name: string): string {
+  return name.split(" ").map((n) => n[0]).join("").toUpperCase();
+}
 
 export function RecentAppointments() {
+  const { currentBusiness } = useBusiness();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
-  const itemsPerPage = 5;
 
-  // Get unique services for filter
-  const uniqueServices = useMemo(() => {
-    return Array.from(new Set(MOCK_APPOINTMENTS.map((app) => app.service)));
-  }, []);
+  const { data, isLoading } = useTrpc.appointment.getBusinessAppointments.useQuery(
+    { businessId: currentBusiness?.id ?? "", pagination: { limit: 100, offset: 0 } },
+    { enabled: !!currentBusiness?.id }
+  );
 
-  // Filter appointments based on search and filters
-  const filteredAppointments = useMemo(() => {
-    return MOCK_APPOINTMENTS.filter((appointment) => {
-      const matchesSearch =
-        searchQuery === "" ||
-        appointment.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        appointment.service.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesStatus =
-        statusFilter === "all" || appointment.status === statusFilter;
-
-      const matchesService =
-        serviceFilter === "all" || appointment.service === serviceFilter;
-
-      return matchesSearch && matchesStatus && matchesService;
+  const appointments = useMemo(() => {
+    return (data?.appointments ?? []).map((apt) => {
+      const clientName = apt.customer
+        ? `${apt.customer.firstName} ${apt.customer.lastName ?? ""}`.trim()
+        : "Guest";
+      const employeeName = apt.providerBusinessUser
+        ? apt.providerBusinessUser.displayName ??
+          `${apt.providerBusinessUser.user.firstName} ${apt.providerBusinessUser.user.lastName ?? ""}`.trim()
+        : "—";
+      const startTime = new Date(apt.startTime);
+      const dateStr = startTime.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+      const timeStr = startTime.toLocaleTimeString(undefined, {
+        hour: "numeric",
+        minute: "2-digit",
+      });
+      const durationMinutes = apt.service?.durationMinutes ?? 0;
+      const durationStr =
+        durationMinutes >= 60
+          ? `${Math.floor(durationMinutes / 60)}h${durationMinutes % 60 > 0 ? ` ${durationMinutes % 60}m` : ""}`
+          : `${durationMinutes}m`;
+      return {
+        id: apt.id ?? "",
+        client: clientName,
+        service: apt.service?.name ?? "—",
+        employee: employeeName,
+        date: dateStr,
+        time: timeStr,
+        duration: durationStr,
+        status: toDisplayStatus(apt.status),
+        price: apt.service?.price as number | undefined,
+      };
     });
-  }, [searchQuery, statusFilter, serviceFilter]);
+  }, [data]);
 
-  const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentAppointments = filteredAppointments.slice(startIndex, endIndex);
+  const uniqueServices = useMemo(
+    () => Array.from(new Set(appointments.map((a) => a.service))).filter((s) => s !== "—"),
+    [appointments]
+  );
 
-  const goToNextPage = () => {
-    setCurrentPage((page) => Math.min(page + 1, totalPages));
-  };
+  const filtered = useMemo(
+    () =>
+      appointments.filter((apt) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          (!q || apt.client.toLowerCase().includes(q) || apt.service.toLowerCase().includes(q)) &&
+          (statusFilter === "all" || apt.status === statusFilter) &&
+          (serviceFilter === "all" || apt.service === serviceFilter)
+        );
+      }),
+    [appointments, searchQuery, statusFilter, serviceFilter]
+  );
 
-  const goToPreviousPage = () => {
-    setCurrentPage((page) => Math.max(page - 1, 1));
-  };
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  // Reset to page 1 when filters change
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusFilterChange = (value: string) => {
-    setStatusFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleServiceFilterChange = (value: string) => {
-    setServiceFilter(value);
-    setCurrentPage(1);
-  };
-
-  const getStatusConfig = (status: string) => {
-    switch (status) {
-      case "completed":
-        return {
-          icon: CheckCircle2,
-          variant: "default" as const,
-          color: "text-green-600 dark:text-green-400",
-          bg: "bg-green-50 dark:bg-green-900/20",
-          label: "Completed",
-        };
-      case "pending":
-        return {
-          icon: AlertCircle,
-          variant: "secondary" as const,
-          color: "text-amber-600 dark:text-amber-400",
-          bg: "bg-amber-50 dark:bg-amber-900/20",
-          label: "Pending",
-        };
-      case "cancelled":
-        return {
-          icon: XCircle,
-          variant: "destructive" as const,
-          color: "text-red-600 dark:text-red-400",
-          bg: "bg-red-50 dark:bg-red-900/20",
-          label: "Cancelled",
-        };
-      default:
-        return {
-          icon: AlertCircle,
-          variant: "outline" as const,
-          color: "text-gray-600 dark:text-gray-400",
-          bg: "bg-gray-50 dark:bg-gray-900/20",
-          label: status,
-        };
-    }
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-  };
+  const handleSearchChange = (v: string) => { setSearchQuery(v); setCurrentPage(1); };
+  const handleStatusChange = (v: string) => { setStatusFilter(v); setCurrentPage(1); };
+  const handleServiceChange = (v: string) => { setServiceFilter(v); setCurrentPage(1); };
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-          <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
-          Recent Appointments
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 overflow-x-auto">
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by client or service..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-            <SelectTrigger className="w-full sm:w-[160px]">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={serviceFilter}
-            onValueChange={handleServiceFilterChange}
-          >
-            <SelectTrigger className="w-full sm:w-[160px]">
-              <SelectValue placeholder="Service" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Services</SelectItem>
-              {uniqueServices.map((service) => (
-                <SelectItem key={service} value={service}>
-                  {service}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      <CardHeader className="pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Calendar className="h-4 w-4" />
+            Recent Appointments
+            {!isLoading && (
+              <span className="text-xs font-normal text-muted-foreground">
+                ({filtered.length})
+              </span>
+            )}
+          </CardTitle>
 
-        {/* Appointments List */}
-        {currentAppointments.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No appointments found matching your filters.
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {currentAppointments.map((appointment) => {
-              const statusConfig = getStatusConfig(appointment.status);
-              const StatusIcon = statusConfig.icon;
-
-              return (
-                <div
-                  key={appointment.id}
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border bg-card hover:shadow-md transition-all min-w-0"
-                >
-                  {/* Client Avatar & Info */}
-                  <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
-                    <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 border-primary/10 flex-shrink-0">
-                      <AvatarFallback className="text-xs sm:text-sm font-semibold bg-primary/5">
-                        {getInitials(appointment.client)}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <div className="min-w-0 flex-1 sm:flex-initial sm:w-32">
-                      <p className="font-semibold text-sm truncate">
-                        {appointment.client}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-                        <Clock className="h-3 w-3 flex-shrink-0" />
-                        <span>{appointment.time}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Service Badge */}
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/30 min-w-0 w-full sm:w-40 flex-shrink-0">
-                    <div className="p-1.5 rounded bg-blue-100 dark:bg-blue-900/30 flex-shrink-0">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400"
-                      >
-                        <rect
-                          width="20"
-                          height="14"
-                          x="2"
-                          y="7"
-                          rx="2"
-                          ry="2"
-                        />
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-blue-900 dark:text-blue-300 truncate">
-                        {appointment.service}
-                      </p>
-                      <p className="text-xs text-blue-600 dark:text-blue-500">
-                        {appointment.duration}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Professional Badge */}
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/30 min-w-0 w-full sm:w-40 flex-shrink-0">
-                    <div className="p-1.5 rounded bg-purple-100 dark:bg-purple-900/30 flex-shrink-0">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400"
-                      >
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold text-purple-900 dark:text-purple-300 truncate">
-                        {appointment.employee}
-                      </p>
-                      <p className="text-xs text-purple-600 dark:text-purple-500">
-                        Professional
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Date & Status & Price */}
-                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto sm:ml-auto flex-wrap">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
-                      <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
-                      <span className="whitespace-nowrap">
-                        {appointment.date}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <Badge
-                        variant={statusConfig.variant}
-                        className="gap-1.5 whitespace-nowrap"
-                      >
-                        <StatusIcon className="h-3 w-3" />
-                        {statusConfig.label}
-                      </Badge>
-                      {appointment.price && (
-                        <span className="text-base font-bold text-primary whitespace-nowrap">
-                          ${appointment.price}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {totalPages > 1 && currentAppointments.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t">
-            <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-              Showing {startIndex + 1}-
-              {Math.min(endIndex, filteredAppointments.length)} of{" "}
-              {filteredAppointments.length}
+          {/* Filters */}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="pl-8 h-7 text-xs w-40"
+              />
             </div>
-            <div className="flex items-center gap-2 flex-wrap justify-center">
+            <Select value={statusFilter} onValueChange={handleStatusChange}>
+              <SelectTrigger className="h-7 text-xs w-[110px]">
+                <Filter className="h-3 w-3 mr-1" />
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={serviceFilter} onValueChange={handleServiceChange}>
+              <SelectTrigger className="h-7 text-xs w-[110px]">
+                <SelectValue placeholder="Service" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Services</SelectItem>
+                {uniqueServices.map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="pl-6 text-xs w-[180px]">Client</TableHead>
+              <TableHead className="text-xs">Service</TableHead>
+              <TableHead className="text-xs hidden md:table-cell">Professional</TableHead>
+              <TableHead className="text-xs hidden sm:table-cell">Date & Time</TableHead>
+              <TableHead className="text-xs hidden sm:table-cell text-right">Duration</TableHead>
+              <TableHead className="text-xs text-right">Price</TableHead>
+              <TableHead className="text-xs pr-6 text-right">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading &&
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i} className="hover:bg-transparent">
+                  {[180, 120, 120, 100, 60, 60, 90].map((w, j) => (
+                    <TableCell key={j} className={j === 0 ? "pl-6" : j === 6 ? "pr-6" : ""}>
+                      <div
+                        className="h-4 animate-pulse bg-muted rounded"
+                        style={{ width: w }}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+
+            {!isLoading && pageItems.length === 0 && (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={7} className="text-center py-10 text-sm text-muted-foreground">
+                  No appointments found.
+                </TableCell>
+              </TableRow>
+            )}
+
+            {!isLoading &&
+              pageItems.map((apt) => {
+                const cfg = getStatusConfig(apt.status);
+                const StatusIcon = cfg.icon;
+                return (
+                  <TableRow key={apt.id}>
+                    {/* Client */}
+                    <TableCell className="pl-6">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-7 w-7 flex-shrink-0">
+                          <AvatarFallback className="text-[10px] font-semibold">
+                            {getInitials(apt.client)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-sm font-medium truncate max-w-[120px]">
+                          {apt.client}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    {/* Service */}
+                    <TableCell>
+                      <span className="text-sm">{apt.service}</span>
+                    </TableCell>
+
+                    {/* Professional */}
+                    <TableCell className="hidden md:table-cell">
+                      <span className="text-sm text-muted-foreground">{apt.employee}</span>
+                    </TableCell>
+
+                    {/* Date & Time */}
+                    <TableCell className="hidden sm:table-cell">
+                      <div className="text-xs">
+                        <p className="font-medium">{apt.date}</p>
+                        <p className="text-muted-foreground">{apt.time}</p>
+                      </div>
+                    </TableCell>
+
+                    {/* Duration */}
+                    <TableCell className="hidden sm:table-cell text-right">
+                      <span className="text-xs text-muted-foreground">{apt.duration}</span>
+                    </TableCell>
+
+                    {/* Price */}
+                    <TableCell className="text-right">
+                      {apt.price !== undefined ? (
+                        <span className="text-sm font-semibold">
+                          ${Number(apt.price).toLocaleString()}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+
+                    {/* Status */}
+                    <TableCell className="pr-6 text-right">
+                      <Badge variant={cfg.variant} className="gap-1 text-[10px] px-1.5 py-0">
+                        <StatusIcon className="h-2.5 w-2.5" />
+                        {cfg.label}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+
+        {/* Pagination */}
+        {!isLoading && totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-3 border-t">
+            <span className="text-xs text-muted-foreground">
+              {startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
+            </span>
+            <div className="flex items-center gap-1">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={goToPreviousPage}
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
-                className="text-xs"
+                className="h-7 w-7 p-0"
               >
-                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Previous</span>
+                <ChevronLeft className="h-3.5 w-3.5" />
               </Button>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                  let page;
-                  if (totalPages <= 5) {
-                    page = i + 1;
-                  } else if (currentPage <= 3) {
-                    page = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    page = totalPages - 4 + i;
-                  } else {
-                    page = currentPage - 2 + i;
-                  }
-                  return (
-                    <Button
-                      key={page}
-                      variant={currentPage === page ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setCurrentPage(page)}
-                      className="w-7 h-7 sm:w-8 sm:h-8 p-0 text-xs"
-                    >
-                      {page}
-                    </Button>
-                  );
-                })}
-              </div>
+              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                let page: number;
+                if (totalPages <= 5) page = i + 1;
+                else if (currentPage <= 3) page = i + 1;
+                else if (currentPage >= totalPages - 2) page = totalPages - 4 + i;
+                else page = currentPage - 2 + i;
+                return (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setCurrentPage(page)}
+                    className="h-7 w-7 p-0 text-xs"
+                  >
+                    {page}
+                  </Button>
+                );
+              })}
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={goToNextPage}
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="text-xs"
+                className="h-7 w-7 p-0"
               >
-                <span className="hidden sm:inline">Next</span>
-                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                <ChevronRight className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
