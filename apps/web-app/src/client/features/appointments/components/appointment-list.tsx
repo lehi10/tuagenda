@@ -37,7 +37,6 @@ export function AppointmentList() {
   const { data, isLoading } =
     useTrpc.appointment.getBusinessAppointments.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         pagination: {
           limit: 10,
           offset: 0,

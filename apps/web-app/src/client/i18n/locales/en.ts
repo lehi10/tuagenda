@@ -223,6 +223,7 @@ export const en = {
       howToGetThere: "How to get there (Google Maps)",
       needToReschedule: "Need to reschedule or cancel?",
       contactUs: "Contact us at",
+      confirmationNumber: "Confirmation number",
       makeAnotherBooking: "Make Another Booking",
       viewMyBookings: "View My Bookings",
       needToCancelOrModify:

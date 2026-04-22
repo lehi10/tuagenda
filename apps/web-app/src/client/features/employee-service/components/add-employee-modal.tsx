@@ -54,7 +54,6 @@ export function AddEmployeeModal({
   const { data: employeesData, isLoading } =
     useTrpc.businessUser.getWithDetails.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         search: debouncedSearch || undefined,
       },
       {

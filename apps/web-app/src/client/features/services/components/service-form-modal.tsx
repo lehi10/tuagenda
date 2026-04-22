@@ -175,7 +175,6 @@ export function ServiceFormModal({
         await assignMutation.mutateAsync({
           businessUserId,
           serviceId: service.id,
-          businessId: currentBusiness.id,
         });
       }
       toast.success(

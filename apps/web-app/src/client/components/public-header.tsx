@@ -30,11 +30,11 @@ export function PublicHeader() {
   // Función auxiliar para obtener el valor traducido desde las claves de traducción
   const getTranslation = (key: string) => {
     const keys = key.split(".");
-    let value: any = t;
+    let value: unknown = t;
 
     for (const k of keys) {
       if (value && typeof value === "object" && k in value) {
-        value = value[k];
+        value = (value as Record<string, unknown>)[k];
       } else {
         // Si la clave no existe, devolver la clave original
         return t.navigation[key as keyof typeof t.navigation] || key;

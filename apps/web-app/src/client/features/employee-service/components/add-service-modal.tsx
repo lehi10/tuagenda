@@ -57,7 +57,6 @@ export function AddServiceModal({
 
   const { data: servicesData, isLoading } = useTrpc.service.list.useQuery(
     {
-      businessId: currentBusiness?.id || "",
       active: true,
     },
     {

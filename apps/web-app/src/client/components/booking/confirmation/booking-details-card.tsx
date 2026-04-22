@@ -7,7 +7,7 @@
 import { Card, CardContent } from "@/client/components/ui/card";
 import { Separator } from "@/client/components/ui/separator";
 import { useTranslation } from "@/client/i18n";
-import { Calendar, Clock, User, CreditCard } from "lucide-react";
+import { Calendar, Clock, User, CreditCard, Hash } from "lucide-react";
 import { format } from "date-fns";
 import { InfoDisplayItem } from "@/client/components/booking/shared/info-display-item";
 import { useDateLocale } from "@/client/hooks/use-date-locale";
@@ -16,10 +16,12 @@ import type { BookingSummary } from "@/client/types/booking";
 
 interface BookingDetailsCardProps {
   bookingSummary: BookingSummary;
+  appointmentId: string | null;
 }
 
 export function BookingDetailsCard({
   bookingSummary,
+  appointmentId,
 }: BookingDetailsCardProps) {
   const { t } = useTranslation();
   const dateLocale = useDateLocale();
@@ -73,6 +75,18 @@ export function BookingDetailsCard({
               paymentMethodLabels
             )}
           />
+
+          {/* Confirmation Number */}
+          {appointmentId && (
+            <>
+              <Separator />
+              <InfoDisplayItem
+                icon={Hash}
+                value={t.booking.confirmation.confirmationNumber}
+                subValue={appointmentId.slice(0, 8).toUpperCase()}
+              />
+            </>
+          )}
         </div>
       </CardContent>
     </Card>

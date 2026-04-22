@@ -191,7 +191,6 @@ export function EmployeeDialog({
         await assignMutation.mutateAsync({
           businessUserId: editData.id,
           serviceId,
-          businessId: currentBusiness.id,
         });
       }
       toast.success(

@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, businessMemberProcedure } from "../procedures";
 import { PrismaEmployeeAvailabilityRepository } from "@/server/infrastructure/repositories/PrismaEmployeeAvailabilityRepository";
 import { EmployeeAvailability } from "@/server/core/domain/entities";
 import { randomUUID } from "crypto";
-
-const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
 
 export const employeeAvailabilityRouter = router({
   getByEmployee: privateProcedure
@@ -15,27 +13,28 @@ export const employeeAvailabilityRouter = router({
       })
     )
     .query(async ({ input }) => {
+      const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
       const availabilities = await availabilityRepository.findByEmployee(
         input.businessUserId
       );
       return availabilities.map((a) => a.toObject());
     }),
 
-  create: privateProcedure
+  create: businessMemberProcedure
     .input(
       z.object({
         businessUserId: z.string().uuid(),
-        businessId: z.string().uuid(),
         dayOfWeek: z.number().int().min(0).max(6),
         startTime: z.date(),
         endTime: z.date(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
       const availability = EmployeeAvailability.create({
         id: randomUUID(),
         businessUserId: input.businessUserId,
-        businessId: input.businessId,
+        businessId: ctx.businessId,
         dayOfWeek: input.dayOfWeek,
         startTime: input.startTime,
         endTime: input.endTime,
@@ -45,7 +44,7 @@ export const employeeAvailabilityRouter = router({
       return created.toObject();
     }),
 
-  update: privateProcedure
+  update: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid(),
@@ -55,6 +54,7 @@ export const employeeAvailabilityRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
       const existing = await availabilityRepository.findById(input.id);
       if (!existing) {
         throw new Error("Availability not found");
@@ -72,21 +72,21 @@ export const employeeAvailabilityRouter = router({
       return updated.toObject();
     }),
 
-  delete: privateProcedure
+  delete: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid(),
       })
     )
     .mutation(async ({ input }) => {
+      const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
       await availabilityRepository.delete(input.id);
     }),
 
-  setEmployeeAvailability: privateProcedure
+  setEmployeeAvailability: businessMemberProcedure
     .input(
       z.object({
         businessUserId: z.string().uuid(),
-        businessId: z.string().uuid(),
         availabilities: z.array(
           z.object({
             dayOfWeek: z.number().int().min(0).max(6),
@@ -96,12 +96,13 @@ export const employeeAvailabilityRouter = router({
         ),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const availabilityRepository = new PrismaEmployeeAvailabilityRepository();
       const availabilityEntities = input.availabilities.map((a) =>
         EmployeeAvailability.create({
           id: randomUUID(),
           businessUserId: input.businessUserId,
-          businessId: input.businessId,
+          businessId: ctx.businessId,
           dayOfWeek: a.dayOfWeek,
           startTime: a.startTime,
           endTime: a.endTime,
@@ -110,7 +111,7 @@ export const employeeAvailabilityRouter = router({
 
       const created = await availabilityRepository.setEmployeeAvailability(
         input.businessUserId,
-        input.businessId,
+        ctx.businessId,
         availabilityEntities
       );
 

@@ -97,30 +97,25 @@ const STORAGE_KEY = "current-business-id";
  *
  * Manages the current business and user's role in that business.
  * Uses TanStack Query for data fetching and caching.
- * Persists selected business to localStorage.
+ * Persists selected business to sessionStorage.
  *
  * Supports two modes:
  * - Regular users: Fetch only businesses they're associated with via business_users
  * - Superadmins: Fetch all businesses in the system
  */
 export function BusinessProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const [currentBusinessId, setCurrentBusinessId] = useState<string | null>(
-    null
+    () => {
+      if (typeof window !== "undefined") {
+        return sessionStorage.getItem(STORAGE_KEY);
+      }
+      return null;
+    }
   );
 
   const isSuperAdmin = user?.type === UserType.SUPERADMIN;
-
-  // Load saved business ID from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedId = localStorage.getItem(STORAGE_KEY);
-      if (savedId) {
-        setCurrentBusinessId(savedId);
-      }
-    }
-  }, []);
 
   // QUERY 1: Fetch business-user relationships (only for regular users)
   const {
@@ -141,9 +136,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
         "Fetching business-user relationships"
       );
 
-      const businessUsers = await trpc.businessUser.getByUser.query({
-        userId: user.id,
-      });
+      const businessUsers = await trpc.businessUser.getByUser.query();
 
       logger.info(
         "BusinessContext",
@@ -232,9 +225,9 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
   // Set initial business when data loads
   useEffect(() => {
     if (businesses.length > 0 && currentBusinessId === null) {
-      // Try to load from localStorage
+      // Try to load from sessionStorage
       if (typeof window !== "undefined") {
-        const savedId = localStorage.getItem(STORAGE_KEY);
+        const savedId = sessionStorage.getItem(STORAGE_KEY);
         if (savedId) {
           const savedBusiness = businesses.find((b) => b.id === savedId);
           if (savedBusiness) {
@@ -254,7 +247,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
       setCurrentBusinessId(firstBusinessId);
 
       if (typeof window !== "undefined") {
-        localStorage.setItem(STORAGE_KEY, String(firstBusinessId));
+        sessionStorage.setItem(STORAGE_KEY, String(firstBusinessId));
       }
 
       logger.info(
@@ -266,14 +259,15 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
   }, [businesses, currentBusinessId, user?.id]);
 
   // Clear business data when user logs out
+  // Guard: only clear when auth has fully resolved (not during initial loading)
   useEffect(() => {
-    if (!user) {
+    if (!authLoading && !user) {
       setCurrentBusinessId(null);
       queryClient.removeQueries({ queryKey: ["business-users"] });
       queryClient.removeQueries({ queryKey: ["businesses"] });
 
       if (typeof window !== "undefined") {
-        localStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(STORAGE_KEY);
       }
 
       logger.info(
@@ -282,7 +276,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
         "Cleared business data on logout"
       );
     }
-  }, [user, queryClient]);
+  }, [authLoading, user, queryClient]);
 
   // Find current business and business-user relationship
   const currentBusinessUser = isSuperAdmin
@@ -323,7 +317,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
     setCurrentBusinessId(businessId);
 
     if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, String(businessId));
+      sessionStorage.setItem(STORAGE_KEY, String(businessId));
     }
 
     logger.info(

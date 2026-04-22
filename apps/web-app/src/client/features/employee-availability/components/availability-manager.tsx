@@ -68,7 +68,6 @@ export function AvailabilityManager({
 
       await createMutation.mutateAsync({
         businessUserId,
-        businessId: currentBusiness.id,
         dayOfWeek: selectedDay,
         startTime: start,
         endTime: end,
@@ -87,15 +86,16 @@ export function AvailabilityManager({
   };
 
   // Group availabilities by day
+  type AvailabilityItem = NonNullable<typeof availabilities>[number];
   const availabilitiesByDay = availabilities?.reduce(
-    (acc, avail) => {
+    (acc: Record<number, AvailabilityItem[]>, avail: AvailabilityItem) => {
       if (!acc[avail.dayOfWeek]) {
         acc[avail.dayOfWeek] = [];
       }
       acc[avail.dayOfWeek].push(avail);
       return acc;
     },
-    {} as Record<number, typeof availabilities>
+    {} as Record<number, AvailabilityItem[]>
   );
 
   return (
@@ -157,7 +157,8 @@ export function AvailabilityManager({
           </div>
         ) : (
           DAYS_OF_WEEK.map((day) => {
-            const dayAvails = availabilitiesByDay?.[day.value] || [];
+            const dayAvails: AvailabilityItem[] =
+              availabilitiesByDay?.[day.value] ?? [];
             if (dayAvails.length === 0) return null;
 
             return (

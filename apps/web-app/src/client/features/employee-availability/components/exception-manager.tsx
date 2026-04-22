@@ -11,6 +11,7 @@ import { Badge } from "@/client/components/ui/badge";
 import { useBusiness } from "@/client/contexts";
 import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
 import { useTrpc } from "@/client/lib/trpc";
+import { EmployeeExceptionProps } from "@/server/core/domain/entities";
 import { fromZonedTime, formatInTz } from "@/client/lib/timezone-utils";
 
 interface ExceptionManagerProps {
@@ -70,7 +71,6 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
 
       await createMutation.mutateAsync({
         businessUserId,
-        businessId: currentBusiness.id,
         date: exceptionDate,
         isAllDay,
         startTime: start,
@@ -186,7 +186,7 @@ export function ExceptionManager({ businessUserId }: ExceptionManagerProps) {
             No hay excepciones configuradas
           </div>
         ) : (
-          exceptions.map((exception) => (
+          exceptions.map((exception: EmployeeExceptionProps) => (
             <div
               key={exception.id}
               className="p-3 rounded-lg border group space-y-1"

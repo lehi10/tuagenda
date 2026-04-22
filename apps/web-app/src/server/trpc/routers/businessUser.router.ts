@@ -10,7 +10,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure, publicProcedure } from "../procedures";
+import {
+  privateProcedure,
+  publicProcedure,
+  businessMemberProcedure,
+} from "../procedures";
 import {
   PrismaBusinessUserRepository,
   PrismaBusinessRepository,
@@ -89,15 +93,14 @@ export const businessUserRouter = router({
    * Create a business-user relationship
    * Uses authenticated user's ID
    */
-  create: privateProcedure
+  create: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         userId: z.string().min(1, "User ID is required"),
         role: z.nativeEnum(BusinessRole),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const businessUserRepository = new PrismaBusinessUserRepository();
       const userRepository = new PrismaUserRepository();
       const createBusinessUserUseCase = new CreateBusinessUserUseCase(
@@ -107,7 +110,7 @@ export const businessUserRouter = router({
 
       const result = await createBusinessUserUseCase.execute({
         userId: input.userId,
-        businessId: input.businessId,
+        businessId: ctx.businessId,
         role: input.role,
       });
 
@@ -184,21 +187,23 @@ export const businessUserRouter = router({
   /**
    * Get all users associated with a business
    */
-  getByBusiness: privateProcedure
+  getByBusiness: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         role: z.nativeEnum(BusinessRole).optional(),
         limit: z.number().optional(),
         offset: z.number().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const businessUserRepository = new PrismaBusinessUserRepository();
       const getBusinessUsersByBusinessUseCase =
         new GetBusinessUsersByBusinessUseCase(businessUserRepository);
 
-      const result = await getBusinessUsersByBusinessUseCase.execute(input);
+      const result = await getBusinessUsersByBusinessUseCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.businessUsers) {
         throw new TRPCError({
@@ -217,7 +222,6 @@ export const businessUserRouter = router({
     .input(
       z
         .object({
-          userId: z.string().min(1),
           role: z.nativeEnum(BusinessRole).optional(),
           limit: z.number().optional(),
           offset: z.number().optional(),
@@ -231,7 +235,7 @@ export const businessUserRouter = router({
       );
 
       const result = await getBusinessUsersByUserUseCase.execute({
-        userId: input?.userId || ctx.userId,
+        userId: ctx.userId,
         role: input?.role,
         limit: input?.limit,
         offset: input?.offset,
@@ -251,19 +255,21 @@ export const businessUserRouter = router({
    * Get business users with full user details
    * Used for employee list views
    */
-  getWithDetails: privateProcedure
+  getWithDetails: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         search: z.string().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const businessUserRepository = new PrismaBusinessUserRepository();
       const getBusinessUsersWithDetailsUseCase =
         new GetBusinessUsersWithDetailsUseCase(businessUserRepository);
 
-      const result = await getBusinessUsersWithDetailsUseCase.execute(input);
+      const result = await getBusinessUsersWithDetailsUseCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.businessUsers) {
         throw new TRPCError({

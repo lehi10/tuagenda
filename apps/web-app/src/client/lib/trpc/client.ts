@@ -5,9 +5,11 @@ import type { AppRouter } from "@/server/trpc";
 import { getFirebaseAuth } from "@/client/lib/auth/firebase/config";
 
 /**
- * Shared link configuration for both clients
+ * Shared link configuration for both clients.
+ * Accepts an optional getter for businessId so the TRPCProvider
+ * can supply it from React context via a ref instead of localStorage.
  */
-function createLink() {
+export function createLink(getBusinessId?: () => string | null) {
   return httpBatchLink({
     url: "/api/trpc",
     transformer: superjson,
@@ -25,8 +27,10 @@ function createLink() {
 
       try {
         const token = await user.getIdToken();
+        const businessId = getBusinessId?.() ?? null;
         return {
           authorization: `Bearer ${token}`,
+          ...(businessId ? { "x-business-id": businessId } : {}),
         };
       } catch {
         return {};
@@ -44,15 +48,6 @@ function createLink() {
  * const mutation = useTrpc.user.create.useMutation();
  */
 export const useTrpc = createTRPCReact<AppRouter>();
-
-/**
- * Get the tRPC client configuration for React Query
- */
-export function getTRPCClientConfig() {
-  return {
-    links: [createLink()],
-  };
-}
 
 /**
  * tRPC direct client (no hooks)

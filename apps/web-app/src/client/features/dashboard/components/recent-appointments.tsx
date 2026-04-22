@@ -92,7 +92,6 @@ export function RecentAppointments() {
   const { data, isLoading } =
     useTrpc.appointment.getBusinessAppointments.useQuery(
       {
-        businessId: currentBusiness?.id ?? "",
         pagination: { limit: 100, offset: 0 },
       },
       { enabled: !!currentBusiness?.id }

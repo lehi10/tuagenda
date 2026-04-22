@@ -36,7 +36,6 @@ export function AppointmentStats() {
   const { data: totalData } =
     useTrpc.appointment.getBusinessAppointments.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         pagination: { limit: 1, offset: 0 },
       },
       { enabled: !!currentBusiness?.id }
@@ -46,7 +45,6 @@ export function AppointmentStats() {
   const { data: upcomingData } =
     useTrpc.appointment.getBusinessAppointments.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         filters: {
           status: ["scheduled", "confirmed"],
           startAfter: startOfToday.toISOString(),
@@ -61,7 +59,6 @@ export function AppointmentStats() {
   const { data: completedData } =
     useTrpc.appointment.getBusinessAppointments.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         filters: {
           status: "completed",
           startAfter: startOfMonth.toISOString(),
@@ -76,7 +73,6 @@ export function AppointmentStats() {
   const { data: cancelledData } =
     useTrpc.appointment.getBusinessAppointments.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         filters: {
           status: "cancelled",
           startAfter: startOfMonth.toISOString(),

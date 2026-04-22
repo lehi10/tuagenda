@@ -54,9 +54,7 @@ export function ServiceEmployeesSheet({
   // Fetch all employees for the business
   const { data: employeesData, isLoading: isLoadingEmployees } =
     useTrpc.businessUser.getWithDetails.useQuery(
-      {
-        businessId: currentBusiness?.id || "",
-      },
+      {},
       {
         enabled: !!currentBusiness?.id && open,
       }
@@ -132,7 +130,6 @@ export function ServiceEmployeesSheet({
           assignMutation.mutateAsync({
             businessUserId: employeeId,
             serviceId: serviceId,
-            businessId: currentBusiness.id,
           })
         );
       }

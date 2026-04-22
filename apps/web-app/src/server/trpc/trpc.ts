@@ -9,6 +9,7 @@ import { verifyAuthToken } from "@/server/lib/auth/firebase/admin";
 export interface Context {
   userId: string | null;
   userEmail: string | null;
+  businessId: string | null;
 }
 
 /**
@@ -17,19 +18,20 @@ export interface Context {
  */
 export async function createContext(opts: { req: Request }): Promise<Context> {
   const authHeader = opts.req.headers.get("authorization");
+  const businessId = opts.req.headers.get("x-business-id");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return { userId: null, userEmail: null };
+    return { userId: null, userEmail: null, businessId };
   }
 
   const token = authHeader.slice(7); // Remove "Bearer " prefix
 
   try {
     const { uid, email } = await verifyAuthToken(token);
-    return { userId: uid, userEmail: email };
+    return { userId: uid, userEmail: email, businessId };
   } catch {
     // Invalid token - return unauthenticated context
-    return { userId: null, userEmail: null };
+    return { userId: null, userEmail: null, businessId };
   }
 }
 

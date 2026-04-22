@@ -228,6 +228,7 @@ export const es: Translations = {
       howToGetThere: "Cómo llegar (Google Maps)",
       needToReschedule: "¿Necesitas reagendar o cancelar?",
       contactUs: "Contáctanos al",
+      confirmationNumber: "Número de confirmación",
       makeAnotherBooking: "Hacer otra Reserva",
       viewMyBookings: "Ver mis Reservas",
       needToCancelOrModify:

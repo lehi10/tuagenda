@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
 import { useTrpc } from "@/client/lib/trpc";
+import { useBusiness } from "@/client/contexts/business-context";
 import { LucideIcon } from "lucide-react";
 
 interface DashboardStatsProps {
-  businessId: string;
   period: string;
 }
 
@@ -64,15 +64,15 @@ function StatItem({ title, value, icon: Icon, trend, sub }: StatItemProps) {
   );
 }
 
-export function DashboardStats({ businessId, period }: DashboardStatsProps) {
+export function DashboardStats({ period }: DashboardStatsProps) {
   const { t } = useTranslation();
+  const { currentBusiness } = useBusiness();
 
   const { data, isLoading } = useTrpc.analytics.getStats.useQuery(
     {
-      businessId,
       period: period as "7days" | "30days" | "3months" | "6months" | "year",
     },
-    { enabled: !!businessId }
+    { enabled: !!currentBusiness?.id }
   );
 
   if (isLoading || !data) {

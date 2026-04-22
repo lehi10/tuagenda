@@ -2,7 +2,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/client/i18n";
 import { AuthProvider, BusinessProvider } from "@/client/contexts";
-import { TRPCProvider } from "@/client/lib/trpc";
+import { TRPCProvider, QueryProvider } from "@/client/lib/trpc";
 import { Toaster } from "@/client/components/ui/toaster";
 import { GoogleAnalytics, TawkTo } from "@/client/components/scripts";
 import type { Metadata } from "next";
@@ -32,13 +32,15 @@ export default function RootLayout({
     <html lang="es">
       <head>{gaId && <GoogleAnalytics measurementId={gaId} />}</head>
       <body className={`${poppins.variable} antialiased font-sans`}>
-        <TRPCProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <QueryProvider>
             <BusinessProvider>
-              <I18nProvider>{children}</I18nProvider>
+              <TRPCProvider>
+                <I18nProvider>{children}</I18nProvider>
+              </TRPCProvider>
             </BusinessProvider>
-          </AuthProvider>
-        </TRPCProvider>
+          </QueryProvider>
+        </AuthProvider>
         <Toaster
           theme="light"
           richColors

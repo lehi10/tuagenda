@@ -18,12 +18,9 @@ export default function DashboardPage() {
   const [chartsPeriod, setChartsPeriod] = useState("7days");
   const { currentBusiness } = useBusiness();
 
-  const businessId = currentBusiness?.id ?? "";
-
   const { data: chartsData, isLoading: chartsLoading } =
     useTrpc.analytics.getCharts.useQuery(
       {
-        businessId,
         period: chartsPeriod as
           | "7days"
           | "30days"
@@ -31,7 +28,7 @@ export default function DashboardPage() {
           | "6months"
           | "year",
       },
-      { enabled: !!businessId }
+      { enabled: !!currentBusiness?.id }
     );
 
   return (
@@ -48,7 +45,7 @@ export default function DashboardPage() {
       </div>
 
       {/* KPI strip */}
-      <DashboardStats businessId={businessId} period={chartsPeriod} />
+      <DashboardStats period={chartsPeriod} />
 
       {/* Recent appointments */}
       <RecentAppointments />

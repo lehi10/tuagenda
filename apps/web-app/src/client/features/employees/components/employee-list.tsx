@@ -61,7 +61,6 @@ export function EmployeeList() {
   const { data: employeesData, isLoading } =
     useTrpc.businessUser.getWithDetails.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         search: debouncedSearch || undefined,
       },
       {
@@ -94,7 +93,6 @@ export function EmployeeList() {
       if (!currentBusiness?.id) throw new Error("No business selected");
       await createMutation.mutateAsync({
         userId: data.userId,
-        businessId: currentBusiness.id,
         role: data.role,
       });
     }

@@ -8,7 +8,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure, publicProcedure } from "../procedures";
+import {
+  privateProcedure,
+  publicProcedure,
+  businessMemberProcedure,
+} from "../procedures";
 import { PrismaServiceRepository } from "@/server/infrastructure/repositories/PrismaServiceRepository";
 import {
   CreateServiceUseCase,
@@ -89,10 +93,9 @@ export const serviceRouter = router({
   /**
    * List services for a business (PRIVATE)
    */
-  list: privateProcedure
+  list: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         categoryId: z.string().uuid().optional().nullable(),
         active: z.boolean().optional(),
         search: z.string().optional(),
@@ -104,10 +107,13 @@ export const serviceRouter = router({
         offset: z.number().int().nonnegative().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const repository = new PrismaServiceRepository();
       const useCase = new ListServicesUseCase(repository);
-      const result = await useCase.execute(input);
+      const result = await useCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.services) {
         throw new TRPCError({
@@ -131,10 +137,9 @@ export const serviceRouter = router({
   /**
    * Create a new service (PRIVATE)
    */
-  create: privateProcedure
+  create: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         categoryId: z.string().uuid().optional().nullable(),
         name: z.string().min(1, "Name is required").max(255),
         description: z.string().optional().nullable(),
@@ -147,10 +152,13 @@ export const serviceRouter = router({
         active: z.boolean().optional().default(true),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const repository = new PrismaServiceRepository();
       const useCase = new CreateServiceUseCase(repository);
-      const result = await useCase.execute(input);
+      const result = await useCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.service) {
         throw new TRPCError({
@@ -169,7 +177,7 @@ export const serviceRouter = router({
   /**
    * Update an existing service (PRIVATE)
    */
-  update: privateProcedure
+  update: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid("Service ID must be a valid UUID"),
@@ -203,7 +211,7 @@ export const serviceRouter = router({
   /**
    * Delete a service (PRIVATE)
    */
-  delete: privateProcedure
+  delete: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid("Service ID must be a valid UUID"),

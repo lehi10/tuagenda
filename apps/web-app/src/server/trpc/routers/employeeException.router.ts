@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, businessMemberProcedure } from "../procedures";
 import { PrismaEmployeeExceptionRepository } from "@/server/infrastructure/repositories/PrismaEmployeeExceptionRepository";
 import { EmployeeException } from "@/server/core/domain/entities";
 import { randomUUID } from "crypto";
-
-const exceptionRepository = new PrismaEmployeeExceptionRepository();
 
 export const employeeExceptionRouter = router({
   getByEmployee: privateProcedure
@@ -15,6 +13,7 @@ export const employeeExceptionRouter = router({
       })
     )
     .query(async ({ input }) => {
+      const exceptionRepository = new PrismaEmployeeExceptionRepository();
       const exceptions = await exceptionRepository.findByEmployee(
         input.businessUserId
       );
@@ -30,6 +29,7 @@ export const employeeExceptionRouter = router({
       })
     )
     .query(async ({ input }) => {
+      const exceptionRepository = new PrismaEmployeeExceptionRepository();
       const exceptions = await exceptionRepository.findByEmployeeDateRange(
         input.businessUserId,
         input.startDate,
@@ -38,11 +38,10 @@ export const employeeExceptionRouter = router({
       return exceptions.map((e) => e.toObject());
     }),
 
-  create: privateProcedure
+  create: businessMemberProcedure
     .input(
       z.object({
         businessUserId: z.string().uuid(),
-        businessId: z.string().uuid(),
         date: z.date(),
         isAllDay: z.boolean(),
         startTime: z.date().optional(),
@@ -51,11 +50,12 @@ export const employeeExceptionRouter = router({
         reason: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const exceptionRepository = new PrismaEmployeeExceptionRepository();
       const exception = EmployeeException.create({
         id: randomUUID(),
         businessUserId: input.businessUserId,
-        businessId: input.businessId,
+        businessId: ctx.businessId,
         date: input.date,
         isAllDay: input.isAllDay,
         startTime: input.startTime,
@@ -68,7 +68,7 @@ export const employeeExceptionRouter = router({
       return created.toObject();
     }),
 
-  update: privateProcedure
+  update: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid(),
@@ -81,6 +81,7 @@ export const employeeExceptionRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      const exceptionRepository = new PrismaEmployeeExceptionRepository();
       const existing = await exceptionRepository.findById(input.id);
       if (!existing) {
         throw new Error("Exception not found");
@@ -112,13 +113,14 @@ export const employeeExceptionRouter = router({
       return updated.toObject();
     }),
 
-  delete: privateProcedure
+  delete: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid(),
       })
     )
     .mutation(async ({ input }) => {
+      const exceptionRepository = new PrismaEmployeeExceptionRepository();
       await exceptionRepository.delete(input.id);
     }),
 });

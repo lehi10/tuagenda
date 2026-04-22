@@ -8,7 +8,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure, publicProcedure } from "../procedures";
+import {
+  privateProcedure,
+  publicProcedure,
+  businessMemberProcedure,
+} from "../procedures";
 import { PrismaServiceCategoryRepository } from "@/server/infrastructure/repositories/PrismaServiceCategoryRepository";
 import {
   CreateServiceCategoryUseCase,
@@ -74,19 +78,21 @@ export const serviceCategoryRouter = router({
   /**
    * List service categories for a business (PRIVATE)
    */
-  list: privateProcedure
+  list: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         search: z.string().optional(),
         limit: z.number().int().positive().optional(),
         offset: z.number().int().nonnegative().optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const repository = new PrismaServiceCategoryRepository();
       const useCase = new ListServiceCategoriesUseCase(repository);
-      const result = await useCase.execute(input);
+      const result = await useCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.categories) {
         throw new TRPCError({
@@ -104,18 +110,20 @@ export const serviceCategoryRouter = router({
   /**
    * Create a new service category (PRIVATE)
    */
-  create: privateProcedure
+  create: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
         name: z.string().min(1, "Name is required").max(255),
         description: z.string().optional().nullable(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const repository = new PrismaServiceCategoryRepository();
       const useCase = new CreateServiceCategoryUseCase(repository);
-      const result = await useCase.execute(input);
+      const result = await useCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.category) {
         throw new TRPCError({
@@ -130,7 +138,7 @@ export const serviceCategoryRouter = router({
   /**
    * Update an existing service category (PRIVATE)
    */
-  update: privateProcedure
+  update: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid("Service category ID must be a valid UUID"),
@@ -156,7 +164,7 @@ export const serviceCategoryRouter = router({
   /**
    * Delete a service category (PRIVATE)
    */
-  delete: privateProcedure
+  delete: businessMemberProcedure
     .input(
       z.object({
         id: z.string().uuid("Service category ID must be a valid UUID"),

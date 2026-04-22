@@ -10,7 +10,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure, publicProcedure } from "../procedures";
+import {
+  privateProcedure,
+  publicProcedure,
+  businessMemberProcedure,
+} from "../procedures";
 import { PrismaAppointmentRepository } from "@/server/infrastructure/repositories/PrismaAppointmentRepository";
 import {
   GetCustomerUpcomingAppointmentsUseCase,
@@ -156,10 +160,9 @@ export const appointmentRouter = router({
    * Get all appointments for a business (PRIVATE)
    * Returns paginated appointments with filters
    */
-  getBusinessAppointments: privateProcedure
+  getBusinessAppointments: businessMemberProcedure
     .input(
       z.object({
-        businessId: z.string().uuid(),
         filters: z
           .object({
             status: z
@@ -186,14 +189,14 @@ export const appointmentRouter = router({
           .optional(),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const appointmentRepository = new PrismaAppointmentRepository();
       const getBusinessAppointmentsUseCase = new GetBusinessAppointmentsUseCase(
         appointmentRepository
       );
 
       const result = await getBusinessAppointmentsUseCase.execute({
-        businessId: input.businessId,
+        businessId: ctx.businessId,
         filters: input.filters
           ? {
               ...input.filters,

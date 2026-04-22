@@ -27,6 +27,7 @@ const createServerContext = cache((): Context => {
   return {
     userId: null,
     userEmail: null,
+    businessId: null,
   };
 });
 

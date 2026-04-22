@@ -64,7 +64,6 @@ export function EmployeeServicesSheet({
   const { data: servicesData, isLoading: isLoadingServices } =
     useTrpc.service.list.useQuery(
       {
-        businessId: currentBusiness?.id || "",
         active: true,
       },
       {
@@ -137,7 +136,6 @@ export function EmployeeServicesSheet({
     await assignMultipleMutation.mutateAsync({
       businessUserId: employeeId,
       serviceIds: Array.from(selectedServiceIds),
-      businessId: currentBusiness.id,
     });
   };
 

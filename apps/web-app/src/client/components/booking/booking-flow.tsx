@@ -40,8 +40,6 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
   // const stepConfig = singleProfessionalConfig
   const stepConfig: StepConfig[] = defaultStepConfig;
 
-  const [isAuthenticated] = useState(false); // TODO: Get from auth context
-
   const [appointmentId, setAppointmentId] = useState<string | null>(null);
 
   // Use the booking flow hook for state management
@@ -150,6 +148,7 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
       case "confirmation":
         return (
           <ConfirmationStep
+            appointmentId={appointmentId}
             bookingSummary={{
               service: bookingData.service!,
               professional: bookingData.professional,

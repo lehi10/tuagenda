@@ -51,15 +51,12 @@ export function ServicesManager() {
   // Queries
   const { data: categoriesData, isLoading: isLoadingCategories } =
     useTrpc.serviceCategory.list.useQuery(
-      { businessId: currentBusiness?.id || "" },
+      {},
       { enabled: !!currentBusiness?.id }
     );
 
   const { data: servicesData, isLoading: isLoadingServices } =
-    useTrpc.service.list.useQuery(
-      { businessId: currentBusiness?.id || "" },
-      { enabled: !!currentBusiness?.id }
-    );
+    useTrpc.service.list.useQuery({}, { enabled: !!currentBusiness?.id });
 
   // Mutations
   const createCategoryMutation = useTrpc.serviceCategory.create.useMutation({
@@ -174,7 +171,6 @@ export function ServicesManager() {
       toast.success("Categoria actualizada correctamente");
     } else {
       const result = await createCategoryMutation.mutateAsync({
-        businessId: currentBusiness.id,
         name: data.name,
         description: data.description || null,
       });
@@ -221,7 +217,6 @@ export function ServicesManager() {
       toast.success("Servicio actualizado correctamente");
     } else {
       await createServiceMutation.mutateAsync({
-        businessId: currentBusiness.id,
         categoryId: selectedCategoryId,
         name: data.name,
         description: data.description || null,

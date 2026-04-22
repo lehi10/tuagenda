@@ -30,7 +30,6 @@ export default function CalendarPage() {
 
   const { data } = useTrpc.appointment.getBusinessAppointments.useQuery(
     {
-      businessId: currentBusiness?.id ?? "",
       filters: {
         startAfter: dateRange.start,
         startBefore: dateRange.end,

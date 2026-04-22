@@ -8,7 +8,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router } from "../trpc";
-import { privateProcedure } from "../procedures";
+import { privateProcedure, businessMemberProcedure } from "../procedures";
 import { PrismaEmployeeServiceRepository } from "@/server/infrastructure/repositories/PrismaEmployeeServiceRepository";
 import {
   AssignServiceToEmployeeUseCase,
@@ -22,20 +22,22 @@ export const employeeServiceRouter = router({
   /**
    * Assign a service to an employee (PRIVATE)
    */
-  assign: privateProcedure
+  assign: businessMemberProcedure
     .input(
       z.object({
         businessUserId: z
           .string()
           .uuid("Business User ID must be a valid UUID"),
         serviceId: z.string().uuid("Service ID must be a valid UUID"),
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const repository = new PrismaEmployeeServiceRepository();
       const useCase = new AssignServiceToEmployeeUseCase(repository);
-      const result = await useCase.execute(input);
+      const result = await useCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.employeeService) {
         throw new TRPCError({
@@ -77,20 +79,22 @@ export const employeeServiceRouter = router({
   /**
    * Assign multiple services to an employee (replaces all existing) (PRIVATE)
    */
-  assignMultiple: privateProcedure
+  assignMultiple: businessMemberProcedure
     .input(
       z.object({
         businessUserId: z
           .string()
           .uuid("Business User ID must be a valid UUID"),
         serviceIds: z.array(z.string().uuid("Service ID must be a valid UUID")),
-        businessId: z.string().uuid("Business ID must be a valid UUID"),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const repository = new PrismaEmployeeServiceRepository();
       const useCase = new AssignMultipleServicesToEmployeeUseCase(repository);
-      const result = await useCase.execute(input);
+      const result = await useCase.execute({
+        ...input,
+        businessId: ctx.businessId,
+      });
 
       if (!result.success || !result.employeeServices) {
         throw new TRPCError({

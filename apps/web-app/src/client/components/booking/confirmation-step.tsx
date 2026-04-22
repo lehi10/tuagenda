@@ -10,11 +10,13 @@ import type { BookingSummary } from "@/client/types/booking";
 
 interface ConfirmationStepProps {
   bookingSummary: BookingSummary;
+  appointmentId: string | null;
   onBackToHome: () => void;
 }
 
 export function ConfirmationStep({
   bookingSummary,
+  appointmentId,
   onBackToHome,
 }: ConfirmationStepProps) {
   const { t } = useTranslation();
@@ -44,7 +46,10 @@ export function ConfirmationStep({
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Left Column: Booking Details + Email Notice */}
         <div className="space-y-6">
-          <BookingDetailsCard bookingSummary={bookingSummary} />
+          <BookingDetailsCard
+            bookingSummary={bookingSummary}
+            appointmentId={appointmentId}
+          />
           <EmailNotice email={bookingSummary.clientInfo.email} />
         </div>
 
