@@ -1,10 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/client/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/client/components/ui/sidebar";
 import { AppSidebar } from "@/client/components/app-sidebar";
 import { AppHeader } from "@/client/components/app-header";
 import { PrivateFooter } from "@/client/components/private-footer";

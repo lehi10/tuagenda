@@ -114,12 +114,7 @@ export function BookingShareDialog({
                 <Copy className="h-4 w-4" />
               )}
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="shrink-0"
-              asChild
-            >
+            <Button variant="outline" size="icon" className="shrink-0" asChild>
               <a href={bookingUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4" />
               </a>

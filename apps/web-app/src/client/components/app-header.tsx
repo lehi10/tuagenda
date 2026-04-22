@@ -36,7 +36,6 @@ export function AppHeader() {
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-4" />
 
-
           {/* Spacer */}
           <div className="flex-1" />
 

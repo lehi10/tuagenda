@@ -281,5 +281,7 @@ model Appointment {
   @@index([customerId])
   @@index([providerBusinessUserId])
   @@index([status])
+  @@index([startTime])
+  @@index([businessId, startTime])
   @@map("appointments")
 }
