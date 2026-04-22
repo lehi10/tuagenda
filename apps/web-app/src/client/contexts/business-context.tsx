@@ -320,6 +320,11 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
       sessionStorage.setItem(STORAGE_KEY, String(businessId));
     }
 
+    // Invalidate all cached queries so components refetch data for the new business.
+    // The businessId is sent via header (not query input), so React Query's cache
+    // keys don't change automatically when the business switches.
+    void queryClient.invalidateQueries();
+
     logger.info(
       "BusinessContext",
       user?.id || "system",
