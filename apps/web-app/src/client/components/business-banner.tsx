@@ -18,12 +18,16 @@ export function BusinessBanner() {
           <span className="text-muted-foreground">·</span>
           <span className="flex items-center gap-1 text-muted-foreground">
             <MapPin className="h-3 w-3" />
-            {currentBusiness.city}{currentBusiness.country ? `, ${currentBusiness.country}` : ""}
+            {currentBusiness.city}
+            {currentBusiness.country ? `, ${currentBusiness.country}` : ""}
           </span>
         </>
       )}
       {currentBusiness?.status && (
-        <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0">
+        <Badge
+          variant="outline"
+          className="bg-blue-100 text-blue-700 border-blue-200 text-[10px] px-1.5 py-0"
+        >
           {currentBusiness.status.toUpperCase()}
         </Badge>
       )}

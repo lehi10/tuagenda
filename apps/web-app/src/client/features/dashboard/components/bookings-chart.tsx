@@ -11,14 +11,7 @@ import {
   ChartTooltip,
   ChartConfig,
 } from "@/client/components/ui/chart";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Legend,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
 import { BookingDataPoint } from "@/server/core/domain/repositories/IAnalyticsRepository";
 
 const chartConfig = {
@@ -125,7 +118,11 @@ export function BookingsChart({ data, isLoading }: BookingsChartProps) {
               margin={{ top: 0, right: 4, bottom: 0, left: -20 }}
               barCategoryGap="30%"
             >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="hsl(var(--border))"
+              />
               <XAxis
                 dataKey="label"
                 tickLine={false}
@@ -143,32 +140,47 @@ export function BookingsChart({ data, isLoading }: BookingsChartProps) {
                 cursor={{ fill: "hsl(var(--muted))", opacity: 0.5 }}
                 content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
-                  const completed = payload.find((p) => p.dataKey === "completed")?.value as number ?? 0;
-                  const pending = payload.find((p) => p.dataKey === "pending")?.value as number ?? 0;
-                  const cancelled = payload.find((p) => p.dataKey === "cancelled")?.value as number ?? 0;
+                  const completed =
+                    (payload.find((p) => p.dataKey === "completed")
+                      ?.value as number) ?? 0;
+                  const pending =
+                    (payload.find((p) => p.dataKey === "pending")
+                      ?.value as number) ?? 0;
+                  const cancelled =
+                    (payload.find((p) => p.dataKey === "cancelled")
+                      ?.value as number) ?? 0;
                   const total = completed + pending + cancelled;
-                  const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+                  const rate =
+                    total > 0 ? Math.round((completed / total) * 100) : 0;
                   return (
                     <div className="rounded-lg border bg-background px-3 py-2 text-xs shadow-md space-y-1">
                       <p className="font-semibold">{label}</p>
                       <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-blue-500" />
                         <span className="text-muted-foreground">Completed</span>
-                        <span className="font-medium ml-auto pl-4">{completed}</span>
+                        <span className="font-medium ml-auto pl-4">
+                          {completed}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-slate-300" />
                         <span className="text-muted-foreground">Pending</span>
-                        <span className="font-medium ml-auto pl-4">{pending}</span>
+                        <span className="font-medium ml-auto pl-4">
+                          {pending}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-red-400" />
                         <span className="text-muted-foreground">Cancelled</span>
-                        <span className="font-medium ml-auto pl-4">{cancelled}</span>
+                        <span className="font-medium ml-auto pl-4">
+                          {cancelled}
+                        </span>
                       </div>
                       <div className="border-t pt-1 flex justify-between text-muted-foreground">
                         <span>Total</span>
-                        <span className="font-semibold text-foreground">{total} &nbsp;·&nbsp; {rate}%</span>
+                        <span className="font-semibold text-foreground">
+                          {total} &nbsp;·&nbsp; {rate}%
+                        </span>
                       </div>
                     </div>
                   );

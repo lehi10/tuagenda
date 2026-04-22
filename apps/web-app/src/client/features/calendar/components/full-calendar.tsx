@@ -39,7 +39,13 @@ export function FullCalendarView({
 
   return (
     <FullCalendar
-      plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, luxonPlugin]}
+      plugins={[
+        dayGridPlugin,
+        timeGridPlugin,
+        interactionPlugin,
+        listPlugin,
+        luxonPlugin,
+      ]}
       locales={allLocales}
       locale={locale}
       timeZone={timezone}

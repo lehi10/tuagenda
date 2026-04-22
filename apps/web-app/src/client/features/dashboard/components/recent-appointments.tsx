@@ -54,16 +54,32 @@ function toDisplayStatus(
 function getStatusConfig(status: DisplayStatus) {
   switch (status) {
     case "completed":
-      return { icon: CheckCircle2, variant: "default" as const, label: "Completed" };
+      return {
+        icon: CheckCircle2,
+        variant: "default" as const,
+        label: "Completed",
+      };
     case "pending":
-      return { icon: AlertCircle, variant: "secondary" as const, label: "Pending" };
+      return {
+        icon: AlertCircle,
+        variant: "secondary" as const,
+        label: "Pending",
+      };
     case "cancelled":
-      return { icon: XCircle, variant: "destructive" as const, label: "Cancelled" };
+      return {
+        icon: XCircle,
+        variant: "destructive" as const,
+        label: "Cancelled",
+      };
   }
 }
 
 function getInitials(name: string): string {
-  return name.split(" ").map((n) => n[0]).join("").toUpperCase();
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
 }
 
 export function RecentAppointments() {
@@ -73,10 +89,14 @@ export function RecentAppointments() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
 
-  const { data, isLoading } = useTrpc.appointment.getBusinessAppointments.useQuery(
-    { businessId: currentBusiness?.id ?? "", pagination: { limit: 100, offset: 0 } },
-    { enabled: !!currentBusiness?.id }
-  );
+  const { data, isLoading } =
+    useTrpc.appointment.getBusinessAppointments.useQuery(
+      {
+        businessId: currentBusiness?.id ?? "",
+        pagination: { limit: 100, offset: 0 },
+      },
+      { enabled: !!currentBusiness?.id }
+    );
 
   const appointments = useMemo(() => {
     return (data?.appointments ?? []).map((apt) => {
@@ -84,8 +104,8 @@ export function RecentAppointments() {
         ? `${apt.customer.firstName} ${apt.customer.lastName ?? ""}`.trim()
         : "Guest";
       const employeeName = apt.providerBusinessUser
-        ? apt.providerBusinessUser.displayName ??
-          `${apt.providerBusinessUser.user.firstName} ${apt.providerBusinessUser.user.lastName ?? ""}`.trim()
+        ? (apt.providerBusinessUser.displayName ??
+          `${apt.providerBusinessUser.user.firstName} ${apt.providerBusinessUser.user.lastName ?? ""}`.trim())
         : "—";
       const startTime = new Date(apt.startTime);
       const dateStr = startTime.toLocaleDateString(undefined, {
@@ -117,7 +137,10 @@ export function RecentAppointments() {
   }, [data]);
 
   const uniqueServices = useMemo(
-    () => Array.from(new Set(appointments.map((a) => a.service))).filter((s) => s !== "—"),
+    () =>
+      Array.from(new Set(appointments.map((a) => a.service))).filter(
+        (s) => s !== "—"
+      ),
     [appointments]
   );
 
@@ -126,7 +149,9 @@ export function RecentAppointments() {
       appointments.filter((apt) => {
         const q = searchQuery.toLowerCase();
         return (
-          (!q || apt.client.toLowerCase().includes(q) || apt.service.toLowerCase().includes(q)) &&
+          (!q ||
+            apt.client.toLowerCase().includes(q) ||
+            apt.service.toLowerCase().includes(q)) &&
           (statusFilter === "all" || apt.status === statusFilter) &&
           (serviceFilter === "all" || apt.service === serviceFilter)
         );
@@ -138,9 +163,18 @@ export function RecentAppointments() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const pageItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  const handleSearchChange = (v: string) => { setSearchQuery(v); setCurrentPage(1); };
-  const handleStatusChange = (v: string) => { setStatusFilter(v); setCurrentPage(1); };
-  const handleServiceChange = (v: string) => { setServiceFilter(v); setCurrentPage(1); };
+  const handleSearchChange = (v: string) => {
+    setSearchQuery(v);
+    setCurrentPage(1);
+  };
+  const handleStatusChange = (v: string) => {
+    setStatusFilter(v);
+    setCurrentPage(1);
+  };
+  const handleServiceChange = (v: string) => {
+    setServiceFilter(v);
+    setCurrentPage(1);
+  };
 
   return (
     <Card>
@@ -186,7 +220,9 @@ export function RecentAppointments() {
               <SelectContent>
                 <SelectItem value="all">All Services</SelectItem>
                 {uniqueServices.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -200,9 +236,15 @@ export function RecentAppointments() {
             <TableRow className="hover:bg-transparent">
               <TableHead className="pl-6 text-xs w-[180px]">Client</TableHead>
               <TableHead className="text-xs">Service</TableHead>
-              <TableHead className="text-xs hidden md:table-cell">Professional</TableHead>
-              <TableHead className="text-xs hidden sm:table-cell">Date & Time</TableHead>
-              <TableHead className="text-xs hidden sm:table-cell text-right">Duration</TableHead>
+              <TableHead className="text-xs hidden md:table-cell">
+                Professional
+              </TableHead>
+              <TableHead className="text-xs hidden sm:table-cell">
+                Date & Time
+              </TableHead>
+              <TableHead className="text-xs hidden sm:table-cell text-right">
+                Duration
+              </TableHead>
               <TableHead className="text-xs text-right">Price</TableHead>
               <TableHead className="text-xs pr-6 text-right">Status</TableHead>
             </TableRow>
@@ -212,7 +254,10 @@ export function RecentAppointments() {
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i} className="hover:bg-transparent">
                   {[180, 120, 120, 100, 60, 60, 90].map((w, j) => (
-                    <TableCell key={j} className={j === 0 ? "pl-6" : j === 6 ? "pr-6" : ""}>
+                    <TableCell
+                      key={j}
+                      className={j === 0 ? "pl-6" : j === 6 ? "pr-6" : ""}
+                    >
                       <div
                         className="h-4 animate-pulse bg-muted rounded"
                         style={{ width: w }}
@@ -224,7 +269,10 @@ export function RecentAppointments() {
 
             {!isLoading && pageItems.length === 0 && (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={7} className="text-center py-10 text-sm text-muted-foreground">
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-10 text-sm text-muted-foreground"
+                >
                   No appointments found.
                 </TableCell>
               </TableRow>
@@ -257,7 +305,9 @@ export function RecentAppointments() {
 
                     {/* Professional */}
                     <TableCell className="hidden md:table-cell">
-                      <span className="text-sm text-muted-foreground">{apt.employee}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {apt.employee}
+                      </span>
                     </TableCell>
 
                     {/* Date & Time */}
@@ -270,7 +320,9 @@ export function RecentAppointments() {
 
                     {/* Duration */}
                     <TableCell className="hidden sm:table-cell text-right">
-                      <span className="text-xs text-muted-foreground">{apt.duration}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {apt.duration}
+                      </span>
                     </TableCell>
 
                     {/* Price */}
@@ -286,7 +338,10 @@ export function RecentAppointments() {
 
                     {/* Status */}
                     <TableCell className="pr-6 text-right">
-                      <Badge variant={cfg.variant} className="gap-1 text-[10px] px-1.5 py-0">
+                      <Badge
+                        variant={cfg.variant}
+                        className="gap-1 text-[10px] px-1.5 py-0"
+                      >
                         <StatusIcon className="h-2.5 w-2.5" />
                         {cfg.label}
                       </Badge>
@@ -301,7 +356,9 @@ export function RecentAppointments() {
         {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-3 border-t">
             <span className="text-xs text-muted-foreground">
-              {startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
+              {startIndex + 1}–
+              {Math.min(startIndex + ITEMS_PER_PAGE, filtered.length)} of{" "}
+              {filtered.length}
             </span>
             <div className="flex items-center gap-1">
               <Button
@@ -317,7 +374,8 @@ export function RecentAppointments() {
                 let page: number;
                 if (totalPages <= 5) page = i + 1;
                 else if (currentPage <= 3) page = i + 1;
-                else if (currentPage >= totalPages - 2) page = totalPages - 4 + i;
+                else if (currentPage >= totalPages - 2)
+                  page = totalPages - 4 + i;
                 else page = currentPage - 2 + i;
                 return (
                   <Button
@@ -334,7 +392,9 @@ export function RecentAppointments() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="h-7 w-7 p-0"
               >

@@ -5,7 +5,10 @@ import type { Appointment as DomainAppointment } from "@/server/core/domain/enti
  * Get color based on appointment status
  */
 export function getStatusColor(status: Appointment["status"]) {
-  const colors: Record<Appointment["status"], { backgroundColor: string; borderColor: string; textColor: string }> = {
+  const colors: Record<
+    Appointment["status"],
+    { backgroundColor: string; borderColor: string; textColor: string }
+  > = {
     scheduled: {
       backgroundColor: "#3b82f6",
       borderColor: "#2563eb",
@@ -37,8 +40,7 @@ export function getStatusColor(status: Appointment["status"]) {
 export function appointmentToEvent(appointment: Appointment): CalendarEvent {
   const colors = getStatusColor(appointment.status);
 
-  const toIso = (d: Date | string) =>
-    d instanceof Date ? d.toISOString() : d;
+  const toIso = (d: Date | string) => (d instanceof Date ? d.toISOString() : d);
 
   return {
     id: appointment.id,

@@ -24,7 +24,12 @@ export default function DashboardPage() {
     useTrpc.analytics.getCharts.useQuery(
       {
         businessId,
-        period: chartsPeriod as "7days" | "30days" | "3months" | "6months" | "year",
+        period: chartsPeriod as
+          | "7days"
+          | "30days"
+          | "3months"
+          | "6months"
+          | "year",
       },
       { enabled: !!businessId }
     );
@@ -37,7 +42,9 @@ export default function DashboardPage() {
           <h1 className="text-lg font-bold">{t.pages.dashboard.title}</h1>
           <BusinessBanner />
         </div>
-        <p className="text-xs text-muted-foreground">{t.pages.dashboard.welcome}</p>
+        <p className="text-xs text-muted-foreground">
+          {t.pages.dashboard.welcome}
+        </p>
       </div>
 
       {/* KPI strip */}
@@ -56,10 +63,22 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-          <RevenueChart data={chartsData?.revenue ?? []} isLoading={chartsLoading} />
-          <BookingsChart data={chartsData?.bookings ?? []} isLoading={chartsLoading} />
-          <ServicesChart data={chartsData?.services ?? []} isLoading={chartsLoading} />
-          <EmployeePerformance data={chartsData?.employees ?? []} isLoading={chartsLoading} />
+          <RevenueChart
+            data={chartsData?.revenue ?? []}
+            isLoading={chartsLoading}
+          />
+          <BookingsChart
+            data={chartsData?.bookings ?? []}
+            isLoading={chartsLoading}
+          />
+          <ServicesChart
+            data={chartsData?.services ?? []}
+            isLoading={chartsLoading}
+          />
+          <EmployeePerformance
+            data={chartsData?.employees ?? []}
+            isLoading={chartsLoading}
+          />
         </div>
       </div>
     </div>

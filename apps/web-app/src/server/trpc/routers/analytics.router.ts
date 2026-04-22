@@ -32,9 +32,7 @@ function periodToDateRange(period: AnalyticsPeriod): {
   const endDate = new Date();
   const startDate = new Date(endDate.getTime() - periodDays * 86400000);
   const prevEndDate = new Date(startDate);
-  const prevStartDate = new Date(
-    startDate.getTime() - periodDays * 86400000
-  );
+  const prevStartDate = new Date(startDate.getTime() - periodDays * 86400000);
 
   return { startDate, endDate, prevStartDate, prevEndDate };
 }
@@ -73,30 +71,28 @@ export const analyticsRouter = router({
    * Dashboard chart data
    * Returns revenue, bookings, services, and employee performance data
    */
-  getCharts: privateProcedure
-    .input(analyticsInput)
-    .query(async ({ input }) => {
-      const { startDate, endDate, prevStartDate, prevEndDate } =
-        periodToDateRange(input.period as AnalyticsPeriod);
+  getCharts: privateProcedure.input(analyticsInput).query(async ({ input }) => {
+    const { startDate, endDate, prevStartDate, prevEndDate } =
+      periodToDateRange(input.period as AnalyticsPeriod);
 
-      const analyticsRepository = new PrismaAnalyticsRepository();
-      const useCase = new GetDashboardChartsUseCase(analyticsRepository);
+    const analyticsRepository = new PrismaAnalyticsRepository();
+    const useCase = new GetDashboardChartsUseCase(analyticsRepository);
 
-      const result = await useCase.execute({
-        businessId: input.businessId,
-        startDate,
-        endDate,
-        prevStartDate,
-        prevEndDate,
+    const result = await useCase.execute({
+      businessId: input.businessId,
+      startDate,
+      endDate,
+      prevStartDate,
+      prevEndDate,
+    });
+
+    if (!result.success || !result.data) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: result.error ?? "Failed to fetch dashboard charts",
       });
+    }
 
-      if (!result.success || !result.data) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: result.error ?? "Failed to fetch dashboard charts",
-        });
-      }
-
-      return result.data;
-    }),
+    return result.data;
+  }),
 });

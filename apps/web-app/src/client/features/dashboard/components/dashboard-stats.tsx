@@ -1,6 +1,13 @@
 "use client";
 
-import { Calendar, Clock, DollarSign, Users, TrendingUp, TrendingDown } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  DollarSign,
+  Users,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
 import { useTranslation } from "@/client/i18n";
 import { useTrpc } from "@/client/lib/trpc";
 import { LucideIcon } from "lucide-react";
@@ -10,7 +17,10 @@ interface DashboardStatsProps {
   period: string;
 }
 
-function pctChange(current: number, prev: number): { label: string; up: boolean } {
+function pctChange(
+  current: number,
+  prev: number
+): { label: string; up: boolean } {
   if (prev === 0) {
     const up = current > 0;
     return { label: up ? "+100%" : "0%", up };
@@ -37,8 +47,14 @@ function StatItem({ title, value, icon: Icon, trend, sub }: StatItemProps) {
         <p className="text-xs text-muted-foreground truncate">{title}</p>
         <p className="text-xl font-bold leading-tight">{value}</p>
         {trend && (
-          <p className={`text-[10px] flex items-center gap-0.5 ${trend.up ? "text-emerald-600" : "text-red-500"}`}>
-            {trend.up ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
+          <p
+            className={`text-[10px] flex items-center gap-0.5 ${trend.up ? "text-emerald-600" : "text-red-500"}`}
+          >
+            {trend.up ? (
+              <TrendingUp className="h-2.5 w-2.5" />
+            ) : (
+              <TrendingDown className="h-2.5 w-2.5" />
+            )}
             {trend.label} vs last period
           </p>
         )}
@@ -52,7 +68,10 @@ export function DashboardStats({ businessId, period }: DashboardStatsProps) {
   const { t } = useTranslation();
 
   const { data, isLoading } = useTrpc.analytics.getStats.useQuery(
-    { businessId, period: period as "7days" | "30days" | "3months" | "6months" | "year" },
+    {
+      businessId,
+      period: period as "7days" | "30days" | "3months" | "6months" | "year",
+    },
     { enabled: !!businessId }
   );
 
@@ -75,7 +94,10 @@ export function DashboardStats({ businessId, period }: DashboardStatsProps) {
     );
   }
 
-  const apptTrend = pctChange(data.totalAppointments, data.totalAppointmentsPrev);
+  const apptTrend = pctChange(
+    data.totalAppointments,
+    data.totalAppointmentsPrev
+  );
   const clientTrend = pctChange(data.totalClients, data.totalClientsPrev);
   const revTrend = pctChange(data.totalRevenue, data.totalRevenuePrev);
 

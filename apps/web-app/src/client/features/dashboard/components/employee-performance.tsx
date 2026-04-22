@@ -17,12 +17,17 @@ interface EmployeePerformanceProps {
   isLoading?: boolean;
 }
 
-export function EmployeePerformance({ data, isLoading }: EmployeePerformanceProps) {
+export function EmployeePerformance({
+  data,
+  isLoading,
+}: EmployeePerformanceProps) {
   if (isLoading) {
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">Employee Performance</CardTitle>
+          <CardTitle className="text-sm font-semibold">
+            Employee Performance
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -39,10 +44,14 @@ export function EmployeePerformance({ data, isLoading }: EmployeePerformanceProp
     return (
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">Employee Performance</CardTitle>
+          <CardTitle className="text-sm font-semibold">
+            Employee Performance
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No data for this period.</p>
+          <p className="text-sm text-muted-foreground">
+            No data for this period.
+          </p>
         </CardContent>
       </Card>
     );
@@ -53,16 +62,27 @@ export function EmployeePerformance({ data, isLoading }: EmployeePerformanceProp
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold">Employee Performance</CardTitle>
+        <CardTitle className="text-sm font-semibold">
+          Employee Performance
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
           {data.map((employee) => {
             const trendValue =
               employee.bookingsPrev === 0
-                ? employee.bookings > 0 ? 100 : 0
-                : Math.abs(Math.round(((employee.bookings - employee.bookingsPrev) / employee.bookingsPrev) * 100));
-            const trend: "up" | "down" = employee.bookings >= employee.bookingsPrev ? "up" : "down";
+                ? employee.bookings > 0
+                  ? 100
+                  : 0
+                : Math.abs(
+                    Math.round(
+                      ((employee.bookings - employee.bookingsPrev) /
+                        employee.bookingsPrev) *
+                        100
+                    )
+                  );
+            const trend: "up" | "down" =
+              employee.bookings >= employee.bookingsPrev ? "up" : "down";
 
             return (
               <div key={employee.id} className="space-y-1">
@@ -73,9 +93,12 @@ export function EmployeePerformance({ data, isLoading }: EmployeePerformanceProp
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium truncate leading-tight">{employee.name}</p>
+                    <p className="text-sm font-medium truncate leading-tight">
+                      {employee.name}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {employee.bookings} bookings · ${employee.revenue.toLocaleString()}
+                      {employee.bookings} bookings · $
+                      {employee.revenue.toLocaleString()}
                     </p>
                   </div>
                   <Badge
@@ -91,7 +114,11 @@ export function EmployeePerformance({ data, isLoading }: EmployeePerformanceProp
                   </Badge>
                 </div>
                 <Progress
-                  value={maxBookings > 0 ? (employee.bookings / maxBookings) * 100 : 0}
+                  value={
+                    maxBookings > 0
+                      ? (employee.bookings / maxBookings) * 100
+                      : 0
+                  }
                   className="h-1.5"
                 />
               </div>

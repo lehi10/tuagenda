@@ -160,10 +160,17 @@ export class PrismaAnalyticsRepository implements IAnalyticsRepository {
       .map(([label, revenue]) => ({ label, revenue }));
 
     // Bookings chart — agrupa por fecha ISO, total, completadas y canceladas
-    const bookingsMap = new Map<string, { total: number; completed: number; cancelled: number }>();
+    const bookingsMap = new Map<
+      string,
+      { total: number; completed: number; cancelled: number }
+    >();
     for (const apt of currentAppointments) {
       const dateKey = apt.startTime.toISOString().split("T")[0];
-      const existing = bookingsMap.get(dateKey) ?? { total: 0, completed: 0, cancelled: 0 };
+      const existing = bookingsMap.get(dateKey) ?? {
+        total: 0,
+        completed: 0,
+        cancelled: 0,
+      };
       existing.total += 1;
       if (apt.status === "completed") existing.completed += 1;
       if (apt.status === "cancelled") existing.cancelled += 1;
@@ -171,7 +178,12 @@ export class PrismaAnalyticsRepository implements IAnalyticsRepository {
     }
     const bookings: BookingDataPoint[] = Array.from(bookingsMap.entries())
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([label, { total, completed, cancelled }]) => ({ label, total, completed, cancelled }));
+      .map(([label, { total, completed, cancelled }]) => ({
+        label,
+        total,
+        completed,
+        cancelled,
+      }));
 
     // Services chart — top servicios por número de citas
     const servicesMap = new Map<string, number>();
@@ -216,9 +228,7 @@ export class PrismaAnalyticsRepository implements IAnalyticsRepository {
       prevBookingsMap.set(id, (prevBookingsMap.get(id) ?? 0) + 1);
     }
 
-    const employees: EmployeeDataPoint[] = Array.from(
-      employeeMap.entries()
-    )
+    const employees: EmployeeDataPoint[] = Array.from(employeeMap.entries())
       .sort(([, a], [, b]) => b.bookings - a.bookings)
       .map(([id, { name, bookings, revenue }]) => {
         const nameParts = name.split(" ");

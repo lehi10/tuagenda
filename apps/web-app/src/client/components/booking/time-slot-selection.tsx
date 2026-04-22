@@ -51,7 +51,7 @@ export function TimeSlotSelection({
       {!isLoading && availableSlots.length > 0 && (
         <p className="text-xs text-muted-foreground">
           {showingInUserTz
-            ? `Horarios en tu zona horaria (${displayTimezone})`
+            ? `Horarios en tu zona horaria (${userTimezone})`
             : `Horarios en zona horaria del negocio (${businessTimezone})`}
         </p>
       )}

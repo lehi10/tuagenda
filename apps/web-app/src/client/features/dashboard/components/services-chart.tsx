@@ -11,14 +11,7 @@ import {
   ChartTooltip,
   ChartConfig,
 } from "@/client/components/ui/chart";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Cell,
-  LabelList,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Cell, LabelList } from "recharts";
 import { ServiceDataPoint } from "@/server/core/domain/repositories/IAnalyticsRepository";
 
 const CHART_COLORS = [
@@ -42,7 +35,9 @@ export function ServicesChart({ data, isLoading }: ServicesChartProps) {
     return (
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Popular Services</CardTitle>
+          <CardTitle className="text-sm font-semibold">
+            Popular Services
+          </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
           <div className="h-[220px] animate-pulse bg-muted rounded" />
@@ -55,10 +50,14 @@ export function ServicesChart({ data, isLoading }: ServicesChartProps) {
     return (
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Popular Services</CardTitle>
+          <CardTitle className="text-sm font-semibold">
+            Popular Services
+          </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <p className="text-sm text-muted-foreground py-8 text-center">No data for this period.</p>
+          <p className="text-sm text-muted-foreground py-8 text-center">
+            No data for this period.
+          </p>
         </CardContent>
       </Card>
     );
@@ -84,8 +83,12 @@ export function ServicesChart({ data, isLoading }: ServicesChartProps) {
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-semibold">Popular Services</CardTitle>
-          <span className="text-xs text-muted-foreground">{total} bookings</span>
+          <CardTitle className="text-sm font-semibold">
+            Popular Services
+          </CardTitle>
+          <span className="text-xs text-muted-foreground">
+            {total} bookings
+          </span>
         </div>
       </CardHeader>
       <CardContent className="pt-0 pr-2">
