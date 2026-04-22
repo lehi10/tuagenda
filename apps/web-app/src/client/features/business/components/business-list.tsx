@@ -9,6 +9,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Share2,
 } from "lucide-react";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
@@ -42,6 +43,7 @@ import {
   useEffect,
 } from "react";
 import { BusinessFormDialog } from "./business-form-dialog";
+import { BookingShareDialog } from "./booking-share-dialog";
 import { toast } from "sonner";
 import { BusinessProps } from "@/server/core/domain/entities/Business";
 import { useTrpc } from "@/client/lib/trpc";
@@ -56,6 +58,8 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
     const [editingBusiness, setEditingBusiness] =
       useState<BusinessProps | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [sharingBusiness, setSharingBusiness] =
+      useState<BusinessProps | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -272,6 +276,12 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuItem
+                                  onClick={() => setSharingBusiness(business)}
+                                >
+                                  <Share2 className="mr-2 h-4 w-4" />
+                                  Compartir reservas
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
                                   onClick={() => handleEdit(business)}
                                 >
                                   <Pencil className="mr-2 h-4 w-4" />
@@ -366,6 +376,15 @@ export const BusinessList = forwardRef<{ refresh: () => void }>(
             </>
           )}
         </div>
+
+        {sharingBusiness && (
+          <BookingShareDialog
+            open={!!sharingBusiness}
+            onOpenChange={(open) => !open && setSharingBusiness(null)}
+            businessTitle={sharingBusiness.title}
+            bookingUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/book/${sharingBusiness.slug}`}
+          />
+        )}
 
         {editingBusiness && (
           <BusinessFormDialog

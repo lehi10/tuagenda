@@ -1,7 +1,7 @@
 "use client";
 
 import { Users, UserPlus, TrendingUp } from "lucide-react";
-import { StatCard } from "@/client/components/shared/stat-card";
+import { StatCard, StatsGrid } from "@/client/components/shared/stat-card";
 
 export function ClientStats() {
   const stats = [
@@ -26,10 +26,10 @@ export function ClientStats() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <StatsGrid cols={3}>
       {stats.map((stat) => (
         <StatCard key={stat.title} {...stat} />
       ))}
-    </div>
+    </StatsGrid>
   );
 }

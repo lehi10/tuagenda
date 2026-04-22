@@ -1,7 +1,7 @@
 "use client";
 
 import { DollarSign, TrendingUp, CreditCard, Clock } from "lucide-react";
-import { StatCard } from "@/client/components/shared/stat-card";
+import { StatCard, StatsGrid } from "@/client/components/shared/stat-card";
 
 export function PaymentStats() {
   const stats = [
@@ -32,10 +32,10 @@ export function PaymentStats() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-4">
+    <StatsGrid cols={4}>
       {stats.map((stat) => (
         <StatCard key={stat.title} {...stat} />
       ))}
-    </div>
+    </StatsGrid>
   );
 }

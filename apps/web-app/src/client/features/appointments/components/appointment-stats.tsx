@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar, CheckCircle, Clock, XCircle } from "lucide-react";
-import { StatCard } from "@/client/components/shared/stat-card";
+import { StatCard, StatsGrid } from "@/client/components/shared/stat-card";
 import { useTranslation } from "@/client/i18n";
 import { useBusiness } from "@/client/contexts/business-context";
 import { useBusinessTimezone } from "@/client/contexts/business-timezone-context";
@@ -111,10 +111,10 @@ export function AppointmentStats() {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-4">
+    <StatsGrid cols={4}>
       {stats.map((stat) => (
         <StatCard key={stat.title} {...stat} />
       ))}
-    </div>
+    </StatsGrid>
   );
 }
