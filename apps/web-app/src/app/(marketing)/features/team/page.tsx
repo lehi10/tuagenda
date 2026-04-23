@@ -153,16 +153,23 @@ export default function TeamPage() {
                   Start collaborating more efficiently today
                 </p>
                 <div className="mt-8">
-                  <Link href="/signup">
+                  <a
+                    href={
+                      process.env.NEXT_PUBLIC_WAITLIST_FORM_URL ||
+                      `https://wa.me/${process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP_NUMBER ?? ""}?text=${encodeURIComponent("Hola! Quiero más información sobre tuAgenda 📅")}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Button
                       size="lg"
                       variant="secondary"
                       className="group h-14 gap-2 bg-white px-8 text-base font-semibold text-green-600 shadow-2xl transition-all hover:scale-105 hover:bg-white"
                     >
-                      Start Free Trial
+                      Unirse a la lista de espera
                       <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                     </Button>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>

@@ -118,7 +118,7 @@ export const headerConfig: HeaderConfig = {
           icon: Building2,
         },
         {
-          enabled: true,
+          enabled: false,
           href: "/integrations",
           label: "integrations",
           icon: Puzzle,

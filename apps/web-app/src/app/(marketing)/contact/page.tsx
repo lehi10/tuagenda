@@ -1,344 +1,177 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslation } from "@/client/i18n";
-import { Button } from "@/client/components/ui/button";
-import { Input } from "@/client/components/ui/input";
-import { Textarea } from "@/client/components/ui/textarea";
 import { ScrollReveal } from "@/client/components/ui/scroll-reveal";
-import {
-  Mail,
-  Phone,
-  MessageCircle,
-  Send,
-  ChevronDown,
-  ChevronUp,
-  HeadphonesIcon,
-  Clock,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Clock, Zap, Shield } from "lucide-react";
+import { WhatsAppIcon } from "@/client/components/shared";
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP_NUMBER ?? "";
+const WHATSAPP_MESSAGE = "Hola! Quiero más información sobre tuAgenda 📅";
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
+const faqs = [
+  {
+    question: "¿Cómo funciona la prueba gratuita?",
+    answer:
+      "Tienes acceso completo a todas las funciones durante 14 días. No necesitas tarjeta de crédito y puedes cancelar en cualquier momento.",
+  },
+  {
+    question: "¿Cuánto tiempo toma la configuración?",
+    answer:
+      "La mayoría de los negocios están operativos en menos de 15 minutos. Nuestro asistente de incorporación te guía paso a paso.",
+  },
+  {
+    question: "¿Qué tipo de soporte ofrecen?",
+    answer:
+      "Soporte directo por WhatsApp. Respondemos rápido, sin tickets ni formularios complicados.",
+  },
+  {
+    question: "¿Pueden ayudarme a migrar desde otra plataforma?",
+    answer:
+      "¡Sí! Escríbenos por WhatsApp y coordinamos un plan de migración personalizado para tu negocio.",
+  },
+  {
+    question: "¿Puedo cambiar de plan más tarde?",
+    answer:
+      "Sí, puedes subir o bajar de plan en cualquier momento. Los cambios aplican de inmediato.",
+  },
+];
+
+const perks = [
+  {
+    icon: Zap,
+    title: "Respuesta rápida",
+    description: "Te respondemos en minutos, no en días.",
+  },
+  {
+    icon: Clock,
+    title: "Sin formularios",
+    description: "Directo al grano, sin pasos innecesarios.",
+  },
+  {
+    icon: Shield,
+    title: "Atención personalizada",
+    description: "Hablas con personas reales, no bots.",
+  },
+];
 
 export default function ContactPage() {
-  const { t } = useTranslation();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    // Reset form
-    setFormData({ name: "", email: "", subject: "", message: "" });
-  };
-
-  const channels = [
-    {
-      icon: Mail,
-      title: t.pages.contact.channels.email.title,
-      value: t.pages.contact.channels.email.value,
-      description: t.pages.contact.channels.email.description,
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      icon: Phone,
-      title: t.pages.contact.channels.phone.title,
-      value: t.pages.contact.channels.phone.value,
-      description: t.pages.contact.channels.phone.description,
-      color: "from-green-500 to-emerald-500",
-    },
-    {
-      icon: MessageCircle,
-      title: t.pages.contact.channels.chat.title,
-      value: t.pages.contact.channels.chat.value,
-      description: t.pages.contact.channels.chat.description,
-      color: "from-purple-500 to-pink-500",
-    },
-  ];
-
-  const faqs = [
-    {
-      question: t.pages.contact.faq.questions.trial.question,
-      answer: t.pages.contact.faq.questions.trial.answer,
-    },
-    {
-      question: t.pages.contact.faq.questions.setup.question,
-      answer: t.pages.contact.faq.questions.setup.answer,
-    },
-    {
-      question: t.pages.contact.faq.questions.support.question,
-      answer: t.pages.contact.faq.questions.support.answer,
-    },
-    {
-      question: t.pages.contact.faq.questions.data.question,
-      answer: t.pages.contact.faq.questions.data.answer,
-    },
-    {
-      question: t.pages.contact.faq.questions.migration.question,
-      answer: t.pages.contact.faq.questions.migration.answer,
-    },
-    {
-      question: t.pages.contact.faq.questions.pricing.question,
-      answer: t.pages.contact.faq.questions.pricing.answer,
-    },
-  ];
 
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/5 to-background">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -left-1/4 top-0 h-96 w-96 animate-pulse rounded-full bg-primary/10 blur-3xl" />
           <div
             className="absolute -right-1/4 top-1/3 h-96 w-96 animate-pulse rounded-full bg-secondary/10 blur-3xl"
             style={{ animationDelay: "1s" }}
           />
         </div>
-
         <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
-                <HeadphonesIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                {t.pages.contact.badge}
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#25D366]/30 bg-[#25D366]/10 px-3 py-1.5 text-xs font-medium text-[#1ebe5a] sm:px-4 sm:py-2 sm:text-sm">
+                <WhatsAppIcon size={14} />
+                Soporte por WhatsApp
               </div>
-              <h1 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
-                {t.pages.contact.title}
+              <h1 className="bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
+                ¿Tienes alguna duda?
               </h1>
               <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
-                {t.pages.contact.subtitle}
+                Escríbenos directamente. Nuestro equipo está listo para ayudarte
+                a sacarle el máximo provecho a tuAgenda.
               </p>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Contact Form & Channels */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto grid max-w-6xl gap-8 md:gap-10 lg:grid-cols-2 lg:gap-12">
-            {/* Contact Form */}
-            <ScrollReveal>
-              <div className="rounded-2xl border border-border bg-card p-6 shadow-lg sm:p-8">
-                <h2 className="mb-2 text-2xl font-bold">
-                  {t.pages.contact.form.title}
-                </h2>
-                <p className="mb-6 text-muted-foreground">
-                  {t.pages.contact.form.description}
-                </p>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      {t.pages.contact.form.name}
-                    </label>
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder={t.pages.contact.form.namePlaceholder}
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
-                      required
-                      className="h-12 sm:h-14"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      {t.pages.contact.form.email}
-                    </label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder={t.pages.contact.form.emailPlaceholder}
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      required
-                      className="h-12 sm:h-14"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="subject"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      {t.pages.contact.form.subject}
-                    </label>
-                    <Input
-                      id="subject"
-                      type="text"
-                      placeholder={t.pages.contact.form.subjectPlaceholder}
-                      value={formData.subject}
-                      onChange={(e) =>
-                        setFormData({ ...formData, subject: e.target.value })
-                      }
-                      required
-                      className="h-12 sm:h-14"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      {t.pages.contact.form.message}
-                    </label>
-                    <Textarea
-                      id="message"
-                      placeholder={t.pages.contact.form.messagePlaceholder}
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      required
-                      rows={5}
-                      className="resize-none min-h-[120px] sm:min-h-[140px]"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className="w-full gap-2 h-12 sm:h-14"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        {t.pages.contact.form.sending}
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-5 w-5" />
-                        {t.pages.contact.form.send}
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </div>
-            </ScrollReveal>
-
-            {/* Contact Channels & Hours */}
-            <div className="space-y-8">
-              {/* Channels */}
-              <ScrollReveal delay={200}>
-                <div>
-                  <h2 className="mb-6 text-2xl font-bold">
-                    {t.pages.contact.channels.title}
-                  </h2>
-                  <div className="space-y-4">
-                    {channels.map((channel, index) => (
-                      <div
-                        key={index}
-                        className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg sm:p-8"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                        <div className="relative flex items-start gap-4">
-                          <div
-                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br sm:h-14 sm:w-14 ${channel.color} shadow-md`}
-                          >
-                            <channel.icon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="mb-1 font-semibold">
-                              {channel.title}
-                            </h3>
-                            <p className="mb-1 text-sm font-medium text-primary">
-                              {channel.value}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {channel.description}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </ScrollReveal>
-
-              {/* Business Hours */}
-              <ScrollReveal delay={300}>
-                <div className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8">
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 shadow-md sm:h-14 sm:w-14">
-                      <Clock className="h-6 w-6 text-white sm:h-7 sm:w-7" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">
-                        {t.pages.contact.hours.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {t.pages.contact.hours.timezone}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">
-                        {t.pages.contact.hours.schedule.weekdays}
-                      </span>
-                      <span className="font-medium">
-                        {t.pages.contact.hours.schedule.weekdaysHours}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">
-                        {t.pages.contact.hours.schedule.saturday}
-                      </span>
-                      <span className="font-medium">
-                        {t.pages.contact.hours.schedule.saturdayHours}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">
-                        {t.pages.contact.hours.schedule.sunday}
-                      </span>
-                      <span className="font-medium text-muted-foreground">
-                        {t.pages.contact.hours.schedule.sundayHours}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="bg-muted/30 py-12 sm:py-16 md:py-20 lg:py-24">
+      {/* CTA principal */}
+      <section className="py-16 sm:py-20 md:py-24">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <div className="mx-auto mb-12 max-w-3xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
-                {t.pages.contact.faq.title}
+            <div className="mx-auto max-w-2xl">
+              {/* Card */}
+              <div className="relative overflow-hidden rounded-3xl border border-[#25D366]/20 bg-gradient-to-br from-[#25D366]/5 via-background to-[#25D366]/5 p-8 shadow-xl sm:p-12">
+                {/* Decoración */}
+                <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[#25D366]/10 blur-3xl" />
+                <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-[#25D366]/10 blur-3xl" />
+
+                <div className="relative text-center">
+                  {/* Ícono grande */}
+                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-[#25D366] shadow-lg shadow-[#25D366]/30">
+                    <WhatsAppIcon size={40} />
+                  </div>
+
+                  <h2 className="mb-3 text-2xl font-bold sm:text-3xl">
+                    Contáctanos por WhatsApp
+                  </h2>
+                  <p className="mb-8 text-muted-foreground sm:text-lg">
+                    Haz clic y abre una conversación directa con nuestro equipo.
+                    El mensaje ya viene escrito, solo envíalo.
+                  </p>
+
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-3 rounded-2xl bg-[#25D366] px-8 py-4 text-base font-semibold text-white shadow-lg shadow-[#25D366]/25 transition-all hover:bg-[#1ebe5a] hover:shadow-xl hover:shadow-[#25D366]/30 hover:-translate-y-0.5 active:translate-y-0 sm:text-lg"
+                  >
+                    <WhatsAppIcon size={22} />
+                    Abrir WhatsApp
+                  </a>
+
+                  {/* Mensaje preview */}
+                  <div className="mx-auto mt-8 max-w-xs rounded-2xl bg-muted/60 px-4 py-3 text-left text-sm">
+                    <p className="mb-1 text-xs font-medium text-muted-foreground">
+                      Mensaje que se enviará:
+                    </p>
+                    <p className="font-medium">
+                      &ldquo;{WHATSAPP_MESSAGE}&rdquo;
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Perks */}
+              <div className="mt-6 grid grid-cols-3 gap-4">
+                {perks.map(({ icon: Icon, title, description }) => (
+                  <div
+                    key={title}
+                    className="rounded-2xl border border-border bg-card p-4 text-center shadow-sm"
+                  >
+                    <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+                      <Icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <p className="text-xs font-semibold">{title}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="bg-muted/30 py-12 sm:py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="mx-auto mb-10 max-w-3xl text-center">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                Preguntas frecuentes
               </h2>
-              <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-                {t.pages.contact.faq.subtitle}
+              <p className="mt-3 text-muted-foreground">
+                Si tu duda no está aquí, escríbenos por WhatsApp.
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="mx-auto max-w-3xl space-y-4">
+          <div className="mx-auto max-w-3xl space-y-3">
             {faqs.map((faq, index) => (
               <ScrollReveal key={index} delay={index * 50}>
                 <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:shadow-md">
@@ -346,7 +179,7 @@ export default function ContactPage() {
                     onClick={() =>
                       setExpandedFaq(expandedFaq === index ? null : index)
                     }
-                    className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/20 sm:p-6 min-h-[56px]"
+                    className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/20 sm:p-6"
                   >
                     <span className="pr-8 font-semibold">{faq.question}</span>
                     {expandedFaq === index ? (
@@ -366,6 +199,24 @@ export default function ContactPage() {
               </ScrollReveal>
             ))}
           </div>
+
+          {/* CTA final */}
+          <ScrollReveal delay={300}>
+            <div className="mx-auto mt-10 max-w-md text-center">
+              <p className="mb-4 text-muted-foreground">
+                ¿No encontraste lo que buscabas?
+              </p>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 px-5 py-2.5 text-sm font-semibold text-[#1ebe5a] transition-colors hover:bg-[#25D366]/20"
+              >
+                <WhatsAppIcon size={16} />
+                Pregúntanos por WhatsApp
+              </a>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </>

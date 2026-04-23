@@ -44,9 +44,11 @@ import {
 import { useTrpc } from "@/client/lib/trpc";
 import { formatCurrency } from "@/client/lib/currency-utils";
 import { Skeleton } from "@/client/components/ui/skeleton";
+import { useAuth } from "@/client/contexts/auth-context";
 import type { Appointment } from "@/server/core/domain/entities/Appointment";
 
 export default function AppointmentsPage() {
+  const { user } = useAuth();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
@@ -360,13 +362,26 @@ export default function AppointmentsPage() {
     </div>
   );
 
-  const EmptyState = ({ message }: { message: string }) => (
-    <Card className="p-8">
-      <div className="flex flex-col items-center text-center">
-        <div className="rounded-full bg-muted p-3 mb-3">
-          <Calendar className="h-6 w-6 text-muted-foreground" />
+  const EmptyState = ({
+    message,
+    isUpcoming = false,
+  }: {
+    message: string;
+    isUpcoming?: boolean;
+  }) => (
+    <Card className="p-10">
+      <div className="flex flex-col items-center text-center gap-3">
+        <div className="rounded-full bg-primary/10 p-4">
+          <Calendar className="h-7 w-7 text-primary" />
         </div>
-        <p className="text-sm text-muted-foreground">{message}</p>
+        <div>
+          <p className="font-semibold text-foreground">{message}</p>
+          {isUpcoming && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Cuando reserves una cita con algún profesional, aparecerá aquí.
+            </p>
+          )}
+        </div>
       </div>
     </Card>
   );
@@ -376,9 +391,11 @@ export default function AppointmentsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold sm:text-2xl">Mis Citas</h1>
-          <p className="text-xs text-muted-foreground sm:text-sm">
-            Gestiona tus citas programadas y revisa tu historial
+          <h1 className="text-xl font-bold sm:text-2xl">
+            {user?.firstName ? `Hola, ${user.firstName} 👋` : "Mis Citas"}
+          </h1>
+          <p className="text-xs text-muted-foreground sm:text-sm mt-0.5">
+            Aquí puedes ver y gestionar todas tus citas
           </p>
         </div>
       </div>
@@ -406,7 +423,7 @@ export default function AppointmentsPage() {
               />
             ))
           ) : (
-            <EmptyState message="No tienes citas próximas programadas" />
+            <EmptyState message="No tienes citas próximas" isUpcoming />
           )}
         </TabsContent>
 
@@ -422,7 +439,7 @@ export default function AppointmentsPage() {
               />
             ))
           ) : (
-            <EmptyState message="No tienes citas anteriores" />
+            <EmptyState message="Aún no tienes citas anteriores" />
           )}
         </TabsContent>
       </Tabs>

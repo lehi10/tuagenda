@@ -3,3 +3,4 @@ export { DataTable } from "./data-table";
 export { DataTableWithFilters } from "./data-table-with-filters";
 export { EmptyState } from "./empty-state";
 export { WhatsAppButton, WhatsAppIcon } from "./whatsapp-button";
+export { GoogleIcon } from "./google-icon";

@@ -53,10 +53,12 @@ export default function ClientProfilePage() {
   return (
     <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
       {/* Page Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Mi Perfil</h1>
-        <p className="text-muted-foreground">
-          Gestiona tu información personal y configuración de cuenta
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          Mi cuenta
+        </h1>
+        <p className="text-sm text-muted-foreground sm:text-base">
+          Actualiza tu nombre, foto y contraseña
         </p>
       </div>
 

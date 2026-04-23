@@ -15,19 +15,23 @@ import {
   Check,
   ArrowRight,
   Sparkles,
-  Shield,
-  Zap,
-  TrendingUp,
-  Clock,
   ChevronLeft,
   ChevronRight,
+  MessageCircle,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/client/components/shared";
+
+const WAITLIST_URL = process.env.NEXT_PUBLIC_WAITLIST_FORM_URL ?? "";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP_NUMBER ?? "";
+const WHATSAPP_CONTACT_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hola! Quiero más información sobre tuAgenda 📅")}`;
+const CTA_URL = WAITLIST_URL || WHATSAPP_CONTACT_URL;
 import { useRef, useState, useCallback } from "react";
 
 export default function Home() {
   const { t } = useTranslation();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const professionals = [
     {
@@ -116,23 +120,28 @@ export default function Home() {
       quote: t.landing.testimonials.testimonial1.quote,
       name: t.landing.testimonials.testimonial1.name,
       role: t.landing.testimonials.testimonial1.role,
-      avatar:
-        "https://ui-avatars.com/api/?name=Ana+Garcia&background=4C3DFF&color=fff&size=128&bold=true",
+      avatar: "/images/landing/psicologa.png",
     },
     {
       quote: t.landing.testimonials.testimonial2.quote,
       name: t.landing.testimonials.testimonial2.name,
       role: t.landing.testimonials.testimonial2.role,
-      avatar:
-        "https://ui-avatars.com/api/?name=Carlos+Lopez&background=48A9A6&color=fff&size=128&bold=true",
+      avatar: "/images/landing/psicologo.png",
     },
     {
       quote: t.landing.testimonials.testimonial3.quote,
       name: t.landing.testimonials.testimonial3.name,
       role: t.landing.testimonials.testimonial3.role,
-      avatar:
-        "https://ui-avatars.com/api/?name=Laura+Martinez&background=4C3DFF&color=fff&size=128&bold=true",
+      avatar: "/images/landing/nutricionista.png",
     },
+  ];
+
+  const faqItems = [
+    t.landing.faq.items.q1,
+    t.landing.faq.items.q2,
+    t.landing.faq.items.q3,
+    t.landing.faq.items.q4,
+    t.landing.faq.items.q5,
   ];
 
   return (
@@ -162,7 +171,12 @@ export default function Home() {
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4 lg:justify-start">
-                  <Link href="/signup" className="w-full sm:w-auto">
+                  <a
+                    href={CTA_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
+                  >
                     <Button
                       size="lg"
                       className="group h-12 w-full gap-2 px-6 text-sm font-semibold shadow-xl shadow-primary/25 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 sm:h-14 sm:px-8 sm:text-base"
@@ -170,7 +184,7 @@ export default function Home() {
                       {t.landing.hero.cta}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
                     </Button>
-                  </Link>
+                  </a>
                   <Link href="/login" className="w-full sm:w-auto">
                     <Button
                       size="lg"
@@ -314,91 +328,6 @@ export default function Home() {
               </div>
             </div>
           </ScrollReveal>
-
-          {/* Bottom CTA */}
-          <ScrollReveal>
-            <div className="mt-12 flex flex-col items-center gap-5 text-center sm:mt-16">
-              <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
-                {t.landing.usedBy.ctaText}
-              </p>
-              <Link href="/signup">
-                <Button
-                  size="lg"
-                  className="group h-12 gap-2 px-6 text-sm font-semibold shadow-xl shadow-primary/25 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 sm:h-14 sm:px-8 sm:text-base"
-                >
-                  {t.landing.usedBy.cta}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
-                </Button>
-              </Link>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Why Choose Us Section - NEW */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-background to-muted/30 py-16 sm:py-20 md:py-24">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
-                <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-                {t.landing.features.whyChooseUs.badge}
-              </div>
-              <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl">
-                {t.landing.features.whyChooseUs.title}
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
-                {t.landing.features.whyChooseUs.description}
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="mx-auto mt-12 grid max-w-6xl gap-6 sm:mt-16 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-            {[
-              {
-                icon: Zap,
-                title: t.landing.features.quickFeatures.fast,
-                description: t.landing.features.quickFeatures.fastDescription,
-                color: "text-yellow-500",
-              },
-              {
-                icon: Shield,
-                title: t.landing.features.quickFeatures.secure,
-                description: t.landing.features.quickFeatures.secureDescription,
-                color: "text-blue-500",
-              },
-              {
-                icon: TrendingUp,
-                title: t.landing.features.quickFeatures.grow,
-                description: t.landing.features.quickFeatures.growDescription,
-                color: "text-green-500",
-              },
-              {
-                icon: Clock,
-                title: t.landing.features.quickFeatures.saveTime,
-                description:
-                  t.landing.features.quickFeatures.saveTimeDescription,
-                color: "text-purple-500",
-              },
-            ].map((item, index) => (
-              <ScrollReveal key={index} delay={index * 100}>
-                <div className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                  <div className="relative">
-                    <div
-                      className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 transition-transform group-hover:scale-110 ${item.color}`}
-                    >
-                      <item.icon className="h-6 w-6" />
-                    </div>
-                    <h3 className="mb-2 text-lg font-bold">{item.title}</h3>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -538,82 +467,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-muted/30 via-muted/10 to-background py-16 sm:py-20 md:py-24 lg:py-32">
-        {/* Background decoration */}
-        <div className="absolute left-1/4 top-0 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
-
+      {/* FAQ Section */}
+      <section className="relative overflow-hidden py-16 sm:py-20 md:py-24">
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/20 to-background" />
         <div className="container relative mx-auto px-4">
           <ScrollReveal>
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/5 px-3 py-1.5 text-xs font-medium text-secondary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                {t.landing.testimonials.badge}
+                {t.landing.faq.badge}
               </div>
-              <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
-                {t.landing.testimonials.title}
+              <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl">
+                {t.landing.faq.title}
               </h2>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
-                {t.landing.testimonials.subtitle}
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg">
+                {t.landing.faq.subtitle}
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="mx-auto mt-10 grid max-w-7xl gap-4 sm:mt-12 sm:gap-6 md:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-8">
-            {testimonials.map((testimonial, index) => (
-              <ScrollReveal key={index} delay={index * 100}>
-                <div className="group relative h-full overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-secondary/30 hover:shadow-2xl hover:shadow-secondary/5 sm:rounded-2xl">
-                  {/* Gradient background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-
-                  {/* Quote icon */}
-                  <div className="absolute right-4 top-4 opacity-10 transition-all group-hover:scale-110 group-hover:opacity-20 sm:right-6 sm:top-6">
-                    <svg
-                      className="h-8 w-8 text-secondary sm:h-10 sm:w-10 lg:h-12 lg:w-12"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
+          <div className="mx-auto mt-10 max-w-3xl sm:mt-12">
+            {faqItems.map((item, index) => (
+              <ScrollReveal key={index} delay={index * 60}>
+                <div className="border-b border-border last:border-0">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                    className="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-primary"
+                  >
+                    <span className="text-base font-semibold sm:text-lg">
+                      {item.question}
+                    </span>
+                    <span
+                      className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-border transition-all duration-300 ${openFaq === index ? "rotate-45 border-primary bg-primary text-primary-foreground" : ""}`}
                     >
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                    </svg>
-                  </div>
-
-                  <div className="relative p-5 sm:p-6 lg:p-8">
-                    <div className="mb-4 flex items-center gap-0.5 sm:mb-6 sm:gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <svg
-                          key={i}
-                          className="h-4 w-4 fill-secondary text-secondary sm:h-5 sm:w-5"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-
-                    <p className="mb-4 text-sm leading-relaxed text-foreground sm:mb-6 sm:text-base">
-                      &ldquo;{testimonial.quote}&rdquo;
-                    </p>
-
-                    <div className="flex items-center gap-3 border-t border-border pt-4 sm:gap-4 sm:pt-6">
-                      <div className="relative flex-shrink-0">
-                        <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary to-secondary opacity-75 blur-sm" />
-                        <Image
-                          src={testimonial.avatar}
-                          alt={testimonial.name}
-                          width={56}
-                          height={56}
-                          className="relative h-12 w-12 rounded-full border-2 border-background sm:h-14 sm:w-14"
+                      <svg
+                        className="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 4v16m8-8H4"
                         />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-foreground sm:text-base">
-                          {testimonial.name}
-                        </p>
-                        <p className="truncate text-xs text-muted-foreground sm:text-sm">
-                          {testimonial.role}
-                        </p>
-                      </div>
-                    </div>
+                      </svg>
+                    </span>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? "max-h-48 pb-5" : "max-h-0"}`}
+                  >
+                    <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                      {item.answer}
+                    </p>
                   </div>
                 </div>
               </ScrollReveal>
@@ -657,8 +564,13 @@ export default function Home() {
                   {t.landing.cta.subtitle}
                 </p>
 
-                <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:justify-center sm:gap-4 md:mt-10">
-                  <Link href="/signup" className="w-full sm:w-auto">
+                <div className="mt-6 flex flex-col items-center gap-3 sm:mt-8 sm:flex-row sm:justify-center sm:gap-4 md:mt-10">
+                  <a
+                    href={CTA_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
+                  >
                     <Button
                       size="lg"
                       variant="secondary"
@@ -667,7 +579,22 @@ export default function Home() {
                       {t.landing.cta.button}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
                     </Button>
-                  </Link>
+                  </a>
+                  <a
+                    href={WHATSAPP_CONTACT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto"
+                  >
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="h-12 w-full gap-2 border-2 border-white/30 bg-transparent px-6 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:scale-105 hover:border-white/50 hover:bg-white/10 sm:h-14 sm:px-8 sm:text-base"
+                    >
+                      <WhatsAppIcon size={18} />
+                      Hablar por WhatsApp
+                    </Button>
+                  </a>
                 </div>
 
                 {/* Trust indicators */}

@@ -12,6 +12,7 @@ export const es: Translations = {
     filter: "Filtrar",
     actions: "Acciones",
     myProfile: "Mi perfil",
+    myAppointments: "Mis citas",
     myDashboard: "Mi Panel",
     client: "Cliente",
     platform: "Plataforma",
@@ -22,7 +23,7 @@ export const es: Translations = {
     noOrganizationMessage:
       "No tienes una organización asignada. Por favor contacta a tu administrador.",
     learnMore: "Más información",
-    startFreeTrial: "Comenzar Prueba Gratuita",
+    startFreeTrial: "Solicitar Acceso",
     featured: "Destacado",
     connect: "Conectar",
     screenshot: "Captura de pantalla",
@@ -287,15 +288,15 @@ export const es: Translations = {
     hero: {
       title: "Gestiona tus citas con facilidad",
       subtitle:
-        "La plataforma completa para gestionar tu negocio de servicios. Citas, clientes, empleados y más en un solo lugar.",
-      cta: "Comenzar gratis",
-      ctaSecondary: "Ver demo",
+        "La plataforma para profesionales y pequeños negocios que quieren organizar sus citas, automatizar recordatorios y reducir ausencias.",
+      cta: "Unirse a la lista de espera",
+      ctaSecondary: "Iniciar sesión",
       badge: "Plataforma profesional de gestión",
       badgeAlt: "Software profesional",
       trustBadges: {
-        freeTrial: "14 días gratis",
-        noCard: "Sin tarjeta",
-        cancelAnytime: "Cancela cuando quieras",
+        freeTrial: "Gratis para clientes de negocios",
+        noCard: "Sin tarjeta de crédito",
+        cancelAnytime: "Plazas limitadas",
       },
       stats: {
         activeUsers: "Usuarios activos",
@@ -403,59 +404,92 @@ export const es: Translations = {
       badge: "Proceso simple",
       title: "Cómo funciona",
       description:
-        "Comienza en minutos con nuestro proceso simple y guiado. No necesitas conocimientos técnicos, todo es intuitivo y fácil de usar.",
+        "Proceso simple y acompañado. Nos encargamos de todo para que empieces a gestionar citas sin complicaciones.",
       steps: {
         createAccount: {
-          title: "Crea tu cuenta",
+          title: "Contáctanos",
           description:
-            "Regístrate gratis en menos de 2 minutos. Sin tarjeta de crédito requerida. Accede inmediatamente a todas las funciones premium durante tu prueba gratuita.",
+            "Únete a nuestra lista de espera o escríbenos por WhatsApp. Te contactamos para coordinar tu acceso y agendar tu sesión de onboarding personalizado.",
         },
         setupBusiness: {
           title: "Configura tu negocio",
           description:
-            "Personaliza servicios, horarios y equipo según tus necesidades. Configura tus métodos de pago, horarios de atención y branding. Todo desde un panel intuitivo.",
+            "Juntos configuramos tus servicios, horarios y equipo. Te acompañamos en cada paso para que todo quede a tu medida desde el primer día.",
         },
         startManaging: {
-          title: "Comienza a gestionar",
+          title: "Empieza a gestionar",
           description:
-            "Recibe reservas, gestiona clientes y haz crecer tu negocio. Comparte tu link de reservas con tus clientes y deja que el sistema trabaje por ti.",
+            "Comparte tu link de reservas con tus clientes y deja que el sistema trabaje por ti. Recibe citas, gestiona tu agenda y reduce ausencias automáticamente.",
         },
       },
       illustrationPlaceholder: "Ilustración paso",
     },
     cta: {
-      badge: "Comienza hoy",
-      title: "¿Listo para transformar tu negocio?",
-      subtitle: "Únete a miles de negocios que ya confían en TuAgenda",
-      button: "Comenzar ahora",
+      badge: "Acceso anticipado",
+      title: "¿Listo para organizar tu agenda?",
+      subtitle:
+        "Únete a la lista de espera. Plazas limitadas, acceso gratuito.",
+      button: "Unirse a la lista de espera",
       trustIndicators: {
         noCard: "Sin tarjeta de crédito",
-        freeTrial: "Prueba gratuita 14 días",
-        cancelAnytime: "Cancela cuando quieras",
+        freeTrial: "Acceso gratuito",
+        cancelAnytime: "Plazas limitadas",
       },
     },
     testimonials: {
       badge: "Testimonios",
       title: "Lo que dicen nuestros clientes",
       subtitle:
-        "Miles de profesionales confían en TuAgenda para gestionar su negocio",
+        "Profesionales que ya confían en TuAgenda para gestionar su agenda",
       testimonial1: {
         quote:
-          "TuAgenda transformó cómo gestiono mis citas. ¡Mis pacientes aman los recordatorios automáticos!",
+          "Antes perdía tiempo coordinando citas por WhatsApp. Ahora mis pacientes reservan solos y yo recibo la confirmación al instante.",
         name: "Dra. Ana García",
         role: "Psicóloga",
       },
       testimonial2: {
         quote:
-          "Gestionar múltiples locales era una pesadilla. Ahora todo está centralizado y es eficiente.",
+          "Lo que más me gusta es que mis alumnos pueden ver mi disponibilidad y agendar sin tener que escribirme. Me ahorra horas cada semana.",
         name: "Carlos Mendoza",
-        role: "Dueño de Salón",
+        role: "Maestro de inglés",
       },
       testimonial3: {
         quote:
-          "Los reportes me ayudan a tomar mejores decisiones para mi negocio. ¡Muy recomendado!",
+          "Ofrecer citas virtuales y presenciales desde la misma plataforma fue un cambio enorme. Mis pacientes lo aman.",
         name: "Laura Torres",
         role: "Nutricionista",
+      },
+    },
+    faq: {
+      badge: "Preguntas frecuentes",
+      title: "¿Tienes dudas?",
+      subtitle: "Resolvemos las preguntas más comunes antes de que las hagas.",
+      items: {
+        q1: {
+          question: "¿TuAgenda es gratis?",
+          answer:
+            "Sí, durante nuestra etapa de acceso anticipado el uso es completamente gratuito. El acceso es limitado, contáctanos para solicitar tu cuenta.",
+        },
+        q2: {
+          question: "¿Necesito tarjeta de crédito para registrarme?",
+          answer:
+            "No. Creas tu cuenta, configuras tu negocio y empiezas a recibir citas sin ingresar ningún método de pago.",
+        },
+        q3: {
+          question: "¿Funciona para mi profesión?",
+          answer:
+            "Si vendes tu tiempo mediante citas, TuAgenda es para ti. Psicólogos, nutricionistas, maestros, entrenadores, coaches, consultores y muchos más lo usan a diario.",
+        },
+        q4: {
+          question: "¿Mis clientes pueden agendar solos?",
+          answer:
+            "Sí. Tus clientes reciben un enlace personalizado donde ven tu disponibilidad en tiempo real y reservan su cita sin que tengas que intervenir.",
+        },
+        q5: {
+          question: "¿Puedo ofrecer citas virtuales y presenciales?",
+          answer:
+            "Sí. Puedes configurar cada servicio como presencial, virtual o ambos. Para citas virtuales, el enlace de videollamada se envía automáticamente.",
+        },
       },
     },
   },
@@ -493,9 +527,9 @@ export const es: Translations = {
       },
     },
     pricing: {
-      title: "Precios",
-      subtitle: "Elige el plan perfecto para tu negocio",
-      badge: "Precios simples y transparentes",
+      title: "Planes y precios",
+      subtitle: "Simple, transparente, sin sorpresas",
+      badge: "Muy pronto",
       popular: "Popular",
       monthly: "Mensual",
       annual: "Anual",
@@ -503,38 +537,48 @@ export const es: Translations = {
       save: "Ahorra",
       year: "año",
       perMonth: "/mes",
-      getStarted: "Comenzar",
+      getStarted: "Unirse a la lista de espera",
       featuresHeader: "Características",
       free: {
-        name: "Gratis",
+        name: "Inicial",
         price: "0",
-        description: "Perfecto para empezar",
-        feature1: "Hasta 50 citas/mes",
-        feature2: "1 ubicación",
-        feature3: "Reportes básicos",
-        feature4: "Soporte por email",
+        description: "Ideal para profesionales que están comenzando",
+        feature1: "1 usuario",
+        feature2: "Hasta 20 citas/mes",
+        feature3: "Citas presenciales y virtuales",
+        feature4: "Integración con Google Calendar",
+        feature5: "Solo pago presencial",
+        feature6: "Notificaciones por email",
+        feature7: "Reportes básicos",
+        feature8: "Soporte por email",
+        addonWhatsapp: "Notificaciones WhatsApp (add-on)",
       },
       pro: {
-        name: "Pro",
-        price: "29",
-        description: "Para negocios en crecimiento",
-        feature1: "Citas ilimitadas",
-        feature2: "Hasta 3 ubicaciones",
-        feature3: "Reportes avanzados",
-        feature4: "Soporte prioritario",
-        feature5: "Marca personalizada",
-        feature6: "Integraciones",
+        name: "Equipo",
+        price: "120",
+        description: "Para equipos pequeños que quieren crecer",
+        feature1: "Hasta 5 usuarios",
+        feature2: "500 citas/mes",
+        feature3: "Citas presenciales y virtuales",
+        feature4: "Integración con Google Calendar",
+        feature5: "Pasarelas de pago online",
+        feature6: "500 notificaciones WhatsApp/mes",
+        feature7: "Soporte prioritario",
+        feature8: "Todo lo del plan Inicial",
+        addonWhatsapp: "Notificaciones WhatsApp adicionales (add-on)",
       },
       enterprise: {
-        name: "Enterprise",
-        price: "99",
-        description: "Para grandes organizaciones",
-        feature1: "Todo en Pro",
-        feature2: "Ubicaciones ilimitadas",
-        feature3: "Gerente de cuenta dedicado",
-        feature4: "Soporte telefónico 24/7",
-        feature5: "Desarrollo personalizado",
-        feature6: "Garantía SLA",
+        name: "Pro",
+        price: "—",
+        description: "Para negocios que quieren escalar sin límites",
+        feature1: "Usuarios ilimitados",
+        feature2: "Citas ilimitadas",
+        feature3: "Notificaciones WhatsApp ilimitadas",
+        feature4: "Pasarelas de pago online",
+        feature5: "Cupones de descuento",
+        feature6: "Ubicaciones ilimitadas",
+        feature7: "Soporte prioritario",
+        feature8: "Todo lo del plan Equipo",
       },
       comparison: {
         title: "Comparar Planes",
@@ -877,7 +921,7 @@ export const es: Translations = {
       cta: {
         title: "¿Listo para comenzar?",
         description: "Únete a miles de negocios que ya usan TuAgenda",
-        button: "Comenzar Prueba Gratuita",
+        button: "Solicitar Acceso",
       },
       imagePlaceholder: "Ilustración de característica",
     },
@@ -1007,9 +1051,9 @@ export const es: Translations = {
         subtitle: "Encuentra respuestas rápidas a preguntas comunes",
         questions: {
           trial: {
-            question: "¿Cómo funciona la prueba gratuita?",
+            question: "¿El acceso es realmente gratuito?",
             answer:
-              "Nuestra prueba gratuita de 14 días te da acceso completo a todas las funciones. No se requiere tarjeta de crédito. Puedes actualizar, bajar de nivel o cancelar en cualquier momento.",
+              "Sí, durante nuestra etapa de acceso anticipado el uso es completamente gratuito. El acceso es limitado a un número selecto de negocios. Contáctanos por WhatsApp para solicitar tu plaza.",
           },
           setup: {
             question: "¿Cuánto tiempo toma la configuración?",

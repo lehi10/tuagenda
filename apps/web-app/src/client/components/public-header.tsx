@@ -29,19 +29,40 @@ export function PublicHeader() {
 
   // Función auxiliar para obtener el valor traducido desde las claves de traducción
   const getTranslation = (key: string) => {
-    const keys = key.split(".");
-    let value: unknown = t;
-
-    for (const k of keys) {
-      if (value && typeof value === "object" && k in value) {
-        value = (value as Record<string, unknown>)[k];
-      } else {
-        // Si la clave no existe, devolver la clave original
-        return t.navigation[key as keyof typeof t.navigation] || key;
+    const traverse = (obj: unknown, parts: string[]): string | null => {
+      let value = obj;
+      for (const k of parts) {
+        if (
+          value &&
+          typeof value === "object" &&
+          k in (value as Record<string, unknown>)
+        ) {
+          value = (value as Record<string, unknown>)[k];
+        } else {
+          return null;
+        }
       }
-    }
+      return typeof value === "string" ? value : null;
+    };
 
-    return typeof value === "string" ? value : key;
+    const keys = key.split(".");
+
+    // 1. Intenta desde la raíz (cubre t.navigation.X con un solo segmento)
+    const fromRoot = traverse(t, keys);
+    if (fromRoot) return fromRoot;
+
+    // 2. Intenta desde t.navigation (para claves simples como "features")
+    const navValue = t.navigation[key as keyof typeof t.navigation];
+    if (navValue) return navValue;
+
+    // 3. Intenta desde t.pages (para rutas como "features.categories.scheduling.title")
+    const fromPages = traverse(
+      (t as unknown as Record<string, unknown>).pages,
+      keys
+    );
+    if (fromPages) return fromPages;
+
+    return key;
   };
 
   // Filtrar items habilitados de cada sección

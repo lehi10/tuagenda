@@ -101,7 +101,7 @@ export function BookingShareDialog({
         <div className="space-y-4 pt-2">
           {/* URL + copy */}
           <div className="flex gap-2">
-            <Input value={bookingUrl} readOnly className="text-sm" />
+            <Input value={bookingUrl} readOnly className="text-sm min-w-0" />
             <Button
               variant="outline"
               size="icon"
@@ -126,11 +126,11 @@ export function BookingShareDialog({
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
               Compartir en redes
             </p>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex">
               {socialLinks.map(({ label, icon, className, href }) => (
                 <Button
                   key={label}
-                  className={`flex-1 gap-2 ${className}`}
+                  className={`gap-2 sm:flex-1 ${className}`}
                   asChild
                 >
                   <a href={href} target="_blank" rel="noopener noreferrer">
@@ -143,7 +143,7 @@ export function BookingShareDialog({
               {typeof navigator !== "undefined" && "share" in navigator && (
                 <Button
                   variant="outline"
-                  className="flex-1"
+                  className="sm:flex-1"
                   onClick={handleNativeShare}
                 >
                   Más

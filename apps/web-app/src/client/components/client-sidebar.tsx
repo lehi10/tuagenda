@@ -29,7 +29,7 @@ export function ClientSidebar({
       items: [
         {
           id: "appointments",
-          title: t.navigation.appointments,
+          title: t.common.myAppointments,
           url: "/u/appointments",
           icon: Calendar,
         },
@@ -53,7 +53,7 @@ export function ClientSidebar({
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-4 py-2">
+        <div className="flex flex-col gap-1 px-4 py-2">
           <Link href="/u/appointments" className="flex items-center gap-2">
             <Image
               src="/icons/2_vertical_color.png"
@@ -64,6 +64,9 @@ export function ClientSidebar({
               priority
             />
           </Link>
+          <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground px-1">
+            Portal del cliente
+          </span>
         </div>
       </SidebarHeader>
       <SidebarContent>
