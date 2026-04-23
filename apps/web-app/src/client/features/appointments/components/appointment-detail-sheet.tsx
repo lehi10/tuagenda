@@ -23,7 +23,6 @@ import {
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import { Textarea } from "@/client/components/ui/textarea";
-import { Separator } from "@/client/components/ui/separator";
 import { Calendar } from "@/client/components/ui/calendar";
 import {
   Avatar,

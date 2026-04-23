@@ -17,6 +17,7 @@ import type { BookingData } from "@/client/types/booking";
 
 interface BookingSummaryProps {
   bookingData: BookingData;
+  currency: string;
   onClear: () => void;
   onContinue?: () => void;
   className?: string;
@@ -24,6 +25,7 @@ interface BookingSummaryProps {
 
 export function BookingSummary({
   bookingData,
+  currency,
   onClear,
   onContinue,
   className,
@@ -77,7 +79,9 @@ export function BookingSummary({
                     {bookingData.service.durationMinutes}{" "}
                     {t.booking.summary.minutes}
                   </span>
-                  <span>{formatPrice(bookingData.service.price)}</span>
+                  <span>
+                    {formatPrice(bookingData.service.price, currency)}
+                  </span>
                 </div>
               </div>
             )}

@@ -7,12 +7,7 @@ import {
 } from "@/client/components/ui/avatar";
 import { WhatsAppButton } from "@/client/components/shared/whatsapp-button";
 import { VerticalStepper } from "@/client/components/booking/steppers/vertical-stepper";
-import { LeftPanelSummary } from "@/client/components/booking/left-panel/left-panel-summary";
-import type {
-  BookingService,
-  StepConfig,
-  StepType,
-} from "@/client/types/booking";
+import type { StepConfig, StepType } from "@/client/types/booking";
 
 interface BookingLeftPanelProps {
   businessProfile: {
@@ -25,12 +20,6 @@ interface BookingLeftPanelProps {
   stepConfig: StepConfig[];
   isStepComplete: (step: StepType) => boolean;
   showingDetail: boolean;
-  bookingData: {
-    service?: BookingService;
-    professional?: { name: string };
-    date?: Date;
-    timeSlot?: string;
-  };
 }
 
 export function BookingLeftPanel({
@@ -39,7 +28,6 @@ export function BookingLeftPanel({
   stepConfig,
   isStepComplete,
   showingDetail,
-  bookingData,
 }: BookingLeftPanelProps) {
   return (
     <aside className="hidden lg:flex w-[300px] xl:w-[320px] flex-shrink-0 flex-col border-r bg-card sticky top-14 h-[calc(100vh-56px)] overflow-y-auto">
@@ -70,7 +58,7 @@ export function BookingLeftPanel({
       </div>
 
       {/* Vertical stepper */}
-      <div className="p-5 border-b">
+      <div className="p-5">
         <VerticalStepper
           currentStep={currentStep}
           stepConfig={stepConfig}
@@ -78,9 +66,6 @@ export function BookingLeftPanel({
           showingDetail={showingDetail}
         />
       </div>
-
-      {/* Booking summary */}
-      <LeftPanelSummary bookingData={bookingData} />
     </aside>
   );
 }

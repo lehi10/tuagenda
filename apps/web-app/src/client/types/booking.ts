@@ -125,6 +125,7 @@ export interface BookingSummary {
     durationMinutes: number;
     price: number;
   };
+  currency: string;
   professional?: {
     name: string;
   };

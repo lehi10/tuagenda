@@ -33,6 +33,7 @@ interface ServiceGridProps {
   services: BookingService[];
   categoryTabs: CategoryTab[];
   categoryFilter: string;
+  currency: string;
   isLoading: boolean;
   onCategoryChange: (id: string) => void;
   onServiceSelect: (service: BookingService) => void;
@@ -42,6 +43,7 @@ export function ServiceGrid({
   services,
   categoryTabs,
   categoryFilter,
+  currency,
   isLoading,
   onCategoryChange,
   onServiceSelect,
@@ -121,7 +123,7 @@ export function ServiceGrid({
                       </span>
                     ) : hasPrice ? (
                       <span className="text-sm font-bold text-primary">
-                        {formatPrice(service.price)}
+                        {formatPrice(service.price, currency)}
                       </span>
                     ) : null}
                     <p className="text-xs text-primary/70 font-semibold mt-1">

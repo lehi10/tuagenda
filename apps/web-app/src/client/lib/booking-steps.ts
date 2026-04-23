@@ -2,11 +2,12 @@
 // This can be easily modified or loaded from a database
 
 export type StepType =
-  | "service"
+  | "service-detail"
   | "professional"
   | "date"
   | "time"
   | "client-info"
+  | "summary"
   | "payment"
   | "confirmation";
 
@@ -21,46 +22,52 @@ export interface StepConfig {
 // You can modify this or load it from a database
 export const defaultStepConfig: StepConfig[] = [
   {
-    id: "service",
+    id: "service-detail",
     enabled: true,
     required: true,
-    order: 1,
+    order: 2,
   },
   {
     id: "professional",
     enabled: true, // Set to false if only one professional
     required: true,
-    order: 2,
+    order: 3,
   },
   {
     id: "date",
     enabled: true,
     required: true,
-    order: 3,
+    order: 4,
   },
   {
     id: "time",
     enabled: false, // Merged into "date" step (date + time on the same page)
     required: true,
-    order: 4,
+    order: 5,
   },
   {
     id: "client-info",
     enabled: true,
     required: true,
-    order: 5,
+    order: 6,
+  },
+  {
+    id: "summary",
+    enabled: true,
+    required: true,
+    order: 7,
   },
   {
     id: "payment",
     enabled: true,
     required: true,
-    order: 6,
+    order: 8,
   },
   {
     id: "confirmation",
     enabled: true,
     required: true,
-    order: 7,
+    order: 9,
   },
 ];
 
@@ -108,45 +115,51 @@ export function getPreviousStep(
 // Example: Configuration for a business with only one professional
 export const singleProfessionalConfig: StepConfig[] = [
   {
-    id: "service",
+    id: "service-detail",
     enabled: true,
     required: true,
-    order: 1,
+    order: 2,
   },
   {
     id: "professional",
     enabled: false, // Disabled - skip this step
     required: false,
-    order: 2,
+    order: 3,
   },
   {
     id: "date",
     enabled: true,
     required: true,
-    order: 3,
+    order: 4,
   },
   {
     id: "time",
     enabled: false, // Merged into "date" step
     required: true,
-    order: 4,
+    order: 5,
   },
   {
     id: "client-info",
     enabled: true,
     required: true,
-    order: 5,
+    order: 6,
+  },
+  {
+    id: "summary",
+    enabled: true,
+    required: true,
+    order: 7,
   },
   {
     id: "payment",
     enabled: true,
     required: true,
-    order: 6,
+    order: 8,
   },
   {
     id: "confirmation",
     enabled: true,
     required: true,
-    order: 7,
+    order: 9,
   },
 ];

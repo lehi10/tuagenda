@@ -6,22 +6,17 @@ import { BookingLeftPanel } from "@/client/components/booking/left-panel/booking
 import { MobileStepperBar } from "@/client/components/booking/steppers/mobile-stepper-bar";
 import { WhatsAppButton } from "@/client/components/shared/whatsapp-button";
 import { BusinessProfilePage } from "@/client/components/booking/business-profile-page";
-import { ServiceSelection } from "@/client/components/booking/service-selection";
 import { ServiceDetailStep } from "@/client/components/booking/service-detail-step";
 import { ProfessionalSelection } from "@/client/components/booking/professional-selection";
 import { DateTimeSelection } from "@/client/components/booking/date-time-selection";
 import { ClientInfoStep } from "@/client/components/booking/client-info-step";
 import { PaymentStep } from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
+import { BookingOrderSummaryStep } from "@/client/components/booking/booking-order-summary-step";
 import { defaultStepConfig, getPreviousStep } from "@/client/lib/booking-steps";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
 import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
-import { cn } from "@/client/lib/utils";
-import type {
-  BookingService,
-  StepConfig,
-  StepType,
-} from "@/client/types/booking";
+import type { StepConfig, StepType } from "@/client/types/booking";
 
 interface BusinessProfileData {
   name: string;
@@ -36,15 +31,17 @@ interface BusinessProfileData {
 interface BookingFlowProps {
   businessId: string;
   businessProfile: BusinessProfileData;
+  currency: string;
 }
 
-export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
+export function BookingFlow({
+  businessId,
+  businessProfile,
+  currency,
+}: BookingFlowProps) {
   const stepConfig: StepConfig[] = defaultStepConfig;
   const [appointmentId, setAppointmentId] = useState<string | null>(null);
   const [showProfilePage, setShowProfilePage] = useState(true);
-  const [cameFromProfile, setCameFromProfile] = useState(false);
-  const [serviceForDetail, setServiceForDetail] =
-    useState<BookingService | null>(null);
 
   const {
     bookingData,
@@ -58,63 +55,42 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
     clearBooking,
     isStepComplete,
     goToStep,
+    goToNextStep,
   } = useBookingFlow({ stepConfig });
 
   const isConfirmation = currentStep === "confirmation";
-  const showingDetail = serviceForDetail !== null && currentStep === "service";
+  const showingDetail = currentStep === "service-detail";
 
-  const handleBackToHome = () => {
+  const showProfile = () => {
     clearBooking();
-    setServiceForDetail(null);
-    setCameFromProfile(false);
     setShowProfilePage(true);
   };
 
   const handleBack = () => {
     if (showingDetail) {
-      setServiceForDetail(null);
-      if (cameFromProfile) {
-        setCameFromProfile(false);
-        setShowProfilePage(true);
-      }
-      return;
-    }
-    if (currentStep === "service") {
-      handleBackToHome();
+      showProfile();
       return;
     }
     const prev = getPreviousStep(currentStep, stepConfig);
     if (prev) goToStep(prev);
   };
 
-  const renderStep = () => {
-    if (showingDetail && serviceForDetail) {
-      return (
-        <ServiceDetailStep
-          service={serviceForDetail}
-          onConfirm={(svc) => {
-            setServiceForDetail(null);
-            setCameFromProfile(false);
-            updateService(svc);
-          }}
-          onBack={() => {
-            setServiceForDetail(null);
-            if (cameFromProfile) {
-              setCameFromProfile(false);
-              setShowProfilePage(true);
-            }
-          }}
-        />
-      );
+  const handleEdit = (step: StepType) => {
+    if (step === "service-detail") {
+      showProfile();
+      return;
     }
+    goToStep(step);
+  };
 
+  const renderStep = () => {
     switch (currentStep) {
-      case "service":
+      case "service-detail":
         return (
-          <ServiceSelection
-            businessId={businessId}
-            onSelect={(svc) => setServiceForDetail(svc)}
-            selectedServiceId={bookingData.service?.id}
+          <ServiceDetailStep
+            service={bookingData.service!}
+            currency={currency}
+            onConfirm={goToNextStep}
           />
         );
       case "professional":
@@ -139,6 +115,15 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
         );
       case "client-info":
         return <ClientInfoStep onContinue={updateClientInfo} />;
+      case "summary":
+        return (
+          <BookingOrderSummaryStep
+            bookingData={bookingData}
+            currency={currency}
+            onConfirm={goToNextStep}
+            onEdit={handleEdit}
+          />
+        );
       case "payment":
         return (
           <PaymentStep
@@ -163,8 +148,9 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
               clientInfo: bookingData.clientInfo!,
               paymentMethod: bookingData.paymentMethod!,
               businessLocation: MOCK_BUSINESS_LOCATION,
+              currency,
             }}
-            onBackToHome={handleBackToHome}
+            onBackToHome={showProfile}
           />
         );
       default:
@@ -178,10 +164,11 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
         <BusinessProfilePage
           businessId={businessId}
           business={businessProfile}
+          currency={currency}
           onServiceSelect={(svc) => {
+            updateService(svc);
             setShowProfilePage(false);
-            setServiceForDetail(svc);
-            setCameFromProfile(true);
+            goToStep("service-detail");
           }}
         />
       </div>
@@ -190,16 +177,13 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
 
   return (
     <div className="flex min-h-[calc(100vh-56px)]">
-      {!isConfirmation && (
-        <BookingLeftPanel
-          businessProfile={businessProfile}
-          currentStep={currentStep}
-          stepConfig={stepConfig}
-          isStepComplete={isStepComplete}
-          showingDetail={showingDetail}
-          bookingData={bookingData}
-        />
-      )}
+      <BookingLeftPanel
+        businessProfile={businessProfile}
+        currentStep={currentStep}
+        stepConfig={stepConfig}
+        isStepComplete={isStepComplete}
+        showingDetail={showingDetail}
+      />
 
       <div className="flex-1 min-w-0 flex flex-col bg-background">
         {!isConfirmation && (
@@ -213,12 +197,7 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
           </div>
         )}
 
-        <div
-          className={cn(
-            "flex-1 py-6 px-4 sm:py-8 sm:px-6",
-            !isConfirmation && "mx-auto w-full max-w-2xl"
-          )}
-        >
+        <div className="flex-1 py-6 px-4 sm:py-8 sm:px-6 mx-auto w-full max-w-2xl">
           {!isConfirmation && (
             <button
               onClick={handleBack}
@@ -231,12 +210,11 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
           {renderStep()}
         </div>
 
-        {(currentStep === "service" || showingDetail) &&
-          businessProfile.phone && (
-            <div className="lg:hidden border-t bg-card px-4 py-3">
-              <WhatsAppButton phone={businessProfile.phone} justify="center" />
-            </div>
-          )}
+        {showingDetail && businessProfile.phone && (
+          <div className="lg:hidden border-t bg-card px-4 py-3">
+            <WhatsAppButton phone={businessProfile.phone} justify="center" />
+          </div>
+        )}
       </div>
     </div>
   );

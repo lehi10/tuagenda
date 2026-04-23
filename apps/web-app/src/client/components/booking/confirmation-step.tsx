@@ -8,7 +8,6 @@ import { useDateLocale } from "@/client/hooks/use-date-locale";
 import { formatPrice, getPaymentMethodLabel } from "@/client/lib/booking-utils";
 import { LocationMap } from "@/client/components/booking/confirmation/location-map";
 import { EmailNotice } from "@/client/components/booking/confirmation/email-notice";
-import { cn } from "@/client/lib/utils";
 import type { BookingSummary } from "@/client/types/booking";
 
 interface ConfirmationStepProps {
@@ -54,7 +53,7 @@ export function ConfirmationStep({
       emoji: "📋",
       label: t.booking.summary.service,
       value: bookingSummary.service.name,
-      sub: `${bookingSummary.service.durationMinutes} min · ${formatPrice(bookingSummary.service.price)}`,
+      sub: `${bookingSummary.service.durationMinutes} min · ${formatPrice(bookingSummary.service.price, bookingSummary.currency)}`,
     },
     {
       emoji: "📅",

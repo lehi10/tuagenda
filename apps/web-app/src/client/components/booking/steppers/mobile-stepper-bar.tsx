@@ -6,20 +6,22 @@ import { getEnabledSteps } from "@/client/lib/booking-steps";
 import type { StepConfig, StepType } from "@/client/types/booking";
 
 const STEP_LABELS: Record<StepType, string> = {
-  service: "Servicio",
+  "service-detail": "Servicio",
   professional: "Profesional",
   date: "Fecha y hora",
   time: "Horario",
   "client-info": "Tu cuenta",
-  payment: "Confirmar",
+  summary: "Resumen",
+  payment: "Pago",
   confirmation: "Listo",
 };
 
 const STEPPER_STEPS: StepType[] = [
-  "service",
+  "service-detail",
   "professional",
   "date",
   "client-info",
+  "summary",
   "payment",
 ];
 
@@ -39,7 +41,7 @@ export function MobileStepperBar({
   const enabledSteps = getEnabledSteps(stepConfig).filter((s) =>
     STEPPER_STEPS.includes(s.id)
   );
-  const activeStepId = showingDetail ? "service" : currentStep;
+  const activeStepId = showingDetail ? "service-detail" : currentStep;
   const currentIndex = enabledSteps.findIndex((s) => s.id === activeStepId);
 
   return (

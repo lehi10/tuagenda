@@ -44,7 +44,7 @@ export function BookingDetailsCard({
           <InfoDisplayItem
             icon={Calendar}
             value={bookingSummary.service.name}
-            subValue={`${bookingSummary.service.durationMinutes} ${t.booking.summary.minutes} • ${formatPrice(bookingSummary.service.price)}`}
+            subValue={`${bookingSummary.service.durationMinutes} ${t.booking.summary.minutes} • ${formatPrice(bookingSummary.service.price, bookingSummary.currency)}`}
           />
 
           {/* Professional */}

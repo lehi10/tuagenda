@@ -3,13 +3,12 @@
 import { Clock, ImageIcon } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
 import { formatPrice } from "@/client/lib/booking-utils";
-import { cn } from "@/client/lib/utils";
 import type { BookingService } from "@/client/types/booking";
 
 interface ServiceDetailStepProps {
   service: BookingService;
-  onConfirm: (service: BookingService) => void;
-  onBack: () => void;
+  currency: string;
+  onConfirm: () => void;
 }
 
 // ###TODO### – replace with real service icon/emoji based on category
@@ -46,8 +45,8 @@ function ServiceEmoji({ name }: { name: string }) {
 
 export function ServiceDetailStep({
   service,
+  currency,
   onConfirm,
-  onBack,
 }: ServiceDetailStepProps) {
   const isFree = service.price === 0;
   const hasPrice = service.price !== null && service.price !== undefined;
@@ -98,7 +97,7 @@ export function ServiceDetailStep({
                 </span>
               ) : hasPrice ? (
                 <span className="text-xl font-bold text-primary">
-                  {formatPrice(service.price)}
+                  {formatPrice(service.price, currency)}
                 </span>
               ) : (
                 <span className="text-sm text-muted-foreground">
@@ -148,7 +147,7 @@ export function ServiceDetailStep({
       {/* CTA sticky on mobile */}
       <div className="sticky bottom-0 pt-4 pb-2 bg-background/80 backdrop-blur-sm -mx-4 px-4 sm:relative sm:bg-transparent sm:backdrop-blur-none sm:mx-0 sm:px-0 sm:pt-5 sm:pb-0">
         <Button
-          onClick={() => onConfirm(service)}
+          onClick={onConfirm}
           className="w-full h-12 rounded-xl font-semibold text-base shadow-lg shadow-primary/20"
           size="lg"
         >

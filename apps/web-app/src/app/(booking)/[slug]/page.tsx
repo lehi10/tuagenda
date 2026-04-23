@@ -44,7 +44,11 @@ async function BookingContent({ slug }: { slug: string }) {
   };
 
   return (
-    <BookingFlow businessId={business.id} businessProfile={businessProfile} />
+    <BookingFlow
+      businessId={business.id}
+      businessProfile={businessProfile}
+      currency={business.currency}
+    />
   );
 }
 

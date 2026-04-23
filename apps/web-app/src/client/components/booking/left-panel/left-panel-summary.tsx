@@ -10,9 +10,13 @@ interface LeftPanelSummaryProps {
     date?: Date;
     timeSlot?: string;
   };
+  currency: string;
 }
 
-export function LeftPanelSummary({ bookingData }: LeftPanelSummaryProps) {
+export function LeftPanelSummary({
+  bookingData,
+  currency,
+}: LeftPanelSummaryProps) {
   const { service, professional, date, timeSlot } = bookingData;
 
   if (!service && !professional && !date && !timeSlot) return null;
@@ -37,7 +41,7 @@ export function LeftPanelSummary({ bookingData }: LeftPanelSummaryProps) {
               </p>
             </div>
             <span className="text-sm font-bold text-primary shrink-0">
-              {formatPrice(service.price)}
+              {formatPrice(service.price, currency)}
             </span>
           </div>
         )}

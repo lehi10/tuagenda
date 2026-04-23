@@ -20,12 +20,14 @@ interface BusinessData {
 interface BusinessProfilePageProps {
   businessId: string;
   business: BusinessData;
+  currency: string;
   onServiceSelect: (service: BookingService) => void;
 }
 
 export function BusinessProfilePage({
   businessId,
   business,
+  currency,
   onServiceSelect,
 }: BusinessProfilePageProps) {
   const {
@@ -52,6 +54,7 @@ export function BusinessProfilePage({
           services={filteredServices}
           categoryTabs={categoryTabs}
           categoryFilter={categoryFilter}
+          currency={currency}
           isLoading={isLoading}
           onCategoryChange={setCategoryFilter}
           onServiceSelect={onServiceSelect}

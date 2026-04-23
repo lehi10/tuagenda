@@ -12,7 +12,7 @@ import { cn } from "@/client/lib/utils";
 import type { BookingData, StepType } from "@/client/types/booking";
 
 const STEP_ORDER: StepType[] = [
-  "service",
+  "service-detail",
   "professional",
   "date",
   "time",
@@ -24,12 +24,14 @@ const STEP_ORDER: StepType[] = [
 interface MobileBookingSummaryProps {
   bookingData: BookingData;
   currentStep: StepType;
+  currency: string;
   onClear: () => void;
 }
 
 export function MobileBookingSummary({
   bookingData,
   currentStep,
+  currency,
   onClear,
 }: MobileBookingSummaryProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -109,7 +111,7 @@ export function MobileBookingSummary({
           <div className="flex items-center gap-2 shrink-0">
             {bookingData.service && (
               <span className="font-semibold text-primary">
-                {formatPrice(bookingData.service.price)}
+                {formatPrice(bookingData.service.price, currency)}
               </span>
             )}
             {isExpanded ? (
@@ -156,7 +158,7 @@ export function MobileBookingSummary({
                     </p>
                   </div>
                   <span className="font-semibold">
-                    {formatPrice(bookingData.service.price)}
+                    {formatPrice(bookingData.service.price, currency)}
                   </span>
                 </div>
               )}

@@ -53,7 +53,7 @@ interface UseBookingFlowReturn {
  */
 export function useBookingFlow({
   stepConfig,
-  initialStep = "service",
+  initialStep = "service-detail",
   onStepChange,
 }: UseBookingFlowOptions): UseBookingFlowReturn {
   const [bookingData, setBookingData] = useState<BookingData>({});
@@ -90,21 +90,17 @@ export function useBookingFlow({
    * Clears all downstream data (professional, date, time) since availability
    * depends on the service duration and may differ per professional.
    */
-  const updateService = useCallback(
-    (service: BookingService) => {
-      setBookingData((prev) => ({
-        ...prev,
-        service,
-        professional: undefined,
-        date: undefined,
-        timeSlot: undefined,
-        slotStartTime: undefined,
-        slotEndTime: undefined,
-      }));
-      goToNextStep();
-    },
-    [goToNextStep]
-  );
+  const updateService = useCallback((service: BookingService) => {
+    setBookingData((prev) => ({
+      ...prev,
+      service,
+      professional: undefined,
+      date: undefined,
+      timeSlot: undefined,
+      slotStartTime: undefined,
+      slotEndTime: undefined,
+    }));
+  }, []);
 
   /**
    * Update professional selection.
@@ -184,7 +180,7 @@ export function useBookingFlow({
    */
   const clearBooking = useCallback(() => {
     setBookingData({});
-    setCurrentStep("service");
+    setCurrentStep("service-detail");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -194,8 +190,6 @@ export function useBookingFlow({
   const isStepComplete = useCallback(
     (step: StepType): boolean => {
       switch (step) {
-        case "service":
-          return !!bookingData.service;
         case "professional":
           return !!bookingData.professional;
         case "date":
@@ -203,6 +197,8 @@ export function useBookingFlow({
         case "time":
           return !!bookingData.timeSlot;
         case "client-info":
+          return !!bookingData.clientInfo;
+        case "summary":
           return !!bookingData.clientInfo;
         case "payment":
           return !!bookingData.paymentMethod;
