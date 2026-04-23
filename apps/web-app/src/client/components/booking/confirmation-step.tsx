@@ -40,7 +40,13 @@ export function ConfirmationStep({
       return "TA-" + appointmentId.slice(0, 6).toUpperCase().replace(/-/g, "");
     }
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    return "TA-" + Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    return (
+      "TA-" +
+      Array.from(
+        { length: 6 },
+        () => chars[Math.floor(Math.random() * chars.length)]
+      ).join("")
+    );
   }, [appointmentId]);
 
   const details = [
@@ -72,7 +78,10 @@ export function ConfirmationStep({
     {
       emoji: "💳",
       label: "Método de pago",
-      value: getPaymentMethodLabel(bookingSummary.paymentMethod, paymentMethodLabels),
+      value: getPaymentMethodLabel(
+        bookingSummary.paymentMethod,
+        paymentMethodLabels
+      ),
     },
   ];
 
@@ -149,7 +158,10 @@ export function ConfirmationStep({
               onClick={() => {
                 const phone = "";
                 const text = `Mi reserva: ${bookingCode} — ${bookingSummary.service.name} el ${format(bookingSummary.date, "PPP", { locale: dateLocale })} a las ${bookingSummary.timeSlot}`;
-                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
+                window.open(
+                  `https://wa.me/${phone}?text=${encodeURIComponent(text)}`,
+                  "_blank"
+                );
               }}
               className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#25D366] py-2.5 text-sm font-semibold text-white hover:bg-[#20BA5A] transition-colors"
             >
@@ -158,7 +170,11 @@ export function ConfirmationStep({
             <button
               onClick={() => {
                 // Add to calendar via Google Calendar
-                const start = format(bookingSummary.date, "yyyyMMdd") + "T" + bookingSummary.timeSlot.replace(":", "") + "00";
+                const start =
+                  format(bookingSummary.date, "yyyyMMdd") +
+                  "T" +
+                  bookingSummary.timeSlot.replace(":", "") +
+                  "00";
                 const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(bookingSummary.service.name)}&dates=${start}/${start}`;
                 window.open(url, "_blank");
               }}

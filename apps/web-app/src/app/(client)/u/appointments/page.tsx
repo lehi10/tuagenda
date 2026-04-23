@@ -116,7 +116,6 @@ export default function AppointmentsPage() {
       : `${hours}h`;
   };
 
-
   const getProviderName = (appointment: Appointment) => {
     if (appointment.providerBusinessUser?.displayName) {
       return appointment.providerBusinessUser.displayName;

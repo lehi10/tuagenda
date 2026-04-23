@@ -73,7 +73,8 @@ export function formatCurrency(
   options: CurrencyFormatOptions = {}
 ): string {
   const { showDecimals = true, locale } = options;
-  const resolvedLocale = locale ?? CURRENCY_LOCALE_MAP[currencyCode] ?? undefined;
+  const resolvedLocale =
+    locale ?? CURRENCY_LOCALE_MAP[currencyCode] ?? undefined;
 
   return new Intl.NumberFormat(resolvedLocale, {
     style: "currency",
@@ -92,8 +93,12 @@ export function formatCurrency(
  * getCurrencySymbol("EUR") // "€"
  * getCurrencySymbol("USD") // "$"
  */
-export function getCurrencySymbol(currencyCode: string, locale?: string): string {
-  const resolvedLocale = locale ?? CURRENCY_LOCALE_MAP[currencyCode] ?? undefined;
+export function getCurrencySymbol(
+  currencyCode: string,
+  locale?: string
+): string {
+  const resolvedLocale =
+    locale ?? CURRENCY_LOCALE_MAP[currencyCode] ?? undefined;
 
   const parts = new Intl.NumberFormat(resolvedLocale, {
     style: "currency",
@@ -110,8 +115,12 @@ export function getCurrencySymbol(currencyCode: string, locale?: string): string
  * isCurrencySymbolSuffix("EUR") // true  → "25,00 €"
  * isCurrencySymbolSuffix("USD") // false → "$25.00"
  */
-export function isCurrencySymbolSuffix(currencyCode: string, locale?: string): boolean {
-  const resolvedLocale = locale ?? CURRENCY_LOCALE_MAP[currencyCode] ?? undefined;
+export function isCurrencySymbolSuffix(
+  currencyCode: string,
+  locale?: string
+): boolean {
+  const resolvedLocale =
+    locale ?? CURRENCY_LOCALE_MAP[currencyCode] ?? undefined;
 
   const parts = new Intl.NumberFormat(resolvedLocale, {
     style: "currency",

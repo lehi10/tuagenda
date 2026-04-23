@@ -123,7 +123,9 @@ function CopyButton({ value, tooltip }: { value: string; tooltip: string }) {
           )}
         </button>
       </TooltipTrigger>
-      <TooltipContent side="top">{copied ? "¡Copiado!" : tooltip}</TooltipContent>
+      <TooltipContent side="top">
+        {copied ? "¡Copiado!" : tooltip}
+      </TooltipContent>
     </Tooltip>
   );
 }
@@ -136,7 +138,8 @@ function getMockSlots(
 ): { time: string; available: boolean }[] {
   const seed = `${date.toDateString()}-${employeeId ?? "x"}`;
   let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0;
+  for (let i = 0; i < seed.length; i++)
+    h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0;
 
   const slots: { time: string; available: boolean }[] = [];
   let minutes = 8 * 60;
@@ -252,16 +255,22 @@ export function AppointmentDetailSheet({
     : "—";
   const price =
     appointment.service?.price != null
-      ? formatCurrency(appointment.service.price, currentBusiness?.currency ?? "USD")
+      ? formatCurrency(
+          appointment.service.price,
+          currentBusiness?.currency ?? "USD"
+        )
       : "—";
   const createdAt = appointment.createdAt
-    ? formatInTz(new Date(appointment.createdAt), timezone, "dd MMM yyyy, h:mm a")
+    ? formatInTz(
+        new Date(appointment.createdAt),
+        timezone,
+        "dd MMM yyyy, h:mm a"
+      )
     : "—";
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="flex flex-col p-0">
-
         {/* ── Header ─────────────────────────── */}
         <SheetHeader className="px-5 pt-5 pb-3 border-b">
           <div className="flex items-center justify-between">
@@ -279,7 +288,6 @@ export function AppointmentDetailSheet({
 
         {/* ── Body ───────────────────────────── */}
         <div className="flex-1 overflow-y-auto divide-y">
-
           {/* Cliente */}
           <div className="px-5 py-4 space-y-3">
             <SectionLabel>Cliente</SectionLabel>
@@ -294,19 +302,25 @@ export function AppointmentDetailSheet({
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold leading-tight">{clientName}</p>
+                    <p className="text-sm font-semibold leading-tight">
+                      {clientName}
+                    </p>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-1 mt-1 w-fit cursor-default">
                           {hasAccount ? (
                             <>
                               <UserCheck className="h-3.5 w-3.5 text-green-500" />
-                              <span className="text-xs text-green-600">Con cuenta</span>
+                              <span className="text-xs text-green-600">
+                                Con cuenta
+                              </span>
                             </>
                           ) : (
                             <>
                               <UserX className="h-3.5 w-3.5 text-muted-foreground" />
-                              <span className="text-xs text-muted-foreground">Sin cuenta</span>
+                              <span className="text-xs text-muted-foreground">
+                                Sin cuenta
+                              </span>
                             </>
                           )}
                         </div>
@@ -326,7 +340,11 @@ export function AppointmentDetailSheet({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <a href={`tel:${customer.phone}`} className="flex-1">
-                          <Button variant="outline" size="sm" className="w-full gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full gap-2"
+                          >
                             <Phone className="h-3.5 w-3.5" />
                             Llamar
                           </Button>
@@ -342,7 +360,11 @@ export function AppointmentDetailSheet({
                           rel="noopener noreferrer"
                           className="flex-1"
                         >
-                          <Button variant="outline" size="sm" className="w-full gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full gap-2"
+                          >
                             <MessageCircle className="h-3.5 w-3.5" />
                             WhatsApp
                           </Button>
@@ -358,11 +380,16 @@ export function AppointmentDetailSheet({
                   {/* Teléfono — siempre visible */}
                   <div className="flex items-center gap-3 px-3 py-2.5">
                     <Phone className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground w-14 shrink-0">Teléfono</span>
+                    <span className="text-xs text-muted-foreground w-14 shrink-0">
+                      Teléfono
+                    </span>
                     {customer.phone ? (
                       <>
                         <span className="flex-1">{customer.phone}</span>
-                        <CopyButton value={customer.phone} tooltip="Copiar teléfono" />
+                        <CopyButton
+                          value={customer.phone}
+                          tooltip="Copiar teléfono"
+                        />
                       </>
                     ) : (
                       <span className="flex-1 text-muted-foreground italic text-xs">
@@ -373,11 +400,18 @@ export function AppointmentDetailSheet({
                   {/* Email — siempre visible */}
                   <div className="flex items-center gap-3 px-3 py-2.5">
                     <Mail className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground w-14 shrink-0">Email</span>
+                    <span className="text-xs text-muted-foreground w-14 shrink-0">
+                      Email
+                    </span>
                     {customer.email ? (
                       <>
-                        <span className="flex-1 truncate">{customer.email}</span>
-                        <CopyButton value={customer.email} tooltip="Copiar email" />
+                        <span className="flex-1 truncate">
+                          {customer.email}
+                        </span>
+                        <CopyButton
+                          value={customer.email}
+                          tooltip="Copiar email"
+                        />
                       </>
                     ) : (
                       <span className="flex-1 text-muted-foreground italic text-xs">
@@ -388,7 +422,9 @@ export function AppointmentDetailSheet({
                 </div>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground">Sin cliente asignado</p>
+              <p className="text-sm text-muted-foreground">
+                Sin cliente asignado
+              </p>
             )}
           </div>
 
@@ -398,14 +434,22 @@ export function AppointmentDetailSheet({
             <div className="rounded-lg border divide-y text-sm">
               <div className="flex items-center gap-2.5 px-3 py-2">
                 <Briefcase className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                <span className="text-muted-foreground w-16 shrink-0 text-xs">Servicio</span>
-                <span className="font-medium">{appointment.service?.name ?? "—"}</span>
+                <span className="text-muted-foreground w-16 shrink-0 text-xs">
+                  Servicio
+                </span>
+                <span className="font-medium">
+                  {appointment.service?.name ?? "—"}
+                </span>
               </div>
               <div className="grid grid-cols-2 divide-x">
                 <div className="flex items-center gap-2.5 px-3 py-2">
                   <Timer className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground text-xs">Duración</span>
-                  <span className="font-medium text-sm ml-auto">{duration}</span>
+                  <span className="text-muted-foreground text-xs">
+                    Duración
+                  </span>
+                  <span className="font-medium text-sm ml-auto">
+                    {duration}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2.5 px-3 py-2">
                   <DollarSign className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -416,7 +460,9 @@ export function AppointmentDetailSheet({
               {appointment.isGroup && (
                 <div className="flex items-center gap-2.5 px-3 py-2">
                   <Users className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground w-16 shrink-0 text-xs">Tipo</span>
+                  <span className="text-muted-foreground w-16 shrink-0 text-xs">
+                    Tipo
+                  </span>
                   <span className="font-medium">
                     Grupal
                     {appointment.capacity != null && (
@@ -447,7 +493,9 @@ export function AppointmentDetailSheet({
                       Reprogramar
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>Cambiar fecha y hora de la cita</TooltipContent>
+                  <TooltipContent>
+                    Cambiar fecha y hora de la cita
+                  </TooltipContent>
                 </Tooltip>
               )}
             </div>
@@ -458,60 +506,77 @@ export function AppointmentDetailSheet({
                   <Calendar
                     mode="single"
                     selected={rescheduleDate}
-                    onSelect={(d) => { setRescheduleDate(d); setSelectedSlot(null); }}
+                    onSelect={(d) => {
+                      setRescheduleDate(d);
+                      setSelectedSlot(null);
+                    }}
                     disabled={{ before: new Date() }}
                   />
                 </div>
                 <div className="p-3 space-y-2">
-                  {rescheduleDate ? (() => {
-                    const durationMinutes = appointment.service?.durationMinutes ?? 60;
-                    const slots = getMockSlots(rescheduleDate, employee?.id, durationMinutes);
-                    const availableCount = slots.filter((s) => s.available).length;
-                    return (
-                      <>
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs text-muted-foreground">
-                            Disponibilidad · {duration} c/u
-                          </p>
-                          {availableCount === 0 && (
-                            <span className="flex items-center gap-1 text-xs text-destructive">
-                              <Ban className="h-3 w-3" />
-                              Sin disponibilidad
-                            </span>
-                          )}
-                        </div>
-                        <div className="grid grid-cols-3 gap-1.5">
-                          {slots.map(({ time, available }) => {
-                            const isSelected = selectedSlot === time;
-                            return (
-                              <button
-                                key={time}
-                                disabled={!available}
-                                onClick={() => setSelectedSlot(time)}
-                                className={[
-                                  "rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
-                                  available
-                                    ? isSelected
-                                      ? "border-primary bg-primary text-primary-foreground"
-                                      : "border-input bg-background hover:bg-accent hover:text-accent-foreground"
-                                    : "cursor-not-allowed border-transparent bg-muted text-muted-foreground line-through opacity-50",
-                                ].join(" ")}
-                              >
-                                {formatSlotLabel(time)}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </>
-                    );
-                  })() : (
+                  {rescheduleDate ? (
+                    (() => {
+                      const durationMinutes =
+                        appointment.service?.durationMinutes ?? 60;
+                      const slots = getMockSlots(
+                        rescheduleDate,
+                        employee?.id,
+                        durationMinutes
+                      );
+                      const availableCount = slots.filter(
+                        (s) => s.available
+                      ).length;
+                      return (
+                        <>
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs text-muted-foreground">
+                              Disponibilidad · {duration} c/u
+                            </p>
+                            {availableCount === 0 && (
+                              <span className="flex items-center gap-1 text-xs text-destructive">
+                                <Ban className="h-3 w-3" />
+                                Sin disponibilidad
+                              </span>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-3 gap-1.5">
+                            {slots.map(({ time, available }) => {
+                              const isSelected = selectedSlot === time;
+                              return (
+                                <button
+                                  key={time}
+                                  disabled={!available}
+                                  onClick={() => setSelectedSlot(time)}
+                                  className={[
+                                    "rounded-md border px-2 py-1.5 text-xs font-medium transition-colors",
+                                    available
+                                      ? isSelected
+                                        ? "border-primary bg-primary text-primary-foreground"
+                                        : "border-input bg-background hover:bg-accent hover:text-accent-foreground"
+                                      : "cursor-not-allowed border-transparent bg-muted text-muted-foreground line-through opacity-50",
+                                  ].join(" ")}
+                                >
+                                  {formatSlotLabel(time)}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </>
+                      );
+                    })()
+                  ) : (
                     <p className="text-xs text-muted-foreground text-center py-2">
                       Selecciona una fecha para ver disponibilidad
                     </p>
                   )}
                 </div>
                 <div className="flex gap-2 border-t bg-background px-3 py-2">
-                  <Button variant="outline" size="sm" className="flex-1 gap-1.5" onClick={cancelReschedule}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-1.5"
+                    onClick={cancelReschedule}
+                  >
                     <X className="h-3.5 w-3.5" />
                     Cancelar
                   </Button>
@@ -530,21 +595,33 @@ export function AppointmentDetailSheet({
               <div className="rounded-lg border divide-y text-sm">
                 <div className="flex items-center gap-2.5 px-3 py-2">
                   <CalendarIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground w-16 shrink-0 text-xs">Fecha</span>
-                  <span className="font-medium capitalize">{dayStr}, {dateStr}</span>
+                  <span className="text-muted-foreground w-16 shrink-0 text-xs">
+                    Fecha
+                  </span>
+                  <span className="font-medium capitalize">
+                    {dayStr}, {dateStr}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2.5 px-3 py-2">
                   <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground w-16 shrink-0 text-xs">Hora</span>
-                  <span className="font-medium">{timeStart} – {timeEnd}</span>
+                  <span className="text-muted-foreground w-16 shrink-0 text-xs">
+                    Hora
+                  </span>
+                  <span className="font-medium">
+                    {timeStart} – {timeEnd}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2.5 px-3 py-2">
                   <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground w-16 shrink-0 text-xs">Empleado</span>
+                  <span className="text-muted-foreground w-16 shrink-0 text-xs">
+                    Empleado
+                  </span>
                   {employee ? (
                     <div className="flex items-center gap-2">
                       <Avatar className="h-5 w-5">
-                        <AvatarImage src={employee.user.pictureFullPath ?? undefined} />
+                        <AvatarImage
+                          src={employee.user.pictureFullPath ?? undefined}
+                        />
                         <AvatarFallback className="text-[10px] font-medium">
                           {employee.user.firstName[0]}
                           {employee.user.lastName?.[0] ?? ""}
@@ -583,7 +660,10 @@ export function AppointmentDetailSheet({
             <Textarea
               placeholder="Agregar observaciones sobre esta cita..."
               value={editedNotes}
-              onChange={(e) => { setEditedNotes(e.target.value); setIsDirty(true); }}
+              onChange={(e) => {
+                setEditedNotes(e.target.value);
+                setIsDirty(true);
+              }}
               className="resize-none min-h-[80px] text-sm"
             />
           </div>
@@ -593,7 +673,12 @@ export function AppointmentDetailSheet({
         <SheetFooter className="border-t px-5 py-3">
           {isDirty ? (
             <div className="flex w-full items-center justify-between">
-              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={handleDiscard}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground"
+                onClick={handleDiscard}
+              >
                 Descartar
               </Button>
               <Button size="sm" onClick={handleSave}>
@@ -601,7 +686,11 @@ export function AppointmentDetailSheet({
               </Button>
             </div>
           ) : (
-            <Button variant="outline" className="w-full" onClick={() => onOpenChange(false)}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => onOpenChange(false)}
+            >
               Cerrar
             </Button>
           )}

@@ -15,16 +15,40 @@ interface ServiceDetailStepProps {
 // ###TODO### – replace with real service icon/emoji based on category
 function ServiceEmoji({ name }: { name: string }) {
   const lower = name.toLowerCase();
-  if (lower.includes("corte") || lower.includes("cabello") || lower.includes("peinado")) return <>✂️</>;
-  if (lower.includes("uña") || lower.includes("manicure") || lower.includes("pedicure")) return <>💅</>;
+  if (
+    lower.includes("corte") ||
+    lower.includes("cabello") ||
+    lower.includes("peinado")
+  )
+    return <>✂️</>;
+  if (
+    lower.includes("uña") ||
+    lower.includes("manicure") ||
+    lower.includes("pedicure")
+  )
+    return <>💅</>;
   if (lower.includes("facial") || lower.includes("limpieza")) return <>✨</>;
-  if (lower.includes("médic") || lower.includes("medic") || lower.includes("dental")) return <>🩺</>;
+  if (
+    lower.includes("médic") ||
+    lower.includes("medic") ||
+    lower.includes("dental")
+  )
+    return <>🩺</>;
   if (lower.includes("mecánic") || lower.includes("mecanic")) return <>🔧</>;
-  if (lower.includes("gym") || lower.includes("entrenador") || lower.includes("fitness")) return <>💪</>;
+  if (
+    lower.includes("gym") ||
+    lower.includes("entrenador") ||
+    lower.includes("fitness")
+  )
+    return <>💪</>;
   return <>📋</>;
 }
 
-export function ServiceDetailStep({ service, onConfirm, onBack }: ServiceDetailStepProps) {
+export function ServiceDetailStep({
+  service,
+  onConfirm,
+  onBack,
+}: ServiceDetailStepProps) {
   const isFree = service.price === 0;
   const hasPrice = service.price !== null && service.price !== undefined;
 
@@ -77,7 +101,9 @@ export function ServiceDetailStep({ service, onConfirm, onBack }: ServiceDetailS
                   {formatPrice(service.price)}
                 </span>
               ) : (
-                <span className="text-sm text-muted-foreground">A coordinar</span>
+                <span className="text-sm text-muted-foreground">
+                  A coordinar
+                </span>
               )}
             </div>
           </div>
@@ -111,7 +137,8 @@ export function ServiceDetailStep({ service, onConfirm, onBack }: ServiceDetailS
             <div>
               <p className="text-sm font-semibold">Sobre este servicio</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                ###TODO### – descripción adicional del negocio, políticas de cancelación, etc.
+                ###TODO### – descripción adicional del negocio, políticas de
+                cancelación, etc.
               </p>
             </div>
           </div>

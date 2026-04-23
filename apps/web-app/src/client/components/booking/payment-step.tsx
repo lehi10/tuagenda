@@ -22,7 +22,9 @@ export function PaymentStep({
   isInPerson = true,
 }: PaymentStepProps) {
   const { t } = useTranslation();
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
+    null
+  );
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -154,10 +156,14 @@ export function PaymentStep({
               <div
                 className={cn(
                   "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors",
-                  isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                  isSelected
+                    ? "border-primary bg-primary"
+                    : "border-muted-foreground/30"
                 )}
               >
-                {isSelected && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+                {isSelected && (
+                  <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                )}
               </div>
             </button>
           );

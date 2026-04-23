@@ -80,9 +80,7 @@ const STATUS_TRANSITIONS: Record<
     { status: "cancelled", label: "Cancelar", icon: XCircle },
   ],
   completed: [],
-  cancelled: [
-    { status: "scheduled", label: "Reprogramar", icon: Clock },
-  ],
+  cancelled: [{ status: "scheduled", label: "Reprogramar", icon: Clock }],
 };
 
 export function AppointmentList() {
@@ -132,7 +130,10 @@ export function AppointmentList() {
     () =>
       appointments.map((apt: AppointmentEntity) => ({
         ...apt,
-        status: (apt.id && statusOverrides[apt.id]) ? statusOverrides[apt.id] : apt.status,
+        status:
+          apt.id && statusOverrides[apt.id]
+            ? statusOverrides[apt.id]
+            : apt.status,
       })),
     [appointments, statusOverrides]
   );
@@ -261,7 +262,10 @@ export function AppointmentList() {
                   : "—";
                 const price =
                   apt.service?.price != null
-                    ? formatCurrency(apt.service.price, currentBusiness?.currency ?? "USD")
+                    ? formatCurrency(
+                        apt.service.price,
+                        currentBusiness?.currency ?? "USD"
+                      )
                     : "—";
                 const transitions = STATUS_TRANSITIONS[apt.status] ?? [];
 
@@ -317,23 +321,25 @@ export function AppointmentList() {
                               <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
                                 Cambiar estado
                               </DropdownMenuLabel>
-                              {transitions.map(({ status, label, icon: Icon }) => (
-                                <DropdownMenuItem
-                                  key={status}
-                                  onClick={() =>
-                                    apt.id &&
-                                    handleStatusChange(apt.id, status)
-                                  }
-                                  className={
-                                    status === "cancelled"
-                                      ? "text-destructive focus:text-destructive"
-                                      : ""
-                                  }
-                                >
-                                  <Icon className="mr-2 h-4 w-4" />
-                                  {label}
-                                </DropdownMenuItem>
-                              ))}
+                              {transitions.map(
+                                ({ status, label, icon: Icon }) => (
+                                  <DropdownMenuItem
+                                    key={status}
+                                    onClick={() =>
+                                      apt.id &&
+                                      handleStatusChange(apt.id, status)
+                                    }
+                                    className={
+                                      status === "cancelled"
+                                        ? "text-destructive focus:text-destructive"
+                                        : ""
+                                    }
+                                  >
+                                    <Icon className="mr-2 h-4 w-4" />
+                                    {label}
+                                  </DropdownMenuItem>
+                                )
+                              )}
                             </>
                           )}
                         </DropdownMenuContent>

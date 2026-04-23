@@ -57,7 +57,8 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
   const getSelectedDateLabel = () => {
     if (!selectedDate) return null;
     if (isToday(selectedDate)) return locale === "es" ? "Hoy" : "Today";
-    if (isTomorrow(selectedDate)) return locale === "es" ? "Mañana" : "Tomorrow";
+    if (isTomorrow(selectedDate))
+      return locale === "es" ? "Mañana" : "Tomorrow";
     return format(selectedDate, "EEEE d 'de' MMMM", { locale: dateLocale });
   };
 
@@ -159,9 +160,15 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
                 className={cn(
                   "aspect-square flex items-center justify-center rounded-xl",
                   "text-sm font-medium transition-all",
-                  isSelected && "bg-primary text-primary-foreground font-bold shadow-sm",
-                  !isSelected && isTodayDate && "ring-2 ring-primary/40 text-primary font-bold",
-                  !isSelected && !isDisabled && !isTodayDate && "hover:bg-primary/10 hover:text-primary",
+                  isSelected &&
+                    "bg-primary text-primary-foreground font-bold shadow-sm",
+                  !isSelected &&
+                    isTodayDate &&
+                    "ring-2 ring-primary/40 text-primary font-bold",
+                  !isSelected &&
+                    !isDisabled &&
+                    !isTodayDate &&
+                    "hover:bg-primary/10 hover:text-primary",
                   isDisabled && "opacity-25 cursor-not-allowed"
                 )}
               >

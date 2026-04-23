@@ -68,7 +68,9 @@ export function ProfessionalSelectionView({
             return (
               <button
                 key={professional.id}
-                onClick={() => !isDisabled && onProfessionalSelect(professional)}
+                onClick={() =>
+                  !isDisabled && onProfessionalSelect(professional)
+                }
                 disabled={isDisabled}
                 className={cn(
                   "w-full text-left p-4 rounded-2xl border transition-all",

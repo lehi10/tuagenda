@@ -50,19 +50,23 @@ export function DateTimeSelection({
     onDateChange(date);
     if (date) {
       setTimeout(() => {
-        timeSlotsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        timeSlotsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 50);
     }
   };
 
-  const { data, isLoading, error } = useTrpc.businessUser.getAvailableTimeSlots.useQuery(
-    {
-      businessUserId: professionalId,
-      serviceId,
-      date: selectedDate ?? today,
-    },
-    { enabled: !!professionalId && !!serviceId && !!selectedDate }
-  );
+  const { data, isLoading, error } =
+    useTrpc.businessUser.getAvailableTimeSlots.useQuery(
+      {
+        businessUserId: professionalId,
+        serviceId,
+        date: selectedDate ?? today,
+      },
+      { enabled: !!professionalId && !!serviceId && !!selectedDate }
+    );
 
   const timeSlots = data?.slots ?? [];
   const businessTimezone = data?.businessTimezone ?? "UTC";
@@ -106,7 +110,6 @@ export function DateTimeSelection({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-
         {/* ── Left: calendar ──────────────────────────────────── */}
         <div className="space-y-4">
           {/* Calendar card */}
@@ -161,9 +164,14 @@ export function DateTimeSelection({
                     className={cn(
                       "aspect-square flex items-center justify-center rounded-xl",
                       "text-sm font-medium transition-all",
-                      isSelected && "bg-primary text-primary-foreground font-bold shadow-sm",
-                      !isSelected && isTodayDate && "ring-2 ring-primary/40 text-primary font-bold",
-                      !isSelected && !isDisabled && !isTodayDate &&
+                      isSelected &&
+                        "bg-primary text-primary-foreground font-bold shadow-sm",
+                      !isSelected &&
+                        isTodayDate &&
+                        "ring-2 ring-primary/40 text-primary font-bold",
+                      !isSelected &&
+                        !isDisabled &&
+                        !isTodayDate &&
                         "hover:bg-primary/10 hover:text-primary",
                       isDisabled && "opacity-25 cursor-not-allowed"
                     )}
@@ -180,8 +188,12 @@ export function DateTimeSelection({
                 <p className="text-sm font-semibold text-primary capitalize">
                   📅{" "}
                   {isToday(selectedDate)
-                    ? locale === "es" ? "Hoy" : "Today"
-                    : format(selectedDate, "EEEE d 'de' MMMM", { locale: dateLocale })}
+                    ? locale === "es"
+                      ? "Hoy"
+                      : "Today"
+                    : format(selectedDate, "EEEE d 'de' MMMM", {
+                        locale: dateLocale,
+                      })}
                 </p>
                 <button
                   onClick={() => handleDateChange(undefined)}
@@ -233,7 +245,10 @@ export function DateTimeSelection({
               {isLoading && (
                 <div className="grid grid-cols-3 gap-2">
                   {Array.from({ length: 9 }).map((_, i) => (
-                    <div key={i} className="h-12 animate-pulse rounded-xl bg-muted" />
+                    <div
+                      key={i}
+                      className="h-12 animate-pulse rounded-xl bg-muted"
+                    />
                   ))}
                 </div>
               )}
