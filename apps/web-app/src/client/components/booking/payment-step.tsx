@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { Button } from "@/client/components/ui/button";
-import { CreditCard, Smartphone, Store } from "lucide-react";
+import { CreditCard, Smartphone, Store, Check } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
-import { SelectableCard } from "@/client/components/booking/shared/selectable-card";
 import { useTrpc } from "@/client/lib/trpc";
+import { cn } from "@/client/lib/utils";
 import type { PaymentMethod, BookingData } from "@/client/types/booking";
 
 interface PaymentStepProps {
   bookingData: BookingData;
   businessId: string;
   onContinue: (_appointmentId: string) => void;
-  isInPerson?: boolean; // To show/hide onsite payment option
+  isInPerson?: boolean;
 }
 
 export function PaymentStep({
@@ -22,9 +22,7 @@ export function PaymentStep({
   isInPerson = true,
 }: PaymentStepProps) {
   const { t } = useTranslation();
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
-    null
-  );
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,15 +51,11 @@ export function PaymentStep({
   ];
 
   const availableMethods = paymentMethods.filter((method) => method.available);
-
   const createAppointmentMutation = useTrpc.appointment.create.useMutation();
 
   const handleContinue = async () => {
-    if (!selectedMethod) {
-      return;
-    }
+    if (!selectedMethod) return;
 
-    // Validate that we have all required booking data
     if (
       !bookingData.service ||
       !bookingData.slotStartTime ||
@@ -76,8 +70,6 @@ export function PaymentStep({
     setError(null);
 
     try {
-      // slotStartTime and slotEndTime are UTC Date objects received from the server.
-      // No timezone conversion needed — send them directly as UTC ISO strings.
       const result = await createAppointmentMutation.mutateAsync({
         customerId: bookingData.clientInfo.userId!,
         businessId: businessId,
@@ -90,7 +82,6 @@ export function PaymentStep({
         capacity: null,
       });
 
-      // Continue to confirmation with the appointment ID
       onContinue(result.appointment.id!);
     } catch (error) {
       console.error("Error creating appointment:", error);
@@ -106,7 +97,7 @@ export function PaymentStep({
 
   return (
     <div className="space-y-6">
-      {/* Header - Standardized */}
+      {/* Header */}
       <div className="space-y-1">
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.payment.title}
@@ -116,54 +107,81 @@ export function PaymentStep({
 
       {/* Error message */}
       {error && (
-        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+        <div className="rounded-xl border border-destructive/30 bg-destructive/8 p-3 text-sm text-destructive">
           {error}
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Payment methods — list style */}
+      <div className="space-y-2.5">
         {availableMethods.map((method) => {
           const Icon = method.icon;
           const isSelected = selectedMethod === method.id;
 
           return (
-            <SelectableCard
+            <button
               key={method.id}
-              isSelected={isSelected}
               onClick={() => setSelectedMethod(method.id)}
-              showCheckmark
-              contentClassName="p-6"
+              className={cn(
+                "w-full text-left flex items-center gap-4 p-4 rounded-2xl border transition-all",
+                "hover:shadow-sm active:scale-[0.99]",
+                isSelected
+                  ? "border-primary bg-primary/5 ring-1 ring-primary shadow-sm"
+                  : "border-border bg-card hover:border-primary/40"
+              )}
             >
-              <div className="flex flex-col items-center text-center">
-                <div
-                  className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
-                    isSelected
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-primary/10 text-primary"
-                  }`}
-                >
-                  <Icon className="h-8 w-8" />
-                </div>
+              {/* Icon */}
+              <div
+                className={cn(
+                  "w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors",
+                  isSelected
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground"
+                )}
+              >
+                <Icon className="h-5 w-5" />
+              </div>
 
-                <h3 className="mb-2 font-semibold">{method.name}</h3>
-                <p className="text-sm text-muted-foreground">
+              {/* Text */}
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm">{method.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {method.description}
                 </p>
               </div>
-            </SelectableCard>
+
+              {/* Radio */}
+              <div
+                className={cn(
+                  "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors",
+                  isSelected ? "border-primary bg-primary" : "border-muted-foreground/30"
+                )}
+              >
+                {isSelected && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+              </div>
+            </button>
           );
         })}
+      </div>
+
+      {/* Confirmation note */}
+      <div className="rounded-xl bg-muted/50 p-3.5 text-sm text-muted-foreground">
+        📲 Recibirás confirmación por{" "}
+        <strong className="text-foreground">WhatsApp</strong> y{" "}
+        <strong className="text-foreground">email</strong>.
       </div>
 
       <Button
         onClick={handleContinue}
         disabled={!selectedMethod || isCreating}
-        className="w-full"
+        className="w-full h-12 rounded-xl font-semibold"
         size="lg"
       >
         {isCreating
-          ? t.booking.payment.creatingAppointment || "Creating appointment..."
-          : t.booking.payment.confirmAndBook || t.booking.summary.continue}
+          ? t.booking.payment.creatingAppointment || "Creando cita..."
+          : selectedMethod === "onsite"
+            ? "Confirmar reserva ✓"
+            : t.booking.payment.confirmAndBook || t.booking.summary.continue}
       </Button>
     </div>
   );

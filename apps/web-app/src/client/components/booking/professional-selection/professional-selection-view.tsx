@@ -22,14 +22,9 @@ import { cn } from "@/client/lib/utils";
 import type { Professional } from "@/client/types/booking";
 
 export interface ProfessionalSelectionViewProps {
-  // Data
   professionals: Professional[];
-
-  // State
   isLoading: boolean;
   selectedProfessionalId?: string;
-
-  // Handlers
   onProfessionalSelect: (professional: Professional) => void;
 }
 
@@ -63,9 +58,9 @@ export function ProfessionalSelectionView({
         <EmptyState icon={UserX} message={t.booking.professional.noStaff} />
       )}
 
-      {/* Professionals Grid - Responsive */}
+      {/* Professionals Grid */}
       {!isLoading && professionals.length > 0 && (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {professionals.map((professional) => {
             const isSelected = selectedProfessionalId === professional.id;
             const isDisabled = !professional.available;
@@ -73,34 +68,38 @@ export function ProfessionalSelectionView({
             return (
               <button
                 key={professional.id}
-                onClick={() =>
-                  !isDisabled && onProfessionalSelect(professional)
-                }
+                onClick={() => !isDisabled && onProfessionalSelect(professional)}
                 disabled={isDisabled}
                 className={cn(
-                  "w-full text-left p-4 rounded-xl border transition-all",
-                  "hover:border-primary/50 hover:bg-muted/30",
-                  "active:scale-[0.99]",
+                  "w-full text-left p-4 rounded-2xl border transition-all",
+                  "hover:shadow-md active:scale-[0.99]",
                   isSelected
-                    ? "border-primary bg-primary/5 ring-2 ring-primary"
-                    : "border-border bg-card",
+                    ? "border-primary bg-primary/5 ring-1 ring-primary shadow-md"
+                    : "border-border bg-card hover:border-primary/40",
                   isDisabled && "opacity-50 cursor-not-allowed"
                 )}
               >
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
-                  <div className="relative flex-shrink-0">
-                    <Avatar className="h-12 w-12 sm:h-14 sm:w-14">
-                      <AvatarImage
-                        src={professional.avatar}
-                        alt={professional.name}
-                      />
-                      <AvatarFallback className="text-sm font-medium bg-muted">
-                        {getInitials(professional.name)}
-                      </AvatarFallback>
-                    </Avatar>
+                  <div className="relative shrink-0">
+                    <div
+                      className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center",
+                        isSelected ? "bg-primary/15" : "bg-muted"
+                      )}
+                    >
+                      <Avatar className="h-12 w-12 rounded-xl">
+                        <AvatarImage
+                          src={professional.avatar}
+                          alt={professional.name}
+                        />
+                        <AvatarFallback className="rounded-xl text-sm font-semibold bg-transparent">
+                          {getInitials(professional.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
                     {isSelected && (
-                      <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center ring-2 ring-background">
                         <Check className="h-3 w-3 text-primary-foreground" />
                       </div>
                     )}
@@ -108,18 +107,32 @@ export function ProfessionalSelectionView({
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-sm sm:text-base truncate">
+                    <p className="font-semibold text-sm truncate">
                       {professional.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground truncate">
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">
                       {professional.role}
                     </p>
+                    {!professional.available && (
+                      <p className="text-xs text-destructive mt-1">
+                        No disponible
+                      </p>
+                    )}
                   </div>
 
-                  {/* Selection indicator for non-selected */}
-                  {!isSelected && !isDisabled && (
-                    <div className="flex-shrink-0 h-5 w-5 rounded-full border-2 border-muted-foreground/30" />
-                  )}
+                  {/* Radio circle */}
+                  <div
+                    className={cn(
+                      "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors",
+                      isSelected
+                        ? "border-primary bg-primary"
+                        : "border-muted-foreground/30"
+                    )}
+                  >
+                    {isSelected && (
+                      <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                    )}
+                  </div>
                 </div>
               </button>
             );

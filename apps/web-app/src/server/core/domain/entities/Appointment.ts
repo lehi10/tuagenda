@@ -67,5 +67,6 @@ export interface Appointment {
     phone?: string;
     email?: string;
     website?: string | null;
+    currency?: string;
   };
 }

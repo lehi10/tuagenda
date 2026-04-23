@@ -42,6 +42,7 @@ import {
   AlertDialogTitle,
 } from "@/client/components/ui/alert-dialog";
 import { useTrpc } from "@/client/lib/trpc";
+import { formatCurrency } from "@/client/lib/currency-utils";
 import { Skeleton } from "@/client/components/ui/skeleton";
 import type { Appointment } from "@/server/core/domain/entities/Appointment";
 
@@ -115,12 +116,6 @@ export default function AppointmentsPage() {
       : `${hours}h`;
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("es-ES", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
-  };
 
   const getProviderName = (appointment: Appointment) => {
     if (appointment.providerBusinessUser?.displayName) {
@@ -309,7 +304,10 @@ export default function AppointmentsPage() {
             </div>
             <div className="font-semibold text-foreground">
               {appointment.service?.price &&
-                formatPrice(appointment.service.price)}
+                formatCurrency(
+                  appointment.service.price,
+                  appointment.business?.currency ?? "USD"
+                )}
             </div>
           </div>
 

@@ -7,6 +7,7 @@
 import { es, enUS } from "date-fns/locale";
 import type { Locale } from "date-fns";
 import type { TimeSlot, PaymentMethod } from "@/client/types/booking";
+import { formatCurrency } from "@/client/lib/currency-utils";
 
 /**
  * Get user initials from full name
@@ -92,11 +93,13 @@ export function generateTimeSlots(
 }
 
 /**
- * Format price with currency symbol
- * @example formatPrice(25.50) => "$25.50"
+ * Format price with currency symbol using ISO 4217 currency code.
+ * @example formatPrice(25.50, "PEN") => "S/ 25.50"
+ * @example formatPrice(25.50, "EUR") => "25,50 €"
+ * @example formatPrice(25.50, "USD") => "$25.50"
  */
-export function formatPrice(price: number, currency = "$"): string {
-  return `${currency}${price.toFixed(2)}`;
+export function formatPrice(price: number, currencyCode = "USD"): string {
+  return formatCurrency(price, currencyCode);
 }
 
 /**

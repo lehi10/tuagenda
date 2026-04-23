@@ -18,7 +18,9 @@ import { Textarea } from "@/client/components/ui/textarea";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/client/components/ui/select";
@@ -524,10 +526,47 @@ export function BusinessFormDialog({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="USD">USD ($)</SelectItem>
-                        <SelectItem value="EUR">EUR (€)</SelectItem>
-                        <SelectItem value="GBP">GBP (£)</SelectItem>
-                        <SelectItem value="MXN">MXN ($)</SelectItem>
+                        <SelectGroup>
+                          <SelectLabel>Norteamérica</SelectLabel>
+                          <SelectItem value="USD">USD — Dólar estadounidense ($)</SelectItem>
+                          <SelectItem value="CAD">CAD — Dólar canadiense (CA$)</SelectItem>
+                          <SelectItem value="MXN">MXN — Peso mexicano ($)</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                          <SelectLabel>Latinoamérica</SelectLabel>
+                          <SelectItem value="ARS">ARS — Peso argentino ($)</SelectItem>
+                          <SelectItem value="BOB">BOB — Boliviano (Bs)</SelectItem>
+                          <SelectItem value="BRL">BRL — Real brasileño (R$)</SelectItem>
+                          <SelectItem value="CLP">CLP — Peso chileno ($)</SelectItem>
+                          <SelectItem value="COP">COP — Peso colombiano ($)</SelectItem>
+                          <SelectItem value="CRC">CRC — Colón costarricense (₡)</SelectItem>
+                          <SelectItem value="CUP">CUP — Peso cubano ($)</SelectItem>
+                          <SelectItem value="DOP">DOP — Peso dominicano ($)</SelectItem>
+                          <SelectItem value="GTQ">GTQ — Quetzal (Q)</SelectItem>
+                          <SelectItem value="HNL">HNL — Lempira (L)</SelectItem>
+                          <SelectItem value="NIO">NIO — Córdoba (C$)</SelectItem>
+                          <SelectItem value="PAB">PAB — Balboa (B/.)</SelectItem>
+                          <SelectItem value="PEN">PEN — Sol peruano (S/)</SelectItem>
+                          <SelectItem value="PYG">PYG — Guaraní (₲)</SelectItem>
+                          <SelectItem value="SVC">SVC — Colón salvadoreño (₡)</SelectItem>
+                          <SelectItem value="UYU">UYU — Peso uruguayo ($)</SelectItem>
+                          <SelectItem value="VES">VES — Bolívar (Bs.S)</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                          <SelectLabel>Europa</SelectLabel>
+                          <SelectItem value="EUR">EUR — Euro (€)</SelectItem>
+                          <SelectItem value="GBP">GBP — Libra esterlina (£)</SelectItem>
+                          <SelectItem value="CHF">CHF — Franco suizo (CHF)</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                          <SelectLabel>Otros</SelectLabel>
+                          <SelectItem value="AUD">AUD — Dólar australiano (A$)</SelectItem>
+                          <SelectItem value="NZD">NZD — Dólar neozelandés (NZ$)</SelectItem>
+                          <SelectItem value="JPY">JPY — Yen (¥)</SelectItem>
+                          <SelectItem value="CNY">CNY — Yuan (¥)</SelectItem>
+                          <SelectItem value="KRW">KRW — Won (₩)</SelectItem>
+                          <SelectItem value="INR">INR — Rupia india (₹)</SelectItem>
+                        </SelectGroup>
                       </SelectContent>
                     </Select>
                   </div>

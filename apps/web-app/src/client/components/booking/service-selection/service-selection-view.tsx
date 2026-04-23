@@ -8,14 +8,8 @@
 
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/client/components/ui/select";
 import { useTranslation } from "@/client/i18n";
-import { Clock, Package, Check, FolderOpen } from "lucide-react";
+import { Clock, Package } from "lucide-react";
 import { LoadingSpinner } from "@/client/components/booking/shared/loading-spinner";
 import { EmptyState } from "@/client/components/booking/shared/empty-state";
 import { formatPrice } from "@/client/lib/booking-utils";
@@ -23,17 +17,12 @@ import { cn } from "@/client/lib/utils";
 import type { BookingService, ServiceCategory } from "@/client/types/booking";
 
 export interface ServiceSelectionViewProps {
-  // Data
   categories: ServiceCategory[];
   services: BookingService[];
-  allServices: BookingService[]; // All services for counting
-
-  // State
+  allServices: BookingService[];
   isLoading: boolean;
   categoryFilter: string;
   selectedServiceId?: string;
-
-  // Handlers
   onCategoryFilterChange: (categoryId: string) => void;
   onServiceSelect: (service: BookingService) => void;
 }
@@ -50,20 +39,23 @@ export function ServiceSelectionView({
 }: ServiceSelectionViewProps) {
   const { t, locale } = useTranslation();
 
-  // Count services per category
   const getServiceCount = (categoryId: string) => {
     if (categoryId === "all") return allServices.length;
     return allServices.filter((s) => s.categoryId === categoryId).length;
   };
 
-  // Get current category name
-  const getCurrentCategoryName = () => {
-    if (categoryFilter === "all") {
-      return locale === "es" ? "Todas las categorías" : "All categories";
-    }
-    const category = categories.find((c) => c.id === categoryFilter);
-    return category?.name || "";
-  };
+  const tabs = [
+    {
+      id: "all",
+      label: locale === "es" ? "Todos" : "All",
+      count: getServiceCount("all"),
+    },
+    ...categories.map((c) => ({
+      id: c.id,
+      label: c.name,
+      count: getServiceCount(c.id),
+    })),
+  ];
 
   return (
     <div className="space-y-5">
@@ -79,42 +71,37 @@ export function ServiceSelectionView({
         </p>
       </div>
 
-      {/* Category Filter - Improved dropdown */}
-      <div>
-        <Select value={categoryFilter} onValueChange={onCategoryFilterChange}>
-          <SelectTrigger className="w-full sm:w-[280px] h-12">
-            <div className="flex items-center gap-2">
-              <FolderOpen className="h-4 w-4 text-muted-foreground" />
-              <span className="truncate">{getCurrentCategoryName()}</span>
-              <span className="text-xs text-muted-foreground ml-auto mr-2">
-                ({getServiceCount(categoryFilter)})
-              </span>
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">
-              <div className="flex items-center justify-between w-full gap-4">
-                <span>
-                  {locale === "es" ? "Todas las categorías" : "All categories"}
+      {/* Category Tab Pills */}
+      {tabs.length > 1 && (
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-1.5 border-b pb-0 min-w-max sm:min-w-0">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => onCategoryFilterChange(tab.id)}
+                className={cn(
+                  "px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 -mb-px transition-all",
+                  categoryFilter === tab.id
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                )}
+              >
+                {tab.label}
+                <span
+                  className={cn(
+                    "ml-1.5 text-xs px-1.5 py-0.5 rounded-full",
+                    categoryFilter === tab.id
+                      ? "bg-primary/10 text-primary"
+                      : "bg-muted text-muted-foreground"
+                  )}
+                >
+                  {tab.count}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  ({getServiceCount("all")})
-                </span>
-              </div>
-            </SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                <div className="flex items-center justify-between w-full gap-4">
-                  <span>{category.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    ({getServiceCount(category.id)})
-                  </span>
-                </div>
-              </SelectItem>
+              </button>
             ))}
-          </SelectContent>
-        </Select>
-      </div>
+          </div>
+        </div>
+      )}
 
       {/* Loading State */}
       {isLoading && <LoadingSpinner fullScreen />}
@@ -124,104 +111,76 @@ export function ServiceSelectionView({
         <EmptyState icon={Package} message={t.booking.service.noServices} />
       )}
 
-      {/* Services List (Mobile) / Grid (Desktop) */}
+      {/* Services Grid */}
       {!isLoading && services.length > 0 && (
-        <>
-          {/* Mobile: Vertical list */}
-          <div className="flex flex-col gap-3 sm:hidden">
-            {services.map((service) => {
-              const isSelected = selectedServiceId === service.id;
-              return (
-                <button
-                  key={service.id}
-                  onClick={() => onServiceSelect(service)}
-                  className={cn(
-                    "w-full text-left p-4 rounded-xl border transition-all",
-                    "hover:border-primary/50 hover:bg-muted/50",
-                    "active:scale-[0.98]",
-                    isSelected
-                      ? "border-primary bg-primary/5 ring-1 ring-primary"
-                      : "border-border bg-card"
-                  )}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-base">
-                        {service.name}
-                      </h3>
-                      {service.description && (
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {service.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-1.5 mt-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
+        <div className="grid gap-3 sm:grid-cols-2">
+          {services.map((service) => {
+            const isSelected = selectedServiceId === service.id;
+            const isFree = service.price === 0;
+
+            return (
+              <button
+                key={service.id}
+                onClick={() => onServiceSelect(service)}
+                className={cn(
+                  "w-full text-left p-4 rounded-2xl border transition-all",
+                  "hover:shadow-md active:scale-[0.99]",
+                  isSelected
+                    ? "border-primary bg-primary/5 ring-1 ring-primary shadow-md"
+                    : "border-border bg-card hover:border-primary/40"
+                )}
+              >
+                <div className="flex gap-3 items-start">
+                  {/* Icon */}
+                  <div
+                    className={cn(
+                      "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl",
+                      isSelected ? "bg-primary/15" : "bg-primary/10"
+                    )}
+                  >
+                    📋
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm leading-snug mb-1">
+                      {service.name}
+                    </p>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
                         <span>
                           {service.durationMinutes} {t.booking.summary.minutes}
                         </span>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="font-bold text-lg">
+                    {service.description && (
+                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                        {service.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Price */}
+                  <div className="shrink-0 text-right ml-2">
+                    {isFree ? (
+                      <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg">
+                        Gratis
+                      </span>
+                    ) : service.price ? (
+                      <span className="text-sm font-bold text-primary">
                         {formatPrice(service.price)}
                       </span>
-                      {isSelected && (
-                        <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
-                          <Check className="h-4 w-4 text-primary-foreground" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Desktop: Grid */}
-          <div className="hidden sm:grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service) => {
-              const isSelected = selectedServiceId === service.id;
-              return (
-                <button
-                  key={service.id}
-                  onClick={() => onServiceSelect(service)}
-                  className={cn(
-                    "w-full text-left p-4 rounded-xl border transition-all relative",
-                    "hover:border-primary/50 hover:shadow-md",
-                    isSelected
-                      ? "border-primary bg-primary/5 ring-1 ring-primary"
-                      : "border-border bg-card"
-                  )}
-                >
-                  {isSelected && (
-                    <div className="absolute top-3 right-3 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
-                      <Check className="h-4 w-4 text-primary-foreground" />
-                    </div>
-                  )}
-                  <h3 className="font-semibold text-base pr-8 line-clamp-1">
-                    {service.name}
-                  </h3>
-                  {service.description && (
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                      {service.description}
+                    ) : null}
+                    <p className="text-xs text-primary/70 font-medium mt-1">
+                      Reservar →
                     </p>
-                  )}
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t">
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Clock className="h-4 w-4" />
-                      <span>
-                        {service.durationMinutes} {t.booking.summary.minutes}
-                      </span>
-                    </div>
-                    <span className="font-bold text-lg">
-                      {formatPrice(service.price)}
-                    </span>
                   </div>
-                </button>
-              );
-            })}
-          </div>
-        </>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       )}
     </div>
   );

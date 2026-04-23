@@ -20,6 +20,10 @@ auth:
   guest-user-pattern:
     description: Guest users (isGuest: true, UUID id) for booking without account — idempotent creation by email
 
+frontend:
+  currency-formatting:
+    description: Format prices with ISO 4217 codes via currency-utils.ts — never hardcode symbols or use toFixed() directly
+
 trpc:
   router-structure:
     description: One router per domain entity, all merged in app.router.ts — AppRouter type exported for client type safety

@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/client/components/ui/button";
 import { useTranslation } from "@/client/i18n";
 import { useUserTimezone } from "@/client/contexts/user-timezone-context";
 import { formatInTz } from "@/client/lib/timezone-utils";
+import { cn } from "@/client/lib/utils";
 import type { TimeSlot } from "@/client/types/booking";
 
 interface TimeSlotSelectionProps {
@@ -58,7 +58,7 @@ export function TimeSlotSelection({
 
       {/* Error state */}
       {error && (
-        <div className="rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive border border-destructive/20">
           {locale === "es"
             ? "Error al cargar los horarios disponibles. Por favor, intenta nuevamente."
             : "Error loading available time slots. Please try again."}
@@ -67,9 +67,9 @@ export function TimeSlotSelection({
 
       {/* Loading state */}
       {isLoading ? (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="h-11 animate-pulse rounded-md bg-muted" />
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="h-12 animate-pulse rounded-xl bg-muted" />
           ))}
         </div>
       ) : availableSlots.length === 0 ? (
@@ -77,17 +77,39 @@ export function TimeSlotSelection({
           {t.booking.time.noSlots}
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-          {availableSlots.map((slot) => (
-            <Button
-              key={slot.time}
-              variant={selectedSlot === slot.time ? "default" : "outline"}
-              onClick={() => onSelect(slot)}
-              className="h-11"
-            >
-              {getDisplayTime(slot)}
-            </Button>
-          ))}
+        <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-5">
+          {availableSlots.map((slot) => {
+            const isSelected = selectedSlot === slot.time;
+            return (
+              <button
+                key={slot.time}
+                onClick={() => onSelect(slot)}
+                className={cn(
+                  "h-12 rounded-xl text-sm font-semibold border transition-all",
+                  "hover:shadow-sm active:scale-[0.97]",
+                  isSelected
+                    ? "bg-primary text-primary-foreground border-primary shadow-md"
+                    : "bg-card border-border text-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+                )}
+              >
+                {getDisplayTime(slot)}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Legend */}
+      {!isLoading && availableSlots.length > 0 && (
+        <div className="flex gap-4">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-primary" />
+            <span className="text-xs text-muted-foreground">Seleccionado</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-card border border-border" />
+            <span className="text-xs text-muted-foreground">Disponible</span>
+          </div>
         </div>
       )}
     </div>

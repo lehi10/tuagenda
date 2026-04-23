@@ -21,7 +21,7 @@ export function AppHeader() {
   const [shareOpen, setShareOpen] = useState(false);
 
   const bookingUrl = currentBusiness
-    ? `${typeof window !== "undefined" ? window.location.origin : ""}/book/${currentBusiness.slug}`
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/${currentBusiness.slug}`
     : "";
 
   const supportUrl = SUPPORT_WHATSAPP

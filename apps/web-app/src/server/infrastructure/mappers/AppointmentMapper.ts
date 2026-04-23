@@ -99,6 +99,7 @@ export class AppointmentMapper {
             phone: prismaAppointment.business.phone,
             email: prismaAppointment.business.email,
             website: prismaAppointment.business.website,
+            currency: prismaAppointment.business.currency,
           }
         : undefined,
     };

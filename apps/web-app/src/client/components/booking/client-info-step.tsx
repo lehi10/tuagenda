@@ -228,53 +228,31 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header - Standardized */}
+      {/* Header */}
       <div className="space-y-1">
+        <p className="text-sm text-muted-foreground">Casi listo 🎉</p>
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.contact.title}
         </h2>
-        <p className="text-muted-foreground">{t.booking.contact.description}</p>
+        <p className="text-muted-foreground text-sm">{t.booking.contact.description}</p>
       </div>
 
       {/* Show authenticated user info */}
       {isAuthenticated && user && (
         <>
-          <div className="rounded-lg border bg-muted/50 p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <span className="text-lg font-medium">
-                  {user.firstName[0]}
-                  {user.lastName?.[0] || ""}
-                </span>
+          <div className="rounded-2xl border bg-primary/5 p-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold shrink-0">
+                {user.firstName[0]}
+                {user.lastName?.[0] || ""}
               </div>
-              <div className="flex-1 space-y-1">
-                <p className="text-lg font-semibold">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold truncate">
                   {user.firstName} {user.lastName}
                 </p>
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                  </svg>
-                  {user.email}
-                </p>
+                <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                 {user.phone && (
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                    {user.phone}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{user.phone}</p>
                 )}
               </div>
             </div>
@@ -282,7 +260,7 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full h-12 rounded-xl font-semibold"
             size="lg"
             onClick={handleSubmit}
             disabled={isSubmitting}
@@ -300,24 +278,23 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
           value={activeTab}
           onValueChange={(value) => {
             setActiveTab(value as "guest" | "login");
-            setError(null); // Clear errors when switching tabs
+            setError(null);
           }}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="guest">
+          <TabsList className="grid w-full grid-cols-2 h-11 rounded-xl">
+            <TabsTrigger value="guest" className="rounded-lg font-semibold">
               {t.booking.contact.guestTab}
             </TabsTrigger>
-            <TabsTrigger value="login">
+            <TabsTrigger value="login" className="rounded-lg font-semibold">
               {t.booking.contact.loginTab}
             </TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Guest user / No account */}
           <TabsContent value="guest" className="space-y-4">
-            {/* Error message display */}
             {error && (
-              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+              <div className="rounded-xl border border-destructive/30 bg-destructive/8 p-3 text-sm text-destructive">
                 {error}
               </div>
             )}
@@ -448,7 +425,7 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full h-12 rounded-xl font-semibold"
                 size="lg"
                 disabled={isSubmitting}
               >
@@ -461,9 +438,8 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
           {/* Tab 2: Login / I have an account */}
           <TabsContent value="login" className="space-y-4">
-            {/* Error message display */}
             {error && (
-              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+              <div className="rounded-xl border border-destructive/30 bg-destructive/8 p-3 text-sm text-destructive">
                 {error}
               </div>
             )}
@@ -500,14 +476,14 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full h-12 rounded-xl font-semibold"
                 size="lg"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? t.booking.contact.loading : t.auth.login}
               </Button>
 
-              <div className="relative">
+              <div className="relative my-1">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
@@ -521,20 +497,16 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full"
+                className="w-full h-12 rounded-xl font-semibold gap-3"
                 onClick={() => handleSocialLogin("Google")}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className="mr-2 h-4 w-4"
-                >
-                  <path
-                    d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                    fill="currentColor"
-                  />
+                <svg viewBox="0 0 22 22" className="h-5 w-5 shrink-0">
+                  <path d="M20.64 11.2c0-.64-.06-1.25-.16-1.84H11v3.49h5.4a4.62 4.62 0 01-2 3.03v2.52h3.24c1.9-1.75 3-4.33 3-7.2z" fill="#4285F4"/>
+                  <path d="M11 21c2.7 0 4.96-.9 6.62-2.42l-3.24-2.52c-.9.6-2.04.96-3.38.96-2.6 0-4.8-1.76-5.59-4.12H2.08v2.6A10 10 0 0011 21z" fill="#34A853"/>
+                  <path d="M5.41 12.9A6.01 6.01 0 015.1 11c0-.66.11-1.3.31-1.9V6.5H2.08A10 10 0 001 11c0 1.61.38 3.13 1.08 4.5l3.33-2.6z" fill="#FBBC05"/>
+                  <path d="M11 4.98c1.46 0 2.77.5 3.8 1.5L17.7 3.5A10 10 0 0011 1 10 10 0 002.08 6.5l3.33 2.6C6.2 6.74 8.4 4.98 11 4.98z" fill="#EA4335"/>
                 </svg>
-                Google
+                Continuar con Google
               </Button>
             </form>
           </TabsContent>
