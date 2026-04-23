@@ -40,7 +40,7 @@ export const defaultStepConfig: StepConfig[] = [
   },
   {
     id: "time",
-    enabled: true,
+    enabled: false, // Merged into "date" step (date + time on the same page)
     required: true,
     order: 4,
   },
@@ -127,7 +127,7 @@ export const singleProfessionalConfig: StepConfig[] = [
   },
   {
     id: "time",
-    enabled: true,
+    enabled: false, // Merged into "date" step
     required: true,
     order: 4,
   },

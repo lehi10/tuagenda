@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import {
   Avatar,
   AvatarFallback,
@@ -11,15 +11,13 @@ import { BusinessProfilePage } from "@/client/components/booking/business-profil
 import { ServiceSelection } from "@/client/components/booking/service-selection";
 import { ServiceDetailStep } from "@/client/components/booking/service-detail-step";
 import { ProfessionalSelection } from "@/client/components/booking/professional-selection";
-import { DateSelection } from "@/client/components/booking/date-selection";
-import { TimeSlotSelection } from "@/client/components/booking/time-slot-selection";
+import { DateTimeSelection } from "@/client/components/booking/date-time-selection";
 import { ClientInfoStep } from "@/client/components/booking/client-info-step";
 import { PaymentStep } from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
-import { defaultStepConfig, getEnabledSteps } from "@/client/lib/booking-steps";
+import { defaultStepConfig, getEnabledSteps, getPreviousStep } from "@/client/lib/booking-steps";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
 import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
-import { useTrpc } from "@/client/lib/trpc";
 import { cn } from "@/client/lib/utils";
 import { formatPrice } from "@/client/lib/booking-utils";
 import type { BookingService, StepConfig, StepType } from "@/client/types/booking";
@@ -42,7 +40,7 @@ interface BookingFlowProps {
 const STEP_LABELS: Record<StepType, string> = {
   service: "Servicio",
   professional: "Profesional",
-  date: "Fecha",
+  date: "Fecha y hora",
   time: "Horario",
   "client-info": "Tu cuenta",
   payment: "Confirmar",
@@ -53,7 +51,6 @@ const STEPPER_STEPS: StepType[] = [
   "service",
   "professional",
   "date",
-  "time",
   "client-info",
   "payment",
 ];
@@ -283,29 +280,8 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
     updatePaymentMethod,
     clearBooking,
     isStepComplete,
+    goToStep,
   } = useBookingFlow({ stepConfig });
-
-  const {
-    data: timeSlotsData,
-    isLoading: isLoadingSlots,
-    error: slotsError,
-  } = useTrpc.businessUser.getAvailableTimeSlots.useQuery(
-    {
-      businessUserId: bookingData.professional?.id || "",
-      serviceId: bookingData.service?.id || "",
-      date: bookingData.date || new Date(),
-    },
-    {
-      enabled:
-        !!bookingData.professional?.id &&
-        !!bookingData.service?.id &&
-        !!bookingData.date &&
-        currentStep === "time",
-    }
-  );
-
-  const timeSlots = timeSlotsData?.slots || [];
-  const businessTimezone = timeSlotsData?.businessTimezone || "UTC";
 
   const isConfirmation = currentStep === "confirmation";
   const showingDetail = serviceForDetail !== null && currentStep === "service";
@@ -317,6 +293,26 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
     setCameFromProfile(false);
     setShowProfilePage(true);
   };
+
+  // ── Unified back handler for all steps ───────────────────────
+  const handleBack = () => {
+    if (showingDetail) {
+      setServiceForDetail(null);
+      if (cameFromProfile) {
+        setCameFromProfile(false);
+        setShowProfilePage(true);
+      }
+      return;
+    }
+    if (currentStep === "service") {
+      handleBackToHome();
+      return;
+    }
+    const prev = getPreviousStep(currentStep, stepConfig);
+    if (prev) goToStep(prev);
+  };
+
+  const showBackButton = !isConfirmation;
 
   const renderStep = () => {
     // Service detail screen (UI step between service list and professional)
@@ -362,20 +358,13 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
         );
       case "date":
         return (
-          <DateSelection
+          <DateTimeSelection
+            professionalId={bookingData.professional?.id ?? ""}
+            serviceId={bookingData.service?.id ?? ""}
             selectedDate={bookingData.date}
-            onSelect={updateDate}
-          />
-        );
-      case "time":
-        return (
-          <TimeSlotSelection
-            timeSlots={timeSlots}
             selectedSlot={bookingData.timeSlot}
-            onSelect={updateTimeSlot}
-            isLoading={isLoadingSlots}
-            error={slotsError?.message}
-            businessTimezone={businessTimezone}
+            onDateChange={updateDate}
+            onSlotSelect={updateTimeSlot}
           />
         );
       case "client-info":
@@ -517,6 +506,15 @@ export function BookingFlow({ businessId, businessProfile }: BookingFlowProps) {
             !isConfirmation && "mx-auto w-full max-w-2xl"
           )}
         >
+          {showBackButton && (
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5 group"
+            >
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
+              Atrás
+            </button>
+          )}
           {renderStep()}
         </div>
 

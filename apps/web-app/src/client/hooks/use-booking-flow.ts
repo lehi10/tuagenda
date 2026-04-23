@@ -86,44 +86,59 @@ export function useBookingFlow({
   }, []);
 
   /**
-   * Update service selection
+   * Update service selection.
+   * Clears all downstream data (professional, date, time) since availability
+   * depends on the service duration and may differ per professional.
    */
   const updateService = useCallback(
     (service: BookingService) => {
-      setBookingData((prev) => ({ ...prev, service }));
+      setBookingData((prev) => ({
+        ...prev,
+        service,
+        professional: undefined,
+        date: undefined,
+        timeSlot: undefined,
+        slotStartTime: undefined,
+        slotEndTime: undefined,
+      }));
       goToNextStep();
     },
     [goToNextStep]
   );
 
   /**
-   * Update professional selection
+   * Update professional selection.
+   * Clears date and time since availability is per-professional.
    */
   const updateProfessional = useCallback(
     (professional: BookingProfessional) => {
-      setBookingData((prev) => ({ ...prev, professional }));
+      setBookingData((prev) => ({
+        ...prev,
+        professional,
+        date: undefined,
+        timeSlot: undefined,
+        slotStartTime: undefined,
+        slotEndTime: undefined,
+      }));
       goToNextStep();
     },
     [goToNextStep]
   );
 
   /**
-   * Update date selection
-   * Note: Clears timeSlot when date changes
+   * Update date selection.
+   * Does NOT auto-advance — date and time are selected on the same step.
+   * Navigation happens when the time slot is selected via updateTimeSlot.
    */
-  const updateDate = useCallback(
-    (date: Date | undefined) => {
-      setBookingData((prev) => ({
-        ...prev,
-        date,
-        timeSlot: undefined, // Clear time slot when date changes
-      }));
-      if (date) {
-        goToNextStep();
-      }
-    },
-    [goToNextStep]
-  );
+  const updateDate = useCallback((date: Date | undefined) => {
+    setBookingData((prev) => ({
+      ...prev,
+      date,
+      timeSlot: undefined,
+      slotStartTime: undefined,
+      slotEndTime: undefined,
+    }));
+  }, []);
 
   /**
    * Update time slot selection.

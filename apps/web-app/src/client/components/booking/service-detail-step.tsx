@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Clock, ImageIcon } from "lucide-react";
+import { Clock, ImageIcon } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
 import { formatPrice } from "@/client/lib/booking-utils";
 import { cn } from "@/client/lib/utils";
@@ -30,15 +30,6 @@ export function ServiceDetailStep({ service, onConfirm, onBack }: ServiceDetailS
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      {/* Back button */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5 group"
-      >
-        <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
-        Volver a servicios
-      </button>
-
       <div className="rounded-2xl border bg-card overflow-hidden shadow-sm">
         {/* Hero header */}
         <div className="relative h-44 sm:h-52 bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
