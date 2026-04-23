@@ -19,10 +19,64 @@ import {
   Zap,
   TrendingUp,
   Clock,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import { useRef, useState, useCallback } from "react";
 
 export default function Home() {
   const { t } = useTranslation();
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const professionals = [
+    {
+      key: "nutricionista",
+      image: "/images/landing/nutricionista.png",
+      ...t.landing.usedBy.professionals.nutricionista,
+    },
+    {
+      key: "psicologa",
+      image: "/images/landing/psicologa.png",
+      ...t.landing.usedBy.professionals.psicologa,
+    },
+    {
+      key: "psicologo",
+      image: "/images/landing/psicologo.png",
+      ...t.landing.usedBy.professionals.psicologo,
+    },
+    {
+      key: "englishTeacher",
+      image: "/images/landing/english teacher.png",
+      ...t.landing.usedBy.professionals.englishTeacher,
+    },
+    {
+      key: "violinTeacher",
+      image: "/images/landing/maestra de violin.png",
+      ...t.landing.usedBy.professionals.violinTeacher,
+    },
+  ];
+
+  const scrollToIndex = useCallback((index: number) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const card = container.children[index] as HTMLElement;
+    if (!card) return;
+    container.scrollTo({
+      left: card.offsetLeft - container.offsetLeft,
+      behavior: "smooth",
+    });
+    setActiveIndex(index);
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const scrollLeft = container.scrollLeft;
+    const cardWidth = (container.children[0] as HTMLElement)?.offsetWidth ?? 1;
+    const index = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(Math.min(index, professionals.length - 1));
+  }, [professionals.length]);
 
   const features = [
     {
@@ -95,28 +149,16 @@ export default function Home() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM0QzNERkYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0tMTYgMGMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHptLTE2IDBjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bTE2IDE2YzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0xNiAwYzAtMi4yMSAxLjc5LTQgNC00czQgMS43OSA0IDQtMS43OSA0LTQgNC00LTEuNzktNC00em0tMTYgMTZjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bTE2IDBjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bTM2IDBjMC0yLjIxIDEuNzktNCA0LTRzNCAxLjc5IDQgNC0xLjc5IDQtNCA0LTQtMS43OS00LTR6bS0xNi0xNmMwLTIuMjEgMS43OS00IDQtNHM0IDEuNzkgNCA0LTEuNzkgNC00IDQtNC0xLjc5LTQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
         </div>
 
-        <div className="container relative mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-28">
+        <div className="container relative mx-auto px-4 py-10 sm:py-14 md:py-16 lg:py-20">
           <div className="mx-auto max-w-7xl">
             <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16">
               {/* Left column - Content */}
               <div className="text-center lg:text-left">
-                {/* Badge */}
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-6 sm:px-4 sm:py-2 sm:text-sm">
-                  <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">
-                    {t.landing.hero.badge}
-                  </span>
-                  <span className="sm:hidden">{t.landing.hero.badgeAlt}</span>
-                </div>
-
                 <h1 className="bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
                   {t.landing.hero.title}
                 </h1>
-                <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl lg:text-2xl">
+                <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
                   {t.landing.hero.subtitle}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
-                  {t.landing.features.heroDescription}
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:gap-4 lg:justify-start">
@@ -139,70 +181,157 @@ export default function Home() {
                     </Button>
                   </Link>
                 </div>
-
-                {/* Trust badges */}
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-6 lg:justify-start">
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
-                    <Check className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                    <span>{t.landing.hero.trustBadges.freeTrial}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
-                    <Check className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                    <span>{t.landing.hero.trustBadges.noCard}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
-                    <Check className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                    <span>{t.landing.hero.trustBadges.cancelAnytime}</span>
-                  </div>
-                </div>
               </div>
 
-              {/* Right column - Hero image placeholder */}
+              {/* Right column - Hero image */}
               <div className="relative hidden lg:block">
                 <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 blur-3xl" />
-                <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card to-muted shadow-2xl">
-                  {/* Placeholder for hero image/screenshot */}
-                  <div className="aspect-[4/3] bg-gradient-to-br from-primary/5 via-secondary/5 to-background">
+                <div className="relative overflow-hidden rounded-2xl border border-border shadow-2xl">
+                  <div className="relative aspect-[4/3]">
                     <Image
-                      src={"/images/banner3.png"}
-                      width={400}
-                      height={400}
-                      className="h-full w-full  object-cover"
-                      alt={"Hero image"}
+                      src="/images/landing/banner1.png"
+                      fill
+                      className="object-cover"
+                      alt="TuAgenda dashboard"
+                      sizes="50vw"
+                      priority
                     />
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Stats */}
-            <div className="mt-12 grid grid-cols-3 gap-4 border-t border-border pt-8 sm:mt-16 sm:gap-8 sm:pt-12">
-              <div className="text-center transition-transform hover:scale-105">
-                <div className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl lg:text-5xl">
-                  10K+
-                </div>
-                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm md:text-base">
-                  {t.landing.hero.stats.activeUsers}
-                </div>
+      {/* Professionals / Who uses TuAgenda Section */}
+      <section className="relative overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/20 via-background to-muted/20" />
+        <div className="absolute left-1/3 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute right-1/4 bottom-0 h-[400px] w-[400px] rounded-full bg-secondary/10 blur-3xl" />
+
+        <div className="container relative mx-auto px-4">
+          {/* Header */}
+          <ScrollReveal>
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                {t.landing.usedBy.badge}
               </div>
-              <div className="text-center transition-transform hover:scale-105">
-                <div className="text-2xl font-bold text-secondary sm:text-3xl md:text-4xl lg:text-5xl">
-                  99.9%
-                </div>
-                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm md:text-base">
-                  {t.landing.hero.stats.uptime}
-                </div>
+              <h2 className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:text-4xl md:text-5xl lg:text-6xl">
+                {t.landing.usedBy.title}
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg md:text-xl">
+                {t.landing.usedBy.subtitle}
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Carousel */}
+          <ScrollReveal>
+            <div className="relative mt-10 sm:mt-12 lg:mt-16">
+              {/* Prev button */}
+              <button
+                onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))}
+                disabled={activeIndex === 0}
+                className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 shadow-lg backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-background hover:shadow-xl disabled:pointer-events-none disabled:opacity-30 sm:-left-5 sm:h-12 sm:w-12"
+                aria-label="Anterior"
+              >
+                <ChevronLeft className="h-5 w-5 text-foreground" />
+              </button>
+
+              {/* Next button */}
+              <button
+                onClick={() =>
+                  scrollToIndex(
+                    Math.min(professionals.length - 1, activeIndex + 1)
+                  )
+                }
+                disabled={activeIndex === professionals.length - 1}
+                className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/90 shadow-lg backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-background hover:shadow-xl disabled:pointer-events-none disabled:opacity-30 sm:-right-5 sm:h-12 sm:w-12"
+                aria-label="Siguiente"
+              >
+                <ChevronRight className="h-5 w-5 text-foreground" />
+              </button>
+
+              {/* Carousel track */}
+              <div
+                ref={carouselRef}
+                onScroll={handleScroll}
+                className="flex gap-4 overflow-x-auto scroll-smooth pb-4 lg:gap-6"
+                style={{
+                  scrollSnapType: "x mandatory",
+                  scrollbarWidth: "none",
+                }}
+              >
+                {professionals.map((pro) => (
+                  <div
+                    key={pro.key}
+                    className="group relative w-[80vw] flex-shrink-0 cursor-default overflow-hidden rounded-2xl shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20 sm:w-[45vw] lg:w-[30vw] xl:w-[22vw]"
+                    style={{ scrollSnapAlign: "start" }}
+                  >
+                    <div className="relative aspect-[3/4] overflow-hidden bg-muted">
+                      <Image
+                        src={pro.image}
+                        alt={pro.name}
+                        fill
+                        className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 30vw"
+                      />
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" />
+                      {/* Shine on hover */}
+                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                      {/* Content */}
+                      <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                        <h3 className="text-xl font-bold leading-tight text-white sm:text-2xl">
+                          {pro.name}
+                        </h3>
+                        <p className="mt-2 text-sm leading-snug text-white/80 sm:text-base">
+                          {pro.tagline}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="text-center transition-transform hover:scale-105">
-                <div className="text-2xl font-bold text-primary sm:text-3xl md:text-4xl lg:text-5xl">
-                  24/7
-                </div>
-                <div className="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm md:text-base">
-                  {t.landing.hero.stats.support}
-                </div>
+
+              {/* Dot indicators */}
+              <div className="mt-6 flex justify-center gap-2">
+                {professionals.map((pro, index) => (
+                  <button
+                    key={pro.key}
+                    onClick={() => scrollToIndex(index)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === activeIndex
+                        ? "w-8 bg-primary"
+                        : "w-2 bg-border hover:bg-primary/40"
+                    }`}
+                    aria-label={`Ir a ${pro.name}`}
+                  />
+                ))}
               </div>
             </div>
-          </div>
+          </ScrollReveal>
+
+          {/* Bottom CTA */}
+          <ScrollReveal>
+            <div className="mt-12 flex flex-col items-center gap-5 text-center sm:mt-16">
+              <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
+                {t.landing.usedBy.ctaText}
+              </p>
+              <Link href="/signup">
+                <Button
+                  size="lg"
+                  className="group h-12 gap-2 px-6 text-sm font-semibold shadow-xl shadow-primary/25 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 sm:h-14 sm:px-8 sm:text-base"
+                >
+                  {t.landing.usedBy.cta}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
+                </Button>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -355,21 +484,21 @@ export default function Home() {
                   title: t.landing.howItWorks.steps.createAccount.title,
                   description:
                     t.landing.howItWorks.steps.createAccount.description,
-                  image: "/images/banner1.png",
+                  image: "/images/landing/banner1.png",
                 },
                 {
                   step: "02",
                   title: t.landing.howItWorks.steps.setupBusiness.title,
                   description:
                     t.landing.howItWorks.steps.setupBusiness.description,
-                  image: "/images/banner3.png",
+                  image: "/images/landing/banner3.png",
                 },
                 {
                   step: "03",
                   title: t.landing.howItWorks.steps.startManaging.title,
                   description:
                     t.landing.howItWorks.steps.startManaging.description,
-                  image: "/images/banner2.png",
+                  image: "/images/landing/banner2.png",
                 },
               ].map((item, index) => (
                 <ScrollReveal key={index} delay={index * 150}>

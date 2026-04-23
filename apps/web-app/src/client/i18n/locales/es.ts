@@ -364,6 +364,41 @@ export const es: Translations = {
       heroDescription:
         "Optimiza la gestión de citas, clientes y pagos de tu negocio. Ahorra tiempo, aumenta tus ingresos y ofrece una experiencia excepcional a tus clientes.",
     },
+    usedBy: {
+      badge: "Diseñado para ti",
+      title: "Para profesionales como tú",
+      subtitle:
+        "Si vendes tu tiempo, TuAgenda es para ti. Agenda citas presenciales y virtuales sin complicaciones.",
+      ctaText:
+        "¿Tu profesión no está aquí? No importa — TuAgenda funciona para cualquier servicio basado en citas.",
+      cta: "Comienza gratis hoy",
+      professionals: {
+        nutricionista: {
+          name: "Nutricionista",
+          tagline:
+            "Agenda consultas presenciales y videollamadas con tus pacientes",
+        },
+        psicologa: {
+          name: "Psicóloga",
+          tagline: "Programa sesiones de terapia en persona o por videollamada",
+        },
+        psicologo: {
+          name: "Psicólogo",
+          tagline:
+            "Gestiona tu agenda y permite que tus pacientes reserven solos",
+        },
+        englishTeacher: {
+          name: "Maestra de inglés",
+          tagline:
+            "Agenda clases individuales o grupales, presenciales o en línea",
+        },
+        violinTeacher: {
+          name: "Maestra de violín",
+          tagline:
+            "Organiza tus lecciones y deja que tus alumnos elijan su horario",
+        },
+      },
+    },
     howItWorks: {
       badge: "Proceso simple",
       title: "Cómo funciona",

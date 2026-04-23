@@ -358,6 +358,39 @@ export const en = {
       heroDescription:
         "Optimize the management of appointments, clients, and payments for your business. Save time, increase your revenue, and offer an exceptional experience to your clients.",
     },
+    usedBy: {
+      badge: "Built for you",
+      title: "For professionals like you",
+      subtitle:
+        "If you sell your time, TuAgenda is for you. Schedule in-person and virtual appointments effortlessly.",
+      ctaText:
+        "Your profession not listed? No problem — TuAgenda works for any service based on appointments.",
+      cta: "Start for free today",
+      professionals: {
+        nutricionista: {
+          name: "Nutritionist",
+          tagline:
+            "Schedule in-person consultations and video calls with your clients",
+        },
+        psicologa: {
+          name: "Psychologist",
+          tagline: "Book therapy sessions in person or via video call",
+        },
+        psicologo: {
+          name: "Psychologist",
+          tagline: "Manage your schedule and let patients book on their own",
+        },
+        englishTeacher: {
+          name: "English Teacher",
+          tagline: "Schedule individual or group classes, in-person or online",
+        },
+        violinTeacher: {
+          name: "Violin Teacher",
+          tagline:
+            "Organize lessons and let your students choose their time slot",
+        },
+      },
+    },
     howItWorks: {
       badge: "Simple process",
       title: "How it works",
