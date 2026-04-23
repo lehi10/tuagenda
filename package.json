@@ -28,5 +28,8 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "pnpm@10.12.1"
+  "packageManager": "pnpm@10.12.1",
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.10.21"
+  }
 }
