@@ -15,6 +15,7 @@ interface BusinessData {
   phone: string;
   location: string;
   website?: string;
+  socialLinks?: Record<string, string>;
 }
 
 interface BusinessProfilePageProps {
@@ -59,7 +60,10 @@ export function BusinessProfilePage({
           onCategoryChange={setCategoryFilter}
           onServiceSelect={onServiceSelect}
         />
-        <BusinessSidebar phone={business.phone} />
+        <BusinessSidebar
+          phone={business.phone}
+          socialLinks={business.socialLinks}
+        />
       </div>
 
       {showSchedule && <SchedulePopup onClose={() => setShowSchedule(false)} />}

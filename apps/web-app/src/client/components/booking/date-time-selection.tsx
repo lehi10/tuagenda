@@ -39,7 +39,7 @@ export function DateTimeSelection({
   onDateChange,
   onSlotSelect,
 }: DateTimeSelectionProps) {
-  const { locale } = useTranslation();
+  const { t, locale } = useTranslation();
   const { timezone: userTimezone } = useUserTimezone();
   const dateLocale = locale === "es" ? es : enUS;
   const today = startOfDay(new Date());
@@ -188,9 +188,7 @@ export function DateTimeSelection({
                 <p className="text-sm font-semibold text-primary capitalize">
                   📅{" "}
                   {isToday(selectedDate)
-                    ? locale === "es"
-                      ? "Hoy"
-                      : "Today"
+                    ? t.booking.date.today
                     : format(selectedDate, "EEEE d 'de' MMMM", {
                         locale: dateLocale,
                       })}
@@ -199,7 +197,7 @@ export function DateTimeSelection({
                   onClick={() => handleDateChange(undefined)}
                   className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {locale === "es" ? "Cambiar" : "Change"}
+                  {t.booking.date.change}
                 </button>
               </div>
             )}

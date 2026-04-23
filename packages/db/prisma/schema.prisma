@@ -67,6 +67,7 @@ model Business {
   postalCode  String?        @db.VarChar(20)
   latitude    Float?
   longitude   Float?
+  socialLinks Json?          @map("social_links")
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

@@ -76,7 +76,7 @@ export function ConfirmationStep({
       : []),
     {
       emoji: "💳",
-      label: "Método de pago",
+      label: t.booking.confirmation.paymentMethod,
       value: getPaymentMethodLabel(
         bookingSummary.paymentMethod,
         paymentMethodLabels
@@ -104,7 +104,7 @@ export function ConfirmationStep({
           {/* Text */}
           <div className="flex-1 min-w-0">
             <p className="text-xl sm:text-2xl font-bold mb-1">
-              ¡Reserva confirmada!
+              {t.booking.confirmation.title}
             </p>
             <p className="text-white/75 text-sm mb-4">
               {t.booking.confirmation.subtitle}
@@ -112,7 +112,7 @@ export function ConfirmationStep({
             {/* Booking code pill */}
             <div className="inline-block bg-white/15 rounded-xl px-4 py-2.5">
               <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-0.5">
-                Código de reserva
+                {t.booking.confirmation.bookingCode}
               </p>
               <p className="text-white text-base font-bold tracking-[0.2em]">
                 {bookingCode}
@@ -164,7 +164,7 @@ export function ConfirmationStep({
               }}
               className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#25D366] py-2.5 text-sm font-semibold text-white hover:bg-[#20BA5A] transition-colors"
             >
-              💬 WhatsApp
+              💬 {t.booking.confirmation.whatsapp}
             </button>
             <button
               onClick={() => {
@@ -179,7 +179,7 @@ export function ConfirmationStep({
               }}
               className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-muted border py-2.5 text-sm font-semibold hover:bg-muted/80 transition-colors"
             >
-              📅 Calendario
+              📅 {t.booking.confirmation.calendar}
             </button>
           </div>
         </div>

@@ -114,7 +114,7 @@ export const appointmentRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        customerId: z.string(), // Can be authenticated user ID or guest user ID
+        customerId: z.string(), // Required: guest or authenticated user ID — always created before reaching this step
         businessId: z.string().uuid(),
         serviceId: z.string().uuid(),
         providerBusinessUserId: z.string().uuid().nullable().optional(),

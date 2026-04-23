@@ -7,10 +7,11 @@
  * @module infrastructure/mappers
  */
 
-import { Business as PrismaBusiness } from "db";
+import { Business as PrismaBusiness, Prisma } from "db";
 import {
   Business,
   BusinessStatus,
+  SocialLinks,
 } from "@/server/core/domain/entities/Business";
 
 export class BusinessMapper {
@@ -40,6 +41,7 @@ export class BusinessMapper {
       postalCode: prismaBusiness.postalCode,
       latitude: prismaBusiness.latitude,
       longitude: prismaBusiness.longitude,
+      socialLinks: (prismaBusiness.socialLinks ?? null) as SocialLinks | null,
       createdAt: prismaBusiness.createdAt,
       updatedAt: prismaBusiness.updatedAt,
     });
@@ -71,6 +73,7 @@ export class BusinessMapper {
       postalCode: businessObj.postalCode,
       latitude: businessObj.latitude,
       longitude: businessObj.longitude,
+      socialLinks: businessObj.socialLinks ?? Prisma.JsonNull,
     };
   }
 
@@ -100,6 +103,7 @@ export class BusinessMapper {
       postalCode: businessObj.postalCode,
       latitude: businessObj.latitude,
       longitude: businessObj.longitude,
+      socialLinks: businessObj.socialLinks ?? Prisma.JsonNull,
       updatedAt: new Date(),
     };
   }

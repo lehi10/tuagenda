@@ -172,9 +172,7 @@ export function PaymentStep({
 
       {/* Confirmation note */}
       <div className="rounded-xl bg-muted/50 p-3.5 text-sm text-muted-foreground">
-        📲 Recibirás confirmación por{" "}
-        <strong className="text-foreground">WhatsApp</strong> y{" "}
-        <strong className="text-foreground">email</strong>.
+        📲 {t.booking.payment.whatsappConfirmation}
       </div>
 
       <Button
@@ -184,10 +182,10 @@ export function PaymentStep({
         size="lg"
       >
         {isCreating
-          ? t.booking.payment.creatingAppointment || "Creando cita..."
+          ? t.booking.payment.creatingAppointment
           : selectedMethod === "onsite"
-            ? "Confirmar reserva ✓"
-            : t.booking.payment.confirmAndBook || t.booking.summary.continue}
+            ? t.booking.payment.confirmOnsite
+            : t.booking.payment.confirmAndBook}
       </Button>
     </div>
   );

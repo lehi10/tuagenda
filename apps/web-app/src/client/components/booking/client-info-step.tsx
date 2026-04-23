@@ -15,9 +15,13 @@ import type { ClientInfoData } from "@/client/components/booking/client-info/use
 
 interface ClientInfoStepProps {
   onContinue: (data: ClientInfoData) => void;
+  initialData?: ClientInfoData;
 }
 
-export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
+export function ClientInfoStep({
+  onContinue,
+  initialData,
+}: ClientInfoStepProps) {
   const { t } = useTranslation();
   const {
     user,
@@ -31,7 +35,7 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
     submitForm,
     handleFormSubmit,
     handleSocialLogin,
-  } = useClientInfoStep(onContinue);
+  } = useClientInfoStep(onContinue, initialData);
 
   if (authLoading) {
     return (
@@ -49,7 +53,9 @@ export function ClientInfoStep({ onContinue }: ClientInfoStepProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <p className="text-sm text-muted-foreground">Casi listo 🎉</p>
+        <p className="text-sm text-muted-foreground">
+          {t.booking.contact.almostReady}
+        </p>
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.contact.title}
         </h2>

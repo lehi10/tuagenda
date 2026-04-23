@@ -7,6 +7,8 @@
  * @module core/domain/entities
  */
 
+export type SocialLinks = Record<string, string>;
+
 export enum BusinessStatus {
   ACTIVE = "active",
   INACTIVE = "inactive",
@@ -35,6 +37,7 @@ export interface BusinessProps {
   postalCode?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  socialLinks?: SocialLinks | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -67,6 +70,7 @@ export class Business {
   private _postalCode: string | null;
   private _latitude: number | null;
   private _longitude: number | null;
+  private _socialLinks: SocialLinks | null;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
 
@@ -124,6 +128,7 @@ export class Business {
     this._postalCode = props.postalCode || null;
     this._latitude = props.latitude || null;
     this._longitude = props.longitude || null;
+    this._socialLinks = props.socialLinks || null;
     this._createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -211,6 +216,10 @@ export class Business {
 
   get longitude(): number | null {
     return this._longitude;
+  }
+
+  get socialLinks(): SocialLinks | null {
+    return this._socialLinks;
   }
 
   get createdAt(): Date {
@@ -383,6 +392,14 @@ export class Business {
   }
 
   /**
+   * Update social links
+   */
+  updateSocialLinks(socialLinks: SocialLinks | null): void {
+    this._socialLinks = socialLinks;
+    this.touch();
+  }
+
+  /**
    * Update location coordinates
    */
   updateLocation(latitude: number, longitude: number): void {
@@ -435,6 +452,7 @@ export class Business {
       postalCode: this._postalCode,
       latitude: this._latitude,
       longitude: this._longitude,
+      socialLinks: this._socialLinks,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
     };

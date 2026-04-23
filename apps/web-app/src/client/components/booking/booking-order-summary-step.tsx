@@ -3,7 +3,8 @@
 import { Button } from "@/client/components/ui/button";
 import { Pencil, Calendar, Clock, User, Scissors } from "lucide-react";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { es, enUS } from "date-fns/locale";
+import { useTranslation } from "@/client/i18n";
 import { formatPrice } from "@/client/lib/booking-utils";
 import type { BookingData, StepType } from "@/client/types/booking";
 
@@ -52,22 +53,29 @@ export function BookingOrderSummaryStep({
   onConfirm,
   onEdit,
 }: BookingOrderSummaryStepProps) {
+  const { t, locale } = useTranslation();
+  const dateLocale = locale === "es" ? es : enUS;
   const { service, professional, date, timeSlot, clientInfo } = bookingData;
 
   return (
     <div className="space-y-5">
       {/* Header */}
       <div className="space-y-0.5">
-        <p className="text-sm text-muted-foreground">Casi listo ✨</p>
+        <p className="text-sm text-muted-foreground">
+          {t.booking.summary.almostReady}
+        </p>
         <h2 className="text-2xl font-semibold tracking-tight">
-          Revisa tu reserva
+          {t.booking.summary.reviewBooking}
         </h2>
       </div>
 
       {/* Single summary card */}
       <div className="rounded-xl border bg-card px-4">
         {clientInfo && (
-          <SummaryRow icon={<User className="h-3.5 w-3.5" />} label="Tus datos">
+          <SummaryRow
+            icon={<User className="h-3.5 w-3.5" />}
+            label={t.booking.summary.yourInfo}
+          >
             <p className="font-semibold text-sm">
               {clientInfo.firstName} {clientInfo.lastName}
             </p>
@@ -78,7 +86,7 @@ export function BookingOrderSummaryStep({
         {service && (
           <SummaryRow
             icon={<Scissors className="h-3.5 w-3.5" />}
-            label="Servicio"
+            label={t.booking.summary.service}
             onEdit={() => onEdit("service-detail")}
           >
             <p className="font-semibold text-sm">{service.name}</p>
@@ -91,7 +99,7 @@ export function BookingOrderSummaryStep({
         {professional && (
           <SummaryRow
             icon={<User className="h-3.5 w-3.5" />}
-            label="Profesional"
+            label={t.booking.summary.professional}
             onEdit={() => onEdit("professional")}
           >
             <p className="font-semibold text-sm">{professional.name}</p>
@@ -101,11 +109,11 @@ export function BookingOrderSummaryStep({
         {date && timeSlot && (
           <SummaryRow
             icon={<Calendar className="h-3.5 w-3.5" />}
-            label="Fecha y hora"
+            label={t.booking.summary.dateTime}
             onEdit={() => onEdit("date")}
           >
             <p className="font-semibold text-sm capitalize">
-              {format(date, "EEEE d 'de' MMMM", { locale: es })}
+              {format(date, "EEEE d 'de' MMMM", { locale: dateLocale })}
             </p>
             <div className="flex items-center gap-1">
               <Clock className="h-3 w-3 text-muted-foreground" />
@@ -117,7 +125,9 @@ export function BookingOrderSummaryStep({
 
       {/* Total + CTA */}
       <div className="rounded-xl border bg-card px-4 py-3 flex items-center justify-between">
-        <p className="text-sm font-semibold text-muted-foreground">Total</p>
+        <p className="text-sm font-semibold text-muted-foreground">
+          {t.booking.summary.total}
+        </p>
         <p className="text-xl font-bold text-primary">
           {service ? formatPrice(service.price, currency) : "—"}
         </p>
@@ -128,7 +138,7 @@ export function BookingOrderSummaryStep({
         size="lg"
         onClick={onConfirm}
       >
-        Continuar al pago →
+        {t.booking.summary.continueToPay} →
       </Button>
     </div>
   );

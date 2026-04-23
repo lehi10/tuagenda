@@ -41,6 +41,7 @@ async function BookingContent({ slug }: { slug: string }) {
       .filter(Boolean)
       .join(", "),
     website: business.website || undefined,
+    socialLinks: business.socialLinks ?? undefined,
   };
 
   return (

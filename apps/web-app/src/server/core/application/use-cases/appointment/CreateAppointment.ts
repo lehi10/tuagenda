@@ -17,7 +17,7 @@ import type { IAppointmentRepository } from "@/server/core/domain/repositories/I
 import type { Appointment } from "@/server/core/domain/entities/Appointment";
 
 export interface CreateAppointmentInput {
-  customerId: string; // Can be authenticated user ID or guest user ID
+  customerId: string; // Required: guest or authenticated user ID — always created before reaching this step
   businessId: string;
   serviceId: string;
   providerBusinessUserId?: string | null; // Optional: specific professional

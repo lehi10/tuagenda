@@ -27,14 +27,14 @@ interface DateSelectionProps {
 }
 
 export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
-  const { t, locale } = useTranslation();
+  const { t, locale } = useTranslation(); // locale still needed for date-fns format
   const dateLocale = locale === "es" ? es : enUS;
   const today = startOfDay(new Date());
   const [currentMonth, setCurrentMonth] = useState(today);
 
   const quickDates = [
-    { date: today, label: locale === "es" ? "Hoy" : "Today" },
-    { date: addDays(today, 1), label: locale === "es" ? "Mañana" : "Tomorrow" },
+    { date: today, label: t.booking.date.today },
+    { date: addDays(today, 1), label: t.booking.date.tomorrow },
     {
       date: addDays(today, 2),
       label: format(addDays(today, 2), "EEE d", { locale: dateLocale }),
@@ -56,9 +56,8 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
 
   const getSelectedDateLabel = () => {
     if (!selectedDate) return null;
-    if (isToday(selectedDate)) return locale === "es" ? "Hoy" : "Today";
-    if (isTomorrow(selectedDate))
-      return locale === "es" ? "Mañana" : "Tomorrow";
+    if (isToday(selectedDate)) return t.booking.date.today;
+    if (isTomorrow(selectedDate)) return t.booking.date.tomorrow;
     return format(selectedDate, "EEEE d 'de' MMMM", { locale: dateLocale });
   };
 
@@ -79,11 +78,7 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.date.title}
         </h2>
-        <p className="text-muted-foreground">
-          {locale === "es"
-            ? "Elige el día que prefieras"
-            : "Choose your preferred day"}
-        </p>
+        <p className="text-muted-foreground">{t.booking.date.hint}</p>
       </div>
 
       {/* Quick date pills */}
@@ -188,7 +183,7 @@ export function DateSelection({ selectedDate, onSelect }: DateSelectionProps) {
               onClick={() => onSelect(undefined)}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              Cambiar
+              {t.booking.date.change}
             </button>
           </div>
         )}

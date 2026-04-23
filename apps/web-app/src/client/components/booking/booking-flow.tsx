@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "@/client/i18n";
 import { BookingLeftPanel } from "@/client/components/booking/left-panel/booking-left-panel";
 import { MobileStepperBar } from "@/client/components/booking/steppers/mobile-stepper-bar";
 import { WhatsAppButton } from "@/client/components/shared/whatsapp-button";
@@ -26,6 +27,7 @@ interface BusinessProfileData {
   phone: string;
   location: string;
   website?: string;
+  socialLinks?: Record<string, string>;
 }
 
 interface BookingFlowProps {
@@ -39,6 +41,7 @@ export function BookingFlow({
   businessProfile,
   currency,
 }: BookingFlowProps) {
+  const { t } = useTranslation();
   const stepConfig: StepConfig[] = defaultStepConfig;
   const [appointmentId, setAppointmentId] = useState<string | null>(null);
   const [showProfilePage, setShowProfilePage] = useState(true);
@@ -114,7 +117,12 @@ export function BookingFlow({
           />
         );
       case "client-info":
-        return <ClientInfoStep onContinue={updateClientInfo} />;
+        return (
+          <ClientInfoStep
+            onContinue={updateClientInfo}
+            initialData={bookingData.clientInfo}
+          />
+        );
       case "summary":
         return (
           <BookingOrderSummaryStep
@@ -204,7 +212,7 @@ export function BookingFlow({
               className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5 group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
-              Atrás
+              {t.booking.back}
             </button>
           )}
           {renderStep()}

@@ -294,7 +294,7 @@ export const userRouter = router({
           phone: input.phone ?? undefined,
           countryCode: input.countryCode ?? undefined,
         });
-        return { user };
+        return { user: user.toObject() };
       } catch (error) {
         throw new TRPCError({
           code: "BAD_REQUEST",

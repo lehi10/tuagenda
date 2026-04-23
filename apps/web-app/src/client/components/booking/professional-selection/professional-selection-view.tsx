@@ -34,7 +34,7 @@ export function ProfessionalSelectionView({
   selectedProfessionalId,
   onProfessionalSelect,
 }: ProfessionalSelectionViewProps) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-5">
@@ -43,11 +43,7 @@ export function ProfessionalSelectionView({
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.professional.title}
         </h2>
-        <p className="text-muted-foreground">
-          {locale === "es"
-            ? "Elige quién te atenderá"
-            : "Choose who will serve you"}
-        </p>
+        <p className="text-muted-foreground">{t.booking.professional.hint}</p>
       </div>
 
       {/* Loading State */}
@@ -117,7 +113,7 @@ export function ProfessionalSelectionView({
                     </p>
                     {!professional.available && (
                       <p className="text-xs text-destructive mt-1">
-                        No disponible
+                        {t.booking.professional.notAvailable}
                       </p>
                     )}
                   </div>

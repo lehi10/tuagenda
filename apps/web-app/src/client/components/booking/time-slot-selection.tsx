@@ -23,7 +23,7 @@ export function TimeSlotSelection({
   error,
   businessTimezone,
 }: TimeSlotSelectionProps) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const { timezone: userTimezone } = useUserTimezone();
   const showingInUserTz = userTimezone !== businessTimezone;
 
@@ -40,28 +40,22 @@ export function TimeSlotSelection({
         <h2 className="text-2xl font-semibold tracking-tight">
           {t.booking.time.title}
         </h2>
-        <p className="text-muted-foreground">
-          {locale === "es"
-            ? "Selecciona la hora que mejor te convenga"
-            : "Select the time that suits you best"}
-        </p>
+        <p className="text-muted-foreground">{t.booking.time.hint}</p>
       </div>
 
       {/* Timezone indicator */}
       {!isLoading && availableSlots.length > 0 && (
         <p className="text-xs text-muted-foreground">
           {showingInUserTz
-            ? `Horarios en tu zona horaria (${userTimezone})`
-            : `Horarios en zona horaria del negocio (${businessTimezone})`}
+            ? `${t.booking.time.timezoneUser} (${userTimezone})`
+            : `${t.booking.time.timezoneBusiness} (${businessTimezone})`}
         </p>
       )}
 
       {/* Error state */}
       {error && (
         <div className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive border border-destructive/20">
-          {locale === "es"
-            ? "Error al cargar los horarios disponibles. Por favor, intenta nuevamente."
-            : "Error loading available time slots. Please try again."}
+          {t.booking.time.errorLoading}
         </div>
       )}
 
@@ -104,11 +98,15 @@ export function TimeSlotSelection({
         <div className="flex gap-4">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-primary" />
-            <span className="text-xs text-muted-foreground">Seleccionado</span>
+            <span className="text-xs text-muted-foreground">
+              {t.booking.time.selected}
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-card border border-border" />
-            <span className="text-xs text-muted-foreground">Disponible</span>
+            <span className="text-xs text-muted-foreground">
+              {t.booking.professional.available}
+            </span>
           </div>
         </div>
       )}

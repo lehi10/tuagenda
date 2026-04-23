@@ -190,6 +190,8 @@ export function useBookingFlow({
   const isStepComplete = useCallback(
     (step: StepType): boolean => {
       switch (step) {
+        case "service-detail":
+          return !!bookingData.service;
         case "professional":
           return !!bookingData.professional;
         case "date":

@@ -4,6 +4,7 @@ import { Clock } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
 import { ImageGallery } from "@/client/components/ui/image-gallery";
 import { formatPrice } from "@/client/lib/booking-utils";
+import { useTranslation } from "@/client/i18n";
 import type { BookingService } from "@/client/types/booking";
 
 interface ServiceDetailStepProps {
@@ -49,6 +50,7 @@ export function ServiceDetailStep({
   currency,
   onConfirm,
 }: ServiceDetailStepProps) {
+  const { t } = useTranslation();
   const isFree = service.price === 0;
   const hasPrice = service.price !== null && service.price !== undefined;
   const hasImages = service.images.length > 0;
@@ -91,7 +93,7 @@ export function ServiceDetailStep({
             <div className="shrink-0 text-right">
               {isFree ? (
                 <span className="text-base font-bold text-green-600 bg-green-50 border border-green-200 rounded-xl px-3 py-1.5">
-                  Gratis
+                  {t.booking.service.free}
                 </span>
               ) : hasPrice ? (
                 <span className="text-xl font-bold text-primary">
@@ -99,7 +101,7 @@ export function ServiceDetailStep({
                 </span>
               ) : (
                 <span className="text-sm text-muted-foreground">
-                  A coordinar
+                  {t.booking.service.toCoordinate}
                 </span>
               )}
             </div>
@@ -116,7 +118,7 @@ export function ServiceDetailStep({
           {hasImages && (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                Galería
+                {t.booking.service.gallery}
               </p>
               <ImageGallery images={service.images} alt={service.name} />
             </div>
@@ -131,7 +133,7 @@ export function ServiceDetailStep({
           className="w-full h-12 rounded-xl font-semibold text-base shadow-lg shadow-primary/20"
           size="lg"
         >
-          Reservar este servicio →
+          {t.booking.service.bookThis} →
         </Button>
       </div>
     </div>

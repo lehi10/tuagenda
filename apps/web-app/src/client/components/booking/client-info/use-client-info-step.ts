@@ -35,7 +35,10 @@ const INITIAL_FORM: FormState = {
   createAccount: false,
 };
 
-export function useClientInfoStep(onContinue: (data: ClientInfoData) => void) {
+export function useClientInfoStep(
+  onContinue: (data: ClientInfoData) => void,
+  initialData?: ClientInfoData
+) {
   const { t } = useTranslation();
   const {
     user,
@@ -48,7 +51,19 @@ export function useClientInfoStep(onContinue: (data: ClientInfoData) => void) {
   const createGuestMutation = useTrpc.user.createGuest.useMutation();
   const createUserMutation = useTrpc.user.create.useMutation();
 
-  const [formData, setFormData] = useState<FormState>(INITIAL_FORM);
+  const [formData, setFormData] = useState<FormState>(
+    initialData
+      ? {
+          firstName: initialData.firstName,
+          lastName: initialData.lastName,
+          phone: initialData.phone,
+          email: initialData.email,
+          password: "",
+          confirmPassword: "",
+          createAccount: initialData.createAccount,
+        }
+      : INITIAL_FORM
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTabState] = useState<"guest" | "login">("guest");

@@ -104,6 +104,10 @@ export const businessRouter = router({
         postalCode: z.string().optional(),
         latitude: z.number().optional(),
         longitude: z.number().optional(),
+        socialLinks: z
+          .record(z.string(), z.string().url())
+          .optional()
+          .nullable(),
       })
     )
     .mutation(async ({ input }) => {
@@ -150,6 +154,10 @@ export const businessRouter = router({
         postalCode: z.string().optional(),
         latitude: z.number().optional(),
         longitude: z.number().optional(),
+        socialLinks: z
+          .record(z.string(), z.string().url())
+          .optional()
+          .nullable(),
       })
     )
     .mutation(async ({ input }) => {
