@@ -1,267 +1,172 @@
-"use client";
+import fs from "fs";
+import path from "path";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
 
-import { useTranslation } from "@/client/i18n";
+const components: Components = {
+  h1: ({ children }) => (
+    <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="text-xl font-semibold text-foreground mt-10 mb-3 pb-2 border-b">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="text-base font-semibold text-foreground mt-6 mb-2">
+      {children}
+    </h3>
+  ),
+  p: ({ children }) => (
+    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => <ul className="space-y-1.5 mb-4 ml-1">{children}</ul>,
+  li: ({ children }) => (
+    <li className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
+      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
+      <span>{children}</span>
+    </li>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold text-foreground">{children}</strong>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      className="text-primary underline underline-offset-4 hover:text-primary/80 transition-colors"
+    >
+      {children}
+    </a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-4 border-primary/30 bg-muted/40 rounded-r-xl px-4 py-3 my-4 text-sm text-muted-foreground">
+      {children}
+    </blockquote>
+  ),
+  table: ({ children }) => (
+    <div className="overflow-x-auto my-4">
+      <table className="w-full text-sm border-collapse">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead className="bg-muted/50">{children}</thead>,
+  th: ({ children }) => (
+    <th className="text-left px-4 py-2 font-semibold text-foreground border border-border">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="px-4 py-2 text-muted-foreground border border-border">
+      {children}
+    </td>
+  ),
+};
+
+const SECTION_TITLES: Record<number, string> = {
+  1: "Introducción",
+  2: "Responsable",
+  3: "Datos que recopilamos",
+  4: "Finalidad",
+  5: "Acceso de negocios",
+  6: "Cookies",
+  7: "Transferencia internacional",
+  8: "Conservación",
+  9: "Tus derechos",
+  10: "Seguridad",
+  11: "Menores de edad",
+  12: "Cambios",
+  13: "Contacto",
+};
 
 export default function PrivacyPolicyPage() {
-  const { t } = useTranslation();
+  const filePath = path.join(
+    process.cwd(),
+    "src/content/legal/privacy-policy.es.md"
+  );
+  const content = fs.readFileSync(filePath, "utf-8");
+
+  const lines = content.split("\n");
+  const firstLine = lines[0];
+  const body = lines.slice(1).join("\n");
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <h1>{t.legal.privacyPolicy}</h1>
-        <p className="text-muted-foreground">
-          {t.legal.lastUpdated}: January 1, 2025
-        </p>
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <div className="border-b bg-muted/30">
+        <div className="container mx-auto max-w-4xl px-4 py-12 sm:py-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary mb-4">
+            Legal
+          </div>
+          <ReactMarkdown components={components}>{firstLine}</ReactMarkdown>
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => (
+                <p className="text-sm text-muted-foreground mt-1">{children}</p>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-medium text-muted-foreground">
+                  {children}
+                </strong>
+              ),
+            }}
+          >
+            {lines.find((l) => l.trim().startsWith("**")) ?? ""}
+          </ReactMarkdown>
+        </div>
+      </div>
 
-        <section>
-          <h2>1. Introduction</h2>
-          <p>
-            Welcome to TuAgenda. We respect your privacy and are committed to
-            protecting your personal data. This privacy policy explains how we
-            collect, use, disclose, and safeguard your information when you use
-            our appointment scheduling and management platform.
-          </p>
-        </section>
+      {/* Content */}
+      <div className="container mx-auto max-w-4xl px-4 py-10 pb-20">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Table of contents */}
+          <aside className="lg:w-56 shrink-0">
+            <div className="lg:sticky lg:top-[calc(4rem+1.5rem)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                Contenido
+              </p>
+              <nav className="space-y-1">
+                {Object.entries(SECTION_TITLES).map(([n, title]) => (
+                  <a
+                    key={n}
+                    href={`#section-${n}`}
+                    className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-0.5"
+                  >
+                    {n}. {title}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </aside>
 
-        <section>
-          <h2>2. Information We Collect</h2>
-          <h3>2.1 Information You Provide</h3>
-          <p>
-            When you use TuAgenda, we collect information that you provide
-            directly:
-          </p>
-          <ul>
-            <li>
-              <strong>Account Information:</strong> Name, email address, phone
-              number, company name, and password
-            </li>
-            <li>
-              <strong>Profile Information:</strong> Business details, location,
-              services offered, and employee information
-            </li>
-            <li>
-              <strong>Client Data:</strong> Information about your clients,
-              including names, contact details, appointment history, and
-              preferences
-            </li>
-            <li>
-              <strong>Payment Information:</strong> Billing details and
-              transaction history (payment card information is securely
-              processed by our payment providers)
-            </li>
-          </ul>
-
-          <h3>2.2 Automatically Collected Information</h3>
-          <ul>
-            <li>
-              <strong>Usage Data:</strong> Information about how you interact
-              with our Service, including pages visited, features used, and time
-              spent
-            </li>
-            <li>
-              <strong>Device Information:</strong> IP address, browser type,
-              operating system, and device identifiers
-            </li>
-            <li>
-              <strong>Cookies and Tracking:</strong> We use cookies and similar
-              technologies to enhance your experience and analyze Service usage
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>3. How We Use Your Information</h2>
-          <p>We use the collected information for various purposes:</p>
-          <ul>
-            <li>
-              <strong>Provide and Maintain Service:</strong> To operate and
-              maintain the TuAgenda platform
-            </li>
-            <li>
-              <strong>Improve User Experience:</strong> To understand usage
-              patterns and enhance features
-            </li>
-            <li>
-              <strong>Communication:</strong> To send important updates,
-              notifications, and marketing communications (with your consent)
-            </li>
-            <li>
-              <strong>Customer Support:</strong> To respond to inquiries and
-              provide assistance
-            </li>
-            <li>
-              <strong>Security:</strong> To detect, prevent, and address
-              technical issues and fraudulent activity
-            </li>
-            <li>
-              <strong>Analytics:</strong> To analyze Service performance and
-              user behavior
-            </li>
-            <li>
-              <strong>Compliance:</strong> To comply with legal obligations and
-              enforce our Terms of Service
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>4. Data Sharing and Disclosure</h2>
-          <p>
-            We do not sell your personal information. We may share your
-            information in the following circumstances:
-          </p>
-          <ul>
-            <li>
-              <strong>Service Providers:</strong> With third-party vendors who
-              perform services on our behalf (e.g., hosting, analytics, payment
-              processing)
-            </li>
-            <li>
-              <strong>Business Transfers:</strong> In connection with any
-              merger, sale, or transfer of company assets
-            </li>
-            <li>
-              <strong>Legal Requirements:</strong> When required by law or to
-              protect our rights, privacy, safety, or property
-            </li>
-            <li>
-              <strong>With Your Consent:</strong> When you explicitly agree to
-              the sharing
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>5. Data Security</h2>
-          <p>
-            We implement appropriate technical and organizational security
-            measures to protect your data, including:
-          </p>
-          <ul>
-            <li>Encryption of data in transit and at rest</li>
-            <li>Regular security assessments and audits</li>
-            <li>Access controls and authentication mechanisms</li>
-            <li>Employee training on data protection</li>
-            <li>Secure data centers with redundancy and backup systems</li>
-          </ul>
-          <p>
-            However, no method of transmission over the internet is 100% secure.
-            While we strive to protect your data, we cannot guarantee absolute
-            security.
-          </p>
-        </section>
-
-        <section>
-          <h2>6. Data Retention</h2>
-          <p>
-            We retain your personal information for as long as necessary to
-            fulfill the purposes outlined in this policy, unless a longer
-            retention period is required by law. When you close your account, we
-            will delete or anonymize your data within 90 days, except for
-            information we must retain for legal or regulatory purposes.
-          </p>
-        </section>
-
-        <section>
-          <h2>7. Your Rights and Choices</h2>
-          <p>Depending on your location, you may have the following rights:</p>
-          <ul>
-            <li>
-              <strong>Access:</strong> Request access to your personal data
-            </li>
-            <li>
-              <strong>Correction:</strong> Update or correct inaccurate
-              information
-            </li>
-            <li>
-              <strong>Deletion:</strong> Request deletion of your personal data
-            </li>
-            <li>
-              <strong>Portability:</strong> Receive a copy of your data in a
-              structured format
-            </li>
-            <li>
-              <strong>Opt-out:</strong> Unsubscribe from marketing
-              communications
-            </li>
-            <li>
-              <strong>Object:</strong> Object to certain processing of your data
-            </li>
-          </ul>
-          <p>
-            To exercise these rights, please contact us at privacy@tuagenda.com.
-          </p>
-        </section>
-
-        <section>
-          <h2>8. Cookies and Tracking Technologies</h2>
-          <p>We use cookies and similar technologies to:</p>
-          <ul>
-            <li>Remember your preferences and settings</li>
-            <li>Authenticate your account</li>
-            <li>Analyze Service usage and performance</li>
-            <li>Provide personalized content and features</li>
-          </ul>
-          <p>
-            You can control cookie settings through your browser preferences.
-            Note that disabling cookies may affect Service functionality.
-          </p>
-        </section>
-
-        <section>
-          <h2>9. International Data Transfers</h2>
-          <p>
-            Your information may be transferred to and processed in countries
-            other than your country of residence. We ensure appropriate
-            safeguards are in place to protect your data in accordance with this
-            policy and applicable laws.
-          </p>
-        </section>
-
-        <section>
-          <h2>10. Children&apos;s Privacy</h2>
-          <p>
-            TuAgenda is not intended for individuals under the age of 18. We do
-            not knowingly collect personal information from children. If you
-            become aware that a child has provided us with personal data, please
-            contact us immediately.
-          </p>
-        </section>
-
-        <section>
-          <h2>11. Third-Party Links</h2>
-          <p>
-            Our Service may contain links to third-party websites or services
-            not operated by us. We are not responsible for the privacy practices
-            of these third parties. We encourage you to review their privacy
-            policies.
-          </p>
-        </section>
-
-        <section>
-          <h2>12. Changes to This Privacy Policy</h2>
-          <p>
-            We may update this privacy policy from time to time. We will notify
-            you of any material changes by posting the new policy on this page
-            and updating the &quot;Last updated&quot; date. We will also send
-            you an email notification for significant changes.
-          </p>
-        </section>
-
-        <section>
-          <h2>13. Contact Us</h2>
-          <p>
-            If you have any questions, concerns, or requests regarding this
-            privacy policy or our data practices, please contact us:
-          </p>
-          <p>
-            Email: privacy@tuagenda.com
-            <br />
-            Address: [Your Business Address]
-            <br />
-            Data Protection Officer: dpo@tuagenda.com
-          </p>
-        </section>
+          {/* Main content */}
+          <div className="flex-1 min-w-0">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                ...components,
+                h2: ({ children }) => {
+                  const text = String(children);
+                  const match = text.match(/^(\d+)\./);
+                  const id = match ? `section-${match[1]}` : undefined;
+                  return (
+                    <h2
+                      id={id}
+                      className="text-xl font-semibold text-foreground mt-10 mb-3 pb-2 border-b scroll-mt-6"
+                    >
+                      {children}
+                    </h2>
+                  );
+                },
+              }}
+            >
+              {body}
+            </ReactMarkdown>
+          </div>
+        </div>
       </div>
     </div>
   );

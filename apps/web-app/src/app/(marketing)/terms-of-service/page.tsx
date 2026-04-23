@@ -1,172 +1,156 @@
-"use client";
+import fs from "fs";
+import path from "path";
+import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 
-import { useTranslation } from "@/client/i18n";
+const components: Components = {
+  h1: ({ children }) => (
+    <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-2">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="text-xl font-semibold text-foreground mt-10 mb-3 pb-2 border-b">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="text-base font-semibold text-foreground mt-6 mb-2">
+      {children}
+    </h3>
+  ),
+  p: ({ children }) => (
+    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => <ul className="space-y-1.5 mb-4 ml-1">{children}</ul>,
+  li: ({ children }) => (
+    <li className="flex gap-2 text-sm text-muted-foreground leading-relaxed">
+      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
+      <span>{children}</span>
+    </li>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold text-foreground">{children}</strong>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      className="text-primary underline underline-offset-4 hover:text-primary/80 transition-colors"
+    >
+      {children}
+    </a>
+  ),
+  hr: () => <hr className="my-8 border-border" />,
+};
 
 export default function TermsOfServicePage() {
-  const { t } = useTranslation();
+  const filePath = path.join(
+    process.cwd(),
+    "src/content/legal/terms-of-service.es.md"
+  );
+  const content = fs.readFileSync(filePath, "utf-8");
+
+  // Separate the first line (h1) from the rest to render the hero separately
+  const [firstLine, ...rest] = content.split("\n");
+  const body = rest.join("\n");
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-12">
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <h1>{t.legal.termsOfService}</h1>
-        <p className="text-muted-foreground">
-          {t.legal.lastUpdated}: January 1, 2025
-        </p>
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <div className="border-b bg-muted/30">
+        <div className="container mx-auto max-w-4xl px-4 py-12 sm:py-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary mb-4">
+            Legal
+          </div>
+          <ReactMarkdown components={components}>{firstLine}</ReactMarkdown>
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => (
+                <p className="text-sm text-muted-foreground mt-1">{children}</p>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-medium text-muted-foreground">
+                  {children}
+                </strong>
+              ),
+            }}
+          >
+            {rest.find((l) => l.trim().startsWith("**")) ?? ""}
+          </ReactMarkdown>
+        </div>
+      </div>
 
-        <section>
-          <h2>1. Acceptance of Terms</h2>
-          <p>
-            By accessing and using TuAgenda (&quot;the Service&quot;), you
-            accept and agree to be bound by the terms and provision of this
-            agreement. If you do not agree to these Terms of Service, please do
-            not use the Service.
-          </p>
-        </section>
+      {/* Content */}
+      <div className="container mx-auto max-w-4xl px-4 py-10 pb-20">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Table of contents */}
+          <aside className="lg:w-56 shrink-0">
+            <div className="lg:sticky lg:top-[calc(4rem+1.5rem)]">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                Contenido
+              </p>
+              <nav className="space-y-1">
+                {Array.from({ length: 15 }, (_, i) => i + 1).map((n) => (
+                  <a
+                    key={n}
+                    href={`#section-${n}`}
+                    className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-0.5"
+                  >
+                    {n}. {getSectionTitle(n)}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </aside>
 
-        <section>
-          <h2>2. Description of Service</h2>
-          <p>
-            TuAgenda provides a cloud-based appointment scheduling and
-            management platform designed for service businesses. The Service
-            allows businesses to manage appointments, clients, employees,
-            services, and payments through a web-based application.
-          </p>
-        </section>
-
-        <section>
-          <h2>3. User Accounts</h2>
-          <p>
-            To use the Service, you must register for an account. You agree to:
-          </p>
-          <ul>
-            <li>Provide accurate, current, and complete information</li>
-            <li>Maintain and update your information</li>
-            <li>
-              Maintain the security of your password and account credentials
-            </li>
-            <li>Accept responsibility for all activities under your account</li>
-            <li>
-              Notify us immediately of any unauthorized use of your account
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>4. Subscription and Payment</h2>
-          <p>
-            TuAgenda offers various subscription plans. By subscribing to a paid
-            plan, you agree to:
-          </p>
-          <ul>
-            <li>Pay all fees associated with your chosen subscription plan</li>
-            <li>Provide current, complete, and accurate billing information</li>
-            <li>
-              Authorize automatic recurring payments for your subscription
-            </li>
-          </ul>
-          <p>
-            We reserve the right to modify our pricing at any time. Price
-            changes will be communicated at least 30 days in advance.
-          </p>
-        </section>
-
-        <section>
-          <h2>5. Acceptable Use Policy</h2>
-          <p>You agree not to use the Service to:</p>
-          <ul>
-            <li>Violate any laws, regulations, or third-party rights</li>
-            <li>Upload or transmit viruses, malware, or malicious code</li>
-            <li>Attempt to gain unauthorized access to our systems</li>
-            <li>Interfere with or disrupt the Service or servers</li>
-            <li>Use the Service for any illegal or unauthorized purpose</li>
-            <li>
-              Impersonate any person or entity or misrepresent your affiliation
-            </li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>6. Data and Privacy</h2>
-          <p>
-            Your use of the Service is also governed by our Privacy Policy. We
-            take data security seriously and implement appropriate measures to
-            protect your information. You retain all rights to your data, and
-            you may export or delete your data at any time.
-          </p>
-        </section>
-
-        <section>
-          <h2>7. Intellectual Property</h2>
-          <p>
-            The Service, including its original content, features, and
-            functionality, is owned by TuAgenda and is protected by
-            international copyright, trademark, patent, trade secret, and other
-            intellectual property laws.
-          </p>
-        </section>
-
-        <section>
-          <h2>8. Limitation of Liability</h2>
-          <p>
-            To the fullest extent permitted by law, TuAgenda shall not be liable
-            for any indirect, incidental, special, consequential, or punitive
-            damages, or any loss of profits or revenues, whether incurred
-            directly or indirectly, or any loss of data, use, goodwill, or other
-            intangible losses.
-          </p>
-        </section>
-
-        <section>
-          <h2>9. Service Availability</h2>
-          <p>
-            We strive to maintain 99.9% uptime but do not guarantee
-            uninterrupted access to the Service. We may temporarily suspend
-            access for maintenance, updates, or unforeseen circumstances.
-          </p>
-        </section>
-
-        <section>
-          <h2>10. Termination</h2>
-          <p>
-            We reserve the right to suspend or terminate your account and access
-            to the Service at our sole discretion, without notice, for conduct
-            that we believe violates these Terms of Service or is harmful to
-            other users, us, or third parties, or for any other reason.
-          </p>
-        </section>
-
-        <section>
-          <h2>11. Changes to Terms</h2>
-          <p>
-            We reserve the right to modify these terms at any time. We will
-            notify users of any material changes via email or through the
-            Service. Your continued use of the Service after such modifications
-            constitutes acceptance of the updated terms.
-          </p>
-        </section>
-
-        <section>
-          <h2>12. Governing Law</h2>
-          <p>
-            These Terms shall be governed by and construed in accordance with
-            the laws of the jurisdiction in which TuAgenda operates, without
-            regard to its conflict of law provisions.
-          </p>
-        </section>
-
-        <section>
-          <h2>13. Contact Information</h2>
-          <p>
-            If you have any questions about these Terms of Service, please
-            contact us at:
-          </p>
-          <p>
-            Email: legal@tuagenda.com
-            <br />
-            Address: [Your Business Address]
-          </p>
-        </section>
+          {/* Main content */}
+          <div className="flex-1 min-w-0">
+            <ReactMarkdown
+              components={{
+                ...components,
+                h2: ({ children }) => {
+                  const text = String(children);
+                  const match = text.match(/^(\d+)\./);
+                  const id = match ? `section-${match[1]}` : undefined;
+                  return (
+                    <h2
+                      id={id}
+                      className="text-xl font-semibold text-foreground mt-10 mb-3 pb-2 border-b scroll-mt-6"
+                    >
+                      {children}
+                    </h2>
+                  );
+                },
+              }}
+            >
+              {body}
+            </ReactMarkdown>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+function getSectionTitle(n: number): string {
+  const titles: Record<number, string> = {
+    1: "Aceptación",
+    2: "El Servicio",
+    3: "Edad mínima",
+    4: "Cuentas",
+    5: "Pagos",
+    6: "Uso aceptable",
+    7: "Cookies",
+    8: "Datos y privacidad",
+    9: "Propiedad intelectual",
+    10: "Responsabilidad",
+    11: "Disponibilidad",
+    12: "Terminación",
+    13: "Modificaciones",
+    14: "Ley aplicable",
+    15: "Contacto",
+  };
+  return titles[n] ?? "";
 }
