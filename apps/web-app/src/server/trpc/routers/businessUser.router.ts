@@ -33,6 +33,8 @@ import {
   GetBusinessUsersWithDetailsUseCase,
 } from "@/server/core/application/use-cases/business-user";
 import { GetAvailableTimeSlotsUseCase } from "@/server/core/application/use-cases/availability";
+import { GetServiceEmployeesUseCase } from "@/server/core/application/use-cases/employee-service/GetServiceEmployees";
+import { PrismaEmployeeServiceRepository } from "@/server/infrastructure/repositories/PrismaEmployeeServiceRepository";
 import { BusinessRole } from "@/server/core/domain/entities";
 
 export const businessUserRouter = router({
@@ -48,6 +50,43 @@ export const businessUserRouter = router({
       })
     )
     .query(async ({ input }) => {
+      // When serviceId is provided, filter employees by service assignment
+      if (input.serviceId) {
+        const employeeServiceRepository = new PrismaEmployeeServiceRepository();
+        const getServiceEmployeesUseCase = new GetServiceEmployeesUseCase(
+          employeeServiceRepository
+        );
+
+        const result = await getServiceEmployeesUseCase.execute({
+          serviceId: input.serviceId,
+        });
+
+        if (!result.success || !result.data) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              result.error || "Failed to fetch professionals for service",
+          });
+        }
+
+        const employees = result.data.employees.map((emp) => ({
+          id: emp.id,
+          name: emp.displayName || `${emp.user.firstName} ${emp.user.lastName}`,
+          firstName: emp.user.firstName,
+          lastName: emp.user.lastName,
+          avatar: emp.user.avatarUrl || null,
+          email: emp.user.email,
+          phone: null,
+          role: BusinessRole.EMPLOYEE,
+        }));
+
+        return {
+          employees,
+          total: employees.length,
+        };
+      }
+
+      // No serviceId: return all active employees/managers for the business
       const businessUserRepository = new PrismaBusinessUserRepository();
       const getBusinessUsersWithDetailsUseCase =
         new GetBusinessUsersWithDetailsUseCase(businessUserRepository);
@@ -80,7 +119,7 @@ export const businessUserRouter = router({
         avatar: bu.user.pictureFullPath || null,
         email: bu.user.email,
         phone: bu.user.phone || null,
-        role: bu.role, // Include role to differentiate if needed
+        role: bu.role,
       }));
 
       return {

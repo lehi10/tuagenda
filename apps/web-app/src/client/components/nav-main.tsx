@@ -35,6 +35,7 @@ export function NavMain({
       url: string;
       icon: LucideIcon;
       isActive?: boolean;
+      wip?: boolean;
       items?: {
         id?: string;
         title: string;
@@ -84,6 +85,11 @@ export function NavMain({
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
+                      {item.wip && (
+                        <span className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 group-data-[collapsible=icon]:hidden">
+                          WIP
+                        </span>
+                      )}
                     </Link>
                   </SidebarMenuButton>
                   {item.items?.length ? (

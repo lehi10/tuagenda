@@ -10,6 +10,7 @@ import { employeeAvailabilityRouter } from "./employeeAvailability.router";
 import { employeeExceptionRouter } from "./employeeException.router";
 import { appointmentRouter } from "./appointment.router";
 import { analyticsRouter } from "./analytics.router";
+import { clientRouter } from "./client.router";
 
 /**
  * Main application router
@@ -90,6 +91,12 @@ export const appRouter = router({
    * Access: trpc.analytics.getStats, trpc.analytics.getCharts
    */
   analytics: analyticsRouter,
+
+  /**
+   * Client domain procedures
+   * Access: trpc.clients.getByBusiness, trpc.clients.getStats, trpc.clients.getDetail
+   */
+  clients: clientRouter,
 });
 
 /**

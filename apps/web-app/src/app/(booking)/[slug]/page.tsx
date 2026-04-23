@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { TRPCError } from "@trpc/server";
+import type { Metadata } from "next";
 import { BookingFlow } from "@/client/components/booking/booking-flow";
 import { serverTrpc } from "@/server/trpc";
 import { BookingPageSkeleton } from "@/client/components/booking/shared/skeletons";
@@ -9,6 +10,68 @@ interface PageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  let business;
+  try {
+    business = await serverTrpc.business.getBySlug({ slug });
+  } catch {
+    return { title: "Reserva tu cita | TuAgenda" };
+  }
+
+  const businessName = business.title;
+  const description =
+    business.description ||
+    `Reserva tu cita con ${businessName} de forma rápida y sencilla a través de TuAgenda.`;
+  const location = [business.city, business.country].filter(Boolean).join(", ");
+  const fullDescription = location
+    ? `${description} Ubicado en ${location}.`
+    : description;
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://tuagenda.app";
+  const pageUrl = `${appUrl}/${slug}`;
+
+  const ogImage = business.logo
+    ? {
+        url: business.logo,
+        width: 800,
+        height: 800,
+        alt: `Logo de ${businessName}`,
+      }
+    : {
+        url: `${appUrl}/images/og-booking-default.png`,
+        width: 1200,
+        height: 630,
+        alt: `Reserva en ${businessName} | TuAgenda`,
+      };
+
+  return {
+    title: `Reserva en ${businessName} | TuAgenda`,
+    description: fullDescription,
+    openGraph: {
+      title: `Reserva tu cita en ${businessName}`,
+      description: fullDescription,
+      url: pageUrl,
+      siteName: "TuAgenda",
+      images: [ogImage],
+      type: "website",
+      locale: "es_ES",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Reserva tu cita en ${businessName}`,
+      description: fullDescription,
+      images: [ogImage.url],
+    },
+    alternates: {
+      canonical: pageUrl,
+    },
+  };
 }
 
 async function BookingContent({ slug }: { slug: string }) {

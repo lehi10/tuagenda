@@ -85,7 +85,10 @@ export class PrismaEmployeeServiceRepository
     serviceId: string
   ): Promise<ServiceWithEmployees> {
     const assignments = await prisma.employeeService.findMany({
-      where: { serviceId },
+      where: {
+        serviceId,
+        businessUser: { isActive: true },
+      },
       include: {
         businessUser: {
           include: {

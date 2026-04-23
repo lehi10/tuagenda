@@ -1,190 +1,151 @@
 "use client";
 
-import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { Search, X, Loader2 } from "lucide-react";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
+import { Input } from "@/client/components/ui/input";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/client/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/client/components/ui/dropdown-menu";
 import { DataTableWithFilters } from "@/client/components/shared/data-table-with-filters";
 import { useTranslation } from "@/client/i18n";
+import { useTrpc } from "@/client/lib/trpc";
+import { useDebounce } from "@/client/hooks/use-debounce";
+import { ClientDetailDialog } from "./client-detail-dialog";
 
-interface Client {
+interface ClientRow {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string | null;
   email: string;
-  phone: string;
-  avatar?: string;
-  appointments: number;
-  lastVisit: string;
-  status: "active" | "inactive";
+  phone: string | null;
+  pictureFullPath: string | null;
+  appointmentCount: number;
+  lastVisit: Date | null;
 }
 
 export function ClientList() {
   const { t } = useTranslation();
+  const [search, setSearch] = useState("");
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const debouncedSearch = useDebounce(search, 300);
 
-  const clients: Client[] = [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      phone: "(555) 123-4567",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-      appointments: 12,
-      lastVisit: "2024-10-20",
-      status: "active",
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      phone: "(555) 987-6543",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane",
-      appointments: 8,
-      lastVisit: "2024-10-22",
-      status: "active",
-    },
-    {
-      id: "3",
-      name: "Bob Wilson",
-      email: "bob@example.com",
-      phone: "(555) 456-7890",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
-      appointments: 5,
-      lastVisit: "2024-09-15",
-      status: "inactive",
-    },
-    {
-      id: "4",
-      name: "Alice Brown",
-      email: "alice@example.com",
-      phone: "(555) 234-5678",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
-      appointments: 15,
-      lastVisit: "2024-10-23",
-      status: "active",
-    },
-    {
-      id: "5",
-      name: "Charlie Green",
-      email: "charlie@example.com",
-      phone: "(555) 345-6789",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie",
-      appointments: 3,
-      lastVisit: "2024-08-10",
-      status: "inactive",
-    },
-    {
-      id: "6",
-      name: "Diana Prince",
-      email: "diana@example.com",
-      phone: "(555) 456-7891",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Diana",
-      appointments: 20,
-      lastVisit: "2024-10-24",
-      status: "active",
-    },
-    {
-      id: "7",
-      name: "Ethan Hunt",
-      email: "ethan@example.com",
-      phone: "(555) 567-8912",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ethan",
-      appointments: 7,
-      lastVisit: "2024-10-18",
-      status: "active",
-    },
-    {
-      id: "8",
-      name: "Fiona White",
-      email: "fiona@example.com",
-      phone: "(555) 678-9123",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Fiona",
-      appointments: 11,
-      lastVisit: "2024-10-21",
-      status: "active",
-    },
-  ];
+  const { data, isLoading } = useTrpc.clients.getByBusiness.useQuery({
+    search: debouncedSearch || undefined,
+    limit: 100,
+    offset: 0,
+  });
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
+  const clients: ClientRow[] = data?.clients ?? [];
+
+  const getInitials = (firstName: string, lastName: string | null) => {
+    return `${firstName[0]}${lastName?.[0] ?? ""}`.toUpperCase();
+  };
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return "—";
+    return new Date(date).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const columns = [
     {
       header: t.pages.clients.name,
-      accessor: (item: Client) => (
+      accessor: (item: ClientRow) => (
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={item.avatar} alt={item.name} />
-            <AvatarFallback>{getInitials(item.name)}</AvatarFallback>
+            <AvatarImage
+              src={item.pictureFullPath ?? undefined}
+              alt={item.firstName}
+            />
+            <AvatarFallback>
+              {getInitials(item.firstName, item.lastName)}
+            </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{item.name}</div>
+            <div className="font-medium">
+              {item.firstName} {item.lastName}
+            </div>
             <div className="text-xs text-muted-foreground">{item.email}</div>
           </div>
         </div>
       ),
     },
-    { header: t.pages.clients.phone, accessor: "phone" as const },
-    { header: "Appointments", accessor: "appointments" as const },
-    { header: "Last Visit", accessor: "lastVisit" as const },
     {
-      header: t.pages.payments.status,
-      accessor: (item: Client) => (
-        <Badge variant={item.status === "active" ? "default" : "outline"}>
-          {item.status}
-        </Badge>
+      header: t.pages.clients.phone,
+      accessor: (item: ClientRow) => item.phone ?? "—",
+    },
+    {
+      header: "Appointments",
+      accessor: (item: ClientRow) => (
+        <Badge variant="secondary">{item.appointmentCount}</Badge>
+      ),
+    },
+    {
+      header: "Last Visit",
+      accessor: (item: ClientRow) => (
+        <span className="text-sm text-muted-foreground">
+          {formatDate(item.lastVisit)}
+        </span>
       ),
     },
     {
       header: "",
-      accessor: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>{t.common.edit}</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
-              {t.common.delete}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      accessor: (item: ClientRow) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setSelectedClientId(item.id)}
+        >
+          View
+        </Button>
       ),
     },
   ];
 
   return (
-    <DataTableWithFilters
-      data={clients}
-      columns={columns}
-      searchableColumns={["name", "email", "phone"]}
-      filters={[
-        {
-          placeholder: "Filter by status",
-          accessor: "status",
-          options: [
-            { value: "active", label: "Active" },
-            { value: "inactive", label: "Inactive" },
-          ],
-        },
-      ]}
-      pageSize={5}
-    />
+    <>
+      {/* Search bar */}
+      <div className="flex items-center gap-2 max-w-sm">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search clients..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 pr-9"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        {isLoading && (
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        )}
+      </div>
+
+      <DataTableWithFilters
+        data={clients}
+        columns={columns}
+        searchableColumns={[]}
+        pageSize={10}
+      />
+
+      <ClientDetailDialog
+        customerId={selectedClientId}
+        onClose={() => setSelectedClientId(null)}
+      />
+    </>
   );
 }
