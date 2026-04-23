@@ -31,6 +31,7 @@ export interface BookingService {
   durationMinutes: number;
   price: number;
   categoryId: string | null;
+  images: string[];
 }
 
 /**

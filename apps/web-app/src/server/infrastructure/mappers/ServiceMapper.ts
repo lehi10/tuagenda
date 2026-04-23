@@ -25,6 +25,7 @@ export class ServiceMapper {
       price: new Decimal(prismaService.price.toString()),
       durationMinutes: prismaService.durationMinutes,
       active: prismaService.active,
+      images: prismaService.images,
       createdAt: prismaService.createdAt,
       updatedAt: prismaService.updatedAt,
     });

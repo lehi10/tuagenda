@@ -1,7 +1,8 @@
 "use client";
 
-import { Clock, ImageIcon } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Button } from "@/client/components/ui/button";
+import { ImageGallery } from "@/client/components/ui/image-gallery";
 import { formatPrice } from "@/client/lib/booking-utils";
 import type { BookingService } from "@/client/types/booking";
 
@@ -50,6 +51,7 @@ export function ServiceDetailStep({
 }: ServiceDetailStepProps) {
   const isFree = service.price === 0;
   const hasPrice = service.price !== null && service.price !== undefined;
+  const hasImages = service.images.length > 0;
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -82,10 +84,6 @@ export function ServiceDetailStep({
                   <Clock className="h-3.5 w-3.5" />
                   {service.durationMinutes} min
                 </span>
-                {/* ###TODO### – modality badge (presencial/online/domicilio) from service data */}
-                <span className="inline-flex items-center text-xs font-semibold bg-primary/10 text-primary rounded-lg px-2.5 py-1.5">
-                  ###TODO### modalidad
-                </span>
               </div>
             </div>
 
@@ -114,33 +112,15 @@ export function ServiceDetailStep({
             </p>
           )}
 
-          {/* Gallery – ###TODO### requires media upload in service settings */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-              Galería
-            </p>
-            <div className="rounded-xl border border-dashed bg-muted/30 p-6 flex flex-col items-center justify-center gap-2 text-center">
-              <ImageIcon className="h-8 w-8 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground font-medium">
-                ###TODO### – galería de fotos del servicio
-              </p>
-              <p className="text-xs text-muted-foreground/60">
-                Requiere soporte de carga de imágenes en el panel de servicios
-              </p>
-            </div>
-          </div>
-
-          {/* Business note – ###TODO### */}
-          <div className="rounded-xl bg-muted/50 p-4 flex gap-3">
-            <span className="text-lg shrink-0">🏪</span>
+          {/* Gallery */}
+          {hasImages && (
             <div>
-              <p className="text-sm font-semibold">Sobre este servicio</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                ###TODO### – descripción adicional del negocio, políticas de
-                cancelación, etc.
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                Galería
               </p>
+              <ImageGallery images={service.images} alt={service.name} />
             </div>
-          </div>
+          )}
         </div>
       </div>
 

@@ -56,6 +56,7 @@ export const serviceRouter = router({
           return {
             ...serviceObj,
             price: serviceObj.price.toNumber(),
+            images: serviceObj.images ?? [],
           };
         }),
         total: result.total || 0,

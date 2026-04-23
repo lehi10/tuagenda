@@ -18,6 +18,7 @@ export interface ServiceProps {
   price: Decimal | number | string;
   durationMinutes: number;
   active?: boolean;
+  images?: string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -37,6 +38,7 @@ export class Service {
   private _price: Decimal;
   private _durationMinutes: number;
   private _active: boolean;
+  private _images: string[];
   private readonly _createdAt: Date;
   private _updatedAt: Date;
 
@@ -81,6 +83,7 @@ export class Service {
     this._price = price;
     this._durationMinutes = props.durationMinutes;
     this._active = props.active !== undefined ? props.active : true;
+    this._images = props.images || [];
     this._createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -124,6 +127,10 @@ export class Service {
 
   get active(): boolean {
     return this._active;
+  }
+
+  get images(): string[] {
+    return this._images;
   }
 
   get createdAt(): Date {
@@ -288,6 +295,7 @@ export class Service {
       price: this._price,
       durationMinutes: this._durationMinutes,
       active: this._active,
+      images: this._images,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
     };
