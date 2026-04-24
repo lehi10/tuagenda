@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import { Input } from "@/client/components/ui/input";
@@ -29,15 +30,20 @@ interface ClientRow {
 
 export function ClientList() {
   const { t } = useTranslation();
+  const c = t.pages.clients;
   const [search, setSearch] = useState("");
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const debouncedSearch = useDebounce(search, 300);
 
-  const { data, isLoading } = useTrpc.clients.getByBusiness.useQuery({
+  const { data, isLoading, error } = useTrpc.clients.getByBusiness.useQuery({
     search: debouncedSearch || undefined,
     limit: 100,
     offset: 0,
   });
+
+  useEffect(() => {
+    if (error) toast.error(c.errorLoadingClients);
+  }, [error, c.errorLoadingClients]);
 
   const clients: ClientRow[] = data?.clients ?? [];
 
@@ -56,7 +62,7 @@ export function ClientList() {
 
   const columns = [
     {
-      header: t.pages.clients.name,
+      header: c.name,
       accessor: (item: ClientRow) => (
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
@@ -78,17 +84,17 @@ export function ClientList() {
       ),
     },
     {
-      header: t.pages.clients.phone,
+      header: c.phone,
       accessor: (item: ClientRow) => item.phone ?? "—",
     },
     {
-      header: "Appointments",
+      header: c.appointments,
       accessor: (item: ClientRow) => (
         <Badge variant="secondary">{item.appointmentCount}</Badge>
       ),
     },
     {
-      header: "Last Visit",
+      header: c.lastVisit,
       accessor: (item: ClientRow) => (
         <span className="text-sm text-muted-foreground">
           {formatDate(item.lastVisit)}
@@ -103,7 +109,7 @@ export function ClientList() {
           size="sm"
           onClick={() => setSelectedClientId(item.id)}
         >
-          View
+          {c.view}
         </Button>
       ),
     },
@@ -116,7 +122,7 @@ export function ClientList() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search clients..."
+            placeholder={c.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9 pr-9"

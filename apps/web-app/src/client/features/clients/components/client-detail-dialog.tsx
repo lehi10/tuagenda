@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
+import { toast } from "sonner";
 import { useTrpc } from "@/client/lib/trpc";
+import { useTranslation } from "@/client/i18n";
 import { Badge } from "@/client/components/ui/badge";
 import {
   Dialog,
@@ -34,10 +37,17 @@ export function ClientDetailDialog({
   customerId,
   onClose,
 }: ClientDetailDialogProps) {
-  const { data, isLoading } = useTrpc.clients.getDetail.useQuery(
+  const { t } = useTranslation();
+  const c = t.pages.clients;
+
+  const { data, isLoading, error } = useTrpc.clients.getDetail.useQuery(
     { customerId: customerId! },
     { enabled: !!customerId }
   );
+
+  useEffect(() => {
+    if (error) toast.error(c.errorLoadingDetail);
+  }, [error, c.errorLoadingDetail]);
 
   const initials = data
     ? `${data.firstName[0]}${data.lastName?.[0] ?? ""}`.toUpperCase()
@@ -47,7 +57,7 @@ export function ClientDetailDialog({
     <Dialog open={!!customerId} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Client Detail</DialogTitle>
+          <DialogTitle>{c.clientDetail}</DialogTitle>
         </DialogHeader>
 
         {isLoading && (
@@ -72,7 +82,7 @@ export function ClientDetailDialog({
                   {data.firstName} {data.lastName}
                   {data.isGuest && (
                     <Badge variant="outline" className="ml-2 text-xs">
-                      Guest
+                      {c.guest}
                     </Badge>
                   )}
                 </h2>
@@ -102,12 +112,10 @@ export function ClientDetailDialog({
             {/* Appointment history */}
             <div>
               <h3 className="text-sm font-medium mb-3">
-                Appointment History ({data.appointmentCount})
+                {c.appointmentHistory} ({data.appointmentCount})
               </h3>
               {data.appointments.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No appointments.
-                </p>
+                <p className="text-sm text-muted-foreground">{c.noAppointments}</p>
               ) : (
                 <div className="divide-y rounded-md border text-sm">
                   {data.appointments.map((appt) => (

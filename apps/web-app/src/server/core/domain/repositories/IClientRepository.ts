@@ -44,6 +44,14 @@ export interface ClientStats {
   retentionRate: number;
 }
 
+export interface CreateGuestClientInput {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  phone?: string;
+  note?: string;
+}
+
 export interface IClientRepository {
   findByBusiness(
     businessId: string,
@@ -58,4 +66,5 @@ export interface IClientRepository {
     businessId: string,
     customerId: string
   ): Promise<ClientDetail | null>;
+  createGuest(input: CreateGuestClientInput): Promise<{ id: string }>;
 }

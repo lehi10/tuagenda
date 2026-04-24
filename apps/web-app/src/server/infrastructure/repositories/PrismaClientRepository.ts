@@ -5,6 +5,7 @@ import {
   ClientDetail,
   ClientRepositoryFilters,
   ClientStats,
+  CreateGuestClientInput,
 } from "@/server/core/domain/repositories/IClientRepository";
 
 export class PrismaClientRepository implements IClientRepository {
@@ -125,6 +126,24 @@ export class PrismaClientRepository implements IClientRepository {
       total > 0 ? Math.round((returningCount / total) * 100) : 0;
 
     return { total, newThisMonth, retentionRate };
+  }
+
+  async createGuest(input: CreateGuestClientInput): Promise<{ id: string }> {
+    const id = crypto.randomUUID();
+    const user = await prisma.user.create({
+      data: {
+        id,
+        firstName: input.firstName,
+        lastName: input.lastName ?? null,
+        email: input.email,
+        phone: input.phone ?? null,
+        note: input.note ?? null,
+        isGuest: true,
+        guestCreatedAt: new Date(),
+      },
+      select: { id: true },
+    });
+    return { id: user.id };
   }
 
   async getDetail(

@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslation } from "@/client/i18n";
 import { ClientStats } from "@/client/features/clients/components/client-stats";
 import { ClientList } from "@/client/features/clients/components/client-list";
+import { ClientFormDialog } from "@/client/features/clients/components/client-form-dialog";
 import { Button } from "@/client/components/ui/button";
 
 export default function ClientsPage() {
   const { t } = useTranslation();
+  const [formOpen, setFormOpen] = useState(false);
 
   return (
     <div className="p-4 space-y-4 sm:p-6 sm:space-y-6">
@@ -19,12 +22,13 @@ export default function ClientsPage() {
             {t.pages.clients.clientList}
           </p>
         </div>
-        <Button className="w-full sm:w-auto">
+        <Button className="w-full sm:w-auto" onClick={() => setFormOpen(true)}>
           {t.pages.clients.addClient}
         </Button>
       </div>
       <ClientStats />
       <ClientList />
+      <ClientFormDialog open={formOpen} onOpenChange={setFormOpen} />
     </div>
   );
 }
