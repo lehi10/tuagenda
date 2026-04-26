@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run build",
+  "buildCommand": "pnpm db:generate && pnpm --filter db exec prisma migrate deploy && pnpm run build",
   "installCommand": "pnpm install",
   "outputDirectory": "apps/web-app/.next",
   "builds": [
