@@ -1,19 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "pnpm db:generate && pnpm --filter db exec prisma migrate deploy && pnpm run build",
+  "buildCommand": "pnpm db:generate && pnpm db:migrate && pnpm run build",
   "installCommand": "pnpm install",
   "outputDirectory": "apps/web-app/.next",
-  "builds": [
-    {
-      "src": "apps/web-app/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/web-app/$1",
-      "continue": true
-    }
-  ]
+  "framework": "nextjs"
 }
