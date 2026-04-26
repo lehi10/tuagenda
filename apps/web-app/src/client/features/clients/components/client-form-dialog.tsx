@@ -42,7 +42,10 @@ interface ClientFormDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function ClientFormDialog({ open, onOpenChange }: ClientFormDialogProps) {
+export function ClientFormDialog({
+  open,
+  onOpenChange,
+}: ClientFormDialogProps) {
   const { t } = useTranslation();
   const c = t.pages.clients;
   const utils = useTrpc.useUtils();
@@ -72,7 +75,9 @@ export function ClientFormDialog({ open, onOpenChange }: ClientFormDialogProps) 
         note: values.note || undefined,
       });
 
-      toast.success(c.addClientSuccess, { description: c.addClientSuccessDesc });
+      toast.success(c.addClientSuccess, {
+        description: c.addClientSuccessDesc,
+      });
       utils.clients.getByBusiness.invalidate();
       form.reset();
       onOpenChange(false);
@@ -96,7 +101,10 @@ export function ClientFormDialog({ open, onOpenChange }: ClientFormDialogProps) 
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <div className="grid grid-cols-2 gap-3">
               <FormField
                 control={form.control}
@@ -197,7 +205,9 @@ export function ClientFormDialog({ open, onOpenChange }: ClientFormDialogProps) 
                 {t.common.cancel}
               </Button>
               <Button type="submit" disabled={submitting} className="flex-1">
-                {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {submitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 {t.common.add}
               </Button>
             </div>

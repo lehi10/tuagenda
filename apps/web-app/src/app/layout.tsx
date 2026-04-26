@@ -5,6 +5,7 @@ import { AuthProvider, BusinessProvider } from "@/client/contexts";
 import { TRPCProvider, QueryProvider } from "@/client/lib/trpc";
 import { Toaster } from "@/client/components/ui/toaster";
 import { GoogleAnalytics, TawkTo } from "@/client/components/scripts";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 
 const poppins = Poppins({
@@ -55,6 +56,7 @@ export default function RootLayout({
         {tawkPropertyId && tawkWidgetId && (
           <TawkTo propertyId={tawkPropertyId} widgetId={tawkWidgetId} />
         )}
+        <Analytics />
       </body>
     </html>
   );

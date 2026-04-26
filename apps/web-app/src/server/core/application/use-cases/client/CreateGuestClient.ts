@@ -18,7 +18,9 @@ export interface CreateGuestClientResult {
 export class CreateGuestClientUseCase {
   constructor(private readonly clientRepository: IClientRepository) {}
 
-  async execute(input: CreateGuestClientInput): Promise<CreateGuestClientResult> {
+  async execute(
+    input: CreateGuestClientInput
+  ): Promise<CreateGuestClientResult> {
     try {
       const { id } = await this.clientRepository.createGuest(input);
       return { success: true, clientId: id };
@@ -35,7 +37,8 @@ export class CreateGuestClientUseCase {
       }
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to create client",
+        error:
+          error instanceof Error ? error.message : "Failed to create client",
         errorCode: "UNKNOWN",
       };
     }

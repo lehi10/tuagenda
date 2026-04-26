@@ -115,7 +115,9 @@ export function ClientDetailDialog({
                 {c.appointmentHistory} ({data.appointmentCount})
               </h3>
               {data.appointments.length === 0 ? (
-                <p className="text-sm text-muted-foreground">{c.noAppointments}</p>
+                <p className="text-sm text-muted-foreground">
+                  {c.noAppointments}
+                </p>
               ) : (
                 <div className="divide-y rounded-md border text-sm">
                   {data.appointments.map((appt) => (

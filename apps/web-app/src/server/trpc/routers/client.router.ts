@@ -70,7 +70,10 @@ export const clientRouter = router({
 
       if (!result.success) {
         throw new TRPCError({
-          code: result.errorCode === "EMAIL_ALREADY_EXISTS" ? "CONFLICT" : "INTERNAL_SERVER_ERROR",
+          code:
+            result.errorCode === "EMAIL_ALREADY_EXISTS"
+              ? "CONFLICT"
+              : "INTERNAL_SERVER_ERROR",
           message: result.error ?? "Failed to create client",
         });
       }

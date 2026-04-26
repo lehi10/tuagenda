@@ -661,7 +661,8 @@ export const en = {
       addClientTitle: "Add Client",
       addClientDesc: "Add a new client to your contact list.",
       addClientSuccess: "Client added successfully",
-      addClientSuccessDesc: "They will appear in the list after their first appointment.",
+      addClientSuccessDesc:
+        "They will appear in the list after their first appointment.",
       errorLoadingClients: "Error loading clients",
       errorLoadingStats: "Error loading statistics",
       errorLoadingDetail: "Error loading client details",
