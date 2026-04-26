@@ -671,7 +671,8 @@ export const es: Translations = {
       addClientTitle: "Agregar Cliente",
       addClientDesc: "Agrega un nuevo cliente a tu lista de contactos.",
       addClientSuccess: "Cliente agregado correctamente",
-      addClientSuccessDesc: "Aparecerá en la lista cuando tenga su primera cita.",
+      addClientSuccessDesc:
+        "Aparecerá en la lista cuando tenga su primera cita.",
       errorLoadingClients: "Error al cargar clientes",
       errorLoadingStats: "Error al cargar estadísticas",
       errorLoadingDetail: "Error al cargar detalle del cliente",
