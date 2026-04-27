@@ -209,8 +209,7 @@ export function useBookingFlow({
             !!bookingData.service &&
             !!bookingData.date &&
             !!bookingData.timeSlot &&
-            !!bookingData.clientInfo &&
-            !!bookingData.paymentMethod
+            !!bookingData.clientInfo
           );
         default:
           return false;

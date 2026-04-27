@@ -74,14 +74,18 @@ export function ConfirmationStep({
           },
         ]
       : []),
-    {
-      emoji: "💳",
-      label: t.booking.confirmation.paymentMethod,
-      value: getPaymentMethodLabel(
-        bookingSummary.paymentMethod,
-        paymentMethodLabels
-      ),
-    },
+    ...(bookingSummary.paymentMethod
+      ? [
+          {
+            emoji: "💳",
+            label: t.booking.confirmation.paymentMethod,
+            value: getPaymentMethodLabel(
+              bookingSummary.paymentMethod,
+              paymentMethodLabels
+            ) as string,
+          },
+        ]
+      : []),
   ];
 
   return (

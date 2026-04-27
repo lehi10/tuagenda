@@ -13,6 +13,9 @@ interface BookingOrderSummaryStepProps {
   currency: string;
   onConfirm: () => void;
   onEdit: (step: StepType) => void;
+  paymentEnabled?: boolean;
+  isConfirming?: boolean;
+  confirmError?: string | null;
 }
 
 interface SummaryRowProps {
@@ -52,6 +55,9 @@ export function BookingOrderSummaryStep({
   currency,
   onConfirm,
   onEdit,
+  paymentEnabled = true,
+  isConfirming = false,
+  confirmError = null,
 }: BookingOrderSummaryStepProps) {
   const { t, locale } = useTranslation();
   const dateLocale = locale === "es" ? es : enUS;
@@ -123,22 +129,35 @@ export function BookingOrderSummaryStep({
         )}
       </div>
 
-      {/* Total + CTA */}
-      <div className="rounded-xl border bg-card px-4 py-3 flex items-center justify-between">
-        <p className="text-sm font-semibold text-muted-foreground">
-          {t.booking.summary.total}
-        </p>
-        <p className="text-xl font-bold text-primary">
-          {service ? formatPrice(service.price, currency) : "—"}
-        </p>
-      </div>
+      {/* Total — only shown for paid services */}
+      {service && service.price > 0 && (
+        <div className="rounded-xl border bg-card px-4 py-3 flex items-center justify-between">
+          <p className="text-sm font-semibold text-muted-foreground">
+            {t.booking.summary.total}
+          </p>
+          <p className="text-xl font-bold text-primary">
+            {formatPrice(service.price, currency)}
+          </p>
+        </div>
+      )}
+
+      {confirmError && (
+        <div className="rounded-xl border border-destructive/30 bg-destructive/8 p-3 text-sm text-destructive">
+          {confirmError}
+        </div>
+      )}
 
       <Button
         className="w-full h-12 rounded-xl font-semibold"
         size="lg"
         onClick={onConfirm}
+        disabled={isConfirming}
       >
-        {t.booking.summary.continueToPay} →
+        {isConfirming
+          ? t.booking.payment.creatingAppointment
+          : paymentEnabled
+            ? `${t.booking.summary.continueToPay} →`
+            : "Confirmar reserva →"}
       </Button>
     </div>
   );

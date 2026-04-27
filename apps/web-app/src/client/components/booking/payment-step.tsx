@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/client/components/ui/button";
 import { CreditCard, Smartphone, Store, Check } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
-import { useTrpc } from "@/client/lib/trpc";
+import { useCreateAppointment } from "@/client/hooks/use-create-appointment";
 import { cn } from "@/client/lib/utils";
 import type { PaymentMethod, BookingData } from "@/client/types/booking";
 
@@ -27,6 +27,7 @@ export function PaymentStep({
   );
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { createAppointment } = useCreateAppointment();
 
   const paymentMethods = [
     {
@@ -53,44 +54,18 @@ export function PaymentStep({
   ];
 
   const availableMethods = paymentMethods.filter((method) => method.available);
-  const createAppointmentMutation = useTrpc.appointment.create.useMutation();
 
   const handleContinue = async () => {
     if (!selectedMethod) return;
 
-    if (
-      !bookingData.service ||
-      !bookingData.slotStartTime ||
-      !bookingData.slotEndTime ||
-      !bookingData.clientInfo
-    ) {
-      setError("Missing required booking information");
-      return;
-    }
-
     setIsCreating(true);
     setError(null);
-
     try {
-      const result = await createAppointmentMutation.mutateAsync({
-        customerId: bookingData.clientInfo.userId!,
-        businessId: businessId,
-        serviceId: bookingData.service.id,
-        providerBusinessUserId: bookingData.professional?.id || null,
-        startTime: bookingData.slotStartTime.toISOString(),
-        endTime: bookingData.slotEndTime.toISOString(),
-        notes: null,
-        isGroup: false,
-        capacity: null,
-      });
-
-      onContinue(result.appointment.id!);
-    } catch (error) {
-      console.error("Error creating appointment:", error);
+      const id = await createAppointment(bookingData, businessId);
+      onContinue(id);
+    } catch (err) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to create appointment. Please try again."
+        err instanceof Error ? err.message : "Error al crear la reserva"
       );
     } finally {
       setIsCreating(false);
