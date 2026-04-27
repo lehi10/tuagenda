@@ -18,6 +18,8 @@ export interface ServiceProps {
   price: Decimal | number | string;
   durationMinutes: number;
   active?: boolean;
+  isVirtual?: boolean;
+  requiresOnlinePayment?: boolean;
   images?: string[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -38,6 +40,8 @@ export class Service {
   private _price: Decimal;
   private _durationMinutes: number;
   private _active: boolean;
+  private _isVirtual: boolean;
+  private _requiresOnlinePayment: boolean;
   private _images: string[];
   private readonly _createdAt: Date;
   private _updatedAt: Date;
@@ -83,6 +87,8 @@ export class Service {
     this._price = price;
     this._durationMinutes = props.durationMinutes;
     this._active = props.active !== undefined ? props.active : true;
+    this._isVirtual = props.isVirtual ?? false;
+    this._requiresOnlinePayment = props.requiresOnlinePayment ?? false;
     this._images = props.images || [];
     this._createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
@@ -127,6 +133,14 @@ export class Service {
 
   get active(): boolean {
     return this._active;
+  }
+
+  get isVirtual(): boolean {
+    return this._isVirtual;
+  }
+
+  get requiresOnlinePayment(): boolean {
+    return this._requiresOnlinePayment;
   }
 
   get images(): string[] {
@@ -238,6 +252,8 @@ export class Service {
     durationMinutes?: number;
     categoryId?: string | null;
     active?: boolean;
+    isVirtual?: boolean;
+    requiresOnlinePayment?: boolean;
   }): void {
     if (data.name !== undefined) {
       this.updateName(data.name);
@@ -256,6 +272,14 @@ export class Service {
     }
     if (data.active !== undefined) {
       this._active = data.active;
+      this.touch();
+    }
+    if (data.isVirtual !== undefined) {
+      this._isVirtual = data.isVirtual;
+      this.touch();
+    }
+    if (data.requiresOnlinePayment !== undefined) {
+      this._requiresOnlinePayment = data.requiresOnlinePayment;
       this.touch();
     }
   }
@@ -295,6 +319,8 @@ export class Service {
       price: this._price,
       durationMinutes: this._durationMinutes,
       active: this._active,
+      isVirtual: this._isVirtual,
+      requiresOnlinePayment: this._requiresOnlinePayment,
       images: this._images,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,

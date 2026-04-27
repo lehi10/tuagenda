@@ -151,6 +151,8 @@ export const serviceRouter = router({
           .positive("Duration must be positive")
           .max(1440, "Duration cannot exceed 24 hours"),
         active: z.boolean().optional().default(true),
+        isVirtual: z.boolean().optional().default(false),
+        requiresOnlinePayment: z.boolean().optional().default(false),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -188,6 +190,8 @@ export const serviceRouter = router({
         price: z.number().nonnegative().optional(),
         durationMinutes: z.number().int().positive().max(1440).optional(),
         active: z.boolean().optional(),
+        isVirtual: z.boolean().optional(),
+        requiresOnlinePayment: z.boolean().optional(),
       })
     )
     .mutation(async ({ input }) => {

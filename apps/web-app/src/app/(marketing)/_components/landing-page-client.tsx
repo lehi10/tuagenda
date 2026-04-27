@@ -203,7 +203,7 @@ export function LandingPageClient() {
                 <div className="relative overflow-hidden rounded-2xl border border-border shadow-2xl">
                   <div className="relative aspect-[4/3]">
                     <Image
-                      src="/images/landing/banner1.png"
+                      src="/images/landing/banner2.png"
                       fill
                       className="object-cover"
                       alt="TuAgenda dashboard"

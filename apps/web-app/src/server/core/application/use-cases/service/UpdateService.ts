@@ -18,6 +18,8 @@ export interface UpdateServiceInput {
   price?: number;
   durationMinutes?: number;
   active?: boolean;
+  isVirtual?: boolean;
+  requiresOnlinePayment?: boolean;
 }
 
 export interface UpdateServiceResult {
@@ -96,6 +98,8 @@ export class UpdateServiceUseCase {
         price: input.price,
         durationMinutes: input.durationMinutes,
         active: input.active,
+        isVirtual: input.isVirtual,
+        requiresOnlinePayment: input.requiresOnlinePayment,
       });
 
       // 4. Persist changes

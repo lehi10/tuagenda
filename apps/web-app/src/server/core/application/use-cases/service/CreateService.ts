@@ -19,6 +19,8 @@ export interface CreateServiceInput {
   price: number;
   durationMinutes: number;
   active?: boolean;
+  isVirtual?: boolean;
+  requiresOnlinePayment?: boolean;
 }
 
 export interface CreateServiceResult {
@@ -79,6 +81,8 @@ export class CreateServiceUseCase {
         price: input.price,
         durationMinutes: input.durationMinutes,
         active: input.active,
+        isVirtual: input.isVirtual,
+        requiresOnlinePayment: input.requiresOnlinePayment,
       });
 
       // 3. Persist using repository

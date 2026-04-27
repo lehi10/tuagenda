@@ -213,6 +213,8 @@ export function ServicesManager() {
         price: data.price,
         durationMinutes: data.durationMinutes,
         active: data.active,
+        isVirtual: data.isVirtual,
+        requiresOnlinePayment: data.requiresOnlinePayment,
       });
       toast.success("Servicio actualizado correctamente");
     } else {
@@ -223,6 +225,8 @@ export function ServicesManager() {
         price: data.price,
         durationMinutes: data.durationMinutes,
         active: data.active,
+        isVirtual: data.isVirtual,
+        requiresOnlinePayment: data.requiresOnlinePayment,
       });
       toast.success("Servicio creado correctamente");
     }

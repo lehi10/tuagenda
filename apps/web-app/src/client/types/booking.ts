@@ -32,6 +32,8 @@ export interface BookingService {
   price: number;
   categoryId: string | null;
   images: string[];
+  isVirtual: boolean;
+  requiresOnlinePayment: boolean;
 }
 
 /**

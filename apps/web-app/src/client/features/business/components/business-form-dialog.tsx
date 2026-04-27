@@ -58,17 +58,19 @@ export function BusinessFormDialog({
   const { t } = useTranslation();
   const logoInputRef = useRef<HTMLInputElement>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(business?.logo || null);
+  const [pendingLogoFile, setPendingLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
 
-  // Image upload hook for logo
+  // Image upload hook for logo (used when editing an existing business)
   const {
     upload: uploadLogo,
     isUploading: isUploadingLogo,
     status: logoUploadStatus,
-    previewUrl: logoPreviewUrl,
+    previewUrl: uploadPreviewUrl,
   } = useImageUpload({
     storagePath: business?.id
       ? STORAGE_PATHS.businessLogo(business.id)
-      : `businesses/temp_${Date.now()}/logo`,
+      : "businesses/placeholder/logo",
     preset: "logo",
     onSuccess: (result) => {
       logger.info(
@@ -85,7 +87,30 @@ export function BusinessFormDialog({
   });
 
   const createMutation = useTrpc.business.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async (createdBusiness) => {
+      // Upload the pending logo now that we have the real business ID
+      if (pendingLogoFile) {
+        try {
+          const { uploadImage } = await import(
+            "@/client/lib/storage/image-upload.service"
+          );
+          const result = await uploadImage({
+            file: pendingLogoFile,
+            storagePath: STORAGE_PATHS.businessLogo(createdBusiness.id!),
+            preset: "logo",
+          });
+          await updateMutation.mutateAsync({
+            id: createdBusiness.id!,
+            logo: result.url,
+          });
+        } catch (err) {
+          logger.error(
+            "BusinessFormDialog",
+            "system",
+            `Failed to upload logo after business creation: ${err}`
+          );
+        }
+      }
       toast.success("Negocio creado exitosamente");
       onOpenChange(false);
       if (onClose) onClose();
@@ -108,7 +133,8 @@ export function BusinessFormDialog({
     },
   });
 
-  const isLoading = createMutation.isPending || updateMutation.isPending;
+  const isLoading =
+    createMutation.isPending || updateMutation.isPending || isUploadingLogo;
 
   const [formData, setFormData] = useState<{
     title: string;
@@ -166,7 +192,14 @@ export function BusinessFormDialog({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    await uploadLogo(file);
+    if (business?.id) {
+      // Editing: upload immediately with real business ID
+      await uploadLogo(file);
+    } else {
+      // Creating: store file and show local preview; upload after business is created
+      setPendingLogoFile(file);
+      setLogoPreviewUrl(URL.createObjectURL(file));
+    }
 
     // Reset input so same file can be selected again
     if (logoInputRef.current) {
@@ -191,7 +224,11 @@ export function BusinessFormDialog({
 
   // Determine which image to show for logo
   const displayLogoSrc =
-    isUploadingLogo && logoPreviewUrl ? logoPreviewUrl : logoUrl || undefined;
+    (isUploadingLogo && uploadPreviewUrl
+      ? uploadPreviewUrl
+      : logoUrl || undefined) ??
+    logoPreviewUrl ??
+    undefined;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
