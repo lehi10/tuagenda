@@ -96,11 +96,11 @@ export function BusinessFormDialog({
           );
           const result = await uploadImage({
             file: pendingLogoFile,
-            storagePath: STORAGE_PATHS.businessLogo(createdBusiness.id),
+            storagePath: STORAGE_PATHS.businessLogo(createdBusiness.id!),
             preset: "logo",
           });
           await updateMutation.mutateAsync({
-            id: createdBusiness.id,
+            id: createdBusiness.id!,
             logo: result.url,
           });
         } catch (err) {
@@ -226,7 +226,9 @@ export function BusinessFormDialog({
   const displayLogoSrc =
     (isUploadingLogo && uploadPreviewUrl
       ? uploadPreviewUrl
-      : logoUrl || undefined) ?? logoPreviewUrl ?? undefined;
+      : logoUrl || undefined) ??
+    logoPreviewUrl ??
+    undefined;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
