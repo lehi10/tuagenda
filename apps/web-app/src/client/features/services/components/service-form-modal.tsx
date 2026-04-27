@@ -64,6 +64,8 @@ export function ServiceFormModal({
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const [active, setActive] = useState(true);
+  const [isVirtual, setIsVirtual] = useState(false);
+  const [requiresOnlinePayment, setRequiresOnlinePayment] = useState(false);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("info");
   const [addEmployeeModalOpen, setAddEmployeeModalOpen] = useState(false);
@@ -107,6 +109,8 @@ export function ServiceFormModal({
         setHours(h > 0 ? h.toString() : "");
         setMinutes(m > 0 ? m.toString() : "");
         setActive(service.active);
+        setIsVirtual(service.isVirtual);
+        setRequiresOnlinePayment(service.requiresOnlinePayment);
       } else {
         setName("");
         setDescription("");
@@ -114,6 +118,8 @@ export function ServiceFormModal({
         setHours("");
         setMinutes("30");
         setActive(true);
+        setIsVirtual(false);
+        setRequiresOnlinePayment(false);
       }
       setError("");
       setActiveTab("info");
@@ -156,6 +162,8 @@ export function ServiceFormModal({
         price: priceNum,
         durationMinutes: totalMinutes,
         active,
+        isVirtual,
+        requiresOnlinePayment,
       });
       onOpenChange(false);
     } catch (err) {
@@ -296,6 +304,34 @@ export function ServiceFormModal({
         <Switch
           checked={active}
           onCheckedChange={setActive}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="space-y-0.5">
+          <Label>Servicio virtual</Label>
+          <p className="text-xs text-muted-foreground">
+            El servicio se realiza de forma remota (videollamada, etc.)
+          </p>
+        </div>
+        <Switch
+          checked={isVirtual}
+          onCheckedChange={setIsVirtual}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="space-y-0.5">
+          <Label>Requiere pago online</Label>
+          <p className="text-xs text-muted-foreground">
+            El cliente debe pagar al reservar, no en el local
+          </p>
+        </div>
+        <Switch
+          checked={requiresOnlinePayment}
+          onCheckedChange={setRequiresOnlinePayment}
           disabled={isSubmitting}
         />
       </div>

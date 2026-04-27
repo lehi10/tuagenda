@@ -25,6 +25,8 @@ export class ServiceMapper {
       price: new Decimal(prismaService.price.toString()),
       durationMinutes: prismaService.durationMinutes,
       active: prismaService.active,
+      isVirtual: prismaService.isVirtual,
+      requiresOnlinePayment: prismaService.requiresOnlinePayment,
       images: prismaService.images,
       createdAt: prismaService.createdAt,
       updatedAt: prismaService.updatedAt,
@@ -44,6 +46,8 @@ export class ServiceMapper {
       price: serviceObj.price.toNumber(),
       durationMinutes: serviceObj.durationMinutes,
       active: serviceObj.active,
+      isVirtual: serviceObj.isVirtual ?? false,
+      requiresOnlinePayment: serviceObj.requiresOnlinePayment ?? false,
     };
   }
 
@@ -59,6 +63,8 @@ export class ServiceMapper {
       price: serviceObj.price.toNumber(),
       durationMinutes: serviceObj.durationMinutes,
       active: serviceObj.active,
+      isVirtual: serviceObj.isVirtual ?? false,
+      requiresOnlinePayment: serviceObj.requiresOnlinePayment ?? false,
       updatedAt: new Date(),
     };
   }

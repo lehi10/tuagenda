@@ -20,6 +20,8 @@ export interface ServiceData {
   price: number;
   durationMinutes: number;
   active: boolean;
+  isVirtual: boolean;
+  requiresOnlinePayment: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,4 +37,6 @@ export interface ServiceFormData {
   price: number;
   durationMinutes: number;
   active: boolean;
+  isVirtual: boolean;
+  requiresOnlinePayment: boolean;
 }
