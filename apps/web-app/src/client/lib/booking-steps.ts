@@ -112,6 +112,32 @@ export function getPreviousStep(
   return enabledSteps[currentIndex - 1].id;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Dynamic step config builder
+// Add new conditions here — this is the single source of truth for flow logic.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface StepConfigOptions {
+  /**
+   * Skip the payment step entirely.
+   * Typically: service.price === 0 && !service.requiresOnlinePayment
+   */
+  skipPayment: boolean;
+}
+
+export function buildStepConfig(options: StepConfigOptions): StepConfig[] {
+  return defaultStepConfig.map((step) => {
+    if (step.id === "payment" && options.skipPayment) {
+      return { ...step, enabled: false, required: false };
+    }
+    return step;
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Static preset configs (kept for reference / simple cases)
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Example: Configuration for a business with only one professional
 export const singleProfessionalConfig: StepConfig[] = [
   {

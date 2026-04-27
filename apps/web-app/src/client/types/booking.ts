@@ -135,7 +135,7 @@ export interface BookingSummary {
   date: Date;
   timeSlot: string;
   clientInfo: ClientInfo;
-  paymentMethod: PaymentMethod;
+  paymentMethod?: PaymentMethod;
   businessLocation?: BusinessLocation;
 }
 

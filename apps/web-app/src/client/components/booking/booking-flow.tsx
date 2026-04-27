@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "@/client/i18n";
 import { BookingLeftPanel } from "@/client/components/booking/left-panel/booking-left-panel";
@@ -14,10 +14,15 @@ import { ClientInfoStep } from "@/client/components/booking/client-info-step";
 import { PaymentStep } from "@/client/components/booking/payment-step";
 import { ConfirmationStep } from "@/client/components/booking/confirmation-step";
 import { BookingOrderSummaryStep } from "@/client/components/booking/booking-order-summary-step";
-import { defaultStepConfig, getPreviousStep } from "@/client/lib/booking-steps";
+import { buildStepConfig, getPreviousStep } from "@/client/lib/booking-steps";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
+import { useCreateAppointment } from "@/client/hooks/use-create-appointment";
 import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
-import type { StepConfig, StepType } from "@/client/types/booking";
+import type {
+  BookingService,
+  StepConfig,
+  StepType,
+} from "@/client/types/booking";
 
 interface BusinessProfileData {
   name: string;
@@ -42,9 +47,23 @@ export function BookingFlow({
   currency,
 }: BookingFlowProps) {
   const { t } = useTranslation();
-  const stepConfig: StepConfig[] = defaultStepConfig;
   const [appointmentId, setAppointmentId] = useState<string | null>(null);
   const [showProfilePage, setShowProfilePage] = useState(true);
+
+  // Mirrors bookingData.service so we can compute stepConfig before the hook.
+  const [selectedService, setSelectedService] = useState<
+    BookingService | undefined
+  >();
+
+  // ─── Step config ────────────────────────────────────────────────────────────
+  // Single place that decides which steps are shown based on service flags.
+  // Add new conditions here when new flags are introduced.
+  const stepConfig: StepConfig[] = useMemo(() => {
+    const isFree = (selectedService?.price ?? 1) === 0;
+    const skipPayment =
+      isFree && !(selectedService?.requiresOnlinePayment ?? false);
+    return buildStepConfig({ skipPayment });
+  }, [selectedService?.price, selectedService?.requiresOnlinePayment]);
 
   const {
     bookingData,
@@ -61,11 +80,36 @@ export function BookingFlow({
     goToNextStep,
   } = useBookingFlow({ stepConfig });
 
+  // ─── Appointment creation (used when payment step is skipped) ────────────────
+  const { createAppointment } = useCreateAppointment();
+  const [isCreatingAppointment, setIsCreatingAppointment] = useState(false);
+  const [appointmentError, setAppointmentError] = useState<string | null>(null);
+
+  const createAppointmentAndAdvance = async () => {
+    setIsCreatingAppointment(true);
+    setAppointmentError(null);
+    try {
+      const id = await createAppointment(bookingData, businessId);
+      setAppointmentId(id);
+      goToNextStep();
+    } catch (err) {
+      setAppointmentError(
+        err instanceof Error ? err.message : "Error al crear la reserva"
+      );
+    } finally {
+      setIsCreatingAppointment(false);
+    }
+  };
+
+  // ─── Navigation ─────────────────────────────────────────────────────────────
   const isConfirmation = currentStep === "confirmation";
   const showingDetail = currentStep === "service-detail";
+  const paymentEnabled =
+    stepConfig.find((s) => s.id === "payment")?.enabled ?? true;
 
   const showProfile = () => {
     clearBooking();
+    setSelectedService(undefined);
     setShowProfilePage(true);
   };
 
@@ -86,6 +130,16 @@ export function BookingFlow({
     goToStep(step);
   };
 
+  // Summary confirms: go to payment if enabled, otherwise create appointment directly.
+  const handleSummaryConfirm = () => {
+    if (paymentEnabled) {
+      goToNextStep();
+    } else {
+      createAppointmentAndAdvance();
+    }
+  };
+
+  // ─── Step renderer ──────────────────────────────────────────────────────────
   const renderStep = () => {
     switch (currentStep) {
       case "service-detail":
@@ -128,8 +182,11 @@ export function BookingFlow({
           <BookingOrderSummaryStep
             bookingData={bookingData}
             currency={currency}
-            onConfirm={goToNextStep}
+            onConfirm={handleSummaryConfirm}
             onEdit={handleEdit}
+            paymentEnabled={paymentEnabled}
+            isConfirming={isCreatingAppointment}
+            confirmError={appointmentError}
           />
         );
       case "payment":
@@ -141,7 +198,7 @@ export function BookingFlow({
               setAppointmentId(createdAppointmentId);
               updatePaymentMethod("card");
             }}
-            isInPerson={true}
+            isInPerson={!(bookingData.service?.isVirtual ?? false)}
           />
         );
       case "confirmation":
@@ -154,7 +211,7 @@ export function BookingFlow({
               date: bookingData.date!,
               timeSlot: bookingData.timeSlot!,
               clientInfo: bookingData.clientInfo!,
-              paymentMethod: bookingData.paymentMethod!,
+              paymentMethod: bookingData.paymentMethod,
               businessLocation: MOCK_BUSINESS_LOCATION,
               currency,
             }}
@@ -166,6 +223,7 @@ export function BookingFlow({
     }
   };
 
+  // ─── Profile page ───────────────────────────────────────────────────────────
   if (showProfilePage) {
     return (
       <div className="min-h-[calc(100vh-56px)]">
@@ -174,6 +232,7 @@ export function BookingFlow({
           business={businessProfile}
           currency={currency}
           onServiceSelect={(svc) => {
+            setSelectedService(svc);
             updateService(svc);
             setShowProfilePage(false);
             goToStep("service-detail");

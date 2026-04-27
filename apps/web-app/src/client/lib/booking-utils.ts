@@ -40,9 +40,10 @@ export function formatPhoneForWhatsApp(phone: string): string {
  * Get payment method label from translation object
  */
 export function getPaymentMethodLabel(
-  method: PaymentMethod,
+  method: PaymentMethod | undefined,
   labels: Record<string, string>
-): string {
+): string | null {
+  if (!method) return null;
   return labels[method] || method;
 }
 
