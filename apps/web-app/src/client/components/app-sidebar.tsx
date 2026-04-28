@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  Bell,
   BriefcaseBusiness,
   Building2,
   Calendar,
@@ -106,20 +105,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           title: t.navigation.clients,
           url: "/clients",
           icon: UserCheck,
-          wip: true,
         },
         {
           id: "payments",
           title: t.navigation.payments,
           url: "/payments",
           icon: CreditCard,
-          wip: true,
-        },
-        {
-          id: "notifications",
-          title: t.navigation.notifications,
-          url: "/notifications",
-          icon: Bell,
           wip: true,
         },
         {
