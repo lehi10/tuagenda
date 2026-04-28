@@ -87,7 +87,9 @@ export interface IBusinessRepository {
    * @param filters - Optional filters
    * @returns Businesses and total count
    */
-  findAllWithCount(_filters?: BusinessRepositoryFilters): Promise<{ businesses: Business[]; total: number }>;
+  findAllWithCount(
+    _filters?: BusinessRepositoryFilters
+  ): Promise<{ businesses: Business[]; total: number }>;
 }
 
 /**

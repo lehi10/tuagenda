@@ -176,48 +176,41 @@ export class PrismaBusinessRepository implements IBusinessRepository {
    * Count total businesses with optional filters
    */
   async count(filters?: BusinessRepositoryFilters): Promise<number> {
+    return prisma.business.count({ where: this.buildWhereClause(filters) });
+  }
+
+  private buildWhereClause(
+    filters?: BusinessRepositoryFilters
+  ): Prisma.BusinessWhereInput {
     const where: Prisma.BusinessWhereInput = {};
 
-    if (filters) {
-      // Status filter - Domain enums use same string values as Prisma
-      if (filters.status) {
-        if (Array.isArray(filters.status)) {
-          where.status = {
-            in: filters.status as unknown as PrismaBusinessStatus[],
-          };
-        } else {
-          where.status = filters.status as unknown as PrismaBusinessStatus;
-        }
-      }
+    if (!filters) return where;
 
-      if (filters.city) {
-        where.city = filters.city;
-      }
-
-      if (filters.country) {
-        where.country = filters.country;
-      }
-
-      if (filters.search) {
-        where.OR = [
-          { title: { contains: filters.search, mode: "insensitive" } },
-          { email: { contains: filters.search, mode: "insensitive" } },
-          { city: { contains: filters.search, mode: "insensitive" } },
-          { country: { contains: filters.search, mode: "insensitive" } },
-        ];
-      }
-
-      if (filters.createdAfter || filters.createdBefore) {
-        where.createdAt = {};
-        if (filters.createdAfter) {
-          where.createdAt.gte = filters.createdAfter;
-        }
-        if (filters.createdBefore) {
-          where.createdAt.lte = filters.createdBefore;
-        }
-      }
+    if (filters.status) {
+      where.status = Array.isArray(filters.status)
+        ? { in: filters.status as unknown as PrismaBusinessStatus[] }
+        : (filters.status as unknown as PrismaBusinessStatus);
     }
 
-    return await prisma.business.count({ where });
+    if (filters.city) where.city = filters.city;
+    if (filters.country) where.country = filters.country;
+
+    if (filters.search) {
+      where.OR = [
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { email: { contains: filters.search, mode: "insensitive" } },
+        { city: { contains: filters.search, mode: "insensitive" } },
+        { country: { contains: filters.search, mode: "insensitive" } },
+      ];
+    }
+
+    if (filters.createdAfter || filters.createdBefore) {
+      where.createdAt = {
+        ...(filters.createdAfter && { gte: filters.createdAfter }),
+        ...(filters.createdBefore && { lte: filters.createdBefore }),
+      };
+    }
+
+    return where;
   }
 }
