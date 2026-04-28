@@ -51,7 +51,7 @@ export default function RootLayout({
           duration={10000}
           position="top-right"
         />
-<Analytics />
+        <Analytics />
       </body>
     </html>
   );
