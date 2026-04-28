@@ -3,7 +3,6 @@
 import { useTranslation } from "@/client/i18n";
 import { Button } from "@/client/components/ui/button";
 import { ScrollReveal } from "@/client/components/ui/scroll-reveal";
-import Link from "next/link";
 import {
   Shield,
   Users,

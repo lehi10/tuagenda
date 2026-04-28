@@ -32,7 +32,7 @@ export class AuthorizationService {
    * TODO: Implement your authorization logic here
    * Currently returns true for all requests
    */
-  async can(request: AuthorizationRequest): Promise<boolean> {
+  async can(_request: AuthorizationRequest): Promise<boolean> {
     // TODO: Implement your authorization logic
     // Example: Check BusinessUser role, user type, etc.
     return true;
@@ -44,9 +44,9 @@ export class AuthorizationService {
    * TODO: Implement if needed (role is already stored in BusinessUser)
    */
   async assignRole(
-    userId: string,
-    role: Role,
-    businessId: string,
+    _userId: string,
+    _role: Role,
+    _businessId: string,
   ): Promise<boolean> {
     // TODO: Implement if you need additional role tracking
     // The role is already stored in BusinessUser table
@@ -59,9 +59,9 @@ export class AuthorizationService {
    * TODO: Implement if needed
    */
   async removeRole(
-    userId: string,
-    role: Role,
-    businessId: string,
+    _userId: string,
+    _role: Role,
+    _businessId: string,
   ): Promise<boolean> {
     // TODO: Implement if needed
     return true;
@@ -73,10 +73,10 @@ export class AuthorizationService {
    * TODO: Implement if needed
    */
   async updateRole(
-    userId: string,
-    oldRole: Role,
-    newRole: Role,
-    businessId: string,
+    _userId: string,
+    _oldRole: Role,
+    _newRole: Role,
+    _businessId: string,
   ): Promise<boolean> {
     // TODO: Implement if needed
     return true;
@@ -87,7 +87,7 @@ export class AuthorizationService {
    *
    * TODO: Implement if needed (user type is already stored in User table)
    */
-  async assignUserType(userId: string, userType: UserType): Promise<boolean> {
+  async assignUserType(_userId: string, _userType: UserType): Promise<boolean> {
     // TODO: Implement if you need additional user type tracking
     // The user type is already stored in User table
     return true;
@@ -98,7 +98,7 @@ export class AuthorizationService {
    *
    * TODO: Implement if needed
    */
-  async removeUserType(userId: string, userType: UserType): Promise<boolean> {
+  async removeUserType(_userId: string, _userType: UserType): Promise<boolean> {
     // TODO: Implement if needed
     return true;
   }
@@ -108,7 +108,7 @@ export class AuthorizationService {
    *
    * TODO: Implement - query User table
    */
-  async getUserTypes(userId: string): Promise<string[]> {
+  async getUserTypes(_userId: string): Promise<string[]> {
     // TODO: Query User table to get user type
     return [];
   }
@@ -118,7 +118,7 @@ export class AuthorizationService {
    *
    * TODO: Implement if you need policy management
    */
-  async addPolicy(policy: PolicyRule): Promise<boolean> {
+  async addPolicy(_policy: PolicyRule): Promise<boolean> {
     // TODO: Implement if needed
     return true;
   }
@@ -128,7 +128,7 @@ export class AuthorizationService {
    *
    * TODO: Implement if needed
    */
-  async removePolicy(policy: PolicyRule): Promise<boolean> {
+  async removePolicy(_policy: PolicyRule): Promise<boolean> {
     // TODO: Implement if needed
     return true;
   }
@@ -139,8 +139,8 @@ export class AuthorizationService {
    * TODO: Implement - query BusinessUser table
    */
   async getRolesForUserInBusiness(
-    userId: string,
-    businessId: string,
+    _userId: string,
+    _businessId: string,
   ): Promise<string[]> {
     // TODO: Query BusinessUser table to get roles
     return [];
@@ -152,8 +152,8 @@ export class AuthorizationService {
    * TODO: Implement - query BusinessUser table
    */
   async getUsersForRoleInBusiness(
-    role: Role,
-    businessId: string,
+    _role: Role,
+    _businessId: string,
   ): Promise<string[]> {
     // TODO: Query BusinessUser table
     return [];
@@ -165,8 +165,8 @@ export class AuthorizationService {
    * TODO: Implement if needed
    */
   async removeUserFromBusiness(
-    userId: string,
-    businessId: string,
+    _userId: string,
+    _businessId: string,
   ): Promise<boolean> {
     // TODO: Implement if needed
     return true;

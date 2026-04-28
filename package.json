@@ -23,13 +23,15 @@
     "docs:dev": "cd docs && pnpm start",
     "docs:build": "cd docs && pnpm build",
     "docs:serve": "cd docs && pnpm serve",
-    "docs:install": "cd docs && pnpm install"
+    "docs:install": "cd docs && pnpm install",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
-    "baseline-browser-mapping": "^2.10.21"
+    "baseline-browser-mapping": "^2.10.21",
+    "husky": "^9.1.7"
   }
 }
