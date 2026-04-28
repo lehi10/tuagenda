@@ -7,4 +7,3 @@
  */
 
 export { GoogleAnalytics } from "./google-analytics";
-export { TawkTo } from "./tawk-to";
