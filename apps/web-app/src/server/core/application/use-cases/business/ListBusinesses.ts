@@ -34,8 +34,7 @@ export class ListBusinessesUseCase {
         "Fetching businesses list"
       );
 
-      const businesses = await this.businessRepository.findAll(input);
-      const total = await this.businessRepository.count(input);
+      const { businesses, total } = await this.businessRepository.findAllWithCount(input);
 
       logger.info(
         "ListBusinessesUseCase",
