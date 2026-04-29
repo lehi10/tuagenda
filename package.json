@@ -13,13 +13,13 @@
     "db:stop": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d && pnpm db:migrate",
     "db:check": "node packages/db/check-db.js",
-    "db:migrate": "cd packages/db && npx prisma migrate deploy",
-    "db:migrate:dev": "cd packages/db && npx prisma migrate dev",
-    "db:migrate:status": "cd packages/db && npx prisma migrate status",
-    "db:push": "cd packages/db && npx prisma db push",
-    "db:studio": "cd packages/db && npx prisma studio",
-    "db:seed": "cd packages/db && npx prisma db seed",
-    "db:generate": "cd packages/db && npx prisma generate",
+    "db:migrate": "cd packages/db && pnpm exec prisma migrate deploy",
+    "db:migrate:dev": "cd packages/db && pnpm exec prisma migrate dev",
+    "db:migrate:status": "cd packages/db && pnpm exec prisma migrate status",
+    "db:push": "cd packages/db && pnpm exec prisma db push",
+    "db:studio": "cd packages/db && pnpm exec prisma studio",
+    "db:seed": "cd packages/db && pnpm exec prisma db seed",
+    "db:generate": "cd packages/db && pnpm exec prisma generate",
     "docs:dev": "cd docs && pnpm start",
     "docs:build": "cd docs && pnpm build",
     "docs:serve": "cd docs && pnpm serve",
@@ -31,7 +31,7 @@
   },
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
-    "baseline-browser-mapping": "^2.10.21",
+    "baseline-browser-mapping": "^2.10.24",
     "husky": "^9.1.7"
   }
 }
