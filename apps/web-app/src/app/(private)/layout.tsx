@@ -19,7 +19,7 @@ export default function RootLayout({
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
-            <div className="flex min-h-screen flex-col">
+            <div className="flex min-h-dvh flex-col">
               <AppHeader />
               <div className="flex-1">{children}</div>
               <PrivateFooter />

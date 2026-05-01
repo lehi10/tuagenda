@@ -13,7 +13,7 @@ import {
 // Both imports and their usages must be removed when migrating to AWS.
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -25,6 +25,12 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "TuAgenda - Gestión de Citas",
   description: "Sistema de gestión de citas y clientes para tu negocio",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
