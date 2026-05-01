@@ -67,60 +67,37 @@ export class PrismaBusinessRepository implements IBusinessRepository {
    * Find all businesses with optional filtering
    */
   async findAll(filters?: BusinessRepositoryFilters): Promise<Business[]> {
-    const where: Prisma.BusinessWhereInput = {};
-
-    if (filters) {
-      // Status filter - Domain enums use same string values as Prisma
-      if (filters.status) {
-        if (Array.isArray(filters.status)) {
-          where.status = {
-            in: filters.status as unknown as PrismaBusinessStatus[],
-          };
-        } else {
-          where.status = filters.status as unknown as PrismaBusinessStatus;
-        }
-      }
-
-      // City filter
-      if (filters.city) {
-        where.city = filters.city;
-      }
-
-      // Country filter
-      if (filters.country) {
-        where.country = filters.country;
-      }
-
-      // Search filter (searches in title, email, city, country)
-      if (filters.search) {
-        where.OR = [
-          { title: { contains: filters.search, mode: "insensitive" } },
-          { email: { contains: filters.search, mode: "insensitive" } },
-          { city: { contains: filters.search, mode: "insensitive" } },
-          { country: { contains: filters.search, mode: "insensitive" } },
-        ];
-      }
-
-      // Date range filters
-      if (filters.createdAfter || filters.createdBefore) {
-        where.createdAt = {};
-        if (filters.createdAfter) {
-          where.createdAt.gte = filters.createdAfter;
-        }
-        if (filters.createdBefore) {
-          where.createdAt.lte = filters.createdBefore;
-        }
-      }
-    }
+    const where = this.buildWhereClause(filters);
 
     const prismaBusinesses = await prisma.business.findMany({
       where,
-      take: filters?.limit,
+      take: filters?.limit ?? 100,
       skip: filters?.offset,
       orderBy: { createdAt: "desc" },
     });
 
     return BusinessMapper.toDomainList(prismaBusinesses);
+  }
+
+  /**
+   * Find all businesses and total count in a single round-trip
+   */
+  async findAllWithCount(
+    filters?: BusinessRepositoryFilters
+  ): Promise<{ businesses: Business[]; total: number }> {
+    const where = this.buildWhereClause(filters);
+
+    const [prismaBusinesses, total] = await prisma.$transaction([
+      prisma.business.findMany({
+        where,
+        take: filters?.limit ?? 100,
+        skip: filters?.offset,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.business.count({ where }),
+    ]);
+
+    return { businesses: BusinessMapper.toDomainList(prismaBusinesses), total };
   }
 
   /**
@@ -199,48 +176,41 @@ export class PrismaBusinessRepository implements IBusinessRepository {
    * Count total businesses with optional filters
    */
   async count(filters?: BusinessRepositoryFilters): Promise<number> {
+    return prisma.business.count({ where: this.buildWhereClause(filters) });
+  }
+
+  private buildWhereClause(
+    filters?: BusinessRepositoryFilters
+  ): Prisma.BusinessWhereInput {
     const where: Prisma.BusinessWhereInput = {};
 
-    if (filters) {
-      // Status filter - Domain enums use same string values as Prisma
-      if (filters.status) {
-        if (Array.isArray(filters.status)) {
-          where.status = {
-            in: filters.status as unknown as PrismaBusinessStatus[],
-          };
-        } else {
-          where.status = filters.status as unknown as PrismaBusinessStatus;
-        }
-      }
+    if (!filters) return where;
 
-      if (filters.city) {
-        where.city = filters.city;
-      }
-
-      if (filters.country) {
-        where.country = filters.country;
-      }
-
-      if (filters.search) {
-        where.OR = [
-          { title: { contains: filters.search, mode: "insensitive" } },
-          { email: { contains: filters.search, mode: "insensitive" } },
-          { city: { contains: filters.search, mode: "insensitive" } },
-          { country: { contains: filters.search, mode: "insensitive" } },
-        ];
-      }
-
-      if (filters.createdAfter || filters.createdBefore) {
-        where.createdAt = {};
-        if (filters.createdAfter) {
-          where.createdAt.gte = filters.createdAfter;
-        }
-        if (filters.createdBefore) {
-          where.createdAt.lte = filters.createdBefore;
-        }
-      }
+    if (filters.status) {
+      where.status = Array.isArray(filters.status)
+        ? { in: filters.status as unknown as PrismaBusinessStatus[] }
+        : (filters.status as unknown as PrismaBusinessStatus);
     }
 
-    return await prisma.business.count({ where });
+    if (filters.city) where.city = filters.city;
+    if (filters.country) where.country = filters.country;
+
+    if (filters.search) {
+      where.OR = [
+        { title: { contains: filters.search, mode: "insensitive" } },
+        { email: { contains: filters.search, mode: "insensitive" } },
+        { city: { contains: filters.search, mode: "insensitive" } },
+        { country: { contains: filters.search, mode: "insensitive" } },
+      ];
+    }
+
+    if (filters.createdAfter || filters.createdBefore) {
+      where.createdAt = {
+        ...(filters.createdAfter && { gte: filters.createdAfter }),
+        ...(filters.createdBefore && { lte: filters.createdBefore }),
+      };
+    }
+
+    return where;
   }
 }

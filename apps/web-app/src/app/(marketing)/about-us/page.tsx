@@ -1,5 +1,5 @@
 import { ScrollReveal } from "@/client/components/ui/scroll-reveal";
-import { Target, Heart, Sparkles, MapPin, MessageCircle } from "lucide-react";
+import { Target, Heart, Sparkles, MapPin } from "lucide-react";
 import { WhatsAppIcon } from "@/client/components/shared";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP_NUMBER ?? "";

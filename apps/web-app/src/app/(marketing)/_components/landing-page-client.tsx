@@ -17,7 +17,6 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
-  MessageCircle,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/client/components/shared";
 
@@ -112,27 +111,6 @@ export function LandingPageClient() {
       icon: CreditCard,
       title: t.landing.features.payments.title,
       description: t.landing.features.payments.description,
-    },
-  ];
-
-  const testimonials = [
-    {
-      quote: t.landing.testimonials.testimonial1.quote,
-      name: t.landing.testimonials.testimonial1.name,
-      role: t.landing.testimonials.testimonial1.role,
-      avatar: "/images/landing/psicologa.png",
-    },
-    {
-      quote: t.landing.testimonials.testimonial2.quote,
-      name: t.landing.testimonials.testimonial2.name,
-      role: t.landing.testimonials.testimonial2.role,
-      avatar: "/images/landing/psicologo.png",
-    },
-    {
-      quote: t.landing.testimonials.testimonial3.quote,
-      name: t.landing.testimonials.testimonial3.name,
-      role: t.landing.testimonials.testimonial3.role,
-      avatar: "/images/landing/nutricionista.png",
     },
   ];
 

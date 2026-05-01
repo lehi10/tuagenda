@@ -2,11 +2,12 @@
   "name": "auth",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit"
   },
@@ -16,7 +17,10 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.23",
-    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "eslint": "^9",
+    "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.2.5",
     "tsx": "^4.20.6",
     "typescript": "^5"
