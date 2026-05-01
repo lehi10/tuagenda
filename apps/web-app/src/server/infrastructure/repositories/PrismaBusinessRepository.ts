@@ -68,12 +68,13 @@ export class PrismaBusinessRepository implements IBusinessRepository {
    */
   async findAll(filters?: BusinessRepositoryFilters): Promise<Business[]> {
     const where = this.buildWhereClause(filters);
+    const orderBy = this.buildOrderBy(filters);
 
     const prismaBusinesses = await prisma.business.findMany({
       where,
       take: filters?.limit ?? 100,
       skip: filters?.offset,
-      orderBy: { createdAt: "desc" },
+      orderBy,
     });
 
     return BusinessMapper.toDomainList(prismaBusinesses);
@@ -86,13 +87,14 @@ export class PrismaBusinessRepository implements IBusinessRepository {
     filters?: BusinessRepositoryFilters
   ): Promise<{ businesses: Business[]; total: number }> {
     const where = this.buildWhereClause(filters);
+    const orderBy = this.buildOrderBy(filters);
 
     const [prismaBusinesses, total] = await prisma.$transaction([
       prisma.business.findMany({
         where,
         take: filters?.limit ?? 100,
         skip: filters?.offset,
-        orderBy: { createdAt: "desc" },
+        orderBy,
       }),
       prisma.business.count({ where }),
     ]);
@@ -177,6 +179,14 @@ export class PrismaBusinessRepository implements IBusinessRepository {
    */
   async count(filters?: BusinessRepositoryFilters): Promise<number> {
     return prisma.business.count({ where: this.buildWhereClause(filters) });
+  }
+
+  private buildOrderBy(
+    filters?: BusinessRepositoryFilters
+  ): Prisma.BusinessOrderByWithRelationInput {
+    const field = filters?.orderBy ?? "createdAt";
+    const dir = filters?.orderDir ?? (field === "createdAt" ? "desc" : "asc");
+    return { [field]: dir };
   }
 
   private buildWhereClause(

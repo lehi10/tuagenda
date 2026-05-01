@@ -11,7 +11,7 @@ export default function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold">{t.pages.settings.title}</h1>
         <p className="text-sm text-muted-foreground">
-          Manage your account and preferences
+          Administra la configuración de tu cuenta y negocio
         </p>
       </div>
       <SettingsTabs />
