@@ -62,8 +62,9 @@ export default function RootLayout({
             style: { animationDuration: "200ms" },
             className: "animate-in fade-in-0 slide-in-from-right-5",
           }}
-          duration={10000}
+          duration={6000}
           position="top-right"
+          offset={{ bottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
         />
         <Analytics />
         <SpeedInsights />
