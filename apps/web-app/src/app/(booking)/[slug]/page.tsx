@@ -107,10 +107,19 @@ async function BookingContent({ slug }: { slug: string }) {
     socialLinks: business.socialLinks ?? undefined,
   };
 
+  const businessLocation = {
+    address: [business.address, business.city, business.country]
+      .filter(Boolean)
+      .join(", "),
+    lat: business.latitude ?? undefined,
+    lng: business.longitude ?? undefined,
+  };
+
   return (
     <BookingFlow
       businessId={business.id}
       businessProfile={businessProfile}
+      businessLocation={businessLocation}
       currency={business.currency}
     />
   );

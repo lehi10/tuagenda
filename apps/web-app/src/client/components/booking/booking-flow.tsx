@@ -17,9 +17,9 @@ import { BookingOrderSummaryStep } from "@/client/components/booking/booking-ord
 import { buildStepConfig, getPreviousStep } from "@/client/lib/booking-steps";
 import { useBookingFlow } from "@/client/hooks/use-booking-flow";
 import { useCreateAppointment } from "@/client/hooks/use-create-appointment";
-import { MOCK_BUSINESS_LOCATION } from "@/client/lib/mocks/booking-mocks";
 import type {
   BookingService,
+  BusinessLocation,
   StepConfig,
   StepType,
 } from "@/client/types/booking";
@@ -38,12 +38,14 @@ interface BusinessProfileData {
 interface BookingFlowProps {
   businessId: string;
   businessProfile: BusinessProfileData;
+  businessLocation: BusinessLocation;
   currency: string;
 }
 
 export function BookingFlow({
   businessId,
   businessProfile,
+  businessLocation,
   currency,
 }: BookingFlowProps) {
   const { t } = useTranslation();
@@ -212,7 +214,7 @@ export function BookingFlow({
               timeSlot: bookingData.timeSlot!,
               clientInfo: bookingData.clientInfo!,
               paymentMethod: bookingData.paymentMethod,
-              businessLocation: MOCK_BUSINESS_LOCATION,
+              businessLocation,
               currency,
             }}
             onBackToHome={showProfile}
