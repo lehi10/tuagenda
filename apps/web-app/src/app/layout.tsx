@@ -4,7 +4,11 @@ import { I18nProvider } from "@/client/i18n";
 import { AuthProvider, BusinessProvider } from "@/client/contexts";
 import { TRPCProvider, QueryProvider } from "@/client/lib/trpc";
 import { Toaster } from "@/client/components/ui/toaster";
-import { GoogleAnalytics, Chatway, ChatwayIdentifier } from "@/client/components/scripts";
+import {
+  GoogleAnalytics,
+  Chatway,
+  ChatwayIdentifier,
+} from "@/client/components/scripts";
 // NOTE: @vercel/analytics and @vercel/speed-insights are Vercel-specific integrations.
 // Both imports and their usages must be removed when migrating to AWS.
 import { Analytics } from "@vercel/analytics/next";

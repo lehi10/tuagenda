@@ -26,7 +26,10 @@ export function ChatwayIdentifier() {
 
     const identify = () => {
       if (typeof window.$chatway === "undefined") return;
-      window.$chatway.updateChatwayCustomData("name", `${user.firstName} ${user.lastName}`);
+      window.$chatway.updateChatwayCustomData(
+        "name",
+        `${user.firstName} ${user.lastName}`
+      );
       window.$chatway.updateChatwayCustomData("email", user.email);
       if (user.pictureFullPath) {
         window.$chatway.updateChatwayCustomData("avatar", user.pictureFullPath);
