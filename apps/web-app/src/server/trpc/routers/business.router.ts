@@ -223,7 +223,10 @@ export const businessRouter = router({
       const listBusinessesUseCase = new ListBusinessesUseCase(
         businessRepository
       );
-      const result = await listBusinessesUseCase.execute(input || {});
+      const filters = input
+        ? { ...input, orderBy: input.search ? ("title" as const) : ("createdAt" as const) }
+        : {};
+      const result = await listBusinessesUseCase.execute(filters);
 
       if (!result.success || !result.businesses) {
         throw new TRPCError({

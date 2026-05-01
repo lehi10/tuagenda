@@ -104,4 +104,6 @@ export interface BusinessRepositoryFilters {
   createdBefore?: Date;
   limit?: number;
   offset?: number;
+  orderBy?: "createdAt" | "title";
+  orderDir?: "asc" | "desc";
 }

@@ -154,7 +154,7 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
   const businessUsers = businessUsersData || [];
 
   // QUERY 2: Fetch businesses
-  // - For superadmins: all businesses
+  // - For superadmins: last 10 businesses (switcher handles full search)
   // - For regular users: businesses by IDs from business-user relationships
   const {
     data: businessesData,
@@ -163,23 +163,23 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
     refetch: refetchBusinesses,
   } = useQuery({
     queryKey: isSuperAdmin
-      ? ["businesses", "all"]
+      ? ["businesses", "recent"]
       : ["businesses", businessUsers.map((bu) => bu.businessId).sort()],
     queryFn: async () => {
       if (isSuperAdmin) {
-        // Superadmin: fetch all businesses
+        // Superadmin: fetch last 10 to set default (switcher loads dynamically)
         logger.info(
           "BusinessContext",
           user?.id || "system",
-          "Fetching all businesses (superadmin)"
+          "Fetching recent businesses (superadmin)"
         );
 
-        const result = await trpc.business.list.query();
+        const result = await trpc.business.list.query({ limit: 10 });
 
         logger.info(
           "BusinessContext",
           user?.id || "system",
-          `Fetched ${result.businesses.length} businesses (superadmin)`
+          `Fetched ${result.businesses.length} recent businesses (superadmin)`
         );
 
         return result.businesses;
@@ -215,10 +215,31 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  const businesses: BusinessProps[] = useMemo(
+  const loadedBusinesses: BusinessProps[] = useMemo(
     () => businessesData || [],
     [businessesData]
   );
+
+  // For superadmins: if the saved business is not in the last 10, load it by ID
+  const savedIdNotInList =
+    isSuperAdmin &&
+    !!currentBusinessId &&
+    loadedBusinesses.length > 0 &&
+    !loadedBusinesses.find((b) => b.id === currentBusinessId);
+
+  const { data: savedBusinessData } = useQuery({
+    queryKey: ["business", currentBusinessId],
+    queryFn: () => trpc.business.getById.query({ id: currentBusinessId! }),
+    enabled: savedIdNotInList,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const businesses: BusinessProps[] = useMemo(() => {
+    if (savedBusinessData && savedIdNotInList) {
+      return [savedBusinessData, ...loadedBusinesses];
+    }
+    return loadedBusinesses;
+  }, [loadedBusinesses, savedBusinessData, savedIdNotInList]);
   const isLoading = isLoadingBusinessUsers || isLoadingBusinesses;
   const error = businessUsersError || businessesError;
 

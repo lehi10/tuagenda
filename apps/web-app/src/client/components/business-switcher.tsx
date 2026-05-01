@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronsUpDown, Building2, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Command,
   CommandEmpty,
@@ -27,6 +27,7 @@ import {
   AvatarImage,
 } from "@/client/components/ui/avatar";
 import { useBusiness } from "@/client/contexts";
+import { useTrpc } from "@/client/lib/trpc";
 import { cn } from "@/client/lib/utils";
 
 export function BusinessSwitcher() {
@@ -38,7 +39,24 @@ export function BusinessSwitcher() {
     loading,
   } = useBusiness();
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const { isMobile } = useSidebar();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const { data: searchData, isLoading: isSearching } =
+    useTrpc.business.list.useQuery(
+      { search: debouncedSearch || undefined, limit: 10 },
+      { enabled: isSuperAdmin && open, staleTime: 30 * 1000 }
+    );
+
+  const switcherBusinesses = isSuperAdmin
+    ? (searchData?.businesses ?? businesses)
+    : businesses;
 
   if (loading) {
     return (
@@ -106,7 +124,13 @@ export function BusinessSwitcher() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover
+          open={open}
+          onOpenChange={(v) => {
+            setOpen(v);
+            if (!v) setSearch("");
+          }}
+        >
           <PopoverTrigger asChild>
             <SidebarMenuButton
               size="lg"
@@ -139,48 +163,60 @@ export function BusinessSwitcher() {
             align="start"
             sideOffset={4}
           >
-            <Command>
-              <CommandInput placeholder="Search business..." />
+            <Command shouldFilter={!isSuperAdmin}>
+              <CommandInput
+                placeholder="Search business..."
+                value={search}
+                onValueChange={isSuperAdmin ? setSearch : undefined}
+              />
               <CommandList>
-                <CommandEmpty>No business found.</CommandEmpty>
-                <CommandGroup>
-                  {businesses.map((business) => (
-                    <CommandItem
-                      key={business.id}
-                      value={business.title}
-                      onSelect={() => {
-                        setCurrentBusiness(business.id!);
-                        setOpen(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          currentBusiness?.id === business.id
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
-                      />
-                      <Avatar className="mr-2 h-6 w-6">
-                        <AvatarImage
-                          src={business.logo || undefined}
-                          alt={business.title}
-                        />
-                        <AvatarFallback className="bg-primary/10 text-xs">
-                          <Building2 className="h-3 w-3 text-primary" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 overflow-hidden">
-                        <p className="text-sm font-medium truncate">
-                          {business.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {business.slug}
-                        </p>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                {isSearching ? (
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                  </div>
+                ) : (
+                  <>
+                    <CommandEmpty>No business found.</CommandEmpty>
+                    <CommandGroup>
+                      {switcherBusinesses.map((business) => (
+                        <CommandItem
+                          key={business.id}
+                          value={business.title}
+                          onSelect={() => {
+                            setCurrentBusiness(business.id!);
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              currentBusiness?.id === business.id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          <Avatar className="mr-2 h-6 w-6">
+                            <AvatarImage
+                              src={business.logo || undefined}
+                              alt={business.title}
+                            />
+                            <AvatarFallback className="bg-primary/10 text-xs">
+                              <Building2 className="h-3 w-3 text-primary" />
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 overflow-hidden">
+                            <p className="text-sm font-medium truncate">
+                              {business.title}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {business.slug}
+                            </p>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </>
+                )}
               </CommandList>
             </Command>
           </PopoverContent>
