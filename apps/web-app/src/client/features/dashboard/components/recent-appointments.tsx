@@ -190,14 +190,14 @@ export function RecentAppointments() {
           </CardTitle>
 
           {/* Filters */}
-          <div className="flex items-center gap-2">
-            <div className="relative">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative flex-1 min-w-[120px]">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="pl-8 h-7 text-xs w-40"
+                className="pl-8 h-7 text-xs w-full"
               />
             </div>
             <Select value={statusFilter} onValueChange={handleStatusChange}>

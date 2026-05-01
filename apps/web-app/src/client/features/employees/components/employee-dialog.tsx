@@ -225,8 +225,8 @@ export function EmployeeDialog({
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className="sm:max-w-[500px] p-0 flex flex-col">
-          <SheetHeader className="px-6 py-4 border-b">
+        <SheetContent className="w-full sm:max-w-[500px] p-0 flex flex-col">
+          <SheetHeader className="px-4 py-4 sm:px-6 border-b">
             <SheetTitle className="text-xl">
               {editData ? "Editar Empleado" : "Agregar Empleado"}
             </SheetTitle>
@@ -243,7 +243,7 @@ export function EmployeeDialog({
               onValueChange={setActiveTab}
               className="flex-1 flex flex-col overflow-hidden"
             >
-              <TabsList className="mx-6 mt-4 grid w-auto grid-cols-3">
+              <TabsList className="mx-4 sm:mx-6 mt-4 grid w-auto grid-cols-3">
                 <TabsTrigger value="info">Información</TabsTrigger>
                 <TabsTrigger value="services">Servicios</TabsTrigger>
                 <TabsTrigger value="schedule">Horarios</TabsTrigger>
@@ -258,7 +258,7 @@ export function EmployeeDialog({
                     onSubmit={form.handleSubmit(handleSubmit)}
                     className="flex flex-col flex-1 overflow-hidden"
                   >
-                    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
                       <div className="p-3 bg-muted rounded-md">
                         <p className="text-sm text-muted-foreground">
                           Editando:
@@ -298,7 +298,7 @@ export function EmployeeDialog({
                       />
                     </div>
 
-                    <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
+                    <div className="flex gap-3 px-4 sm:px-6 py-4 border-t bg-muted/30">
                       <Button
                         type="button"
                         variant="outline"
@@ -327,7 +327,7 @@ export function EmployeeDialog({
                 value="services"
                 className="flex-1 flex flex-col overflow-hidden mt-0"
               >
-                <div className="flex-1 overflow-y-auto px-6 py-4">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-medium">Servicios Asignados</h3>
                     <Button
@@ -389,7 +389,7 @@ export function EmployeeDialog({
                   )}
                 </div>
 
-                <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
+                <div className="flex gap-3 px-4 sm:px-6 py-4 border-t bg-muted/30">
                   <Button
                     variant="outline"
                     onClick={() => onOpenChange(false)}
@@ -404,7 +404,7 @@ export function EmployeeDialog({
                 value="schedule"
                 className="flex-1 flex flex-col overflow-hidden mt-0"
               >
-                <div className="flex-1 overflow-y-auto px-6 py-4">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
                   {/* Calendar View Button */}
                   <div className="mb-4">
                     <Button
@@ -432,7 +432,7 @@ export function EmployeeDialog({
                   </div>
                 </div>
 
-                <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
+                <div className="flex gap-3 px-4 sm:px-6 py-4 border-t bg-muted/30">
                   <Button
                     variant="outline"
                     onClick={() => onOpenChange(false)}
@@ -449,7 +449,7 @@ export function EmployeeDialog({
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="flex flex-col flex-1 overflow-hidden"
               >
-                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4">
                   <div className="space-y-2">
                     <FormLabel>Buscar Usuario</FormLabel>
                     <div className="relative">
@@ -530,7 +530,7 @@ export function EmployeeDialog({
                   />
                 </div>
 
-                <div className="flex gap-3 px-6 py-4 border-t bg-muted/30">
+                <div className="flex gap-3 px-4 sm:px-6 py-4 border-t bg-muted/30">
                   <Button
                     type="button"
                     variant="outline"

@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, Search, Building2, Users, Phone } from "lucide-react";
+import {
+  MoreHorizontal,
+  Search,
+  Building2,
+  Users,
+  Phone,
+  Plus,
+} from "lucide-react";
 import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import {
@@ -235,7 +242,10 @@ export function EmployeeList() {
               setDialogOpen(true);
             }}
           >
-            {t.pages.employees.addEmployee}
+            <Plus className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">
+              {t.pages.employees.addEmployee}
+            </span>
           </Button>
         </div>
 

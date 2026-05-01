@@ -31,7 +31,7 @@ export function FullCalendarView({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -60,7 +60,7 @@ export function FullCalendarView({
           ? {
               left: "prev,next",
               center: "title",
-              right: "today",
+              right: "listWeek,timeGridDay,dayGridMonth",
             }
           : {
               left: "prev,next today",
@@ -90,7 +90,7 @@ export function FullCalendarView({
         return fmt(args.start.marker, { month: "long", year: "numeric" });
       }}
       moreLinkText={(num) => `+${num}`}
-      height={680}
+      height={isMobile ? 520 : 680}
       scrollTime="08:00:00"
       eventDisplay="block"
       displayEventTime={true}
