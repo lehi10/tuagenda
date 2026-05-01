@@ -7,3 +7,4 @@
  */
 
 export { GoogleAnalytics } from "./google-analytics";
+export { Chatway, ChatwayIdentifier } from "./chatway";
