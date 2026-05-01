@@ -1,0 +1,216 @@
+{
+  "version": "1.0",
+  "repoPath": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app",
+  "analyzedAt": "2026-05-01T19:10:37.381Z",
+  "languages": [
+    "typescript",
+    "javascript"
+  ],
+  "patterns": [
+    {
+      "id": "naming-functions",
+      "category": "naming",
+      "name": "Function naming: camelCase",
+      "description": "Functions and methods use camelCase naming convention",
+      "confidence": 0.8515185601799775,
+      "evidence": {
+        "occurrences": 757,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/coverage/lcov-report/sorter.js",
+            "line": 11,
+            "code": "function getTable() {\n        return document.querySelector('.coverage-summary');\n    }"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/coverage/lcov-report/sorter.js",
+            "line": 15,
+            "code": "function getTableHeader() {\n        return getTable().querySelector('thead tr');\n    }"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/coverage/lcov-report/sorter.js",
+            "line": 19,
+            "code": "function getTableBody() {\n        return getTable().querySelector('tbody');\n    }"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "naming-classes",
+      "category": "naming",
+      "name": "Class naming: PascalCase",
+      "description": "Classes use PascalCase naming convention",
+      "confidence": 1,
+      "evidence": {
+        "occurrences": 81,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/lib/logger/logger.ts",
+            "line": 25,
+            "code": "class Logger {\n  private static instance: Logger;\n\n  /**\n   * Private constructor to prevent direct instantiation\n   */\n"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/server/lib/logger/logger.ts",
+            "line": 25,
+            "code": "class Logger {\n  private static instance: Logger;\n\n  /**\n   * Private constructor to prevent direct instantiation\n   */\n"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/server/infrastructure/repositories/PrismaUserRepository.ts",
+            "line": 26,
+            "code": "class PrismaUserRepository implements IUserRepository {\n  /**\n   * Find a user by their ID (Firebase UID)\n   */\n  async "
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "naming-variables",
+      "category": "naming",
+      "name": "Variable naming: camelCase",
+      "description": "Local variables use camelCase naming convention",
+      "confidence": 0.9505726341169379,
+      "evidence": {
+        "occurrences": 1577,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/coverage/lcov-report/sorter.js",
+            "line": 28,
+            "code": "const searchValue = document.getElementById('fileSearch').value;"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/coverage/lcov-report/sorter.js",
+            "line": 29,
+            "code": "const rows = document.getElementsByTagName('tbody')[0].children;"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/coverage/lcov-report/sorter.js",
+            "line": 33,
+            "code": "let searchRegex;"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "naming-constants",
+      "category": "naming",
+      "name": "Constant naming: camelCase",
+      "description": "Module-level constants use camelCase naming convention",
+      "confidence": 0.6,
+      "evidence": {
+        "occurrences": 51,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/next.config.ts",
+            "line": 4,
+            "code": "const nextConfig: NextConfig = {\n  images: {\n    remotePatterns: [\n      {\n        protocol: \"https\",\n        hostname: "
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/jest.config.ts",
+            "line": 4,
+            "code": "const createJestConfig = nextJest({\n  // Provide the path to your Next.js app to load next.config.js and .env files in y"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/jest.config.ts",
+            "line": 10,
+            "code": "const config: Config = {\n  coverageProvider: \"v8\",\n  testEnvironment: \"jsdom\",\n  // Add more setup options before each t"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "test-assertion-style",
+      "category": "testing",
+      "name": "Assertion style: expect()",
+      "description": "Tests use expect() as the dominant assertion pattern",
+      "confidence": 1,
+      "evidence": {
+        "occurrences": 74,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/validations/__tests__/user.schema.test.ts",
+            "line": 14,
+            "code": "expect(result.success)"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/validations/__tests__/user.schema.test.ts",
+            "line": 31,
+            "code": "expect(result.success)"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/validations/__tests__/user.schema.test.ts",
+            "line": 41,
+            "code": "expect(result.success)"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "test-organization",
+      "category": "testing",
+      "name": "Test organization: describe/it blocks",
+      "description": "Tests are organized using describe/it block structure",
+      "confidence": 0.6666666666666666,
+      "evidence": {
+        "occurrences": 12,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/validations/__tests__/user.schema.test.ts",
+            "line": 3,
+            "code": "describe(\"User Validation Schemas\", () => {\n  describe(\"createUserSchema\", () => {\n    const validUserData = {\n      id:"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/validations/__tests__/user.schema.test.ts",
+            "line": 4,
+            "code": "describe(\"createUserSchema\", () => {\n    const validUserData = {\n      id: \"firebase-uid-123\",\n      email: \"user@exampl"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/src/shared/validations/__tests__/user.schema.test.ts",
+            "line": 142,
+            "code": "describe(\"createUserFromAuthSchema\", () => {\n    const validAuthData = {\n      id: \"firebase-uid-123\",\n      email: \"use"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "structure-file-naming",
+      "category": "structure",
+      "name": "File naming: kebab-case",
+      "description": "Source files follow kebab-case naming convention",
+      "confidence": 0.7587131367292225,
+      "evidence": {
+        "occurrences": 283,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/next.config.ts",
+            "line": 1,
+            "code": "next.config"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/next-env.d.ts",
+            "line": 1,
+            "code": "next-env.d"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/apps/web-app/jest.setup.ts",
+            "line": 1,
+            "code": "jest.setup"
+          }
+        ]
+      },
+      "confirmed": true
+    }
+  ],
+  "stats": {
+    "total": 7,
+    "byCategory": {
+      "naming": 4,
+      "testing": 2,
+      "structure": 1
+    },
+    "avgConfidence": 0.8324958568132578
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "monorepo": true,
+  "generatedAt": "2026-05-01T19:10:55.490Z",
+  "workspaces": [
+    {
+      "name": "web-app",
+      "file": "web-app.json",
+      "total": 7,
+      "avgConfidence": 0.8324958568132578
+    },
+    {
+      "name": "auth",
+      "file": "auth.json",
+      "total": 4,
+      "avgConfidence": 1
+    },
+    {
+      "name": "db",
+      "file": "db.json",
+      "total": 3,
+      "avgConfidence": 0.8755522827687776
+    }
+  ]
+}

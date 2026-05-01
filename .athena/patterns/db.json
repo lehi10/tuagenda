@@ -1,0 +1,103 @@
+{
+  "version": "1.0",
+  "repoPath": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db",
+  "analyzedAt": "2026-05-01T19:10:39.087Z",
+  "languages": [
+    "typescript",
+    "javascript"
+  ],
+  "patterns": [
+    {
+      "id": "naming-functions",
+      "category": "naming",
+      "name": "Function naming: camelCase",
+      "description": "Functions and methods use camelCase naming convention",
+      "confidence": 0.6266568483063328,
+      "evidence": {
+        "occurrences": 2553,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/index.ts",
+            "line": 24,
+            "code": "function createPrismaClient() {\n  const isDev = process.env.NODE_ENV === 'development';\n\n  const client = new PrismaClie"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/check-db.js",
+            "line": 9,
+            "code": "async function checkDatabase() {\n  const prisma = new PrismaClient();\n\n  try {\n    console.log(\"🔍 Verificando conexión "
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/prisma/seed.ts",
+            "line": 6,
+            "code": "function generateFirebaseId(): string {\n  return `firebase_${Math.random().toString(36).substring(2, 15)}${Math.random()"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "naming-classes",
+      "category": "naming",
+      "name": "Class naming: PascalCase",
+      "description": "Classes use PascalCase naming convention",
+      "confidence": 1,
+      "evidence": {
+        "occurrences": 26,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/generated/prisma/index.d.ts",
+            "line": 87,
+            "code": "class PrismaClient<\n  ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,\n  const U = 'log' e"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/generated/prisma/index.d.ts",
+            "line": 303,
+            "code": "class DbNull {\n      private DbNull: never\n      private constructor()\n    }"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/generated/prisma/index.d.ts",
+            "line": 315,
+            "code": "class JsonNull {\n      private JsonNull: never\n      private constructor()\n    }"
+          }
+        ]
+      },
+      "confirmed": true
+    },
+    {
+      "id": "structure-file-naming",
+      "category": "structure",
+      "name": "File naming: kebab-case",
+      "description": "Source files follow kebab-case naming convention",
+      "confidence": 1,
+      "evidence": {
+        "occurrences": 23,
+        "examples": [
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/prisma.config.ts",
+            "line": 1,
+            "code": "prisma.config"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/check-db.js",
+            "line": 1,
+            "code": "check-db"
+          },
+          {
+            "file": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda/packages/db/prisma/seed.ts",
+            "line": 1,
+            "code": "seed"
+          }
+        ]
+      },
+      "confirmed": true
+    }
+  ],
+  "stats": {
+    "total": 3,
+    "byCategory": {
+      "naming": 2,
+      "structure": 1
+    },
+    "avgConfidence": 0.8755522827687776
+  }
+}
