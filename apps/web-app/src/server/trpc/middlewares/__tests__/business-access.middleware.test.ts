@@ -30,6 +30,12 @@ function makeNext() {
   return jest.fn().mockResolvedValue({ result: "ok" });
 }
 
+// @ts-expect-error: middleware is mocked to return the fn directly
+const callMiddleware = requireBusinessAccess as (opts: {
+  ctx: ReturnType<typeof makeCtx>;
+  next: ReturnType<typeof makeNext>;
+}) => Promise<unknown>;
+
 describe("requireBusinessAccess middleware", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -39,9 +45,9 @@ describe("requireBusinessAccess middleware", () => {
     const ctx = makeCtx({ userId: null });
     const next = makeNext();
 
-    await expect(
-      (requireBusinessAccess as Function)({ ctx, next })
-    ).rejects.toThrow(expect.objectContaining({ code: "UNAUTHORIZED" }));
+    await expect(callMiddleware({ ctx, next })).rejects.toThrow(
+      expect.objectContaining({ code: "UNAUTHORIZED" })
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -49,9 +55,9 @@ describe("requireBusinessAccess middleware", () => {
     const ctx = makeCtx({ businessId: null });
     const next = makeNext();
 
-    await expect(
-      (requireBusinessAccess as Function)({ ctx, next })
-    ).rejects.toThrow(expect.objectContaining({ code: "BAD_REQUEST" }));
+    await expect(callMiddleware({ ctx, next })).rejects.toThrow(
+      expect.objectContaining({ code: "BAD_REQUEST" })
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -60,7 +66,7 @@ describe("requireBusinessAccess middleware", () => {
     const next = makeNext();
     mockPrismaUser.mockResolvedValue({ type: "superadmin" });
 
-    await (requireBusinessAccess as Function)({ ctx, next });
+    await callMiddleware({ ctx, next });
 
     expect(mockPrismaBusinessUser).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledWith({
@@ -74,7 +80,7 @@ describe("requireBusinessAccess middleware", () => {
     mockPrismaUser.mockResolvedValue({ type: "regular" });
     mockPrismaBusinessUser.mockResolvedValue({ id: "membership-id" });
 
-    await (requireBusinessAccess as Function)({ ctx, next });
+    await callMiddleware({ ctx, next });
 
     expect(next).toHaveBeenCalledWith({
       ctx: expect.objectContaining({ businessId: "biz-456" }),
@@ -87,9 +93,9 @@ describe("requireBusinessAccess middleware", () => {
     mockPrismaUser.mockResolvedValue({ type: "regular" });
     mockPrismaBusinessUser.mockResolvedValue(null);
 
-    await expect(
-      (requireBusinessAccess as Function)({ ctx, next })
-    ).rejects.toThrow(expect.objectContaining({ code: "FORBIDDEN" }));
+    await expect(callMiddleware({ ctx, next })).rejects.toThrow(
+      expect.objectContaining({ code: "FORBIDDEN" })
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -99,9 +105,7 @@ describe("requireBusinessAccess middleware", () => {
     mockPrismaUser.mockResolvedValue({ type: "regular" });
     mockPrismaBusinessUser.mockResolvedValue(null);
 
-    await expect(
-      (requireBusinessAccess as Function)({ ctx, next })
-    ).rejects.toThrow();
+    await expect(callMiddleware({ ctx, next })).rejects.toThrow();
 
     expect(mockPrismaBusinessUser).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -119,7 +123,7 @@ describe("requireBusinessAccess middleware", () => {
     const next = makeNext();
     mockPrismaUser.mockResolvedValue({ type: "superadmin" });
 
-    await (requireBusinessAccess as Function)({ ctx, next });
+    await callMiddleware({ ctx, next });
 
     expect(next).toHaveBeenCalledWith({
       ctx: expect.objectContaining({ businessId: "biz-789" }),
@@ -132,7 +136,7 @@ describe("requireBusinessAccess middleware", () => {
     mockPrismaUser.mockResolvedValue({ type: "regular" });
     mockPrismaBusinessUser.mockResolvedValue({ id: "membership-id" });
 
-    await (requireBusinessAccess as Function)({ ctx, next });
+    await callMiddleware({ ctx, next });
 
     expect(next).toHaveBeenCalledWith({
       ctx: expect.objectContaining({ businessId: "biz-789" }),
