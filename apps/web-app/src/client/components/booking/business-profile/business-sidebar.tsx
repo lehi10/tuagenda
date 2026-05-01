@@ -1,13 +1,7 @@
 "use client";
 
 import { Link, Phone } from "lucide-react";
-import { cn } from "@/client/lib/utils";
-
-const SCHEDULE = [
-  ["Lun – Vie", "9:00 – 20:00"],
-  ["Sábado", "10:00 – 17:00"],
-  ["Domingo", "Cerrado"],
-] as const;
+import { useTranslation } from "@/client/i18n";
 
 const PLATFORM_CONFIG: Record<
   string,
@@ -111,6 +105,7 @@ interface BusinessSidebarProps {
 }
 
 export function BusinessSidebar({ phone, socialLinks }: BusinessSidebarProps) {
+  const { t } = useTranslation();
   const whatsappUrl = socialLinks?.whatsapp ?? null;
 
   const socialEntries = Object.entries(socialLinks ?? {}).filter(
@@ -122,7 +117,7 @@ export function BusinessSidebar({ phone, socialLinks }: BusinessSidebarProps) {
       {/* Contact card */}
       <div className="rounded-2xl border bg-card p-5">
         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Contacto
+          {t.booking.sidebar.contact}
         </p>
 
         {socialEntries.length > 0 && (
@@ -161,7 +156,9 @@ export function BusinessSidebar({ phone, socialLinks }: BusinessSidebarProps) {
             </div>
             <div>
               <p className="text-sm font-bold text-green-700">WhatsApp</p>
-              <p className="text-xs text-green-600">Respuesta en minutos</p>
+              <p className="text-xs text-green-600">
+                {t.booking.sidebar.whatsappHint}
+              </p>
             </div>
           </a>
         )}
@@ -176,46 +173,18 @@ export function BusinessSidebar({ phone, socialLinks }: BusinessSidebarProps) {
             </div>
             <div>
               <p className="text-sm font-bold">{phone}</p>
-              <p className="text-xs text-muted-foreground">Llamar al negocio</p>
+              <p className="text-xs text-muted-foreground">
+                {t.booking.sidebar.callBusiness}
+              </p>
             </div>
           </a>
         )}
 
         {socialEntries.length === 0 && !whatsappUrl && !phone && (
           <p className="text-sm text-muted-foreground">
-            Sin información de contacto.
+            {t.booking.sidebar.noContact}
           </p>
         )}
-      </div>
-
-      {/* Schedule card */}
-      <div className="rounded-2xl border bg-card p-5">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          Horario
-        </p>
-        {/* ###TODO### – real schedule from business settings */}
-        {SCHEDULE.map(([day, hours]) => (
-          <div
-            key={day}
-            className="flex justify-between py-2 border-b last:border-0 text-sm"
-          >
-            <span className="text-muted-foreground">{day}</span>
-            <span
-              className={cn(
-                "font-semibold",
-                hours === "Cerrado" && "text-muted-foreground"
-              )}
-            >
-              {hours}
-            </span>
-          </div>
-        ))}
-        <div className="mt-3 rounded-xl bg-amber-50 border border-amber-100 px-3 py-2 flex gap-2">
-          <span className="text-sm">⚠️</span>
-          <p className="text-xs text-amber-700 leading-relaxed">
-            Horarios en feriados pueden variar.
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -126,11 +126,27 @@ export const en = {
   booking: {
     title: "Book an Appointment",
     steps: {
-      service: "Select Service",
-      professional: "Select Professional",
-      date: "Select Date",
-      time: "Select Time",
+      service: "Service",
+      professional: "Professional",
+      date: "Date & time",
+      time: "Schedule",
+      clientInfo: "Your account",
+      summary: "Summary",
+      payment: "Payment",
+      confirmation: "Done",
       confirm: "Confirm",
+    },
+    stepper: {
+      progress: "Your progress",
+      inProgress: "In progress",
+    },
+    sidebar: {
+      contact: "Contact",
+      whatsappHint: "Usually replies in minutes",
+      callBusiness: "Call the business",
+      noContact: "No contact information available.",
+      schedule: "Schedule",
+      holidayDisclaimer: "Hours may vary on holidays.",
     },
     service: {
       title: "What service do you need?",

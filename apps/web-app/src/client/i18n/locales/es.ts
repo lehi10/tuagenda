@@ -131,11 +131,27 @@ export const es: Translations = {
   booking: {
     title: "Reservar una Cita",
     steps: {
-      service: "Seleccionar Servicio",
-      professional: "Seleccionar Profesional",
-      date: "Seleccionar Fecha",
-      time: "Seleccionar Hora",
+      service: "Servicio",
+      professional: "Profesional",
+      date: "Fecha y hora",
+      time: "Horario",
+      clientInfo: "Tu cuenta",
+      summary: "Resumen",
+      payment: "Pago",
+      confirmation: "Listo",
       confirm: "Confirmar",
+    },
+    stepper: {
+      progress: "Tu progreso",
+      inProgress: "En curso",
+    },
+    sidebar: {
+      contact: "Contacto",
+      whatsappHint: "Respuesta en minutos",
+      callBusiness: "Llamar al negocio",
+      noContact: "Sin información de contacto.",
+      schedule: "Horario",
+      holidayDisclaimer: "Horarios en feriados pueden variar.",
     },
     service: {
       title: "¿Qué servicio necesitas?",

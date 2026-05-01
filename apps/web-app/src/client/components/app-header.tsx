@@ -36,6 +36,14 @@ export function AppHeader() {
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-4" />
 
+          {/* Dev badge */}
+          {process.env.NODE_ENV === "development" && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              desarrollo
+            </span>
+          )}
+
           {/* Spacer */}
           <div className="flex-1" />
 

@@ -95,8 +95,7 @@ async function BookingContent({ slug }: { slug: string }) {
   // Map business data to the expected format for BusinessProfile component
   const businessProfile = {
     name: business.title,
-    description:
-      business.description || "Tu destino para servicios profesionales",
+    description: business.description || "",
     avatar: business.logo,
     email: business.email,
     phone: business.phone || "",
