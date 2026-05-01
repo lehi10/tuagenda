@@ -10,12 +10,12 @@ import React, {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "./auth-context";
 import { trpc } from "@/client/lib/trpc";
-import {
-  BusinessProps,
-  BusinessRole,
+import type {
+  Business as BusinessProps,
   BusinessUserProps,
-  UserType,
-} from "@/server/core/domain/entities";
+} from "@/shared/types/business";
+import { BusinessRole } from "@/shared/types/business";
+import { UserType } from "@/shared/types/auth";
 import { logger } from "@/shared/lib/logger";
 
 /**

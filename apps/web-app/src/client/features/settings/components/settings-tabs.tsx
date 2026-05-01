@@ -3,10 +3,8 @@
 import { Badge } from "@/client/components/ui/badge";
 import {
   Settings,
-  Building2,
   Bell,
   Clock,
-  CreditCard,
   Plug,
   Shield,
   ChevronRight,
@@ -29,12 +27,6 @@ const settingsSections: SettingsSection[] = [
     href: "/settings/general",
   },
   {
-    icon: Building2,
-    title: "Empresa",
-    description:
-      "Imagen, nombre, dirección, teléfono y sitio web de tu empresa",
-  },
-  {
     icon: Bell,
     title: "Notificaciones",
     description: "Ajustes de correo para notificar a tus clientes y empleados",
@@ -44,11 +36,6 @@ const settingsSections: SettingsSection[] = [
     title: "Horas laborales y días de descanso",
     description:
       "Horas de trabajo y días libres que se aplican a cada empleado",
-  },
-  {
-    icon: CreditCard,
-    title: "Pagos",
-    description: "Métodos de pago, opciones de cobro y formato de precios",
   },
   {
     icon: Plug,

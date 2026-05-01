@@ -1,10 +1,12 @@
 import type { UserProps } from "@/server/core/domain/entities/User";
+import { UserType } from "@/server/core/domain/entities/User";
 
 /**
- * User authentication data from database
- * This is the user object we use throughout the app after authentication
+ * Shared type boundary for user-related domain types.
+ * Client code must always import from here, never from @/server/core/domain directly.
  */
 export type User = UserProps;
+export { UserType };
 
 /**
  * Firebase user data (internal use only)
