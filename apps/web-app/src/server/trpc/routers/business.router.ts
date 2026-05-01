@@ -224,7 +224,10 @@ export const businessRouter = router({
         businessRepository
       );
       const filters = input
-        ? { ...input, orderBy: input.search ? ("title" as const) : ("createdAt" as const) }
+        ? {
+            ...input,
+            orderBy: input.search ? ("title" as const) : ("createdAt" as const),
+          }
         : {};
       const result = await listBusinessesUseCase.execute(filters);
 
