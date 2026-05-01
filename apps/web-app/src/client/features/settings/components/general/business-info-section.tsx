@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Camera, Loader2, Building2, ImagePlus } from "lucide-react";
+import { Loader2, Camera, Lock } from "lucide-react";
 
 import { Button } from "@/client/components/ui/button";
 import {
@@ -135,61 +135,46 @@ export function BusinessInfoSection({ business, onUpdate }: Props) {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-3"
         >
-          {/* Logo + Slug row */}
-          <div className="flex items-center gap-4">
-            {/* Clickable logo zone */}
-            <button
-              type="button"
+          {/* Logo uploader */}
+          <div className="flex items-center gap-3">
+            <div
+              className="group relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-xl border bg-muted"
               onClick={() => logoInputRef.current?.click()}
-              disabled={isUploading}
-              className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted/40 transition-colors hover:border-primary/50 hover:bg-muted/70 disabled:pointer-events-none"
             >
               {displayLogo ? (
-                <>
-                  <img
-                    src={displayLogo}
-                    alt="Logo"
-                    className={`h-full w-full object-contain p-1.5 transition-opacity${isUploading ? " opacity-40" : ""}`}
-                  />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                    <Camera className="h-4 w-4 text-white" />
-                    <span className="text-[10px] text-white">Cambiar</span>
-                  </div>
-                </>
+                <img
+                  src={displayLogo}
+                  alt="Logo"
+                  className={`h-full w-full object-contain p-1 transition-opacity${isUploading ? " opacity-50" : ""}`}
+                />
               ) : (
-                <div className="flex h-full flex-col items-center justify-center gap-1">
-                  {isUploading ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                  ) : (
-                    <>
-                      <ImagePlus className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-foreground" />
-                      <span className="text-[10px] text-muted-foreground">
-                        Logo
-                      </span>
-                    </>
-                  )}
+                <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                  <Camera className="h-5 w-5" />
                 </div>
               )}
-            </button>
-
-            <div className="flex min-w-0 flex-col gap-0.5">
-              <p className="truncate text-base font-semibold">
-                {business.title}
-              </p>
-              <p className="font-mono text-xs text-muted-foreground">
-                /{business.slug}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                JPG, PNG, WebP · Máx. 10MB
-              </p>
-              {isUploading && (
-                <p className="flex items-center gap-1 text-xs text-primary">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  {uploadStatus === "processing"
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                {isUploading ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                ) : (
+                  <Camera className="h-4 w-4 text-white" />
+                )}
+              </div>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => logoInputRef.current?.click()}
+                disabled={isUploading}
+                className="text-xs text-primary hover:underline disabled:opacity-50"
+              >
+                {isUploading
+                  ? uploadStatus === "processing"
                     ? "Procesando..."
-                    : "Subiendo..."}
-                </p>
-              )}
+                    : "Subiendo..."
+                  : displayLogo
+                    ? "Cambiar logo"
+                    : "Subir logo"}
+              </button>
             </div>
           </div>
 
@@ -202,6 +187,28 @@ export function BusinessInfoSection({ business, onUpdate }: Props) {
           />
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Field>
+              <FieldLabel className="flex items-center gap-1.5">
+                Nombre <Lock className="h-3 w-3 text-muted-foreground" />
+              </FieldLabel>
+              <Input
+                value={business.title}
+                readOnly
+                disabled
+                className="cursor-not-allowed"
+              />
+            </Field>
+            <Field>
+              <FieldLabel className="flex items-center gap-1.5">
+                Slug <Lock className="h-3 w-3 text-muted-foreground" />
+              </FieldLabel>
+              <Input
+                value={business.slug}
+                readOnly
+                disabled
+                className="cursor-not-allowed font-mono"
+              />
+            </Field>
             <Field>
               <FieldLabel>
                 Email <span className="text-destructive">*</span>
