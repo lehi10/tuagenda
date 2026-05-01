@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Camera, Loader2, Building2 } from "lucide-react";
+import { Camera, Loader2, Building2, ImagePlus } from "lucide-react";
 
 import { Button } from "@/client/components/ui/button";
 import {
@@ -17,24 +17,13 @@ import {
 } from "@/client/components/ui/card";
 import { Input } from "@/client/components/ui/input";
 import { Textarea } from "@/client/components/ui/textarea";
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldDescription,
-} from "@/client/components/ui/field";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/client/components/ui/avatar";
+import { Field, FieldLabel, FieldError } from "@/client/components/ui/field";
 import { useTrpc } from "@/client/lib/trpc";
 import { useImageUpload } from "@/client/hooks/use-image-upload";
 import { STORAGE_PATHS } from "@/shared/constants/image.constants";
 import type { Business } from "@/shared/types/business";
 
 const schema = z.object({
-  title: z.string().min(1, "El nombre es requerido"),
   description: z.string().optional(),
   email: z.string().email("Email inválido"),
   phone: z.string().min(1, "El teléfono es requerido"),
@@ -91,7 +80,6 @@ export function BusinessInfoSection({ business, onUpdate }: Props) {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: business.title,
       description: business.description ?? "",
       email: business.email,
       phone: business.phone,
@@ -102,8 +90,9 @@ export function BusinessInfoSection({ business, onUpdate }: Props) {
   const onSubmit = (data: FormValues) => {
     updateMutation.mutate({
       id: business.id!,
-      ...data,
       description: data.description || undefined,
+      email: data.email,
+      phone: data.phone,
       website: data.website || undefined,
     });
   };
@@ -121,103 +110,98 @@ export function BusinessInfoSection({ business, onUpdate }: Props) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Información del negocio</CardTitle>
-        <CardDescription>
-          Nombre, descripción y datos de contacto de tu negocio
-        </CardDescription>
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle>Información del negocio</CardTitle>
+            <CardDescription>
+              Nombre, descripción y datos de contacto de tu negocio
+            </CardDescription>
+          </div>
+          <Button
+            type="submit"
+            form="business-info-form"
+            disabled={isLoading}
+            size="sm"
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Guardar
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Logo */}
-          <Field>
-            <FieldLabel>Logo</FieldLabel>
-            <div className="flex items-center gap-4">
-              <div className="relative group">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage
+        <form
+          id="business-info-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-3"
+        >
+          {/* Logo + Slug row */}
+          <div className="flex items-center gap-4">
+            {/* Clickable logo zone */}
+            <button
+              type="button"
+              onClick={() => logoInputRef.current?.click()}
+              disabled={isUploading}
+              className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted/40 transition-colors hover:border-primary/50 hover:bg-muted/70 disabled:pointer-events-none"
+            >
+              {displayLogo ? (
+                <>
+                  <img
                     src={displayLogo}
                     alt="Logo"
-                    className={isUploading ? "blur-sm opacity-70" : ""}
+                    className={`h-full w-full object-contain p-1.5 transition-opacity${isUploading ? " opacity-40" : ""}`}
                   />
-                  <AvatarFallback className="bg-muted">
-                    <Building2 className="h-7 w-7 text-muted-foreground" />
-                  </AvatarFallback>
-                </Avatar>
-                <button
-                  type="button"
-                  onClick={() => logoInputRef.current?.click()}
-                  disabled={isUploading}
-                  className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  {isUploading ? (
-                    <Loader2 className="h-4 w-4 text-white animate-spin" />
-                  ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                     <Camera className="h-4 w-4 text-white" />
-                  )}
-                </button>
-              </div>
-              <div className="space-y-1">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => logoInputRef.current?.click()}
-                  disabled={isUploading}
-                >
+                    <span className="text-[10px] text-white">Cambiar</span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center gap-1">
                   {isUploading ? (
-                    <>
-                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                      {uploadStatus === "processing"
-                        ? "Procesando..."
-                        : "Subiendo..."}
-                    </>
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                   ) : (
-                    <>{logoUrl ? "Cambiar logo" : "Subir logo"}</>
+                    <>
+                      <ImagePlus className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-foreground" />
+                      <span className="text-[10px] text-muted-foreground">
+                        Logo
+                      </span>
+                    </>
                   )}
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  JPG, PNG, WebP · Máx. 10MB
+                </div>
+              )}
+            </button>
+
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <p className="truncate text-base font-semibold">
+                {business.title}
+              </p>
+              <p className="font-mono text-xs text-muted-foreground">
+                /{business.slug}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                JPG, PNG, WebP · Máx. 10MB
+              </p>
+              {isUploading && (
+                <p className="flex items-center gap-1 text-xs text-primary">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  {uploadStatus === "processing"
+                    ? "Procesando..."
+                    : "Subiendo..."}
                 </p>
-              </div>
+              )}
             </div>
-            <input
-              ref={logoInputRef}
-              type="file"
-              accept="image/jpeg,image/jpg,image/png,image/webp"
-              onChange={handleLogoChange}
-              className="hidden"
-            />
-          </Field>
+          </div>
 
-          {/* Slug (read-only) */}
-          <Field>
-            <FieldLabel>Slug</FieldLabel>
-            <Input value={business.slug} disabled readOnly />
-            <FieldDescription>
-              El slug identifica tu negocio en las URLs y no puede modificarse.
-            </FieldDescription>
-          </Field>
+          <input
+            ref={logoInputRef}
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            onChange={handleLogoChange}
+            className="hidden"
+          />
 
-          <Field>
-            <FieldLabel>
-              Nombre <span className="text-destructive">*</span>
-            </FieldLabel>
-            <Input {...register("title")} disabled={isLoading} />
-            <FieldError>{errors.title?.message}</FieldError>
-          </Field>
-
-          <Field>
-            <FieldLabel>Descripción</FieldLabel>
-            <Textarea
-              {...register("description")}
-              rows={3}
-              disabled={isLoading}
-            />
-            <FieldError>{errors.description?.message}</FieldError>
-          </Field>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field>
               <FieldLabel>
                 Email <span className="text-destructive">*</span>
@@ -232,23 +216,24 @@ export function BusinessInfoSection({ business, onUpdate }: Props) {
               <Input {...register("phone")} type="tel" disabled={isLoading} />
               <FieldError>{errors.phone?.message}</FieldError>
             </Field>
-          </div>
-
-          <Field>
-            <FieldLabel>Sitio web</FieldLabel>
-            <Input
-              {...register("website")}
-              placeholder="https://tunegocio.com"
-              disabled={isLoading}
-            />
-            <FieldError>{errors.website?.message}</FieldError>
-          </Field>
-
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Guardar
-            </Button>
+            <Field className="sm:col-span-2">
+              <FieldLabel>Sitio web</FieldLabel>
+              <Input
+                {...register("website")}
+                placeholder="https://tunegocio.com"
+                disabled={isLoading}
+              />
+              <FieldError>{errors.website?.message}</FieldError>
+            </Field>
+            <Field className="sm:col-span-2">
+              <FieldLabel>Descripción</FieldLabel>
+              <Textarea
+                {...register("description")}
+                rows={2}
+                disabled={isLoading}
+              />
+              <FieldError>{errors.description?.message}</FieldError>
+            </Field>
           </div>
         </form>
       </CardContent>
