@@ -85,7 +85,24 @@ export function ServiceGrid({
 
       {isLoading && <LoadingSpinner fullScreen />}
 
-      {!isLoading && (
+      {!isLoading && services.length === 0 && (
+        <div className="rounded-2xl border-2 border-dashed border-muted py-14 px-6 flex flex-col items-center text-center gap-3">
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center text-3xl">
+            🗓️
+          </div>
+          <div className="space-y-1">
+            <p className="font-semibold text-foreground">
+              Aún no hay servicios publicados
+            </p>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              Este negocio todavía no tiene servicios disponibles. Vuelve pronto
+              o contáctalos directamente.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {!isLoading && services.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2">
           {services.map((service) => {
             const isFree = service.price === 0;
