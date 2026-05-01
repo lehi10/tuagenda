@@ -4,6 +4,13 @@ import { useState, useMemo, useEffect } from "react";
 import { Plus, Package } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/client/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/client/components/ui/select";
 import { useBusiness } from "@/client/contexts/business-context";
 import { useTrpc } from "@/client/lib/trpc";
 import {
@@ -254,21 +261,57 @@ export function ServicesManager() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] border rounded-lg overflow-hidden bg-background">
-      <CategorySidebar
-        categories={categories}
-        selectedCategoryId={selectedCategoryId}
-        serviceCounts={serviceCounts}
-        onSelectCategory={setSelectedCategoryId}
-        onAddCategory={handleAddCategory}
-        onEditCategory={handleEditCategory}
-        onDeleteCategory={handleDeleteCategory}
-        isLoading={isLoadingCategories}
-      />
+    <div className="flex flex-col gap-4 md:gap-0 md:flex-row md:h-[calc(100vh-12rem)] md:border md:rounded-lg md:overflow-hidden bg-background">
+      {/* Mobile: category select */}
+      {!isLoadingCategories && categories.length > 0 && (
+        <div className="md:hidden flex items-center gap-2">
+          <Select
+            value={selectedCategoryId ?? ""}
+            onValueChange={(value) => setSelectedCategoryId(value)}
+          >
+            <SelectTrigger className="flex-1">
+              <span className="text-xs text-muted-foreground mr-1">Categoría:</span>
+              <SelectValue placeholder="Selecciona una categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  <span>{cat.name}</span>
+                  <span className="ml-1.5 text-xs text-muted-foreground">
+                    ({serviceCounts[cat.id] || 0})
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleAddCategory}
+            className="shrink-0"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
 
-      <div className="flex-1 flex flex-col">
+      {/* Desktop: sidebar */}
+      <div className="hidden md:flex">
+        <CategorySidebar
+          categories={categories}
+          selectedCategoryId={selectedCategoryId}
+          serviceCounts={serviceCounts}
+          onSelectCategory={setSelectedCategoryId}
+          onAddCategory={handleAddCategory}
+          onEditCategory={handleEditCategory}
+          onDeleteCategory={handleDeleteCategory}
+          isLoading={isLoadingCategories}
+        />
+      </div>
+
+      <div className="flex-1 flex flex-col min-h-0">
         {categories.length === 0 && !isLoadingCategories ? (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center py-20">
             <div className="text-center space-y-4">
               <Package className="h-16 w-16 mx-auto text-muted-foreground" />
               <div>
@@ -287,26 +330,26 @@ export function ServicesManager() {
           </div>
         ) : selectedCategory ? (
           <>
-            <div className="p-4 border-b flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">
+            <div className="py-2 md:p-4 md:border-b flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <h2 className="text-base md:text-lg font-semibold truncate">
                   {selectedCategory.name}
                 </h2>
                 {selectedCategory.description && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground hidden md:block">
                     {selectedCategory.description}
                   </p>
                 )}
               </div>
-              <Button onClick={handleAddService}>
-                <Plus className="h-4 w-4 mr-2" />
-                Agregar Servicio
+              <Button onClick={handleAddService} size="sm" className="shrink-0">
+                <Plus className="h-4 w-4 mr-1.5" />
+                <span className="hidden sm:inline">Agregar </span>Servicio
               </Button>
             </div>
 
-            <div className="flex-1 overflow-auto p-4">
+            <div className="flex-1 md:overflow-auto md:p-4">
               {isLoadingServices ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
@@ -315,7 +358,7 @@ export function ServicesManager() {
                   ))}
                 </div>
               ) : filteredServices.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex items-center justify-center py-20">
                   <div className="text-center space-y-3">
                     <p className="text-muted-foreground">
                       No hay servicios en esta categoria
@@ -327,11 +370,12 @@ export function ServicesManager() {
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredServices.map((service) => (
                     <ServiceCard
                       key={service.id}
                       service={service}
+                      currency={currentBusiness?.currency ?? "USD"}
                       onEdit={handleEditService}
                       onDelete={handleDeleteService}
                       onToggleActive={handleToggleActive}
@@ -342,7 +386,7 @@ export function ServicesManager() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center py-20">
             <p className="text-muted-foreground">
               Selecciona una categoria para ver sus servicios
             </p>

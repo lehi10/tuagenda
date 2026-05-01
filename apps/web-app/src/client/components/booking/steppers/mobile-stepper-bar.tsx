@@ -2,19 +2,9 @@
 
 import { Check } from "lucide-react";
 import { cn } from "@/client/lib/utils";
+import { useTranslation } from "@/client/i18n";
 import { getEnabledSteps } from "@/client/lib/booking-steps";
 import type { StepConfig, StepType } from "@/client/types/booking";
-
-const STEP_LABELS: Record<StepType, string> = {
-  "service-detail": "Servicio",
-  professional: "Profesional",
-  date: "Fecha y hora",
-  time: "Horario",
-  "client-info": "Tu cuenta",
-  summary: "Resumen",
-  payment: "Pago",
-  confirmation: "Listo",
-};
 
 const STEPPER_STEPS: StepType[] = [
   "service-detail",
@@ -38,6 +28,18 @@ export function MobileStepperBar({
   isStepComplete,
   showingDetail,
 }: MobileStepperBarProps) {
+  const { t } = useTranslation();
+  const stepLabels: Record<StepType, string> = {
+    "service-detail": t.booking.steps.service,
+    professional: t.booking.steps.professional,
+    date: t.booking.steps.date,
+    time: t.booking.steps.time,
+    "client-info": t.booking.steps.clientInfo,
+    summary: t.booking.steps.summary,
+    payment: t.booking.steps.payment,
+    confirmation: t.booking.steps.confirmation,
+  };
+
   const enabledSteps = getEnabledSteps(stepConfig).filter((s) =>
     STEPPER_STEPS.includes(s.id)
   );
@@ -65,7 +67,7 @@ export function MobileStepperBar({
             </div>
             {isActive && (
               <span className="text-xs font-semibold text-primary whitespace-nowrap">
-                {STEP_LABELS[step.id]}
+                {stepLabels[step.id]}
               </span>
             )}
             {i < enabledSteps.length - 1 && (
