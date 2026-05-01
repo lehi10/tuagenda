@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, Instagram, Facebook, Twitter } from "lucide-react";
+import { Loader2, Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 
 import { Button } from "@/client/components/ui/button";
 import {
@@ -27,6 +27,7 @@ const schema = z.object({
   twitter: urlOrEmpty,
   tiktok: urlOrEmpty,
   whatsapp: urlOrEmpty,
+  linkedin: urlOrEmpty,
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -77,6 +78,7 @@ export function SocialLinksSection({ business, onUpdate }: Props) {
       twitter: socialLinks.twitter ?? "",
       tiktok: socialLinks.tiktok ?? "",
       whatsapp: socialLinks.whatsapp ?? "",
+      linkedin: socialLinks.linkedin ?? "",
     },
   });
 
@@ -122,6 +124,12 @@ export function SocialLinksSection({ business, onUpdate }: Props) {
       label: "WhatsApp",
       icon: WhatsAppIcon,
       placeholder: "https://wa.me/51987654321",
+    },
+    {
+      name: "linkedin" as const,
+      label: "LinkedIn",
+      icon: Linkedin,
+      placeholder: "https://linkedin.com/in/tu-perfil",
     },
   ];
 
