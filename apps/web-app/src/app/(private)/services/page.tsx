@@ -4,7 +4,7 @@ import { ServicesManager } from "@/client/features/services/components/services-
 
 export default function ServicesPage() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="flex flex-col gap-4 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold">Servicios</h1>
         <p className="text-sm text-muted-foreground">

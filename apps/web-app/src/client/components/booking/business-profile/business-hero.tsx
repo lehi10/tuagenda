@@ -76,14 +76,6 @@ export function BusinessHero({
               {location && (
                 <span className="text-white/80 text-xs">📍 {location}</span>
               )}
-              {/* ###TODO### – rating from reviews system */}
-              <span className="text-xs bg-white/15 text-white px-2 py-0.5 rounded-full font-semibold">
-                ⭐ ###TODO### rating
-              </span>
-              {/* ###TODO### – real open/closed status from business schedule */}
-              <span className="text-xs bg-green-500/80 text-white px-2 py-0.5 rounded-full font-semibold">
-                ● Abierto
-              </span>
             </div>
           </div>
         </div>

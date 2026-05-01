@@ -23,6 +23,7 @@ export interface UpdateBusinessInput {
   postalCode?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  socialLinks?: Record<string, string> | null;
 }
 
 export interface UpdateBusinessResult {
@@ -98,6 +99,10 @@ export class UpdateBusinessUseCase {
         input.longitude !== null
       ) {
         existingBusiness.updateLocation(input.latitude, input.longitude);
+      }
+
+      if (input.socialLinks !== undefined) {
+        existingBusiness.updateSocialLinks(input.socialLinks);
       }
 
       const updatedBusiness =

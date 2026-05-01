@@ -78,14 +78,31 @@ export function RegionalizationSection({ business, onUpdate }: Props) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Regionalización</CardTitle>
-        <CardDescription>
-          Zona horaria, idioma y moneda predeterminados del negocio
-        </CardDescription>
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle>Regionalización</CardTitle>
+            <CardDescription>
+              Zona horaria, idioma y moneda predeterminados del negocio
+            </CardDescription>
+          </div>
+          <Button
+            type="submit"
+            form="regionalization-form"
+            disabled={isLoading}
+            size="sm"
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Guardar
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          id="regionalization-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-3"
+        >
           <Field>
             <FieldLabel>
               Zona horaria <span className="text-destructive">*</span>
@@ -208,13 +225,6 @@ export function RegionalizationSection({ business, onUpdate }: Props) {
               </Select>
               <FieldError>{errors.currency?.message}</FieldError>
             </Field>
-          </div>
-
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Guardar
-            </Button>
           </div>
         </form>
       </CardContent>

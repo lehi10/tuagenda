@@ -84,7 +84,10 @@ export function SocialLinksSection({ business, onUpdate }: Props) {
     const filtered = Object.fromEntries(
       Object.entries(data).filter(([, v]) => v && v.length > 0)
     );
-    updateMutation.mutate({ id: business.id!, socialLinks: filtered });
+    updateMutation.mutate({
+      id: business.id!,
+      socialLinks: Object.keys(filtered).length > 0 ? filtered : null,
+    });
   };
 
   const isLoading = updateMutation.isPending;
@@ -124,14 +127,31 @@ export function SocialLinksSection({ business, onUpdate }: Props) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Redes sociales</CardTitle>
-        <CardDescription>
-          Links a los perfiles sociales de tu negocio
-        </CardDescription>
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle>Redes sociales</CardTitle>
+            <CardDescription>
+              Links a los perfiles sociales de tu negocio
+            </CardDescription>
+          </div>
+          <Button
+            type="submit"
+            form="social-links-form"
+            disabled={isLoading}
+            size="sm"
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Guardar
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          id="social-links-form"
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+        >
           {fields.map(({ name, label, icon: Icon, placeholder }) => (
             <Field key={name}>
               <FieldLabel>{label}</FieldLabel>
@@ -147,13 +167,6 @@ export function SocialLinksSection({ business, onUpdate }: Props) {
               <FieldError>{errors[name]?.message}</FieldError>
             </Field>
           ))}
-
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Guardar
-            </Button>
-          </div>
         </form>
       </CardContent>
     </Card>
