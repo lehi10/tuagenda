@@ -6,6 +6,7 @@
     "dev": "pnpm --filter ./apps/web-app dev",
     "dev:all": "pnpm -r --parallel run dev",
     "build": "pnpm --filter ./apps/web-app build",
+    "type-check": "pnpm --filter './apps/*' run type-check",
     "lint": "pnpm -r --filter './apps/*' run lint",
     "lint:fix": "pnpm -r --filter './apps/*' run lint:fix",
     "format": "pnpm -r run format",
