@@ -1,6 +1,6 @@
 # Use Case Result Shape
 
-Every use case returns a result object. Never throw exceptions — errors are returned as values.
+**Always use a Result wrapper — no exceptions.** Never return the entity directly (`Promise<Entity>`), never throw from a use case.
 
 ## Structure
 
