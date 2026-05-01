@@ -270,7 +270,9 @@ export function ServicesManager() {
             onValueChange={(value) => setSelectedCategoryId(value)}
           >
             <SelectTrigger className="flex-1">
-              <span className="text-xs text-muted-foreground mr-1">Categoría:</span>
+              <span className="text-xs text-muted-foreground mr-1">
+                Categoría:
+              </span>
               <SelectValue placeholder="Selecciona una categoria" />
             </SelectTrigger>
             <SelectContent>
