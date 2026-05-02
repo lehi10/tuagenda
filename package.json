@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --filter ./apps/web-app dev",
-    "dev:all": "pnpm -r --parallel run dev",
+    "dev:all": "turbo dev --filter=./apps/web-app --filter=./apps/notification-worker --ui=tui",
     "build": "pnpm --filter ./apps/web-app build",
     "type-check": "pnpm --filter './apps/*' run type-check",
     "lint": "pnpm -r --filter './apps/*' run lint",
@@ -33,6 +33,7 @@
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
     "baseline-browser-mapping": "^2.10.24",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "turbo": "^2.9.7"
   }
 }
