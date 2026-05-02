@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "pnpm --filter ./apps/web-app dev",
     "dev:all": "turbo dev --filter=./apps/web-app --filter=./apps/notification-worker --ui=tui",
-    "build": "pnpm --filter ./apps/web-app build",
+    "build": "pnpm --filter notifications build && pnpm --filter ./apps/web-app build",
     "type-check": "pnpm --filter './apps/*' run type-check",
     "lint": "pnpm -r --filter './apps/*' run lint",
     "lint:fix": "pnpm -r --filter './apps/*' run lint:fix",
