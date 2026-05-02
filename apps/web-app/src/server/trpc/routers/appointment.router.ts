@@ -152,7 +152,9 @@ export const appointmentRouter = router({
         // fire-and-forget — nunca falla la cita si Redis falla
         try {
           const queueAdapter = new BullMQNotificationQueueAdapter();
-          const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(queueAdapter);
+          const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(
+            queueAdapter
+          );
           await enqueueUseCase.execute({
             event: NotificationEvent.APPOINTMENT_CREATED,
             appointment,
