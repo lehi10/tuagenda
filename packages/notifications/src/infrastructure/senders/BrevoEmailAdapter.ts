@@ -3,16 +3,22 @@ import type {
   SendNotificationRequest,
   SendNotificationResult,
 } from "../../core/domain/ports/INotificationSenderPort";
+import type { IEmailTemplatePort } from "../../core/domain/ports/IEmailTemplatePort";
 import { NotificationChannel } from "../../core/domain/types/NotificationChannel";
 
 export class BrevoEmailAdapter implements INotificationSenderPort {
   readonly channel = NotificationChannel.EMAIL;
 
-  async send(request: SendNotificationRequest): Promise<SendNotificationResult> {
-    const templateId = request.templateId as number | undefined;
+  constructor(private readonly templates: IEmailTemplatePort) {}
 
-    if (!templateId) {
-      return { success: false, error: `No Brevo template ID configured for: ${request.templateName}` };
+  async send(request: SendNotificationRequest): Promise<SendNotificationResult> {
+    const rendered = this.templates.render(request.templateName, request.templateData);
+
+    if (!rendered) {
+      return {
+        success: false,
+        error: `No email template found for: ${request.templateName}`,
+      };
     }
 
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
@@ -27,8 +33,8 @@ export class BrevoEmailAdapter implements INotificationSenderPort {
           email: process.env.EMAIL_FROM_ADDRESS,
         },
         to: [{ email: request.recipientEmail, name: request.recipientName }],
-        templateId,
-        params: request.templateData,
+        subject: rendered.subject,
+        htmlContent: rendered.html,
       }),
     });
 

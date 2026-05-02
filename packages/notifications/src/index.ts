@@ -5,6 +5,10 @@ export type {
   SendNotificationRequest,
   SendNotificationResult,
 } from "./core/domain/ports/INotificationSenderPort";
+export type {
+  IEmailTemplatePort,
+  RenderedEmail,
+} from "./core/domain/ports/IEmailTemplatePort";
 
 // Types
 export { NotificationChannel } from "./core/domain/types/NotificationChannel";

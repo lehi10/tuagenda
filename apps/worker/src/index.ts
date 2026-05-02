@@ -6,11 +6,16 @@ import {
 import {
   BrevoEmailAdapter,
   MetaWhatsAppAdapter,
+  StaticEmailTemplateAdapter,
 } from "notifications/infrastructure";
 
 const QUEUE_NAME = "notifications";
 
-const senders = [new BrevoEmailAdapter(), new MetaWhatsAppAdapter()];
+const emailTemplates = new StaticEmailTemplateAdapter();
+const senders = [
+  new BrevoEmailAdapter(emailTemplates),
+  new MetaWhatsAppAdapter(),
+];
 const sendNotificationUseCase = new SendAppointmentNotificationUseCase(senders);
 
 const worker = new Worker<NotificationJobPayload>(
