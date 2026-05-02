@@ -508,7 +508,8 @@ export function AppointmentList() {
                         <span
                           className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_VARIANT[apt.status] ?? ""}`}
                         >
-                          {t.pages.appointments.status[apt.status] ?? apt.status}
+                          {t.pages.appointments.status[apt.status] ??
+                            apt.status}
                         </span>
                       )}
                     </TableCell>
@@ -664,6 +665,7 @@ export function AppointmentList() {
           open={sheetOpen}
           onOpenChange={setSheetOpen}
           onStatusChange={handleStatusChange}
+          isPendingStatusChange={updateStatusMutation.isPending}
         />
       )}
     </div>

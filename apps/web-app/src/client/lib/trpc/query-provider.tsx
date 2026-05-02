@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 /**
  * Provides the shared QueryClient to the entire app.
@@ -17,18 +16,9 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             staleTime: 1000 * 60 * 5,
             refetchOnWindowFocus: false,
             refetchOnMount: true,
-            throwOnError: (error, query) => {
-              toast.error("Error with: " + query.queryKey.join(", "), {
-                description: error.message,
-              });
-              return false;
-            },
           },
           mutations: {
-            throwOnError: (error) => {
-              toast.error("An error occurred: " + error.message);
-              return false;
-            },
+            throwOnError: false,
           },
         },
       })
