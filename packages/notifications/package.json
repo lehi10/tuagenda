@@ -16,7 +16,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "tsup",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
     "typescript": "^5"
   }
 }
