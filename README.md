@@ -67,28 +67,35 @@ cp apps/notification-worker/.env.example apps/notification-worker/.env
 pnpm dev:all
 ```
 
-Abre un TUI interactivo (Turborepo) donde puedes navegar entre la web app y el notification worker con las flechas del teclado y ver sus logs por separado.
+Usa Turborepo con `--ui=tui`: abre un panel interactivo donde podés navegar entre la web app y el notification worker con las flechas del teclado y ver sus logs por separado.
 
 ### Levantar por separado
 
 ```bash
-# Solo la web app
+# Solo la web app (Next.js en http://localhost:3000)
 pnpm dev
 
 # Solo el notification worker
 pnpm --filter notification-worker dev
+
+# Solo el package de notificaciones en modo watch (si modificás lógica de notificaciones)
+pnpm --filter notifications dev
 ```
 
 ## Comandos útiles
 
 ```bash
 # Base de datos
-pnpm db:start          # Levantar PostgreSQL con Docker
-pnpm db:stop           # Detener Docker
-pnpm db:migrate        # Correr migraciones pendientes
-pnpm db:migrate:dev    # Crear nueva migración
-pnpm db:studio         # Abrir Prisma Studio
-pnpm db:seed           # Poblar base de datos con datos de prueba
+pnpm db:start           # Levantar PostgreSQL con Docker
+pnpm db:stop            # Detener Docker
+pnpm db:reset           # Bajar, levantar y re-migrar (borra todos los datos)
+pnpm db:migrate         # Correr migraciones pendientes (deploy)
+pnpm db:migrate:dev     # Crear nueva migración en desarrollo
+pnpm db:migrate:status  # Ver estado de migraciones
+pnpm db:push            # Push del schema sin crear migración (prototipado)
+pnpm db:generate        # Regenerar Prisma Client
+pnpm db:studio          # Abrir Prisma Studio
+pnpm db:seed            # Poblar base de datos con datos de prueba
 
 # Calidad de código
 pnpm type-check        # Verificar tipos en todas las apps
