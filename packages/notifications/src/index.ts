@@ -25,5 +25,7 @@ export type {
   EnqueueAppointmentNotificationInput,
   EnqueueAppointmentNotificationResult,
   AppointmentData,
+  BusinessNotificationSettings,
 } from "./core/application/use-cases/EnqueueAppointmentNotification";
+export type { NotificationTemplates } from "./core/domain/types/NotificationJobPayload";
 export { SendAppointmentNotificationUseCase } from "./core/application/use-cases/SendAppointmentNotification";

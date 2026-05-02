@@ -30,6 +30,7 @@ const settingsSections: SettingsSection[] = [
     icon: Bell,
     title: "Notificaciones",
     description: "Ajustes de correo para notificar a tus clientes y empleados",
+    href: "/settings/notifications",
   },
   {
     icon: Clock,

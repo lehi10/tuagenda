@@ -10,3 +10,6 @@ import { BusinessRole } from "@/server/core/domain/entities/BusinessUser";
 export type Business = BusinessProps;
 export type { BusinessUserProps };
 export { BusinessRole };
+
+export type { BusinessNotificationSettings } from "notifications";
+export { NotificationChannel } from "notifications";

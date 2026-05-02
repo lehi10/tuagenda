@@ -14,6 +14,7 @@ import {
   Service as PrismaService,
   Business as PrismaBusiness,
 } from "db";
+import type { BusinessNotificationSettings } from "notifications";
 import {
   Appointment,
   AppointmentStatus,
@@ -100,6 +101,9 @@ export class AppointmentMapper {
             email: prismaAppointment.business.email,
             website: prismaAppointment.business.website,
             currency: prismaAppointment.business.currency,
+            notificationSettings: (prismaAppointment.business
+              .notificationSettings ??
+              null) as BusinessNotificationSettings | null,
           }
         : undefined,
     };

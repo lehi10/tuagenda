@@ -65,7 +65,12 @@ export function DateTimeSelection({
         serviceId,
         date: selectedDate ?? today,
       },
-      { enabled: !!professionalId && !!serviceId && !!selectedDate }
+      // No cache: always fetch fresh slots to prevent double-booking
+      {
+        enabled: !!professionalId && !!serviceId && !!selectedDate,
+        staleTime: 0,
+        gcTime: 0,
+      }
     );
 
   const timeSlots = data?.slots ?? [];

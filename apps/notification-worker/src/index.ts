@@ -21,9 +21,20 @@ const sendNotificationUseCase = new SendAppointmentNotificationUseCase(senders);
 const worker = new Worker<NotificationJobPayload>(
   QUEUE_NAME,
   async (job) => {
-    console.log(`[worker] Processing job ${job.id}: ${job.name}`);
-    await sendNotificationUseCase.execute(job.data);
-    console.log(`[worker] Completed job ${job.id}`);
+    console.log(`[worker] Processing job ${job.id}: ${job.name}`, {
+      channels: job.data.channels,
+      recipientEmail: job.data.customer?.email,
+      event: job.data.event,
+    });
+    const results = await sendNotificationUseCase.execute(job.data);
+    const failures = results.filter(
+      (r) => r.status === "rejected" || (r.status === "fulfilled" && !r.value.success)
+    );
+    if (failures.length > 0) {
+      console.error(`[worker] Job ${job.id} completed with errors:`, JSON.stringify(failures, null, 2));
+    } else {
+      console.log(`[worker] Completed job ${job.id}`, JSON.stringify(results));
+    }
   },
   {
     connection: { url: process.env.REDIS_URL },

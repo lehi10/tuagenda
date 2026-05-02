@@ -6,7 +6,7 @@ import { NotificationEvent } from "../../domain/types/NotificationEvent";
 export class SendAppointmentNotificationUseCase {
   constructor(private readonly senders: INotificationSenderPort[]) {}
 
-  async execute(payload: NotificationJobPayload): Promise<void> {
+  async execute(payload: NotificationJobPayload): Promise<PromiseSettledResult<{ success: boolean; error?: string }>[]> {
     const isCreated = payload.event === NotificationEvent.APPOINTMENT_CREATED;
     const templateData = {
       customerFirstName: payload.customer.firstName,
@@ -48,6 +48,6 @@ export class SendAppointmentNotificationUseCase {
         return Promise.resolve({ success: true });
       });
 
-    await Promise.allSettled(tasks);
+    return Promise.allSettled(tasks);
   }
 }
