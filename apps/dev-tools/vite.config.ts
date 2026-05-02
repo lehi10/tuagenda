@@ -58,15 +58,17 @@ export default defineConfig({
               while (fnEnd < total - 1 && !/^\}/.test(allLines[fnEnd])) fnEnd++;
               const code = allLines.slice(fnStart, fnEnd + 1).join("\n");
               res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify({
-                functionName: allLines[fnStart].trim().replace(/\s*\{.*/, ""),
-                code,
-                startLine: 1,
-                targetLine: safeLine,
-                fnStartLine: fnStart + 1,
-                fnEndLine: fnEnd + 1,
-                absolutePath: abs,
-              }));
+              res.end(
+                JSON.stringify({
+                  functionName: allLines[fnStart].trim().replace(/\s*\{.*/, ""),
+                  code,
+                  startLine: 1,
+                  targetLine: safeLine,
+                  fnStartLine: fnStart + 1,
+                  fnEndLine: fnEnd + 1,
+                  absolutePath: abs,
+                }),
+              );
               return;
             }
 
@@ -84,6 +86,7 @@ export default defineConfig({
     },
   ],
   server: {
-    port: 3001,
+    port: 3002,
+    strictPort: true,
   },
 });

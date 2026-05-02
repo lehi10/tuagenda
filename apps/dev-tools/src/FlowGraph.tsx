@@ -17,12 +17,7 @@ import type { GraphData } from "./server/analyzer";
 import { CodePanel, type CodeTarget } from "./CodePanel";
 import { LAYER } from "./config";
 import { nodeTypes, AutoFitView, type FlowNodeData } from "./nodes/FlowNode";
-import {
-  applyLayout,
-  buildEdge,
-  reachableFrom,
-  groupByRouter,
-} from "./layout";
+import { applyLayout, buildEdge, reachableFrom, groupByRouter } from "./layout";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 
