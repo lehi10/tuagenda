@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Ensure Sonner toasts are always interactive even when Radix modals
+   set pointer-events: none on the body */
+[data-sonner-toaster] {
+  pointer-events: auto !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

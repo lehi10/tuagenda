@@ -308,19 +308,19 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
     businesses.find((b) => b.id === currentBusinessId) || null;
 
   const setCurrentBusiness = (businessId: string) => {
-    const business = businesses.find((b) => b.id === businessId);
-
-    if (!business) {
-      logger.error(
-        "BusinessContext",
-        user?.id || "system",
-        `Business ${businessId} not found in user's businesses`
-      );
-      return;
-    }
-
-    // For regular users, verify they have access
+    // For regular users, verify they have access to the business
     if (!isSuperAdmin) {
+      const business = businesses.find((b) => b.id === businessId);
+
+      if (!business) {
+        logger.error(
+          "BusinessContext",
+          user?.id || "system",
+          `Business ${businessId} not found in user's businesses`
+        );
+        return;
+      }
+
       const businessUser = businessUsers.find(
         (bu) => bu.businessId === businessId
       );
@@ -334,6 +334,8 @@ export function BusinessProvider({ children }: { children: React.ReactNode }) {
         return;
       }
     }
+    // For superadmins: skip local validation — they can switch to any business.
+    // If the business isn't in the loaded list, savedIdNotInList will fetch it.
 
     setCurrentBusinessId(businessId);
 

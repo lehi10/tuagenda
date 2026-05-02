@@ -11,7 +11,7 @@ interface Data {
   businessPhone: string;
 }
 
-export function renderAppointmentCreated(data: Data): RenderedEmail {
+export function renderAppointmentCompleted(data: Data): RenderedEmail {
   const card = appointmentCard({
     serviceName: data.serviceName,
     startTime: data.startTime,
@@ -21,29 +21,29 @@ export function renderAppointmentCreated(data: Data): RenderedEmail {
 
   const content = `
     <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#18181b;">
-      ¡Tu cita está agendada!
+      ¡Gracias por tu visita!
     </p>
     <p style="margin:0 0 28px;font-size:15px;color:#52525b;line-height:1.6;">
-      Hola <strong>${data.customerFirstName}</strong>, recibimos tu reserva. Aquí tienes los detalles:
+      Hola <strong>${data.customerFirstName}</strong>, fue un placer atenderte. Esperamos que hayas tenido una excelente experiencia.
     </p>
 
     ${card}
 
     <p style="margin:0 0 6px;font-size:14px;color:#52525b;">
-      ¿Necesitas hacer algún cambio o tienes alguna pregunta?
+      ¿Te gustaría agendar tu próxima cita?
     </p>
     <p style="margin:0;font-size:14px;color:#52525b;">
-      Contáctanos directamente al <strong style="color:#18181b;">${data.businessPhone}</strong>.
+      Escríbenos al <strong style="color:#18181b;">${data.businessPhone}</strong> y con gusto te atendemos.
     </p>
   `;
 
   return {
-    subject: `Tu cita en ${data.businessName} está agendada`,
+    subject: `Gracias por tu visita a ${data.businessName}`,
     html: baseLayout({
       businessName: data.businessName,
-      title: "Cita agendada",
-      accentColor: "#4f46e5",
-      badgeLabel: "Reserva recibida",
+      title: "Visita completada",
+      accentColor: "#7c3aed",
+      badgeLabel: "Completada",
       content,
     }),
   };

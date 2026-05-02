@@ -49,11 +49,18 @@ export class UpdateAppointmentStatusUseCase {
         return { success: false, error: "Appointment not found" };
       }
 
+      const STATUS_LABELS: Record<string, string> = {
+        scheduled: "programada",
+        confirmed: "confirmada",
+        completed: "completada",
+        cancelled: "cancelada",
+      };
+
       const allowed = ALLOWED_TRANSITIONS[existing.status] ?? [];
       if (!allowed.includes(input.status)) {
         return {
           success: false,
-          error: `Cannot transition from "${existing.status}" to "${input.status}"`,
+          error: `No se puede cambiar una cita ${STATUS_LABELS[existing.status] ?? existing.status} a ${STATUS_LABELS[input.status] ?? input.status}.`,
         };
       }
 
