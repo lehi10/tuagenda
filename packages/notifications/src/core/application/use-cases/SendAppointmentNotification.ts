@@ -19,14 +19,14 @@ export class SendAppointmentNotificationUseCase {
   async execute(
     payload: NotificationJobPayload
   ): Promise<PromiseSettledResult<{ success: boolean; error?: string }>[]> {
-    const templateData = {
+    const templateData: Record<string, string | number> = {
       customerFirstName: payload.customer.firstName,
       serviceName: payload.service.name,
       startTime: payload.appointment.startTime,
       endTime: payload.appointment.endTime,
-      notes: payload.appointment.notes ?? undefined,
       businessName: payload.business.title,
       businessPhone: payload.business.phone,
+      ...(payload.appointment.notes ? { notes: payload.appointment.notes } : {}),
     };
 
     const whatsappTemplateKey = WHATSAPP_TEMPLATE_BY_EVENT[payload.event];
