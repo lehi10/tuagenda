@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -19,8 +19,11 @@ import {
   Check,
   UserCheck,
   UserX,
+  CheckCircle2,
+  XCircle,
+  ThumbsUp,
+  Circle,
 } from "lucide-react";
-import { Badge } from "@/client/components/ui/badge";
 import { Button } from "@/client/components/ui/button";
 import { Textarea } from "@/client/components/ui/textarea";
 import { Calendar } from "@/client/components/ui/calendar";
@@ -58,14 +61,15 @@ import type {
   AppointmentStatus,
 } from "@/server/core/domain/entities/Appointment";
 
-const STATUS_VARIANT: Record<
-  AppointmentStatus,
-  "default" | "secondary" | "destructive" | "outline"
-> = {
-  completed: "default",
-  confirmed: "outline",
-  scheduled: "secondary",
-  cancelled: "destructive",
+const STATUS_COLOR: Record<AppointmentStatus, string> = {
+  completed:
+    "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
+  confirmed:
+    "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800",
+  scheduled:
+    "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800",
+  cancelled:
+    "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
 };
 
 const STATUS_LABEL: Record<AppointmentStatus, string> = {
@@ -73,6 +77,13 @@ const STATUS_LABEL: Record<AppointmentStatus, string> = {
   confirmed: "Confirmada",
   completed: "Completada",
   cancelled: "Cancelada",
+};
+
+const STATUS_ICON: Record<AppointmentStatus, React.ElementType> = {
+  scheduled: Circle,
+  confirmed: ThumbsUp,
+  completed: CheckCircle2,
+  cancelled: XCircle,
 };
 
 const ALL_STATUSES: AppointmentStatus[] = [
@@ -271,14 +282,33 @@ export function AppointmentDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="flex flex-col p-0">
         {/* ── Header ─────────────────────────── */}
-        <SheetHeader className="px-5 pt-5 pb-3 border-b">
-          <div className="flex items-center justify-between">
+        <SheetHeader className="px-5 pt-5 pb-3 border-b space-y-1.5">
+          <div className="flex items-center justify-between pr-7">
             <SheetTitle className="text-sm font-semibold text-muted-foreground">
               #{appointment.id?.slice(0, 8).toUpperCase() ?? "—"}
             </SheetTitle>
-            <Badge variant={STATUS_VARIANT[editedStatus]} className="text-xs">
-              {STATUS_LABEL[editedStatus]}
-            </Badge>
+            <Select value={editedStatus} onValueChange={handleStatusChange}>
+              <SelectTrigger
+                className={`w-fit h-7 text-xs px-2.5 rounded-full border font-medium gap-1.5 ${STATUS_COLOR[editedStatus]}`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                {ALL_STATUSES.map((s) => {
+                  const Icon = STATUS_ICON[s];
+                  return (
+                    <SelectItem key={s} value={s} className="text-xs">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[s]}`}
+                      >
+                        <Icon className="h-3 w-3 shrink-0" />
+                        {STATUS_LABEL[s]}
+                      </span>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </div>
           <SheetDescription className="text-xs">
             Creada el {createdAt}
@@ -439,6 +469,37 @@ export function AppointmentDetailSheet({
                 <span className="font-medium">
                   {appointment.service?.name ?? "—"}
                 </span>
+              </div>
+              <div className="flex items-center gap-2.5 px-3 py-2">
+                <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                <span className="text-muted-foreground w-16 shrink-0 text-xs">
+                  Empleado
+                </span>
+                {employee ? (
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <Avatar className="h-5 w-5 shrink-0">
+                      <AvatarImage
+                        src={employee.user.pictureFullPath ?? undefined}
+                      />
+                      <AvatarFallback className="text-[10px] font-medium">
+                        {employee.user.firstName[0]}
+                        {employee.user.lastName?.[0] ?? ""}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <p className="font-medium leading-tight">
+                        {employee.displayName ?? employeeName}
+                      </p>
+                      {employee.user.email && (
+                        <p className="text-xs text-muted-foreground truncate">
+                          {employee.user.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <span className="font-medium">—</span>
+                )}
               </div>
               <div className="grid grid-cols-2 divide-x">
                 <div className="flex items-center gap-2.5 px-3 py-2">
@@ -610,47 +671,8 @@ export function AppointmentDetailSheet({
                     {timeStart} – {timeEnd}
                   </span>
                 </div>
-                <div className="flex items-center gap-2.5 px-3 py-2">
-                  <User className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  <span className="text-muted-foreground w-16 shrink-0 text-xs">
-                    Empleado
-                  </span>
-                  {employee ? (
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-5 w-5">
-                        <AvatarImage
-                          src={employee.user.pictureFullPath ?? undefined}
-                        />
-                        <AvatarFallback className="text-[10px] font-medium">
-                          {employee.user.firstName[0]}
-                          {employee.user.lastName?.[0] ?? ""}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{employeeName}</span>
-                    </div>
-                  ) : (
-                    <span className="font-medium">—</span>
-                  )}
-                </div>
               </div>
             )}
-          </div>
-
-          {/* Estado */}
-          <div className="px-5 py-4 space-y-2">
-            <SectionLabel>Estado</SectionLabel>
-            <Select value={editedStatus} onValueChange={handleStatusChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ALL_STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {STATUS_LABEL[s]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           {/* Notas */}

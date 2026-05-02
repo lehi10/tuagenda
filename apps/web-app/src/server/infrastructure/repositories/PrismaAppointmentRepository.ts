@@ -34,7 +34,7 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
             user: true,
           },
         },
-        service: true,
+        service: { include: { category: true } },
         business: true,
       },
     });
@@ -81,7 +81,7 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
             user: true,
           },
         },
-        service: true,
+        service: { include: { category: true } },
         business: true,
       },
       orderBy: {
@@ -124,7 +124,7 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
             user: true,
           },
         },
-        service: true,
+        service: { include: { category: true } },
         business: true,
       },
       orderBy: {
@@ -190,7 +190,7 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
             user: true,
           },
         },
-        service: true,
+        service: { include: { category: true } },
         business: true,
       },
       take: filters?.limit,
@@ -225,7 +225,7 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
             user: true,
           },
         },
-        service: true,
+        service: { include: { category: true } },
         business: true,
       },
     });
@@ -261,7 +261,7 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
             user: true,
           },
         },
-        service: true,
+        service: { include: { category: true } },
         business: true,
       },
     });
