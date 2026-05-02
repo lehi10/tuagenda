@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "default": "./dist/index.js"
+      "default": "./src/index.ts"
     },
     "./infrastructure": {
       "types": "./src/infrastructure/index.ts",
-      "default": "./dist/infrastructure/index.js"
+      "default": "./src/infrastructure/index.ts"
     }
   },
   "scripts": {
