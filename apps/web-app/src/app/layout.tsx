@@ -66,8 +66,8 @@ export default function RootLayout({
           position="top-right"
           offset={{ bottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
         />
-        <Analytics />
-        <SpeedInsights />
+        {process.env.NODE_ENV === "production" && <Analytics />}
+        {process.env.NODE_ENV === "production" && <SpeedInsights />}
         <Chatway />
       </body>
     </html>
