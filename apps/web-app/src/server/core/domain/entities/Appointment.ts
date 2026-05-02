@@ -44,6 +44,7 @@ export interface Appointment {
       id: string;
       firstName: string;
       lastName?: string | null;
+      email?: string | null;
       pictureFullPath?: string | null;
     };
   } | null;
@@ -54,6 +55,7 @@ export interface Appointment {
     description?: string | null;
     price: number;
     durationMinutes: number;
+    category?: { id: string; name: string } | null;
   };
 
   business?: {

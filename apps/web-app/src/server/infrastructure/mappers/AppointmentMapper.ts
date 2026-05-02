@@ -12,6 +12,7 @@ import {
   User as PrismaUser,
   BusinessUser as PrismaBusinessUser,
   Service as PrismaService,
+  ServiceCategory as PrismaServiceCategory,
   Business as PrismaBusiness,
 } from "db";
 import type { BusinessNotificationSettings } from "notifications";
@@ -27,7 +28,7 @@ type PrismaAppointmentWithRelations = PrismaAppointment & {
         user: PrismaUser;
       })
     | null;
-  service?: PrismaService;
+  service?: PrismaService & { category?: PrismaServiceCategory | null };
   business?: PrismaBusiness;
 };
 
@@ -72,6 +73,7 @@ export class AppointmentMapper {
               id: prismaAppointment.providerBusinessUser.user.id,
               firstName: prismaAppointment.providerBusinessUser.user.firstName,
               lastName: prismaAppointment.providerBusinessUser.user.lastName,
+              email: prismaAppointment.providerBusinessUser.user.email,
               pictureFullPath:
                 prismaAppointment.providerBusinessUser.user.pictureFullPath,
             },
@@ -85,6 +87,12 @@ export class AppointmentMapper {
             description: prismaAppointment.service.description,
             price: Number(prismaAppointment.service.price),
             durationMinutes: prismaAppointment.service.durationMinutes,
+            category: prismaAppointment.service.category
+              ? {
+                  id: prismaAppointment.service.category.id,
+                  name: prismaAppointment.service.category.name,
+                }
+              : null,
           }
         : undefined,
 

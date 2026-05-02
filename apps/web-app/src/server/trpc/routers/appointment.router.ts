@@ -21,6 +21,7 @@ import {
   GetCustomerPastAppointmentsUseCase,
   CreateAppointmentUseCase,
   GetBusinessAppointmentsUseCase,
+  UpdateAppointmentStatusUseCase,
 } from "@/server/core/application/use-cases/appointment";
 import {
   EnqueueAppointmentNotificationUseCase,
@@ -241,5 +242,38 @@ export const appointmentRouter = router({
         appointments: result.appointments || [],
         total: result.total || 0,
       };
+    }),
+
+  /**
+   * Update appointment status (PRIVATE)
+   * Validates allowed transitions before updating
+   */
+  updateStatus: businessMemberProcedure
+    .input(
+      z.object({
+        appointmentId: z.string().uuid(),
+        status: z.enum(["scheduled", "confirmed", "completed", "cancelled"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const appointmentRepository = new PrismaAppointmentRepository();
+      const updateStatusUseCase = new UpdateAppointmentStatusUseCase(
+        appointmentRepository
+      );
+
+      const result = await updateStatusUseCase.execute({
+        appointmentId: input.appointmentId,
+        businessId: ctx.businessId,
+        status: input.status,
+      });
+
+      if (!result.success || !result.appointment) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: result.error || "Failed to update appointment status",
+        });
+      }
+
+      return { appointment: result.appointment };
     }),
 });
