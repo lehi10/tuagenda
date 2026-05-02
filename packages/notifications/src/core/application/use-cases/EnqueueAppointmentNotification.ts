@@ -9,11 +9,11 @@ export interface BusinessNotificationSettings {
 }
 
 export interface AppointmentData {
-  id: string;
+  id?: string;
   businessId: string;
   startTime: Date;
   endTime: Date;
-  notes: string | null;
+  notes?: string | null;
   customer?: {
     firstName: string;
     lastName?: string | null;
@@ -53,6 +53,10 @@ export class EnqueueAppointmentNotificationUseCase {
     try {
       const { appointment, event } = input;
 
+      if (!appointment.id) {
+        return { success: false, error: "Appointment ID is missing" };
+      }
+
       const settings = appointment.business?.notificationSettings;
       const channels: NotificationChannel[] = settings?.channels ?? [];
 
@@ -66,7 +70,7 @@ export class EnqueueAppointmentNotificationUseCase {
 
       const payload: NotificationJobPayload = {
         event,
-        appointmentId: appointment.id,
+        appointmentId: appointment.id!,
         businessId: appointment.businessId,
         channels,
         templates: settings?.templates ?? {},
@@ -90,7 +94,7 @@ export class EnqueueAppointmentNotificationUseCase {
         appointment: {
           startTime: appointment.startTime.toISOString(),
           endTime: appointment.endTime.toISOString(),
-          notes: appointment.notes,
+          notes: appointment.notes ?? null,
         },
       };
 
