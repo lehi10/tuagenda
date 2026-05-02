@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -98,6 +98,7 @@ interface AppointmentDetailSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onStatusChange: (id: string, status: AppointmentStatus) => void;
+  isPendingStatusChange?: boolean;
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -176,6 +177,7 @@ export function AppointmentDetailSheet({
   open,
   onOpenChange,
   onStatusChange,
+  isPendingStatusChange = false,
 }: AppointmentDetailSheetProps) {
   const { timezone } = useBusinessTimezone();
   const { currentBusiness } = useBusiness();
@@ -189,6 +191,8 @@ export function AppointmentDetailSheet({
   const [rescheduleDate, setRescheduleDate] = useState<Date | undefined>();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
+  const wasPending = useRef(false);
+
   useEffect(() => {
     if (appointment) {
       setEditedStatus(appointment.status);
@@ -198,6 +202,17 @@ export function AppointmentDetailSheet({
       setSelectedSlot(null);
     }
   }, [appointment?.id, appointment?.status, appointment?.notes]);
+
+  // When the mutation finishes, revert editedStatus to the real server status.
+  // This handles the failure case where appointment.status never changed so the
+  // effect above wouldn't fire, leaving editedStatus stuck on the failed value.
+  useEffect(() => {
+    if (wasPending.current && !isPendingStatusChange && appointment) {
+      setEditedStatus(appointment.status);
+      setIsDirty(false);
+    }
+    wasPending.current = isPendingStatusChange;
+  }, [isPendingStatusChange, appointment]);
 
   const handleStatusChange = useCallback((value: AppointmentStatus) => {
     setEditedStatus(value);
@@ -280,7 +295,16 @@ export function AppointmentDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="flex flex-col p-0">
+      <SheetContent
+        side="right"
+        className="flex flex-col p-0"
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest("[data-sonner-toaster]")) {
+            e.preventDefault();
+          }
+        }}
+      >
         {/* ── Header ─────────────────────────── */}
         <SheetHeader className="px-5 pt-5 pb-3 border-b space-y-1.5">
           <div className="flex items-center justify-between pr-7">

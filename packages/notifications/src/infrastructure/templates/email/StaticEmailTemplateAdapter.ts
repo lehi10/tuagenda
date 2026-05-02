@@ -3,17 +3,18 @@ import type {
   RenderedEmail,
 } from "../../../core/domain/ports/IEmailTemplatePort";
 import { renderAppointmentCreated } from "./appointment-created";
+import { renderAppointmentConfirmed } from "./appointment-confirmed";
+import { renderAppointmentCompleted } from "./appointment-completed";
 import { renderAppointmentCancelled } from "./appointment-cancelled";
 
-type TemplateRenderer = (
-  data: Record<string, string | number>
-) => RenderedEmail;
+type TemplateData = Parameters<typeof renderAppointmentCreated>[0];
+type TemplateRenderer = (data: TemplateData) => RenderedEmail;
 
 const templates: Record<string, TemplateRenderer> = {
-  "appointment.created": (data) =>
-    renderAppointmentCreated(data as unknown as Parameters<typeof renderAppointmentCreated>[0]),
-  "appointment.cancelled": (data) =>
-    renderAppointmentCancelled(data as unknown as Parameters<typeof renderAppointmentCancelled>[0]),
+  "appointment.created": renderAppointmentCreated,
+  "appointment.confirmed": renderAppointmentConfirmed,
+  "appointment.completed": renderAppointmentCompleted,
+  "appointment.cancelled": renderAppointmentCancelled,
 };
 
 export class StaticEmailTemplateAdapter implements IEmailTemplatePort {
@@ -23,6 +24,6 @@ export class StaticEmailTemplateAdapter implements IEmailTemplatePort {
   ): RenderedEmail | null {
     const renderer = templates[templateName];
     if (!renderer) return null;
-    return renderer(data);
+    return renderer(data as unknown as TemplateData);
   }
 }

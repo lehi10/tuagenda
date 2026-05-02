@@ -7,11 +7,14 @@
  * @module core/domain/entities
  */
 
-export type AppointmentStatus =
-  | "scheduled"
-  | "confirmed"
-  | "completed"
-  | "cancelled";
+export const APPOINTMENT_STATUSES = [
+  "scheduled",
+  "confirmed",
+  "completed",
+  "cancelled",
+] as const;
+
+export type AppointmentStatus = (typeof APPOINTMENT_STATUSES)[number];
 
 export interface Appointment {
   id?: string;
