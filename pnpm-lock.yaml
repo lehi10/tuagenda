@@ -284,25 +284,6 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  apps/worker:
-    dependencies:
-      bullmq:
-        specifier: ^5.0.0
-        version: 5.76.4
-      notifications:
-        specifier: workspace:*
-        version: link:../../packages/notifications
-    devDependencies:
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.19.23
-      tsx:
-        specifier: ^4.20.6
-        version: 4.20.6
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-
   packages/auth:
     dependencies:
       '@prisma/client':
