@@ -1,0 +1,897 @@
+{
+  "version": "1.0",
+  "repoPath": "/Users/lehiquincho/Documents/tuagenda-project/tuagenda",
+  "repoName": "tuagenda",
+  "generatedAt": "2026-05-01T19:07:43.199Z",
+  "extractionConfig": {
+    "lookbackMonths": 6,
+    "maxTasks": 30
+  },
+  "tasks": [
+    {
+      "id": "bugfix-293a150480-5",
+      "type": "bug-fix",
+      "difficulty": "trivial",
+      "description": "fix: lockfile\n\nFiles changed:\n- pnpm-lock.yaml",
+      "source": {
+        "commit": "293a1504802195856bba165968ba4070541e75a1"
+      },
+      "setup": {
+        "baseCommit": "293a1504802195856bba165968ba4070541e75a1~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "pnpm-lock.yaml"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      }
+    },
+    {
+      "id": "bugfix-39a7fb75e3-14",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: types\n\nFiles changed:\n- apps/web-app/src/client/components/booking/client-info-step.tsx\n- apps/web-app/src/server/core/application/use-cases/user/CreateGuestUser.ts\n- apps/web-app/src/server/trpc/routers/user.router.ts",
+      "source": {
+        "commit": "39a7fb75e3b853bf44b418ff1c115af20b0cb82d"
+      },
+      "setup": {
+        "baseCommit": "39a7fb75e3b853bf44b418ff1c115af20b0cb82d~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/components/booking/client-info-step.tsx",
+        "apps/web-app/src/server/core/application/use-cases/user/CreateGuestUser.ts",
+        "apps/web-app/src/server/trpc/routers/user.router.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-5cb284d35d-13",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: lint\n\nFiles changed:\n- apps/web-app/src/app/(client)/layout.tsx\n- apps/web-app/src/app/(private)/layout.tsx\n- apps/web-app/src/client/components/booking/booking-flow.tsx\n- apps/web-app/src/client/components/booking/payment-step.tsx\n- apps/web-app/src/client/features/appointments/components/appointment-list.tsx\n- apps/web-app/src/client/features/business/components/business-form-dialog.tsx\n- apps/web-app/src/client/features/calendar/components/appointment-detail-modal.tsx\n- apps/web-app/src/client/features/employee-availability/components/availability-manager.tsx\n- apps/web-app/src/client/features/employee-availability/components/exception-manager.tsx\n- apps/web-app/src/client/features/employee-availability/components/weekly-schedule-dialog.tsx\n- ...and 4 more",
+      "source": {
+        "commit": "5cb284d35d87e77f22d9326b0c1ba4582cc771a8"
+      },
+      "setup": {
+        "baseCommit": "5cb284d35d87e77f22d9326b0c1ba4582cc771a8~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/app/(client)/layout.tsx",
+        "apps/web-app/src/app/(private)/layout.tsx",
+        "apps/web-app/src/client/components/booking/booking-flow.tsx",
+        "apps/web-app/src/client/components/booking/payment-step.tsx",
+        "apps/web-app/src/client/features/appointments/components/appointment-list.tsx",
+        "apps/web-app/src/client/features/business/components/business-form-dialog.tsx",
+        "apps/web-app/src/client/features/calendar/components/appointment-detail-modal.tsx",
+        "apps/web-app/src/client/features/employee-availability/components/availability-manager.tsx",
+        "apps/web-app/src/client/features/employee-availability/components/exception-manager.tsx",
+        "apps/web-app/src/client/features/employee-availability/components/weekly-schedule-dialog.tsx",
+        "apps/web-app/src/client/lib/__tests__/timezone-utils.test.ts",
+        "apps/web-app/src/client/types/booking.ts",
+        "apps/web-app/tsconfig.json",
+        "packages/auth/src/authorization-service.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true,
+        "mustPassSpecificTests": [
+          "apps/web-app/src/client/lib/__tests__/timezone-utils.test.ts"
+        ]
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-493c5ce663-1",
+      "type": "bug-fix",
+      "difficulty": "trivial",
+      "description": "fix: handle non-null business id during logo upload\n\nFiles changed:\n- apps/web-app/src/client/features/business/components/business-form-dialog.tsx",
+      "source": {
+        "commit": "493c5ce663959a1cba3f4c6bc011d6feab5506ca"
+      },
+      "setup": {
+        "baseCommit": "493c5ce663959a1cba3f4c6bc011d6feab5506ca~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/features/business/components/business-form-dialog.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-5e5e592d9b-7",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: packages\n\nFiles changed:\n- apps/web-app/package.json\n- pnpm-lock.yaml",
+      "source": {
+        "commit": "5e5e592d9bcc507e15329e94fa9f4aa8a7dc4e06"
+      },
+      "setup": {
+        "baseCommit": "5e5e592d9bcc507e15329e94fa9f4aa8a7dc4e06~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/package.json",
+        "pnpm-lock.yaml"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-aeba9327a3-10",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: centralized business id\n\nFiles changed:\n- apps/web-app/jest.config.ts\n- apps/web-app/src/app/(private)/calendar/page.tsx\n- apps/web-app/src/app/(private)/dashboard/page.tsx\n- apps/web-app/src/app/layout.tsx\n- apps/web-app/src/client/components/booking/booking-flow.tsx\n- apps/web-app/src/client/components/booking/confirmation-step.tsx\n- apps/web-app/src/client/components/booking/confirmation/booking-details-card.tsx\n- apps/web-app/src/client/components/public-header.tsx\n- apps/web-app/src/client/contexts/business-context.tsx\n- apps/web-app/src/client/features/appointments/components/appointment-list.tsx\n- ...and 34 more",
+      "source": {
+        "commit": "aeba9327a3aeea8ea7ac02ba4148ace92836e70d"
+      },
+      "setup": {
+        "baseCommit": "aeba9327a3aeea8ea7ac02ba4148ace92836e70d~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/jest.config.ts",
+        "apps/web-app/src/app/(private)/calendar/page.tsx",
+        "apps/web-app/src/app/(private)/dashboard/page.tsx",
+        "apps/web-app/src/app/layout.tsx",
+        "apps/web-app/src/client/components/booking/booking-flow.tsx",
+        "apps/web-app/src/client/components/booking/confirmation-step.tsx",
+        "apps/web-app/src/client/components/booking/confirmation/booking-details-card.tsx",
+        "apps/web-app/src/client/components/public-header.tsx",
+        "apps/web-app/src/client/contexts/business-context.tsx",
+        "apps/web-app/src/client/features/appointments/components/appointment-list.tsx",
+        "apps/web-app/src/client/features/appointments/components/appointment-stats.tsx",
+        "apps/web-app/src/client/features/dashboard/components/dashboard-stats.tsx",
+        "apps/web-app/src/client/features/dashboard/components/recent-appointments.tsx",
+        "apps/web-app/src/client/features/employee-availability/components/availability-manager.tsx",
+        "apps/web-app/src/client/features/employee-availability/components/exception-manager.tsx",
+        "apps/web-app/src/client/features/employee-service/components/add-employee-modal.tsx",
+        "apps/web-app/src/client/features/employee-service/components/add-service-modal.tsx",
+        "apps/web-app/src/client/features/employee-service/components/employee-services-sheet.tsx",
+        "apps/web-app/src/client/features/employee-service/components/service-employees-sheet.tsx",
+        "apps/web-app/src/client/features/employees/components/employee-dialog.tsx",
+        "apps/web-app/src/client/features/employees/components/employee-list.tsx",
+        "apps/web-app/src/client/features/services/components/service-form-modal.tsx",
+        "apps/web-app/src/client/features/services/components/services-manager.tsx",
+        "apps/web-app/src/client/i18n/locales/en.ts",
+        "apps/web-app/src/client/i18n/locales/es.ts",
+        "apps/web-app/src/client/lib/trpc/client.ts",
+        "apps/web-app/src/client/lib/trpc/index.ts",
+        "apps/web-app/src/client/lib/trpc/query-provider.tsx",
+        "apps/web-app/src/client/lib/trpc/trpc-provider.tsx",
+        "apps/web-app/src/server/trpc/__tests__/context.test.ts",
+        "apps/web-app/src/server/trpc/middlewares/__tests__/business-access.middleware.test.ts",
+        "apps/web-app/src/server/trpc/middlewares/business-access.middleware.ts",
+        "apps/web-app/src/server/trpc/middlewares/index.ts",
+        "apps/web-app/src/server/trpc/procedures.ts",
+        "apps/web-app/src/server/trpc/routers/analytics.router.ts",
+        "apps/web-app/src/server/trpc/routers/appointment.router.ts",
+        "apps/web-app/src/server/trpc/routers/businessUser.router.ts",
+        "apps/web-app/src/server/trpc/routers/employeeAvailability.router.ts",
+        "apps/web-app/src/server/trpc/routers/employeeException.router.ts",
+        "apps/web-app/src/server/trpc/routers/employeeService.router.ts",
+        "apps/web-app/src/server/trpc/routers/service.router.ts",
+        "apps/web-app/src/server/trpc/routers/serviceCategory.router.ts",
+        "apps/web-app/src/server/trpc/server.ts",
+        "apps/web-app/src/server/trpc/trpc.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true,
+        "mustPassSpecificTests": [
+          "apps/web-app/src/server/trpc/__tests__/context.test.ts",
+          "apps/web-app/src/server/trpc/middlewares/__tests__/business-access.middleware.test.ts"
+        ]
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-9c89f5c919-9",
+      "type": "bug-fix",
+      "difficulty": "trivial",
+      "description": "fix: invalidate query cache on business switch\n\nFiles changed:\n- apps/web-app/src/client/contexts/business-context.tsx",
+      "source": {
+        "commit": "9c89f5c9197178e9e060de1194680d1e1af4c58f"
+      },
+      "setup": {
+        "baseCommit": "9c89f5c9197178e9e060de1194680d1e1af4c58f~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/contexts/business-context.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-64aaaa3898-20",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: /api/business hexagonal arch\n\nFiles changed:\n- apps/web-app/src/app/api/business/[id]/route.ts\n- apps/web-app/src/app/api/business/route.ts",
+      "source": {
+        "commit": "64aaaa3898589e0aa158bbb1a5079008b7f26772"
+      },
+      "setup": {
+        "baseCommit": "64aaaa3898589e0aa158bbb1a5079008b7f26772~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/app/api/business/[id]/route.ts",
+        "apps/web-app/src/app/api/business/route.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-2134aba1a8-16",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: improvements service form: refactor of component and allow 0 in hours\n\nFiles changed:\n- apps/web-app/src/client/features/services/components/service-form-modal.tsx",
+      "source": {
+        "commit": "2134aba1a85d701528ecbe36efcb060ddb11283c"
+      },
+      "setup": {
+        "baseCommit": "2134aba1a85d701528ecbe36efcb060ddb11283c~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/features/services/components/service-form-modal.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-9e3a6b77be-8",
+      "type": "bug-fix",
+      "difficulty": "trivial",
+      "description": "fix: lint\n\nFiles changed:\n- apps/web-app/src/client/features/appointments/components/appointment-list.tsx",
+      "source": {
+        "commit": "9e3a6b77be0a18529cb018cff4cb38defc1a5de8"
+      },
+      "setup": {
+        "baseCommit": "9e3a6b77be0a18529cb018cff4cb38defc1a5de8~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/features/appointments/components/appointment-list.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-9e223c3962-22",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: typos\n\nFiles changed:\n- apps/web-app/src/app/(booking)/[slug]/page.tsx\n- apps/web-app/src/features/business/components/business-list.tsx",
+      "source": {
+        "commit": "9e223c396269fd5ef3cc36dbdb0d802b02d8bf67"
+      },
+      "setup": {
+        "baseCommit": "9e223c396269fd5ef3cc36dbdb0d802b02d8bf67~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/app/(booking)/[slug]/page.tsx",
+        "apps/web-app/src/features/business/components/business-list.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-9074dedb3b-21",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: sidebar\n\nFiles changed:\n- apps/web-app/src/components/app-sidebar.tsx\n- apps/web-app/src/components/nav-main.tsx\n- apps/web-app/src/i18n/locales/en.ts\n- apps/web-app/src/i18n/locales/es.ts\n- apps/web-app/src/i18n/locales/fr.ts\n- apps/web-app/src/i18n/locales/pt.ts\n- apps/web-app/src/i18n/locales/qu.ts",
+      "source": {
+        "commit": "9074dedb3bf6aaa142686ac3c719855303954888"
+      },
+      "setup": {
+        "baseCommit": "9074dedb3bf6aaa142686ac3c719855303954888~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/components/app-sidebar.tsx",
+        "apps/web-app/src/components/nav-main.tsx",
+        "apps/web-app/src/i18n/locales/en.ts",
+        "apps/web-app/src/i18n/locales/es.ts",
+        "apps/web-app/src/i18n/locales/fr.ts",
+        "apps/web-app/src/i18n/locales/pt.ts",
+        "apps/web-app/src/i18n/locales/qu.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-c6ad4a271e-18",
+      "type": "bug-fix",
+      "difficulty": "trivial",
+      "description": "fix: banner without delays\n\nFiles changed:\n- apps/web-app/src/client/components/waitlist-banner.tsx",
+      "source": {
+        "commit": "c6ad4a271edd0b48bb0a6630b6815fd0d95c1e72"
+      },
+      "setup": {
+        "baseCommit": "c6ad4a271edd0b48bb0a6630b6815fd0d95c1e72~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/components/waitlist-banner.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-a9657066ae-6",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: packges updates\n\nFiles changed:\n- package-lock.json\n- package.json",
+      "source": {
+        "commit": "a9657066ae0812c9a6290a29891b0041f499f66d"
+      },
+      "setup": {
+        "baseCommit": "a9657066ae0812c9a6290a29891b0041f499f66d~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "package-lock.json",
+        "package.json"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      }
+    },
+    {
+      "id": "bugfix-92be364917-19",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "Fix import paths after client/server separation\n\nFiles changed:\n- apps/web-app/src/client/app/(client)/u/appointments/page.tsx\n- apps/web-app/src/client/app/(private)/claims/page.tsx\n- apps/web-app/src/client/app/(private)/users/components/edit-user-dialog.tsx\n- apps/web-app/src/client/app/(private)/users/components/users-table.tsx\n- apps/web-app/src/client/app/(private)/users/constants.ts\n- apps/web-app/src/client/app/(private)/users/page.tsx\n- apps/web-app/src/client/components/booking/booking-flow.tsx\n- apps/web-app/src/client/components/booking/booking-header.tsx\n- apps/web-app/src/client/components/booking/booking-summary.tsx\n- apps/web-app/src/client/components/booking/business-profile.tsx\n- ...and 25 more",
+      "source": {
+        "commit": "92be364917fc512d440a6454a69416b2ddbedb98"
+      },
+      "setup": {
+        "baseCommit": "92be364917fc512d440a6454a69416b2ddbedb98~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/app/(client)/u/appointments/page.tsx",
+        "apps/web-app/src/client/app/(private)/claims/page.tsx",
+        "apps/web-app/src/client/app/(private)/users/components/edit-user-dialog.tsx",
+        "apps/web-app/src/client/app/(private)/users/components/users-table.tsx",
+        "apps/web-app/src/client/app/(private)/users/constants.ts",
+        "apps/web-app/src/client/app/(private)/users/page.tsx",
+        "apps/web-app/src/client/components/booking/booking-flow.tsx",
+        "apps/web-app/src/client/components/booking/booking-header.tsx",
+        "apps/web-app/src/client/components/booking/booking-summary.tsx",
+        "apps/web-app/src/client/components/booking/business-profile.tsx",
+        "apps/web-app/src/client/components/booking/professional-selection.tsx",
+        "apps/web-app/src/client/components/nav-user.tsx",
+        "apps/web-app/src/client/components/shared/stat-card.tsx",
+        "apps/web-app/src/client/contexts/business-context.tsx",
+        "apps/web-app/src/client/features/business/components/business-form-dialog.tsx",
+        "apps/web-app/src/client/features/business/components/business-list.tsx",
+        "apps/web-app/src/client/features/calendar/components/appointments-calendar.tsx",
+        "apps/web-app/src/client/features/calendar/components/calendar-view.tsx",
+        "apps/web-app/src/client/features/calendar/components/day-appointments.tsx",
+        "apps/web-app/src/client/features/clients/components/client-list.tsx",
+        "apps/web-app/src/client/features/dashboard/components/bookings-chart.tsx",
+        "apps/web-app/src/client/features/dashboard/components/employee-performance.tsx",
+        "apps/web-app/src/client/features/dashboard/components/recent-appointments.tsx",
+        "apps/web-app/src/client/features/dashboard/components/revenue-chart.tsx",
+        "apps/web-app/src/client/features/dashboard/components/services-chart.tsx",
+        "apps/web-app/src/client/features/employees/components/employee-dialog.tsx",
+        "apps/web-app/src/client/features/employees/components/employee-list.tsx",
+        "apps/web-app/src/client/features/notifications/components/notification-list.tsx",
+        "apps/web-app/src/client/features/profile/components/personal-info-section.tsx",
+        "apps/web-app/src/client/features/profile/components/profile-photo-section.tsx",
+        "apps/web-app/src/client/hooks/use-business-by-slug.ts",
+        "apps/web-app/src/lib/auth/types.ts",
+        "apps/web-app/src/server/core/application/use-cases/business/ListBusinesses.ts",
+        "apps/web-app/src/server/infrastructure/mappers/BusinessMapper.ts",
+        "apps/web-app/src/shared/types/auth.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-ae69d7b0dd-24",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: Add unique IDs to navigation items to prevent duplicates\n\nFiles changed:\n- apps/web-app/src/components/app-sidebar.tsx\n- apps/web-app/src/components/client-sidebar.tsx\n- apps/web-app/src/components/nav-main.tsx",
+      "source": {
+        "commit": "ae69d7b0dd711ba902640700e44f432c435fb644"
+      },
+      "setup": {
+        "baseCommit": "ae69d7b0dd711ba902640700e44f432c435fb644~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/components/app-sidebar.tsx",
+        "apps/web-app/src/components/client-sidebar.tsx",
+        "apps/web-app/src/components/nav-main.tsx"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-97f719a272-15",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: refactor singleton\n\nFiles changed:\n- apps/web-app/src/client/components/booking/time-slot-selection.tsx\n- apps/web-app/src/server/core/application/use-cases/availability/GetAvailableTimeSlots.ts\n- apps/web-app/src/server/infrastructure/repositories/PrismaEmployeeAvailabilityRepository.ts\n- apps/web-app/src/server/infrastructure/repositories/PrismaEmployeeExceptionRepository.ts\n- apps/web-app/src/server/trpc/routers/businessUser.router.ts\n- apps/web-app/src/server/trpc/routers/employeeAvailability.router.ts\n- apps/web-app/src/server/trpc/routers/employeeException.router.ts",
+      "source": {
+        "commit": "97f719a2729bcd560691704b00f0803f6fdb0fe3"
+      },
+      "setup": {
+        "baseCommit": "97f719a2729bcd560691704b00f0803f6fdb0fe3~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/components/booking/time-slot-selection.tsx",
+        "apps/web-app/src/server/core/application/use-cases/availability/GetAvailableTimeSlots.ts",
+        "apps/web-app/src/server/infrastructure/repositories/PrismaEmployeeAvailabilityRepository.ts",
+        "apps/web-app/src/server/infrastructure/repositories/PrismaEmployeeExceptionRepository.ts",
+        "apps/web-app/src/server/trpc/routers/businessUser.router.ts",
+        "apps/web-app/src/server/trpc/routers/employeeAvailability.router.ts",
+        "apps/web-app/src/server/trpc/routers/employeeException.router.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-c16f82a863-12",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: lint\n\nFiles changed:\n- apps/web-app/src/client/features/calendar/components/full-calendar.tsx\n- apps/web-app/src/client/features/calendar/styles/calendar.css",
+      "source": {
+        "commit": "c16f82a86311be13347891adcb9265a9c4258237"
+      },
+      "setup": {
+        "baseCommit": "c16f82a86311be13347891adcb9265a9c4258237~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/client/features/calendar/components/full-calendar.tsx",
+        "apps/web-app/src/client/features/calendar/styles/calendar.css"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-adacaa25f8-4",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: client page and other improvements\n\nFiles changed:\n- agent-os/specs/2026-04-23-1500-clients-table/plan.md\n- agent-os/specs/2026-04-23-1500-clients-table/references.md\n- agent-os/specs/2026-04-23-1500-clients-table/shape.md\n- agent-os/specs/2026-04-23-1500-clients-table/standards.md\n- apps/web-app/src/app/(booking)/[slug]/page.tsx\n- apps/web-app/src/app/(private)/users/page.tsx\n- apps/web-app/src/client/components/app-sidebar.tsx\n- apps/web-app/src/client/components/nav-main.tsx\n- apps/web-app/src/client/features/clients/components/client-detail-dialog.tsx\n- apps/web-app/src/client/features/clients/components/client-list.tsx\n- ...and 11 more",
+      "source": {
+        "commit": "adacaa25f8f05abae97c20d32a8aa1cec4869331"
+      },
+      "setup": {
+        "baseCommit": "adacaa25f8f05abae97c20d32a8aa1cec4869331~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "agent-os/specs/2026-04-23-1500-clients-table/plan.md",
+        "agent-os/specs/2026-04-23-1500-clients-table/references.md",
+        "agent-os/specs/2026-04-23-1500-clients-table/shape.md",
+        "agent-os/specs/2026-04-23-1500-clients-table/standards.md",
+        "apps/web-app/src/app/(booking)/[slug]/page.tsx",
+        "apps/web-app/src/app/(private)/users/page.tsx",
+        "apps/web-app/src/client/components/app-sidebar.tsx",
+        "apps/web-app/src/client/components/nav-main.tsx",
+        "apps/web-app/src/client/features/clients/components/client-detail-dialog.tsx",
+        "apps/web-app/src/client/features/clients/components/client-list.tsx",
+        "apps/web-app/src/client/features/clients/components/client-stats.tsx",
+        "apps/web-app/src/client/features/clients/components/index.ts",
+        "apps/web-app/src/server/core/application/use-cases/client/GetClientDetail.ts",
+        "apps/web-app/src/server/core/application/use-cases/client/GetClientStats.ts",
+        "apps/web-app/src/server/core/application/use-cases/client/GetClientsByBusiness.ts",
+        "apps/web-app/src/server/core/domain/repositories/IClientRepository.ts",
+        "apps/web-app/src/server/infrastructure/repositories/PrismaClientRepository.ts",
+        "apps/web-app/src/server/infrastructure/repositories/PrismaEmployeeServiceRepository.ts",
+        "apps/web-app/src/server/trpc/routers/app.router.ts",
+        "apps/web-app/src/server/trpc/routers/businessUser.router.ts",
+        "apps/web-app/src/server/trpc/routers/client.router.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-c49f6497e6-17",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix(docs): correct Mermaid syntax for implementation arrows\n\nFiles changed:\n- docs/docs/architecture/hexagonal.md\n- docs/docs/architecture/overview.md",
+      "source": {
+        "commit": "c49f6497e659eb60b4256bf2578376aa593de6f1"
+      },
+      "setup": {
+        "baseCommit": "c49f6497e659eb60b4256bf2578376aa593de6f1~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "docs/docs/architecture/hexagonal.md",
+        "docs/docs/architecture/overview.md"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      }
+    },
+    {
+      "id": "bugfix-ce0af3aebd-3",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "feat: fix critical issues on /clients page\n\nFiles changed:\n- apps/web-app/src/app/(private)/clients/page.tsx\n- apps/web-app/src/client/features/clients/components/client-detail-dialog.tsx\n- apps/web-app/src/client/features/clients/components/client-form-dialog.tsx\n- apps/web-app/src/client/features/clients/components/client-list.tsx\n- apps/web-app/src/client/features/clients/components/client-stats.tsx\n- apps/web-app/src/client/features/clients/components/index.ts\n- apps/web-app/src/client/i18n/locales/en.ts\n- apps/web-app/src/client/i18n/locales/es.ts\n- apps/web-app/src/server/core/application/use-cases/client/CreateGuestClient.ts\n- apps/web-app/src/server/core/domain/repositories/IClientRepository.ts\n- ...and 2 more",
+      "source": {
+        "commit": "ce0af3aebdeb387027c25007678b992e8421b37f"
+      },
+      "setup": {
+        "baseCommit": "ce0af3aebdeb387027c25007678b992e8421b37f~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/app/(private)/clients/page.tsx",
+        "apps/web-app/src/client/features/clients/components/client-detail-dialog.tsx",
+        "apps/web-app/src/client/features/clients/components/client-form-dialog.tsx",
+        "apps/web-app/src/client/features/clients/components/client-list.tsx",
+        "apps/web-app/src/client/features/clients/components/client-stats.tsx",
+        "apps/web-app/src/client/features/clients/components/index.ts",
+        "apps/web-app/src/client/i18n/locales/en.ts",
+        "apps/web-app/src/client/i18n/locales/es.ts",
+        "apps/web-app/src/server/core/application/use-cases/client/CreateGuestClient.ts",
+        "apps/web-app/src/server/core/domain/repositories/IClientRepository.ts",
+        "apps/web-app/src/server/infrastructure/repositories/PrismaClientRepository.ts",
+        "apps/web-app/src/server/trpc/routers/client.router.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-d85e1acfb5-2",
+      "type": "bug-fix",
+      "difficulty": "moderate",
+      "description": "fix: add missing @vercel/analytics dependency\n\nFiles changed:\n- apps/web-app/package.json\n- pnpm-lock.yaml",
+      "source": {
+        "commit": "d85e1acfb5b01df4564eecf63c9807afa04cc893"
+      },
+      "setup": {
+        "baseCommit": "d85e1acfb5b01df4564eecf63c9807afa04cc893~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/package.json",
+        "pnpm-lock.yaml"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "bugfix-d846a4e9ec-25",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: refactor\n\nFiles changed:\n- apps/web-app/src/actions/user/get-user.action.ts\n- apps/web-app/src/actions/user/update-user.action.ts\n- apps/web-app/src/core/application/use-cases/user/UpdateUser.ts\n- apps/web-app/src/core/application/use-cases/user/index.ts\n- apps/web-app/src/features/profile/components/personal-info-section.tsx\n- apps/web-app/src/features/profile/components/profile-photo-section.tsx\n- apps/web-app/src/infrastructure/mappers/UserToPrismaType.ts\n- apps/web-app/src/lib/auth/types.ts",
+      "source": {
+        "commit": "d846a4e9ec8d7f7a45f1571ceb0a3d6df8e16f0d"
+      },
+      "setup": {
+        "baseCommit": "d846a4e9ec8d7f7a45f1571ceb0a3d6df8e16f0d~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/actions/user/get-user.action.ts",
+        "apps/web-app/src/actions/user/update-user.action.ts",
+        "apps/web-app/src/core/application/use-cases/user/UpdateUser.ts",
+        "apps/web-app/src/core/application/use-cases/user/index.ts",
+        "apps/web-app/src/features/profile/components/personal-info-section.tsx",
+        "apps/web-app/src/features/profile/components/profile-photo-section.tsx",
+        "apps/web-app/src/infrastructure/mappers/UserToPrismaType.ts",
+        "apps/web-app/src/lib/auth/types.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "todo-0-packages-auth-src-authorization-service--32",
+      "type": "todo",
+      "difficulty": "moderate",
+      "description": "Resolve this TODO: Implement your authorization logic here\n\nLocation: packages/auth/src/authorization-service.ts:32\n\nContext:\n  public static getInstance(prisma: PrismaClient): AuthorizationService {\n    if (!AuthorizationService.instance) {\n      AuthorizationService.instance = new AuthorizationService(prisma);\n    }\n    return AuthorizationService.instance;\n  }\n\n  /**\n   * Check if user has permission to perform action on resource in business\n   *\n   * TODO: Implement your authorization logic here\n   * Currently returns true for all requests\n   */\n  async can(_request: AuthorizationRequest): Promise<boolean> {\n    // TODO: Implement your authorization logic\n    // Example: Check BusinessUser role, user type, etc.\n    return true;\n  }\n\n  /**\n   * Assign role to user in a business domain",
+      "source": {
+        "file": "packages/auth/src/authorization-service.ts",
+        "line": 32
+      },
+      "setup": {
+        "baseCommit": "HEAD",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "packages/auth/src/authorization-service.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "auth"
+    },
+    {
+      "id": "bugfix-edcd320077-11",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: lint\n\nFiles changed:\n- apps/web-app/src/app/(private)/dashboard/page.tsx\n- apps/web-app/src/client/components/booking/time-slot-selection.tsx\n- apps/web-app/src/client/components/business-banner.tsx\n- apps/web-app/src/client/features/calendar/components/full-calendar.tsx\n- apps/web-app/src/client/features/calendar/utils/event-adapter.ts\n- apps/web-app/src/client/features/dashboard/components/bookings-chart.tsx\n- apps/web-app/src/client/features/dashboard/components/dashboard-stats.tsx\n- apps/web-app/src/client/features/dashboard/components/employee-performance.tsx\n- apps/web-app/src/client/features/dashboard/components/recent-appointments.tsx\n- apps/web-app/src/client/features/dashboard/components/revenue-chart.tsx\n- ...and 3 more",
+      "source": {
+        "commit": "edcd3200771876eb3e215fbe2544ecf9be777c53"
+      },
+      "setup": {
+        "baseCommit": "edcd3200771876eb3e215fbe2544ecf9be777c53~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/app/(private)/dashboard/page.tsx",
+        "apps/web-app/src/client/components/booking/time-slot-selection.tsx",
+        "apps/web-app/src/client/components/business-banner.tsx",
+        "apps/web-app/src/client/features/calendar/components/full-calendar.tsx",
+        "apps/web-app/src/client/features/calendar/utils/event-adapter.ts",
+        "apps/web-app/src/client/features/dashboard/components/bookings-chart.tsx",
+        "apps/web-app/src/client/features/dashboard/components/dashboard-stats.tsx",
+        "apps/web-app/src/client/features/dashboard/components/employee-performance.tsx",
+        "apps/web-app/src/client/features/dashboard/components/recent-appointments.tsx",
+        "apps/web-app/src/client/features/dashboard/components/revenue-chart.tsx",
+        "apps/web-app/src/client/features/dashboard/components/services-chart.tsx",
+        "apps/web-app/src/server/infrastructure/repositories/PrismaAnalyticsRepository.ts",
+        "apps/web-app/src/server/trpc/routers/analytics.router.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "todo-1-packages-auth-src-authorization-service--36",
+      "type": "todo",
+      "difficulty": "moderate",
+      "description": "Resolve this TODO: Implement your authorization logic\n\nLocation: packages/auth/src/authorization-service.ts:36\n\nContext:\n    return AuthorizationService.instance;\n  }\n\n  /**\n   * Check if user has permission to perform action on resource in business\n   *\n   * TODO: Implement your authorization logic here\n   * Currently returns true for all requests\n   */\n  async can(_request: AuthorizationRequest): Promise<boolean> {\n    // TODO: Implement your authorization logic\n    // Example: Check BusinessUser role, user type, etc.\n    return true;\n  }\n\n  /**\n   * Assign role to user in a business domain\n   *\n   * TODO: Implement if needed (role is already stored in BusinessUser)\n   */\n  async assignRole(",
+      "source": {
+        "file": "packages/auth/src/authorization-service.ts",
+        "line": 36
+      },
+      "setup": {
+        "baseCommit": "HEAD",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "packages/auth/src/authorization-service.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "auth"
+    },
+    {
+      "id": "bugfix-f50192d73e-23",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: Replace hardcoded text with i18n translations\n\nFiles changed:\n- apps/web-app/src/components/booking/client-info-step.tsx\n- apps/web-app/src/components/booking/confirmation-step.tsx\n- apps/web-app/src/components/booking/payment-step.tsx\n- apps/web-app/src/components/client-sidebar.tsx\n- apps/web-app/src/i18n/locales/en.ts\n- apps/web-app/src/i18n/locales/es.ts\n- apps/web-app/src/i18n/locales/pt.ts\n- apps/web-app/src/i18n/locales/qu.ts",
+      "source": {
+        "commit": "f50192d73ecb695a78db91c2281cf56b2ab2a7e1"
+      },
+      "setup": {
+        "baseCommit": "f50192d73ecb695a78db91c2281cf56b2ab2a7e1~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/components/booking/client-info-step.tsx",
+        "apps/web-app/src/components/booking/confirmation-step.tsx",
+        "apps/web-app/src/components/booking/payment-step.tsx",
+        "apps/web-app/src/components/client-sidebar.tsx",
+        "apps/web-app/src/i18n/locales/en.ts",
+        "apps/web-app/src/i18n/locales/es.ts",
+        "apps/web-app/src/i18n/locales/pt.ts",
+        "apps/web-app/src/i18n/locales/qu.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "todo-2-packages-auth-src-authorization-service--44",
+      "type": "todo",
+      "difficulty": "moderate",
+      "description": "Resolve this TODO: Implement if needed (role is already stored in BusinessUser)\n\nLocation: packages/auth/src/authorization-service.ts:44\n\nContext:\n   */\n  async can(_request: AuthorizationRequest): Promise<boolean> {\n    // TODO: Implement your authorization logic\n    // Example: Check BusinessUser role, user type, etc.\n    return true;\n  }\n\n  /**\n   * Assign role to user in a business domain\n   *\n   * TODO: Implement if needed (role is already stored in BusinessUser)\n   */\n  async assignRole(\n    _userId: string,\n    _role: Role,\n    _businessId: string,\n  ): Promise<boolean> {\n    // TODO: Implement if you need additional role tracking\n    // The role is already stored in BusinessUser table\n    return true;\n  }",
+      "source": {
+        "file": "packages/auth/src/authorization-service.ts",
+        "line": 44
+      },
+      "setup": {
+        "baseCommit": "HEAD",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "packages/auth/src/authorization-service.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "auth"
+    },
+    {
+      "id": "bugfix-fe5ec4fc1a-0",
+      "type": "bug-fix",
+      "difficulty": "hard",
+      "description": "fix: wip on menu updated\n\nFiles changed:\n- apps/web-app/src/app/(private)/notifications/page.tsx\n- apps/web-app/src/client/components/app-sidebar.tsx\n- apps/web-app/src/client/features/notifications/components/index.ts\n- apps/web-app/src/client/features/notifications/components/notification-list.tsx\n- packages/db/index.ts",
+      "source": {
+        "commit": "fe5ec4fc1a4586e54ad9054b6c6aee394802597c"
+      },
+      "setup": {
+        "baseCommit": "fe5ec4fc1a4586e54ad9054b6c6aee394802597c~1",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "apps/web-app/src/app/(private)/notifications/page.tsx",
+        "apps/web-app/src/client/components/app-sidebar.tsx",
+        "apps/web-app/src/client/features/notifications/components/index.ts",
+        "apps/web-app/src/client/features/notifications/components/notification-list.tsx",
+        "packages/db/index.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "web-app"
+    },
+    {
+      "id": "todo-3-packages-auth-src-authorization-service--51",
+      "type": "todo",
+      "difficulty": "moderate",
+      "description": "Resolve this TODO: Implement if you need additional role tracking\n\nLocation: packages/auth/src/authorization-service.ts:51\n\nContext:\n  /**\n   * Assign role to user in a business domain\n   *\n   * TODO: Implement if needed (role is already stored in BusinessUser)\n   */\n  async assignRole(\n    _userId: string,\n    _role: Role,\n    _businessId: string,\n  ): Promise<boolean> {\n    // TODO: Implement if you need additional role tracking\n    // The role is already stored in BusinessUser table\n    return true;\n  }\n\n  /**\n   * Remove role from user in a business domain\n   *\n   * TODO: Implement if needed\n   */\n  async removeRole(",
+      "source": {
+        "file": "packages/auth/src/authorization-service.ts",
+        "line": 51
+      },
+      "setup": {
+        "baseCommit": "HEAD",
+        "installCmd": "npm install"
+      },
+      "relevantFiles": [
+        "packages/auth/src/authorization-service.ts"
+      ],
+      "successCriteria": {
+        "mustApplyCleanly": true,
+        "mustBuild": true,
+        "mustPassExistingTests": true,
+        "mustPassLint": true
+      },
+      "workspaceName": "auth"
+    }
+  ],
+  "stats": {
+    "total": 30,
+    "byType": {
+      "bug-fix": 26,
+      "todo": 4,
+      "fixme": 0
+    },
+    "byDifficulty": {
+      "trivial": 5,
+      "moderate": 13,
+      "hard": 12
+    }
+  }
+}

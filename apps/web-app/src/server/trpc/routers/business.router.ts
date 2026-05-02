@@ -20,6 +20,7 @@ import {
   UpdateBusinessUseCase,
   DeleteBusinessUseCase,
   ListBusinessesUseCase,
+  UpdateNotificationSettingsUseCase,
 } from "@/server/core/application/use-cases/business";
 import { GetBusinessesByIdsUseCase } from "@/server/core/application/use-cases/business/GetBusinessesByIds";
 
@@ -242,6 +243,38 @@ export const businessRouter = router({
         businesses: result.businesses.map((b) => b.toObject()),
         total: result.total || 0,
       };
+    }),
+
+  /**
+   * Update notification settings for a business (PRIVATE)
+   */
+  updateNotificationSettings: privateProcedure
+    .input(
+      z.object({
+        id: z.string().uuid("Business ID must be a valid UUID"),
+        notificationSettings: z
+          .object({
+            channels: z.array(z.enum(["email", "whatsapp"])).optional(),
+          })
+          .nullable(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const businessRepository = new PrismaBusinessRepository();
+      const useCase = new UpdateNotificationSettingsUseCase(businessRepository);
+      const result = await useCase.execute({
+        id: input.id,
+        notificationSettings: input.notificationSettings,
+      });
+
+      if (!result.success || !result.business) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error || "Failed to update notification settings",
+        });
+      }
+
+      return result.business.toObject();
     }),
 
   /**

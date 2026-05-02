@@ -68,5 +68,8 @@ export interface Appointment {
     email?: string;
     website?: string | null;
     currency?: string;
+    notificationSettings?:
+      | import("notifications").BusinessNotificationSettings
+      | null;
   };
 }

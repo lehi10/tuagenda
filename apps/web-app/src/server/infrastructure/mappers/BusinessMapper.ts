@@ -8,6 +8,7 @@
  */
 
 import { Business as PrismaBusiness, Prisma } from "db";
+import type { BusinessNotificationSettings } from "notifications";
 import {
   Business,
   BusinessStatus,
@@ -42,6 +43,8 @@ export class BusinessMapper {
       latitude: prismaBusiness.latitude,
       longitude: prismaBusiness.longitude,
       socialLinks: (prismaBusiness.socialLinks ?? null) as SocialLinks | null,
+      notificationSettings: (prismaBusiness.notificationSettings ??
+        null) as BusinessNotificationSettings | null,
       createdAt: prismaBusiness.createdAt,
       updatedAt: prismaBusiness.updatedAt,
     });
@@ -74,6 +77,9 @@ export class BusinessMapper {
       latitude: businessObj.latitude,
       longitude: businessObj.longitude,
       socialLinks: businessObj.socialLinks ?? Prisma.JsonNull,
+      notificationSettings:
+        (businessObj.notificationSettings as unknown as Prisma.InputJsonValue) ??
+        Prisma.JsonNull,
     };
   }
 
@@ -104,6 +110,9 @@ export class BusinessMapper {
       latitude: businessObj.latitude,
       longitude: businessObj.longitude,
       socialLinks: businessObj.socialLinks ?? Prisma.JsonNull,
+      notificationSettings:
+        (businessObj.notificationSettings as unknown as Prisma.InputJsonValue) ??
+        Prisma.JsonNull,
       updatedAt: new Date(),
     };
   }

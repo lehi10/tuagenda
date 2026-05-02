@@ -199,7 +199,9 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col pb-[env(safe-area-inset-bottom)]">{children}</div>
+          <div className="flex h-full w-full flex-col pb-[env(safe-area-inset-bottom)]">
+            {children}
+          </div>
         </SheetContent>
       </Sheet>
     );
@@ -266,7 +268,10 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("size-9 [&_svg]:size-5 md:size-7 md:[&_svg]:size-4", className)}
+      className={cn(
+        "size-9 [&_svg]:size-5 md:size-7 md:[&_svg]:size-4",
+        className
+      )}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();

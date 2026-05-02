@@ -45,3 +45,9 @@ export {
   type ListBusinessesInput,
   type ListBusinessesResult,
 } from "./ListBusinesses";
+
+export {
+  UpdateNotificationSettingsUseCase,
+  type UpdateNotificationSettingsInput,
+  type UpdateNotificationSettingsResult,
+} from "./UpdateNotificationSettings";

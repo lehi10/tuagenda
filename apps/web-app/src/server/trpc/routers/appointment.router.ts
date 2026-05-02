@@ -22,6 +22,11 @@ import {
   CreateAppointmentUseCase,
   GetBusinessAppointmentsUseCase,
 } from "@/server/core/application/use-cases/appointment";
+import {
+  EnqueueAppointmentNotificationUseCase,
+  NotificationEvent,
+} from "notifications";
+import { BullMQNotificationQueueAdapter } from "notifications/infrastructure";
 
 export const appointmentRouter = router({
   /**
@@ -143,6 +148,29 @@ export const appointmentRouter = router({
           isGroup: input.isGroup || false,
           capacity: input.capacity || null,
         });
+
+        // fire-and-forget — nunca falla la cita si Redis falla
+        try {
+          const queueAdapter = new BullMQNotificationQueueAdapter();
+          const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(
+            queueAdapter
+          );
+          console.log(
+            "[notifications] enqueueing for appointment:",
+            appointment.id,
+            {
+              channels: appointment.business?.notificationSettings?.channels,
+              customerEmail: appointment.customer?.email,
+            }
+          );
+          const enqueueResult = await enqueueUseCase.execute({
+            event: NotificationEvent.APPOINTMENT_CREATED,
+            appointment,
+          });
+          console.log("[notifications] enqueue result:", enqueueResult);
+        } catch (e) {
+          console.error("[notifications] Failed to enqueue:", e);
+        }
 
         return { appointment };
       } catch (error) {

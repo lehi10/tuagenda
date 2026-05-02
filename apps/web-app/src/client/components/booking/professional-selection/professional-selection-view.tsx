@@ -14,8 +14,7 @@ import {
   AvatarImage,
 } from "@/client/components/ui/avatar";
 import { useTranslation } from "@/client/i18n";
-import { UserX, Check } from "lucide-react";
-import { EmptyState } from "@/client/components/booking/shared/empty-state";
+import { Check } from "lucide-react";
 import { LoadingSpinner } from "@/client/components/booking/shared/loading-spinner";
 import { getInitials } from "@/client/lib/booking-utils";
 import { cn } from "@/client/lib/utils";
@@ -51,7 +50,20 @@ export function ProfessionalSelectionView({
 
       {/* Empty State */}
       {!isLoading && professionals.length === 0 && (
-        <EmptyState icon={UserX} message={t.booking.professional.noStaff} />
+        <div className="rounded-2xl border-2 border-dashed border-muted py-14 px-6 flex flex-col items-center text-center gap-3">
+          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center text-3xl">
+            👤
+          </div>
+          <div className="space-y-1">
+            <p className="font-semibold text-foreground">
+              Sin profesionales disponibles
+            </p>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              No hay profesionales disponibles para este servicio en este
+              momento. Intenta con otra fecha o contáctalos directamente.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Professionals Grid */}

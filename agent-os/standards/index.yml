@@ -1,6 +1,8 @@
 # Agent OS Standards Index
 
 architecture:
+  ports-and-adapters:
+    description: Port naming (I prefix, /repositories/ for DB, /ports/ for external services), adapter naming (Prisma{Entity}Repository), import rules
   entity-structure:
     description: Domain entity class structure — private fields, Props interface, constructor validation, touch(), toObject()/fromObject(), static factories
   mapper-convention:

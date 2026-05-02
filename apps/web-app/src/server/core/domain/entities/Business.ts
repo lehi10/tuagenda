@@ -7,6 +7,8 @@
  * @module core/domain/entities
  */
 
+import type { BusinessNotificationSettings } from "notifications";
+
 export type SocialLinks = Record<string, string>;
 
 export enum BusinessStatus {
@@ -38,6 +40,7 @@ export interface BusinessProps {
   latitude?: number | null;
   longitude?: number | null;
   socialLinks?: SocialLinks | null;
+  notificationSettings?: BusinessNotificationSettings | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -71,6 +74,7 @@ export class Business {
   private _latitude: number | null;
   private _longitude: number | null;
   private _socialLinks: SocialLinks | null;
+  private _notificationSettings: BusinessNotificationSettings | null;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
 
@@ -129,6 +133,7 @@ export class Business {
     this._latitude = props.latitude || null;
     this._longitude = props.longitude || null;
     this._socialLinks = props.socialLinks || null;
+    this._notificationSettings = props.notificationSettings ?? null;
     this._createdAt = props.createdAt || new Date();
     this._updatedAt = props.updatedAt || new Date();
   }
@@ -220,6 +225,10 @@ export class Business {
 
   get socialLinks(): SocialLinks | null {
     return this._socialLinks;
+  }
+
+  get notificationSettings(): BusinessNotificationSettings | null {
+    return this._notificationSettings;
   }
 
   get createdAt(): Date {
@@ -399,6 +408,13 @@ export class Business {
     this.touch();
   }
 
+  updateNotificationSettings(
+    settings: BusinessNotificationSettings | null
+  ): void {
+    this._notificationSettings = settings;
+    this.touch();
+  }
+
   /**
    * Update location coordinates
    */
@@ -453,6 +469,7 @@ export class Business {
       latitude: this._latitude,
       longitude: this._longitude,
       socialLinks: this._socialLinks,
+      notificationSettings: this._notificationSettings,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
     };

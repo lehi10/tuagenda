@@ -15,6 +15,10 @@ pnpm-debug.log*
 out/
 build/
 
+# Compiled output
+apps/worker/dist/
+packages/notifications/dist/
+
 # Archivos de logs
 *.log
 
