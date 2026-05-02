@@ -14,6 +14,7 @@ import {
   Clock,
   ThumbsUp,
   ChevronUp,
+  Loader2,
   ChevronDown,
   ChevronsUpDown,
 } from "lucide-react";
@@ -193,11 +194,25 @@ export function AppointmentList() {
   const updateStatusMutation = useTrpc.appointment.updateStatus.useMutation({
     onSuccess: (_data, variables) => {
       toast.success(STATUS_LABELS[variables.status] ?? "Estado actualizado");
+      // Update the open sheet to reflect the confirmed new status
+      setSelectedAppointment((prev) =>
+        prev?.id === variables.appointmentId
+          ? { ...prev, status: variables.status }
+          : prev
+      );
       utils.appointment.getBusinessAppointments.invalidate();
-      utils.appointment.getBusinessAppointments.refetch();
     },
-    onError: (error) => {
+    onError: (error, variables) => {
       toast.error(error.message || "Error al actualizar el estado");
+      // Revert the open sheet back to the real status from server data
+      const real = appointments.find((a) => a.id === variables.appointmentId);
+      if (real) {
+        setSelectedAppointment((prev) =>
+          prev?.id === variables.appointmentId
+            ? { ...prev, status: real.status }
+            : prev
+        );
+      }
     },
     onSettled: (_data, _err, variables) => {
       setPendingStatus((prev) => {
@@ -212,16 +227,7 @@ export function AppointmentList() {
   const total = data?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  // Apply optimistic pending overrides
-  const appointmentsWithPending = useMemo(
-    () =>
-      appointments.map((apt: AppointmentEntity) => ({
-        ...apt,
-        status:
-          apt.id && pendingStatus[apt.id] ? pendingStatus[apt.id] : apt.status,
-      })),
-    [appointments, pendingStatus]
-  );
+  const appointmentsWithPending = appointments;
 
   // Client-side search on loaded page
   const searched = useMemo(() => {
@@ -280,12 +286,7 @@ export function AppointmentList() {
 
   const handleStatusChange = useCallback(
     (id: string, status: AppointmentStatus) => {
-      // Optimistic update
       setPendingStatus((prev) => ({ ...prev, [id]: status }));
-      // Update selected appointment in sheet if open
-      setSelectedAppointment((prev) =>
-        prev?.id === id ? { ...prev, status } : prev
-      );
       updateStatusMutation.mutate({ appointmentId: id, status });
     },
     [updateStatusMutation]
@@ -501,11 +502,15 @@ export function AppointmentList() {
                       {price}
                     </TableCell>
                     <TableCell>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_VARIANT[apt.status] ?? ""}`}
-                      >
-                        {t.pages.appointments.status[apt.status] ?? apt.status}
-                      </span>
+                      {isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      ) : (
+                        <span
+                          className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_VARIANT[apt.status] ?? ""}`}
+                        >
+                          {t.pages.appointments.status[apt.status] ?? apt.status}
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell
                       onClick={(e) => e.stopPropagation()}
