@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { toast } from "sonner";
 import {
   MoreHorizontal,
   Search,
@@ -182,10 +183,21 @@ export function AppointmentList() {
       { enabled: !!currentBusiness?.id }
     );
 
+  const STATUS_LABELS: Record<string, string> = {
+    scheduled: "Cita programada",
+    confirmed: "Cita confirmada",
+    completed: "Cita completada",
+    cancelled: "Cita cancelada",
+  };
+
   const updateStatusMutation = useTrpc.appointment.updateStatus.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      toast.success(STATUS_LABELS[variables.status] ?? "Estado actualizado");
       utils.appointment.getBusinessAppointments.invalidate();
       utils.appointment.getBusinessAppointments.refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Error al actualizar el estado");
     },
     onSettled: (_data, _err, variables) => {
       setPendingStatus((prev) => {
