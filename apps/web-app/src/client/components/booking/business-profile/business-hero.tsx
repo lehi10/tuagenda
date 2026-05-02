@@ -1,12 +1,11 @@
 "use client";
 
-import { Clock, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 
 interface BusinessHeroProps {
   name: string;
   avatar?: string | null;
   location?: string;
-  onShowSchedule: () => void;
 }
 
 function handleShare(name: string) {
@@ -21,7 +20,6 @@ export function BusinessHero({
   name,
   avatar,
   location,
-  onShowSchedule,
 }: BusinessHeroProps) {
   return (
     <div className="relative h-52 sm:h-64 bg-gradient-to-br from-primary to-primary/60 overflow-hidden">
@@ -39,13 +37,6 @@ export function BusinessHero({
       <div className="absolute inset-0 flex flex-col justify-between max-w-6xl mx-auto px-4 sm:px-6">
         {/* Top actions */}
         <div className="flex justify-end gap-2 pt-4 z-10">
-          <button
-            onClick={onShowSchedule}
-            className="flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 px-3 py-1.5 text-white text-xs font-semibold hover:bg-white/25 transition-colors"
-          >
-            <Clock className="h-3.5 w-3.5" />
-            Horarios
-          </button>
           <button
             onClick={() => handleShare(name)}
             className="flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 px-3 py-1.5 text-white text-xs font-semibold hover:bg-white/25 transition-colors"

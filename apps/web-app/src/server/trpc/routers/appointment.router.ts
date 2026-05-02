@@ -155,21 +155,12 @@ export const appointmentRouter = router({
           const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(
             queueAdapter
           );
-          console.log(
-            "[notifications] enqueueing for appointment:",
-            appointment.id,
-            {
-              channels: appointment.business?.notificationSettings?.channels,
-              customerEmail: appointment.customer?.email,
-            }
-          );
-          const enqueueResult = await enqueueUseCase.execute({
+          await enqueueUseCase.execute({
             event: NotificationEvent.APPOINTMENT_CREATED,
             appointment,
           });
-          console.log("[notifications] enqueue result:", enqueueResult);
-        } catch (e) {
-          console.error("[notifications] Failed to enqueue:", e);
+        } catch {
+          // fire-and-forget: Redis failure must not break appointment creation
         }
 
         return { appointment };
