@@ -657,13 +657,15 @@ export function AppointmentList() {
         </div>
       </div>
 
-      {/* Detail sheet */}
-      <AppointmentDetailSheet
-        appointment={selectedAppointment}
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        onStatusChange={handleStatusChange}
-      />
+      {/* Detail sheet — only mount when open so internal state always starts fresh */}
+      {sheetOpen && selectedAppointment && (
+        <AppointmentDetailSheet
+          appointment={selectedAppointment}
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          onStatusChange={handleStatusChange}
+        />
+      )}
     </div>
   );
 }
