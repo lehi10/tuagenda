@@ -16,11 +16,7 @@ function handleShare(name: string) {
   }
 }
 
-export function BusinessHero({
-  name,
-  avatar,
-  location,
-}: BusinessHeroProps) {
+export function BusinessHero({ name, avatar, location }: BusinessHeroProps) {
   return (
     <div className="relative h-52 sm:h-64 bg-gradient-to-br from-primary to-primary/60 overflow-hidden">
       {/* Diagonal texture */}

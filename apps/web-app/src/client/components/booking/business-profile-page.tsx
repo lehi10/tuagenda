@@ -61,7 +61,6 @@ export function BusinessProfilePage({
           socialLinks={business.socialLinks}
         />
       </div>
-
     </div>
   );
 }
