@@ -37,10 +37,10 @@ import { logger } from "@/server/lib/logger";
 const STATUS_TO_NOTIFICATION_EVENT: Partial<
   Record<AppointmentStatus, NotificationEvent>
 > = {
+  scheduled: NotificationEvent.APPOINTMENT_CREATED, // re-activar desde cancelled
   confirmed: NotificationEvent.APPOINTMENT_CONFIRMED,
   completed: NotificationEvent.APPOINTMENT_COMPLETED,
   cancelled: NotificationEvent.APPOINTMENT_CANCELLED,
-  // "scheduled" only fires on create (APPOINTMENT_CREATED), not on status update
 };
 
 export const appointmentRouter = router({
