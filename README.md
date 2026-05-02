@@ -13,6 +13,128 @@ packages/
   notifications/        # Lógica de notificaciones (use cases, adaptadores)
 ```
 
+## Arquitectura
+
+El proyecto usa **arquitectura hexagonal** (ports & adapters). La regla central es que las capas internas no conocen a las externas: el dominio no sabe nada de Prisma, tRPC, Brevo ni Redis.
+
+### Capas
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  PRESENTACIÓN  (tRPC routers)                                        │
+│  Entrada del mundo externo. Valida input, llama use cases,           │
+│  convierte errores a TRPCError.                                      │
+│                                                                      │
+│   ┌─────────────────────────────────────────────────────────────┐   │
+│   │  APLICACIÓN  (Use Cases)                                     │   │
+│   │  Orquesta el flujo. Aplica reglas de negocio. Depende solo   │   │
+│   │  de interfaces (ports), nunca de implementaciones concretas. │   │
+│   │                                                              │   │
+│   │   ┌───────────────────────────────────────────────────┐     │   │
+│   │   │  DOMINIO  (Entities + Ports)                       │     │   │
+│   │   │  Núcleo de la aplicación. Sin dependencias         │     │   │
+│   │   │  externas. Define qué puede hacer el sistema.      │     │   │
+│   │   │                                                    │     │   │
+│   │   │  Entidades: User, Business, Appointment,           │     │   │
+│   │   │  Service, BusinessUser, EmployeeAvailability...    │     │   │
+│   │   │                                                    │     │   │
+│   │   │  Ports: IUserRepository, IBusinessRepository,      │     │   │
+│   │   │  IAppointmentRepository, IAuthorizationPort...     │     │   │
+│   │   └───────────────────────────────────────────────────┘     │   │
+│   └─────────────────────────────────────────────────────────────┘   │
+│                                                                      │
+│  INFRAESTRUCTURA  (Adapters)                                         │
+│  Implementaciones concretas de los ports. El dominio define          │
+│  la interfaz; la infraestructura la cumple.                          │
+│                                                                      │
+│  PrismaUserRepository    →  implementa IUserRepository               │
+│  PrismaAppointmentRepo   →  implementa IAppointmentRepository        │
+│  BullMQQueueAdapter      →  implementa INotificationQueuePort        │
+│  BrevoEmailAdapter       →  implementa INotificationSenderPort       │
+│  MetaWhatsAppAdapter     →  implementa INotificationSenderPort       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Procedimientos tRPC (control de acceso)
+
+```
+publicProcedure          Sin autenticación
+                         Booking público, health check
+
+privateProcedure         Firebase token requerido
+    └─ isAuthenticated   userId inyectado en context
+                         Perfil de usuario, mis citas
+
+businessMemberProcedure  Firebase token + membresía en negocio
+    └─ isAuthenticated   userId + businessId en context
+    └─ requireBusiness   Verifica BusinessUser en base de datos
+    Access              Panel admin, servicios, empleados, citas
+```
+
+### Flujo de una request (ejemplo: crear cita)
+
+```mermaid
+sequenceDiagram
+    participant C as Cliente (Browser)
+    participant T as tRPC Router
+    participant UC as Use Case
+    participant R as Repository
+    participant DB as PostgreSQL
+    participant Q as Redis (BullMQ)
+    participant W as Worker
+
+    C->>T: POST /api/trpc/appointment.create<br/>{ businessId, serviceId, startTime... }
+    T->>T: Middleware: verifica Firebase token
+    T->>T: Middleware: verifica membresía en negocio
+    T->>UC: CreateAppointmentUseCase.execute(input)
+    UC->>R: appointmentRepository.create(entity)
+    R->>DB: INSERT INTO appointments
+    DB-->>R: registro creado
+    R-->>UC: Appointment entity
+    UC->>Q: EnqueueNotification (fire & forget)
+    UC-->>T: { success: true, appointment }
+    T-->>C: appointment creada
+
+    Q-->>W: job disponible en cola
+    W->>W: SendAppointmentNotificationUseCase
+    W->>W: BrevoEmailAdapter → email al cliente
+    W->>W: MetaWhatsAppAdapter → WhatsApp al cliente
+```
+
+### Flujo de notificaciones (asíncrono)
+
+```mermaid
+flowchart LR
+    A[Cita creada] -->|encola job| B[(Redis\nBullMQ)]
+    B -->|consume| C[notification-worker\nRailway]
+    C --> D{canales\nconfigurados}
+    D -->|EMAIL| E[BrevoEmailAdapter]
+    D -->|WHATSAPP| F[MetaWhatsAppAdapter]
+    E -->|API call| G[Brevo]
+    F -->|API call| H[Meta Cloud API]
+    G -->|email| I[Cliente]
+    H -->|WhatsApp| I
+```
+
+> Si Redis falla al encolar, la cita **se crea igual** (fire & forget). Las notificaciones tienen 3 reintentos con backoff exponencial.
+
+### Stack por capa
+
+| Capa | Tecnología |
+|------|------------|
+| Presentación | tRPC v11, Next.js 15, Zod |
+| Aplicación | TypeScript puro (sin frameworks) |
+| Dominio | TypeScript puro (sin dependencias) |
+| Infraestructura — DB | Prisma ORM + PostgreSQL (Railway) |
+| Infraestructura — Auth | Firebase Admin SDK |
+| Infraestructura — Queue | BullMQ + Redis (Railway) |
+| Infraestructura — Email | Brevo REST API |
+| Infraestructura — WhatsApp | Meta Cloud API |
+| Frontend | Next.js, React, Tailwind CSS, shadcn/ui |
+| Deploy | Vercel (web-app) + Railway (worker + DB + Redis) |
+
+---
+
 ## Requisitos
 
 - Node.js >= 20
@@ -67,28 +189,35 @@ cp apps/notification-worker/.env.example apps/notification-worker/.env
 pnpm dev:all
 ```
 
-Abre un TUI interactivo (Turborepo) donde puedes navegar entre la web app y el notification worker con las flechas del teclado y ver sus logs por separado.
+Usa Turborepo con `--ui=tui`: abre un panel interactivo donde podés navegar entre la web app y el notification worker con las flechas del teclado y ver sus logs por separado.
 
 ### Levantar por separado
 
 ```bash
-# Solo la web app
+# Solo la web app (Next.js en http://localhost:3000)
 pnpm dev
 
 # Solo el notification worker
 pnpm --filter notification-worker dev
+
+# Solo el package de notificaciones en modo watch (si modificás lógica de notificaciones)
+pnpm --filter notifications dev
 ```
 
 ## Comandos útiles
 
 ```bash
 # Base de datos
-pnpm db:start          # Levantar PostgreSQL con Docker
-pnpm db:stop           # Detener Docker
-pnpm db:migrate        # Correr migraciones pendientes
-pnpm db:migrate:dev    # Crear nueva migración
-pnpm db:studio         # Abrir Prisma Studio
-pnpm db:seed           # Poblar base de datos con datos de prueba
+pnpm db:start           # Levantar PostgreSQL con Docker
+pnpm db:stop            # Detener Docker
+pnpm db:reset           # Bajar, levantar y re-migrar (borra todos los datos)
+pnpm db:migrate         # Correr migraciones pendientes (deploy)
+pnpm db:migrate:dev     # Crear nueva migración en desarrollo
+pnpm db:migrate:status  # Ver estado de migraciones
+pnpm db:push            # Push del schema sin crear migración (prototipado)
+pnpm db:generate        # Regenerar Prisma Client
+pnpm db:studio          # Abrir Prisma Studio
+pnpm db:seed            # Poblar base de datos con datos de prueba
 
 # Calidad de código
 pnpm type-check        # Verificar tipos en todas las apps

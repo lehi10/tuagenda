@@ -3,7 +3,6 @@
 import { BusinessHero } from "@/client/components/booking/business-profile/business-hero";
 import { ServiceGrid } from "@/client/components/booking/business-profile/service-grid";
 import { BusinessSidebar } from "@/client/components/booking/business-profile/business-sidebar";
-import { SchedulePopup } from "@/client/components/booking/business-profile/schedule-popup";
 import { useBusinessProfile } from "@/client/components/booking/business-profile/use-business-profile";
 import type { BookingService } from "@/client/types/booking";
 
@@ -37,8 +36,6 @@ export function BusinessProfilePage({
     categoryFilter,
     setCategoryFilter,
     isLoading,
-    showSchedule,
-    setShowSchedule,
   } = useBusinessProfile(businessId);
 
   return (
@@ -47,7 +44,6 @@ export function BusinessProfilePage({
         name={business.name}
         avatar={business.avatar}
         location={business.location}
-        onShowSchedule={() => setShowSchedule(true)}
       />
 
       <div className="flex flex-col lg:flex-row gap-0 lg:gap-6 px-4 sm:px-6 pt-6 pb-12 max-w-6xl mx-auto">
@@ -65,8 +61,6 @@ export function BusinessProfilePage({
           socialLinks={business.socialLinks}
         />
       </div>
-
-      {showSchedule && <SchedulePopup onClose={() => setShowSchedule(false)} />}
     </div>
   );
 }

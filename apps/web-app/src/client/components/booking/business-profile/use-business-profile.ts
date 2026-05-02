@@ -6,7 +6,6 @@ import type { BookingService, ServiceCategory } from "@/client/types/booking";
 
 export function useBusinessProfile(businessId: string) {
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [showSchedule, setShowSchedule] = useState(false);
 
   const { data: categoriesData } = useTrpc.serviceCategory.listPublic.useQuery(
     { businessId },
@@ -54,7 +53,5 @@ export function useBusinessProfile(businessId: string) {
     categoryFilter,
     setCategoryFilter,
     isLoading,
-    showSchedule,
-    setShowSchedule,
   };
 }
