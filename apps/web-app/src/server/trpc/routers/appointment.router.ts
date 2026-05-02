@@ -23,7 +23,10 @@ import {
   GetBusinessAppointmentsUseCase,
   UpdateAppointmentStatusUseCase,
 } from "@/server/core/application/use-cases/appointment";
-import { APPOINTMENT_STATUSES, AppointmentStatus } from "@/server/core/domain/entities/Appointment";
+import {
+  APPOINTMENT_STATUSES,
+  AppointmentStatus,
+} from "@/server/core/domain/entities/Appointment";
 import {
   EnqueueAppointmentNotificationUseCase,
   NotificationEvent,
@@ -31,7 +34,9 @@ import {
 import { BullMQNotificationQueueAdapter } from "notifications/infrastructure";
 import { logger } from "@/server/lib/logger";
 
-const STATUS_TO_NOTIFICATION_EVENT: Partial<Record<AppointmentStatus, NotificationEvent>> = {
+const STATUS_TO_NOTIFICATION_EVENT: Partial<
+  Record<AppointmentStatus, NotificationEvent>
+> = {
   confirmed: NotificationEvent.APPOINTMENT_CONFIRMED,
   completed: NotificationEvent.APPOINTMENT_COMPLETED,
   cancelled: NotificationEvent.APPOINTMENT_CANCELLED,
@@ -170,7 +175,11 @@ export const appointmentRouter = router({
             appointment,
           });
         } catch (err) {
-          logger.error("EnqueueNotification", "system", `Failed to enqueue appointment.created: ${err instanceof Error ? err.message : String(err)}`);
+          logger.error(
+            "EnqueueNotification",
+            "system",
+            `Failed to enqueue appointment.created: ${err instanceof Error ? err.message : String(err)}`
+          );
         }
 
         return { appointment };
@@ -284,13 +293,19 @@ export const appointmentRouter = router({
       if (notificationEvent) {
         try {
           const queueAdapter = new BullMQNotificationQueueAdapter();
-          const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(queueAdapter);
+          const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(
+            queueAdapter
+          );
           await enqueueUseCase.execute({
             event: notificationEvent,
             appointment: result.appointment,
           });
         } catch (err) {
-          logger.error("EnqueueNotification", "system", `Failed to enqueue ${notificationEvent}: ${err instanceof Error ? err.message : String(err)}`);
+          logger.error(
+            "EnqueueNotification",
+            "system",
+            `Failed to enqueue ${notificationEvent}: ${err instanceof Error ? err.message : String(err)}`
+          );
         }
       }
 
