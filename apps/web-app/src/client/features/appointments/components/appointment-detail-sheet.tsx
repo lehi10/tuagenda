@@ -279,7 +279,7 @@ export function AppointmentDetailSheet({
     : "—";
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="flex flex-col p-0">
         {/* ── Header ─────────────────────────── */}
         <SheetHeader className="px-5 pt-5 pb-3 border-b space-y-1.5">
