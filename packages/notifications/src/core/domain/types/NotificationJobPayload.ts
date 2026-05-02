@@ -2,12 +2,12 @@ import type { NotificationChannel } from "./NotificationChannel";
 import type { NotificationEvent } from "./NotificationEvent";
 
 export interface NotificationTemplates {
-  email?: {
-    appointmentCreated?: number;
-    appointmentCancelled?: number;
-  };
+  // Email uses static local templates resolved by event name — no external IDs needed
+  // WhatsApp requires Meta-approved template names per event
   whatsapp?: {
     appointmentCreated?: string;
+    appointmentConfirmed?: string;
+    appointmentCompleted?: string;
     appointmentCancelled?: string;
   };
 }

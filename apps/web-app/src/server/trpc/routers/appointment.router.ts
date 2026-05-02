@@ -23,11 +23,20 @@ import {
   GetBusinessAppointmentsUseCase,
   UpdateAppointmentStatusUseCase,
 } from "@/server/core/application/use-cases/appointment";
+import { APPOINTMENT_STATUSES, AppointmentStatus } from "@/server/core/domain/entities/Appointment";
 import {
   EnqueueAppointmentNotificationUseCase,
   NotificationEvent,
 } from "notifications";
 import { BullMQNotificationQueueAdapter } from "notifications/infrastructure";
+import { logger } from "@/server/lib/logger";
+
+const STATUS_TO_NOTIFICATION_EVENT: Partial<Record<AppointmentStatus, NotificationEvent>> = {
+  confirmed: NotificationEvent.APPOINTMENT_CONFIRMED,
+  completed: NotificationEvent.APPOINTMENT_COMPLETED,
+  cancelled: NotificationEvent.APPOINTMENT_CANCELLED,
+  // "scheduled" only fires on create (APPOINTMENT_CREATED), not on status update
+};
 
 export const appointmentRouter = router({
   /**
@@ -160,8 +169,8 @@ export const appointmentRouter = router({
             event: NotificationEvent.APPOINTMENT_CREATED,
             appointment,
           });
-        } catch {
-          // fire-and-forget: Redis failure must not break appointment creation
+        } catch (err) {
+          logger.error("EnqueueNotification", "system", `Failed to enqueue appointment.created: ${err instanceof Error ? err.message : String(err)}`);
         }
 
         return { appointment };
@@ -187,12 +196,8 @@ export const appointmentRouter = router({
           .object({
             status: z
               .union([
-                z.enum(["scheduled", "confirmed", "completed", "cancelled"]),
-                z
-                  .array(
-                    z.enum(["scheduled", "confirmed", "completed", "cancelled"])
-                  )
-                  .min(1),
+                z.enum(APPOINTMENT_STATUSES),
+                z.array(z.enum(APPOINTMENT_STATUSES)).min(1),
               ])
               .optional(),
             providerBusinessUserId: z.string().uuid().optional(),
@@ -272,6 +277,21 @@ export const appointmentRouter = router({
           code: "BAD_REQUEST",
           message: result.error || "Failed to update appointment status",
         });
+      }
+
+      // fire-and-forget — el cambio de estado nunca falla por Redis
+      const notificationEvent = STATUS_TO_NOTIFICATION_EVENT[input.status];
+      if (notificationEvent) {
+        try {
+          const queueAdapter = new BullMQNotificationQueueAdapter();
+          const enqueueUseCase = new EnqueueAppointmentNotificationUseCase(queueAdapter);
+          await enqueueUseCase.execute({
+            event: notificationEvent,
+            appointment: result.appointment,
+          });
+        } catch (err) {
+          logger.error("EnqueueNotification", "system", `Failed to enqueue ${notificationEvent}: ${err instanceof Error ? err.message : String(err)}`);
+        }
       }
 
       return { appointment: result.appointment };
