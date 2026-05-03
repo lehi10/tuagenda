@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import fs from "fs";
+import { execSync } from "child_process";
 import { analyzeGraph } from "./src/server/analyzer";
 import { extractBlock } from "./src/server/extractor";
 
@@ -20,6 +21,49 @@ export default defineConfig({
             const graph = await analyzeGraph(WEB_APP_ROOT);
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify(graph));
+          } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: message }));
+          }
+        });
+
+        // GET /api/file-ranking — list all .ts/.tsx files sorted by line count
+        server.middlewares.use("/api/file-ranking", (_req, res) => {
+          try {
+            const raw = execSync("git ls-files", {
+              cwd: MONOREPO_ROOT,
+              encoding: "utf-8",
+            });
+            const files = raw
+              .trim()
+              .split("\n")
+              .filter(
+                (f) =>
+                  (f.endsWith(".ts") || f.endsWith(".tsx")) &&
+                  !f.endsWith(".d.ts"),
+              );
+
+            const results = files
+              .map((relPath) => {
+                const abs = path.resolve(MONOREPO_ROOT, relPath);
+                try {
+                  const content = fs.readFileSync(abs, "utf-8");
+                  const lines = content.split("\n").length;
+                  return { path: relPath, lines };
+                } catch {
+                  return null;
+                }
+              })
+              .filter(Boolean)
+              .sort(
+                (a, b) =>
+                  (b as { lines: number }).lines -
+                  (a as { lines: number }).lines,
+              );
+
+            res.setHeader("Content-Type", "application/json");
+            res.end(JSON.stringify(results));
           } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             res.statusCode = 500;

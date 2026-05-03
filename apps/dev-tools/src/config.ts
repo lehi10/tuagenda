@@ -2,35 +2,45 @@
 
 export const LAYER = {
   router: {
-    bg: "#f0fdf4",
-    border: "#22c55e",
-    badge: "#15803d",
+    bg: "#160d2a",
+    border: "#7c3aed",
+    badge: "#7c3aed",
     label: "Router",
   },
   procedure: {
-    bg: "#dcfce7",
-    border: "#4ade80",
-    badge: "#166534",
+    bg: "#0d1a30",
+    border: "#388bfd",
+    badge: "#388bfd",
     label: "Procedure",
   },
   usecase: {
-    bg: "#dbeafe",
-    border: "#3b82f6",
-    badge: "#1d4ed8",
+    bg: "#0d2525",
+    border: "#39d353",
+    badge: "#39d353",
     label: "Use Case",
   },
-  port: { bg: "#fefce8", border: "#eab308", badge: "#713f12", label: "Port" },
+  port: {
+    bg: "#1c1500",
+    border: "#f0b429",
+    badge: "#f0b429",
+    label: "Port",
+  },
   repository: {
-    bg: "#fdf2f8",
-    border: "#ec4899",
-    badge: "#9d174d",
+    bg: "#1a0d1e",
+    border: "#f778ba",
+    badge: "#f778ba",
     label: "Repository",
   },
-  db: { bg: "#f8fafc", border: "#64748b", badge: "#1e293b", label: "DB" },
+  db: {
+    bg: "#0d1117",
+    border: "#484f58",
+    badge: "#484f58",
+    label: "DB",
+  },
 } as const;
 
 export const PROC_BADGE = {
-  public: { bg: "#f0fdf4", text: "#166534", label: "public" },
-  private: { bg: "#fef3c7", text: "#92400e", label: "private" },
-  businessMember: { bg: "#ede9fe", text: "#5b21b6", label: "member" },
+  public: { bg: "#0d2015", text: "#3fb950", label: "public" },
+  private: { bg: "#1c1500", text: "#f0b429", label: "private" },
+  businessMember: { bg: "#130d2a", text: "#a78bfa", label: "member" },
 };

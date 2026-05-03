@@ -12,25 +12,30 @@ export type FlowNodeData = GraphNode & {
 
 // ── FileIcon ──────────────────────────────────────────────────────────────────
 
-function FileIcon() {
+function FileIcon({ color }: { color: string }) {
   return (
     <svg
-      width="13"
-      height="13"
+      width="12"
+      height="12"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
       <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
     </svg>
   );
 }
+
+const HANDLE_STYLE = (color: string) => ({
+  background: color,
+  width: 7,
+  height: 7,
+  border: "2px solid #0d1117",
+});
 
 // ── FlowNode ──────────────────────────────────────────────────────────────────
 
@@ -49,14 +54,14 @@ export function FlowNode({
     return (
       <div
         style={{
-          background: "#1e1e2e",
-          border: "1.5px solid #45475a",
-          borderTop: "3px solid #cba6f7",
+          background: "#161b22",
+          border: "1px solid #30363d",
+          borderTop: "3px solid #7c3aed",
           borderRadius: 8,
           padding: "10px 14px",
           minWidth: 220,
           maxWidth: 280,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
           fontFamily: "monospace",
           cursor: "pointer",
         }}
@@ -64,36 +69,22 @@ export function FlowNode({
         <Handle
           type="target"
           position={Position.Top}
-          style={{
-            background: "#45475a",
-            width: 7,
-            height: 7,
-            border: "2px solid #1e1e2e",
-          }}
+          style={HANDLE_STYLE("#7c3aed")}
         />
 
         <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-          {/* File icon */}
-          <div
-            style={{
-              color: "#cba6f7",
-              marginTop: 1,
-              flexShrink: 0,
-            }}
-          >
-            <FileIcon />
+          <div style={{ color: "#7c3aed", marginTop: 2, flexShrink: 0 }}>
+            <FileIcon color="#7c3aed" />
           </div>
-
           <div style={{ flex: 1, minWidth: 0 }}>
-            {/* Entry point badge */}
-            <div style={{ marginBottom: 4 }}>
+            <div style={{ marginBottom: 5 }}>
               <span
                 style={{
-                  background: "#45475a",
-                  color: "#cdd6f4",
-                  fontSize: 10,
+                  background: "#21262d",
+                  color: "#8b949e",
+                  fontSize: 9,
                   fontWeight: 700,
-                  padding: "1px 6px",
+                  padding: "2px 7px",
                   borderRadius: 3,
                   textTransform: "uppercase",
                   letterSpacing: 0.8,
@@ -103,22 +94,20 @@ export function FlowNode({
                 tRPC Router
               </span>
             </div>
-            {/* Router name */}
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 15,
-                color: "#cdd6f4",
+                fontSize: 14,
+                color: "#e6edf3",
                 letterSpacing: -0.2,
               }}
             >
               {data.label}
             </div>
-            {/* File path */}
             <div
               style={{
-                fontSize: 11,
-                color: "#6c7086",
+                fontSize: 10,
+                color: "#484f58",
                 marginTop: 3,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -127,7 +116,7 @@ export function FlowNode({
             >
               {fileName}
               {data.siblingCount != null && (
-                <span style={{ color: "#585b70", marginLeft: 6 }}>
+                <span style={{ color: "#30363d", marginLeft: 6 }}>
                   · {data.siblingCount} procedures
                 </span>
               )}
@@ -138,12 +127,7 @@ export function FlowNode({
         <Handle
           type="source"
           position={Position.Bottom}
-          style={{
-            background: "#45475a",
-            width: 7,
-            height: 7,
-            border: "2px solid #1e1e2e",
-          }}
+          style={HANDLE_STYLE("#7c3aed")}
         />
       </div>
     );
@@ -157,13 +141,13 @@ export function FlowNode({
     return (
       <div
         style={{
-          background: "#f9fafb",
-          border: "2px dashed #d1d5db",
-          borderRadius: 10,
-          padding: "8px 14px",
+          background: "#0d1117",
+          border: "1px dashed #21262d",
+          borderRadius: 8,
+          padding: "8px 12px",
           minWidth: 180,
           maxWidth: 240,
-          opacity: 0.65,
+          opacity: 0.5,
           fontFamily: "monospace",
           cursor: "pointer",
         }}
@@ -171,12 +155,7 @@ export function FlowNode({
         <Handle
           type="target"
           position={Position.Top}
-          style={{
-            background: "#d1d5db",
-            width: 6,
-            height: 6,
-            border: "2px solid white",
-          }}
+          style={HANDLE_STYLE("#30363d")}
         />
 
         <div
@@ -184,16 +163,16 @@ export function FlowNode({
             display: "flex",
             alignItems: "center",
             gap: 4,
-            marginBottom: 3,
+            marginBottom: 4,
           }}
         >
           <span
             style={{
-              background: "#e5e7eb",
-              color: "#6b7280",
-              fontSize: 10,
+              background: "#161b22",
+              color: "#484f58",
+              fontSize: 9,
               fontWeight: 700,
-              padding: "1px 6px",
+              padding: "1px 5px",
               borderRadius: 3,
               textTransform: "uppercase",
               letterSpacing: 0.4,
@@ -207,9 +186,8 @@ export function FlowNode({
               style={{
                 background: sibProcCfg.bg,
                 color: sibProcCfg.text,
-                opacity: 0.7,
-                fontSize: 10,
-                padding: "1px 6px",
+                fontSize: 9,
+                padding: "1px 5px",
                 borderRadius: 3,
                 fontFamily: "sans-serif",
               }}
@@ -219,19 +197,14 @@ export function FlowNode({
           )}
         </div>
 
-        <div style={{ fontWeight: 600, fontSize: 13, color: "#6b7280" }}>
+        <div style={{ fontWeight: 600, fontSize: 12, color: "#484f58" }}>
           {data.label}
         </div>
 
         <Handle
           type="source"
           position={Position.Bottom}
-          style={{
-            background: "#d1d5db",
-            width: 6,
-            height: 6,
-            border: "2px solid white",
-          }}
+          style={HANDLE_STYLE("#30363d")}
         />
       </div>
     );
@@ -242,12 +215,13 @@ export function FlowNode({
     <div
       style={{
         background: cfg.bg,
-        border: `2px solid ${cfg.border}`,
-        borderRadius: 10,
+        border: "1px solid #21262d",
+        borderLeft: `3px solid ${cfg.border}`,
+        borderRadius: 8,
         padding: "10px 14px",
         minWidth: 220,
         maxWidth: 280,
-        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.3)",
         fontFamily: "monospace",
         cursor: "pointer",
       }}
@@ -255,12 +229,7 @@ export function FlowNode({
       <Handle
         type="target"
         position={Position.Top}
-        style={{
-          background: cfg.border,
-          width: 8,
-          height: 8,
-          border: "2px solid white",
-        }}
+        style={HANDLE_STYLE(cfg.border)}
       />
 
       <div
@@ -268,15 +237,16 @@ export function FlowNode({
           display: "flex",
           alignItems: "center",
           gap: 5,
-          marginBottom: 5,
+          marginBottom: 6,
           flexWrap: "wrap",
         }}
       >
         <span
           style={{
-            background: cfg.badge,
-            color: "white",
-            fontSize: 10,
+            background: cfg.badge + "22",
+            color: cfg.badge,
+            border: `1px solid ${cfg.badge}44`,
+            fontSize: 9,
             fontWeight: 700,
             padding: "2px 7px",
             borderRadius: 4,
@@ -292,7 +262,7 @@ export function FlowNode({
             style={{
               background: procCfg.bg,
               color: procCfg.text,
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 600,
               padding: "2px 7px",
               borderRadius: 4,
@@ -307,9 +277,10 @@ export function FlowNode({
       <div
         style={{
           fontWeight: 700,
-          fontSize: 15,
-          color: "#111827",
-          marginBottom: 3,
+          fontSize: 14,
+          color: "#e6edf3",
+          marginBottom: 4,
+          letterSpacing: -0.2,
         }}
       >
         {data.label}
@@ -317,8 +288,8 @@ export function FlowNode({
 
       <div
         style={{
-          fontSize: 11,
-          color: "#6b7280",
+          fontSize: 10,
+          color: "#484f58",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
@@ -326,19 +297,14 @@ export function FlowNode({
       >
         {data.file}
         {data.line > 0 && (
-          <span style={{ color: "#9ca3af" }}>:{data.line}</span>
+          <span style={{ color: "#30363d" }}>:{data.line}</span>
         )}
       </div>
 
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{
-          background: cfg.border,
-          width: 8,
-          height: 8,
-          border: "2px solid white",
-        }}
+        style={HANDLE_STYLE(cfg.border)}
       />
     </div>
   );
@@ -348,7 +314,6 @@ export const nodeTypes = { flowNode: FlowNode };
 
 // ── AutoFitView ───────────────────────────────────────────────────────────────
 
-// Calls fitView only when shouldFit.current is true, then resets the flag
 export function AutoFitView({
   shouldFit,
 }: {

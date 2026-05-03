@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import {
   ReactFlow,
   Background,
+  BackgroundVariant,
   Controls,
   MiniMap,
   useNodesState,
@@ -18,12 +19,15 @@ import { CodePanel, type CodeTarget } from "./CodePanel";
 import { LAYER } from "./config";
 import { nodeTypes, AutoFitView, type FlowNodeData } from "./nodes/FlowNode";
 import { applyLayout, buildEdge, reachableFrom, groupByRouter } from "./layout";
-import { Header } from "./components/Header";
+import { Header, type AppView } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
+import { FileRanking } from "./components/FileRanking";
+import { NavMenu } from "./components/NavMenu";
 
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function FlowGraph() {
+  const [view, setView] = useState<AppView>("flow");
   const [status, setStatus] = useState<"loading" | "error" | "ok">("loading");
   const [errorMsg, setErrorMsg] = useState("");
   const [graphData, setGraphData] = useState<GraphData | null>(null);
@@ -264,228 +268,264 @@ export function FlowGraph() {
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#f8fafc",
+        background: "#0d1117",
       }}
     >
-      {/* ── Header ── */}
-      <Header
-        sidebarOpen={sidebarOpen}
-        onToggleSidebar={() => setSidebarOpen((v) => !v)}
-        selectedProc={selectedProc}
-        graphData={graphData}
-        onReanalyze={load}
-      />
-
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        {/* ── Sidebar ── */}
-        <Sidebar
-          status={status}
-          sidebarOpen={sidebarOpen}
-          groups={groups}
-          collapsedRouters={collapsedRouters}
-          selectedProcId={selectedProcId}
-          search={search}
-          onSearch={setSearch}
-          onToggleRouter={toggleRouter}
-          onSelectProc={(id) => {
-            shouldFitView.current = true;
-            setSelectedProcId(id);
-          }}
-        />
+        {/* ── Left nav menu ── */}
+        <NavMenu view={view} onViewChange={setView} />
 
-        {/* ── Main area ── */}
+        {/* ── Right side: header + content ── */}
         <div
           style={{
             flex: 1,
             display: "flex",
+            flexDirection: "column",
             overflow: "hidden",
-            position: "relative",
           }}
         >
-          <div style={{ flex: 1, position: "relative" }}>
-            {status === "loading" && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  color: "#6b7280",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                <div style={{ fontSize: 13 }}>
-                  Analyzing codebase with ts-morph...
-                </div>
-                <div style={{ fontSize: 11, color: "#9ca3af" }}>
-                  First load may take a few seconds
-                </div>
-              </div>
-            )}
+          <Header
+            sidebarOpen={sidebarOpen}
+            onToggleSidebar={() => setSidebarOpen((v) => !v)}
+            selectedProc={selectedProc}
+            graphData={graphData}
+            onReanalyze={load}
+            view={view}
+          />
 
-            {status === "error" && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  color: "#dc2626",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                <div style={{ fontWeight: 700 }}>Analysis failed</div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontFamily: "monospace",
-                    background: "#fef2f2",
-                    padding: "8px 14px",
-                    borderRadius: 6,
-                  }}
-                >
-                  {errorMsg}
-                </div>
-                <button
-                  onClick={load}
-                  style={{
-                    marginTop: 8,
-                    padding: "6px 14px",
-                    background: "#dc2626",
-                    color: "white",
-                    border: "none",
-                    borderRadius: 6,
-                    cursor: "pointer",
-                  }}
-                >
-                  Retry
-                </button>
-              </div>
-            )}
+          <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+            {/* ── File Ranking view ── */}
+            {view === "file-ranking" && <FileRanking />}
 
-            {status === "ok" && !selectedProcId && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 6,
-                  color: "#9ca3af",
-                  fontFamily: "sans-serif",
-                }}
-              >
-                <div style={{ fontSize: 28 }}>←</div>
-                <div style={{ fontSize: 13 }}>
-                  Select a procedure from the sidebar
-                </div>
-                <div style={{ fontSize: 11 }}>
-                  {
-                    graphData?.nodes.filter((n) => n.layer === "procedure")
-                      .length
-                  }{" "}
-                  procedures across{" "}
-                  {graphData?.nodes.filter((n) => n.layer === "router").length}{" "}
-                  routers
-                </div>
-              </div>
-            )}
-
-            {status === "ok" && selectedProcId && (
-              <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                nodeTypes={nodeTypes}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onNodeClick={onNodeClick}
-                onEdgeClick={onEdgeClick}
-                minZoom={0.2}
-                maxZoom={2}
-                proOptions={{ hideAttribution: true }}
-              >
-                <AutoFitView shouldFit={shouldFitView} />
-                <Background color="#e2e8f0" gap={20} />
-                <Controls />
-                <MiniMap
-                  nodeColor={(n) => {
-                    const layer = (n.data as unknown as FlowNodeData).layer;
-                    if (layer === "router") return "#cba6f7";
-                    return LAYER[layer]?.border ?? "#94a3b8";
+            {/* ── Flow view ── */}
+            {view === "flow" && (
+              <>
+                <Sidebar
+                  status={status}
+                  sidebarOpen={sidebarOpen}
+                  groups={groups}
+                  collapsedRouters={collapsedRouters}
+                  selectedProcId={selectedProcId}
+                  search={search}
+                  onSearch={setSearch}
+                  onToggleRouter={toggleRouter}
+                  onSelectProc={(id) => {
+                    shouldFitView.current = true;
+                    setSelectedProcId(id);
                   }}
-                  maskColor="rgba(248,250,252,0.85)"
-                  style={{ border: "1px solid #e2e8f0", borderRadius: 8 }}
-                  zoomable
-                  pannable
                 />
 
-                {/* Legend */}
+                {/* ── Main area ── */}
                 <div
                   style={{
-                    position: "absolute",
-                    bottom: 16,
-                    left: 16,
-                    background: "white",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: "8px 12px",
+                    flex: 1,
                     display: "flex",
-                    gap: 10,
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    zIndex: 10,
+                    overflow: "hidden",
+                    position: "relative",
                   }}
                 >
-                  {(
-                    Object.entries(LAYER) as [
-                      keyof typeof LAYER,
-                      (typeof LAYER)[keyof typeof LAYER],
-                    ][]
-                  ).map(([key, cfg]) => (
-                    <span
-                      key={key}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                        fontSize: 10,
-                        fontFamily: "sans-serif",
-                        color: "#374151",
-                      }}
-                    >
-                      <span
+                  <div style={{ flex: 1, position: "relative" }}>
+                    {status === "loading" && (
+                      <div
                         style={{
-                          width: 10,
-                          height: 10,
-                          background: cfg.bg,
-                          border: `2px solid ${cfg.border}`,
-                          borderRadius: 3,
-                          display: "inline-block",
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                          fontFamily: "sans-serif",
                         }}
-                      />
-                      {cfg.label}
-                    </span>
-                  ))}
+                      >
+                        <div style={{ fontSize: 13, color: "#c9d1d9" }}>
+                          Analyzing codebase with ts-morph...
+                        </div>
+                        <div style={{ fontSize: 11, color: "#8b949e" }}>
+                          First load may take a few seconds
+                        </div>
+                      </div>
+                    )}
+
+                    {status === "error" && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                          fontFamily: "sans-serif",
+                        }}
+                      >
+                        <div style={{ fontWeight: 700, color: "#f85149" }}>
+                          Analysis failed
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            fontFamily: "monospace",
+                            background: "#1a0a0a",
+                            padding: "8px 14px",
+                            borderRadius: 6,
+                            color: "#f85149",
+                            border: "1px solid #3d1c1c",
+                          }}
+                        >
+                          {errorMsg}
+                        </div>
+                        <button
+                          onClick={load}
+                          style={{
+                            marginTop: 4,
+                            padding: "6px 14px",
+                            background: "#3d1c1c",
+                            color: "#f85149",
+                            border: "1px solid #612020",
+                            borderRadius: 6,
+                            cursor: "pointer",
+                            fontSize: 12,
+                          }}
+                        >
+                          Retry
+                        </button>
+                      </div>
+                    )}
+
+                    {status === "ok" && !selectedProcId && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          fontFamily: "sans-serif",
+                        }}
+                      >
+                        <div style={{ fontSize: 26, color: "#8b949e" }}>←</div>
+                        <div style={{ fontSize: 13, color: "#c9d1d9" }}>
+                          Select a procedure from the sidebar
+                        </div>
+                        <div style={{ fontSize: 11, color: "#8b949e" }}>
+                          {
+                            graphData?.nodes.filter(
+                              (n) => n.layer === "procedure",
+                            ).length
+                          }{" "}
+                          procedures across{" "}
+                          {
+                            graphData?.nodes.filter((n) => n.layer === "router")
+                              .length
+                          }{" "}
+                          routers
+                        </div>
+                      </div>
+                    )}
+
+                    {status === "ok" && selectedProcId && (
+                      <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        nodeTypes={nodeTypes}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onNodeClick={onNodeClick}
+                        onEdgeClick={onEdgeClick}
+                        minZoom={0.2}
+                        maxZoom={2}
+                        proOptions={{ hideAttribution: true }}
+                      >
+                        <AutoFitView shouldFit={shouldFitView} />
+                        <Background
+                          variant={BackgroundVariant.Dots}
+                          color="#30363d"
+                          gap={20}
+                          size={1.5}
+                        />
+                        <Controls />
+                        <MiniMap
+                          nodeColor={(n) => {
+                            const layer = (n.data as unknown as FlowNodeData)
+                              .layer;
+                            return LAYER[layer]?.border ?? "#484f58";
+                          }}
+                          maskColor="rgba(13,17,23,0.85)"
+                          style={{
+                            border: "1px solid #21262d",
+                            borderRadius: 8,
+                            background: "#161b22",
+                          }}
+                          zoomable
+                          pannable
+                        />
+
+                        {/* Legend */}
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: 16,
+                            left: 16,
+                            background: "#161b22",
+                            border: "1px solid #21262d",
+                            borderRadius: 8,
+                            padding: "7px 12px",
+                            display: "flex",
+                            gap: 10,
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            zIndex: 10,
+                          }}
+                        >
+                          {(
+                            Object.entries(LAYER) as [
+                              keyof typeof LAYER,
+                              (typeof LAYER)[keyof typeof LAYER],
+                            ][]
+                          ).map(([key, cfg]) => (
+                            <span
+                              key={key}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 5,
+                                fontSize: 10,
+                                fontFamily: "sans-serif",
+                                color: "#adbac7",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: 8,
+                                  height: 8,
+                                  background: cfg.border,
+                                  borderRadius: "50%",
+                                  display: "inline-block",
+                                }}
+                              />
+                              {cfg.label}
+                            </span>
+                          ))}
+                        </div>
+                      </ReactFlow>
+                    )}
+                  </div>
+
+                  {/* ── Code panel ── */}
+                  {activeTarget && (
+                    <CodePanel
+                      target={activeTarget}
+                      onClose={() => setActiveTarget(null)}
+                    />
+                  )}
                 </div>
-              </ReactFlow>
+              </>
             )}
           </div>
-
-          {/* ── Code panel ── */}
-          {activeTarget && (
-            <CodePanel
-              target={activeTarget}
-              onClose={() => setActiveTarget(null)}
-            />
-          )}
         </div>
       </div>
     </div>

@@ -1,11 +1,14 @@
 import type { GraphData, GraphNode } from "../server/analyzer";
 
+export type AppView = "flow" | "file-ranking";
+
 interface HeaderProps {
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
   selectedProc: GraphNode | undefined;
   graphData: GraphData | null;
   onReanalyze: () => void;
+  view: AppView;
 }
 
 export function Header({
@@ -14,105 +17,110 @@ export function Header({
   selectedProc,
   graphData,
   onReanalyze,
+  view,
 }: HeaderProps) {
   return (
     <div
       style={{
-        padding: "10px 20px",
-        background: "white",
-        borderBottom: "1px solid #e2e8f0",
+        padding: "0 16px",
+        height: 44,
+        background: "#0d1117",
+        borderBottom: "1px solid #21262d",
         display: "flex",
         alignItems: "center",
-        gap: 12,
+        gap: 10,
         flexShrink: 0,
+        fontFamily: "sans-serif",
       }}
     >
-      <button
-        onClick={onToggleSidebar}
-        title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-        style={{
-          padding: "5px 8px",
-          background: "transparent",
-          color: "#6b7280",
-          border: "1px solid #e2e8f0",
-          borderRadius: 6,
-          fontSize: 14,
-          cursor: "pointer",
-          lineHeight: 1,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        {sidebarOpen ? "◀" : "▶"}
-      </button>
-      <div
-        style={{
-          fontWeight: 700,
-          fontSize: 14,
-          color: "#111827",
-          fontFamily: "sans-serif",
-        }}
-      >
-        TuAgenda — Dev Tools
-      </div>
-
-      {/* Selected procedure indicator */}
-      {selectedProc ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ color: "#d1d5db", fontSize: 12 }}>›</span>
-          <span
-            style={{
-              fontSize: 11,
-              color: "#6b7280",
-              fontFamily: "sans-serif",
-            }}
-          >
-            {
-              graphData?.nodes.find((n) =>
-                graphData.edges.some(
-                  (e) => e.source === n.id && e.target === selectedProc.id,
-                ),
-              )?.label
-            }
-          </span>
-          <span style={{ color: "#d1d5db", fontSize: 12 }}>›</span>
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#111827",
-              fontFamily: "monospace",
-            }}
-          >
-            {selectedProc.label}
-          </span>
-        </div>
-      ) : (
-        <div
-          style={{ fontSize: 11, color: "#9ca3af", fontFamily: "sans-serif" }}
+      {view === "flow" && (
+        <button
+          onClick={onToggleSidebar}
+          title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+          style={{
+            padding: "4px 7px",
+            background: "transparent",
+            color: "#484f58",
+            border: "1px solid #21262d",
+            borderRadius: 5,
+            fontSize: 10,
+            cursor: "pointer",
+            lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
+            transition: "color 0.1s",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = "#7d8590";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = "#484f58";
+          }}
         >
-          Architecture Flow Explorer
-        </div>
+          {sidebarOpen ? "◀" : "▶"}
+        </button>
       )}
 
+      {/* Breadcrumb */}
       <div
         style={{
-          marginLeft: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          flex: 1,
+          overflow: "hidden",
+        }}
+      >
+        {view === "flow" ? (
+          selectedProc ? (
+            <>
+              <span style={{ fontSize: 11, color: "#484f58" }}>
+                {
+                  graphData?.nodes.find((n) =>
+                    graphData.edges.some(
+                      (e) => e.source === n.id && e.target === selectedProc.id,
+                    ),
+                  )?.label
+                }
+              </span>
+              <span style={{ color: "#30363d", fontSize: 12 }}>›</span>
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#c9d1d9",
+                  fontFamily: "monospace",
+                }}
+              >
+                {selectedProc.label}
+              </span>
+            </>
+          ) : (
+            <span style={{ fontSize: 11, color: "#484f58" }}>
+              Select a procedure from the sidebar
+            </span>
+          )
+        ) : (
+          <span style={{ fontSize: 11, color: "#484f58" }}>
+            .ts / .tsx · sorted by line count · respects .gitignore
+          </span>
+        )}
+      </div>
+
+      {/* Right actions */}
+      <div
+        style={{
           display: "flex",
           alignItems: "center",
           gap: 8,
+          marginLeft: "auto",
+          flexShrink: 0,
         }}
       >
-        {/* Analyzed at */}
-        {graphData?.analyzedAt && (
+        {view === "flow" && graphData?.analyzedAt && (
           <span
-            style={{
-              fontSize: 10,
-              color: "#9ca3af",
-              fontFamily: "sans-serif",
-            }}
+            style={{ fontSize: 10, color: "#30363d", fontFamily: "monospace" }}
           >
-            analyzed{" "}
             {new Date(graphData.analyzedAt).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
@@ -120,21 +128,37 @@ export function Header({
             })}
           </span>
         )}
-        <button
-          onClick={onReanalyze}
-          style={{
-            padding: "5px 12px",
-            background: "#111827",
-            color: "white",
-            border: "none",
-            borderRadius: 6,
-            fontSize: 11,
-            cursor: "pointer",
-            fontFamily: "sans-serif",
-          }}
-        >
-          Re-analyze
-        </button>
+        {view === "flow" && (
+          <button
+            onClick={onReanalyze}
+            style={{
+              padding: "4px 12px",
+              background: "#1c2128",
+              color: "#c9d1d9",
+              border: "1px solid #30363d",
+              borderRadius: 6,
+              fontSize: 11,
+              cursor: "pointer",
+              fontFamily: "sans-serif",
+              fontWeight: 500,
+              transition: "background 0.1s, border-color 0.1s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background =
+                "#282e36";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "#484f58";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background =
+                "#1c2128";
+              (e.currentTarget as HTMLButtonElement).style.borderColor =
+                "#30363d";
+            }}
+          >
+            Re-analyze
+          </button>
+        )}
       </div>
     </div>
   );

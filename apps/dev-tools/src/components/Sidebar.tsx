@@ -29,36 +29,29 @@ export function Sidebar({
       style={{
         width: sidebarOpen ? 240 : 0,
         minWidth: sidebarOpen ? 240 : 0,
-        background: "white",
-        borderRight: "1px solid #e2e8f0",
+        background: "#0d1117",
+        borderRight: "1px solid #21262d",
         overflowY: sidebarOpen ? "auto" : "hidden",
         overflowX: "hidden",
         flexShrink: 0,
         transition: "width 0.2s ease, min-width 0.2s ease",
-        position: "relative",
+        fontFamily: "sans-serif",
       }}
     >
       {status === "loading" && sidebarOpen && (
-        <div
-          style={{
-            padding: 16,
-            fontSize: 12,
-            color: "#9ca3af",
-            fontFamily: "sans-serif",
-          }}
-        >
+        <div style={{ padding: 16, fontSize: 12, color: "#8b949e" }}>
           Analyzing...
         </div>
       )}
 
       {status === "ok" && sidebarOpen && (
         <>
-          {/* Search box */}
+          {/* Search */}
           <div
             style={{
-              padding: "8px 10px",
-              borderBottom: "1px solid #e2e8f0",
-              background: "white",
+              padding: "8px 8px",
+              borderBottom: "1px solid #21262d",
+              background: "#0d1117",
               position: "sticky",
               top: 0,
               zIndex: 1,
@@ -71,14 +64,14 @@ export function Sidebar({
               onChange={(e) => onSearch(e.target.value)}
               style={{
                 width: "100%",
-                padding: "5px 8px",
+                padding: "6px 10px",
                 fontSize: 11,
                 fontFamily: "monospace",
-                border: "1px solid #e2e8f0",
-                borderRadius: 5,
+                border: "1px solid #21262d",
+                borderRadius: 6,
                 outline: "none",
-                background: "#f9fafb",
-                color: "#111827",
+                background: "#161b22",
+                color: "#c9d1d9",
                 boxSizing: "border-box",
               }}
             />
@@ -97,18 +90,17 @@ export function Sidebar({
 
             return (
               <div key={group.routerId}>
-                {/* Router header — clickable to collapse */}
+                {/* Router header */}
                 <button
                   onClick={() => onToggleRouter(group.routerId)}
                   style={{
                     width: "100%",
                     textAlign: "left",
-                    padding: "7px 14px",
+                    padding: "6px 12px",
                     border: "none",
-                    borderBottom: "1px solid #f3f4f6",
-                    borderTop: "1px solid #f3f4f6",
+                    borderBottom: "1px solid #161b22",
                     marginTop: 4,
-                    background: "#f9fafb",
+                    background: "#0d1117",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -120,10 +112,9 @@ export function Sidebar({
                     style={{
                       fontSize: 10,
                       fontWeight: 700,
-                      color: "#6b7280",
+                      color: "#adbac7",
                       textTransform: "uppercase",
-                      letterSpacing: 0.8,
-                      fontFamily: "sans-serif",
+                      letterSpacing: 1,
                     }}
                   >
                     {group.routerLabel}
@@ -131,15 +122,13 @@ export function Sidebar({
                   <span
                     style={{
                       fontSize: 10,
-                      color: "#9ca3af",
+                      color: "#8b949e",
                       display: "flex",
                       alignItems: "center",
                       gap: 4,
                     }}
                   >
-                    <span style={{ fontSize: 9, color: "#d1d5db" }}>
-                      {filtered.length}
-                    </span>
+                    <span style={{ fontSize: 9 }}>{filtered.length}</span>
                     {isCollapsed ? "▶" : "▼"}
                   </span>
                 </button>
@@ -153,7 +142,6 @@ export function Sidebar({
                       : null;
                     const q2 = search.trim().toLowerCase();
                     const label = proc.label;
-                    // Highlight matching part
                     const matchIdx = q2 ? label.toLowerCase().indexOf(q2) : -1;
 
                     return (
@@ -163,24 +151,37 @@ export function Sidebar({
                         style={{
                           width: "100%",
                           textAlign: "left",
-                          padding: "8px 14px",
+                          padding: "8px 12px",
                           border: "none",
-                          borderBottom: "1px solid #f3f4f6",
-                          background: isSelected ? "#eff6ff" : "white",
+                          borderBottom: "1px solid #161b22",
+                          background: isSelected ? "#1c2128" : "transparent",
                           borderLeft: isSelected
-                            ? "3px solid #3b82f6"
-                            : "3px solid transparent",
+                            ? "2px solid #7c3aed"
+                            : "2px solid transparent",
                           cursor: "pointer",
                           display: "flex",
                           flexDirection: "column",
                           gap: 3,
+                          transition: "background 0.1s",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isSelected)
+                            (
+                              e.currentTarget as HTMLButtonElement
+                            ).style.background = "#161b22";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isSelected)
+                            (
+                              e.currentTarget as HTMLButtonElement
+                            ).style.background = "transparent";
                         }}
                       >
                         <div
                           style={{
                             fontSize: 12,
                             fontWeight: 600,
-                            color: isSelected ? "#1d4ed8" : "#111827",
+                            color: isSelected ? "#e6edf3" : "#adbac7",
                             fontFamily: "monospace",
                           }}
                         >
@@ -189,8 +190,8 @@ export function Sidebar({
                               {label.slice(0, matchIdx)}
                               <mark
                                 style={{
-                                  background: "#fef08a",
-                                  color: "#111827",
+                                  background: "#3d2e00",
+                                  color: "#f0b429",
                                   borderRadius: 2,
                                   padding: "0 1px",
                                 }}
@@ -212,7 +213,6 @@ export function Sidebar({
                                 background: procBadge.bg,
                                 color: procBadge.text,
                                 borderRadius: 3,
-                                fontFamily: "sans-serif",
                                 fontWeight: 600,
                               }}
                             >
@@ -222,10 +222,9 @@ export function Sidebar({
                               style={{
                                 fontSize: 9,
                                 padding: "1px 5px",
-                                background: "#f3f4f6",
-                                color: "#6b7280",
+                                background: "#161b22",
+                                color: "#8b949e",
                                 borderRadius: 3,
-                                fontFamily: "sans-serif",
                               }}
                             >
                               {proc.meta?.opType}
