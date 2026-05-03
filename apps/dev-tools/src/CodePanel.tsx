@@ -6,6 +6,8 @@ import "highlight.js/styles/atom-one-dark.css";
 import type { GraphNode } from "./server/analyzer";
 import type { ExtractedBlock } from "./server/extractor";
 import { CodeBlock } from "./components/CodeBlock";
+import { fs } from "./theme";
+import { useTheme } from "./ThemeContext";
 
 hljs.registerLanguage("typescript", typescript);
 hljs.registerLanguage("plaintext", plaintext);
@@ -15,7 +17,7 @@ export interface CodeTarget {
   line: number;
   label: string;
   layer: GraphNode["layer"];
-  description?: string; // shown in header, e.g. "calls new CreateAppointmentUseCase()"
+  description?: string;
 }
 
 interface Props {
@@ -28,24 +30,26 @@ type FetchState =
   | { status: "error"; message: string }
   | { status: "ok"; block: ExtractedBlock; absolutePath: string };
 
-const LAYER_COLOR: Record<string, string> = {
-  router: "#3fb950", // green — visible on dark
-  procedure: "#56d364", // brighter green
-  usecase: "#58a6ff", // blue
-  port: "#e3b341", // amber — better than yellow on dark
-  repository: "#f778ba", // pink
-  db: "#8b949e", // gray
-};
-
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function CodePanel({ target, onClose }: Props) {
+  const c = useTheme();
   const [state, setState] = useState<FetchState>({ status: "loading" });
   const [width, setWidth] = useState(520);
   const targetRowRef = useRef<HTMLTableRowElement | null>(null);
   const dragging = useRef(false);
   const startX = useRef(0);
   const startW = useRef(0);
+
+  // Accent color per layer — defined inside component so it reacts to theme
+  const LAYER_COLOR: Record<string, string> = {
+    router: c.success.text,
+    procedure: c.success.text,
+    usecase: c.info.text,
+    port: c.warning.text,
+    repository: c.edge.implements,
+    db: c.text.muted,
+  };
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -78,7 +82,6 @@ export function CodePanel({ target, onClose }: Props) {
   }, []);
 
   useEffect(() => {
-    // DB node with no resolved schema file
     if (target.layer === "db" && !target.file) {
       setState({
         status: "ok",
@@ -124,16 +127,16 @@ export function CodePanel({ target, onClose }: Props) {
     window.open(`vscode://file/${state.absolutePath}:${target.line}`, "_self");
   };
 
-  const accentColor = LAYER_COLOR[target.layer] ?? "#94a3b8";
+  const accentColor = LAYER_COLOR[target.layer] ?? c.edge.default;
 
   return (
     <div
       style={{
         width,
-        background: "#0d1117",
+        background: c.bg.base,
         display: "flex",
         flexDirection: "column",
-        borderLeft: "1px solid #30363d",
+        borderLeft: `1px solid ${c.border.default}`,
         flexShrink: 0,
         position: "relative",
       }}
@@ -153,26 +156,26 @@ export function CodePanel({ target, onClose }: Props) {
           transition: "background 0.15s",
         }}
         onMouseEnter={(e) =>
-          (e.currentTarget.style.background = "rgba(88,166,255,0.25)")
+          (e.currentTarget.style.background = `${c.info.text}40`)
         }
         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
       />
+
       {/* Header */}
       <div
         style={{
           padding: "10px 14px",
-          borderBottom: "1px solid #21262d",
-          background: "#161b22",
+          borderBottom: `1px solid ${c.border.subtle}`,
+          background: c.bg.surface,
           flexShrink: 0,
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            {/* Function name */}
             {state.status === "ok" && state.block.functionName && (
               <div
                 style={{
-                  fontSize: 13,
+                  fontSize: fs.base,
                   fontWeight: 700,
                   color: accentColor,
                   fontFamily: "monospace",
@@ -182,22 +185,20 @@ export function CodePanel({ target, onClose }: Props) {
                 {state.block.functionName}()
               </div>
             )}
-            {/* Label */}
             <div
               style={{
-                fontSize: 11,
-                color: "#e6edf3",
+                fontSize: fs.sm,
+                color: c.text.primary,
                 fontFamily: "monospace",
               }}
             >
               {target.label}
             </div>
-            {/* Description (for edge call sites) */}
             {target.description && (
               <div
                 style={{
-                  fontSize: 10,
-                  color: "#8b949e",
+                  fontSize: fs.xs,
+                  color: c.text.muted,
                   fontFamily: "sans-serif",
                   marginTop: 2,
                 }}
@@ -205,11 +206,10 @@ export function CodePanel({ target, onClose }: Props) {
                 {target.description}
               </div>
             )}
-            {/* File path */}
             <div
               style={{
-                fontSize: 10,
-                color: "#8b949e",
+                fontSize: fs.xs,
+                color: c.text.muted,
                 fontFamily: "monospace",
                 marginTop: 2,
                 whiteSpace: "nowrap",
@@ -219,7 +219,7 @@ export function CodePanel({ target, onClose }: Props) {
             >
               {target.file}
               {target.line > 0 && (
-                <span style={{ color: "#58a6ff" }}>:{target.line}</span>
+                <span style={{ color: c.info.text }}>:{target.line}</span>
               )}
             </div>
           </div>
@@ -231,11 +231,11 @@ export function CodePanel({ target, onClose }: Props) {
                 title="Open in VS Code"
                 style={{
                   padding: "4px 10px",
-                  background: "#21262d",
-                  color: "#c9d1d9",
-                  border: "1px solid #30363d",
+                  background: c.border.subtle,
+                  color: c.text.secondary,
+                  border: `1px solid ${c.border.default}`,
                   borderRadius: 5,
-                  fontSize: 11,
+                  fontSize: fs.sm,
                   cursor: "pointer",
                   fontFamily: "sans-serif",
                   display: "flex",
@@ -263,10 +263,10 @@ export function CodePanel({ target, onClose }: Props) {
               style={{
                 padding: "4px 8px",
                 background: "transparent",
-                color: "#8b949e",
-                border: "1px solid #30363d",
+                color: c.text.muted,
+                border: `1px solid ${c.border.default}`,
                 borderRadius: 5,
-                fontSize: 12,
+                fontSize: fs.base,
                 cursor: "pointer",
                 lineHeight: 1,
               }}
@@ -278,13 +278,13 @@ export function CodePanel({ target, onClose }: Props) {
       </div>
 
       {/* Body */}
-      <div style={{ flex: 1, overflow: "auto", background: "#0d1117" }}>
+      <div style={{ flex: 1, overflow: "auto", background: c.bg.base }}>
         {state.status === "loading" && (
           <div
             style={{
               padding: 20,
-              color: "#6e7681",
-              fontSize: 12,
+              color: c.text.dim,
+              fontSize: fs.base,
               fontFamily: "sans-serif",
             }}
           >
@@ -296,8 +296,8 @@ export function CodePanel({ target, onClose }: Props) {
           <div
             style={{
               padding: 20,
-              color: "#f38ba8",
-              fontSize: 12,
+              color: c.danger.text,
+              fontSize: fs.base,
               fontFamily: "monospace",
             }}
           >
@@ -309,17 +309,17 @@ export function CodePanel({ target, onClose }: Props) {
           <div
             style={{
               padding: 24,
-              fontSize: 12,
+              fontSize: fs.base,
               fontFamily: "sans-serif",
               textAlign: "center",
               marginTop: 40,
             }}
           >
             <div style={{ fontSize: 32, marginBottom: 10 }}>🗄️</div>
-            <div style={{ color: "#e6edf3", fontWeight: 600 }}>
+            <div style={{ color: c.text.primary, fontWeight: 600 }}>
               PostgreSQL — {target.label}
             </div>
-            <div style={{ fontSize: 10, marginTop: 6, color: "#8b949e" }}>
+            <div style={{ fontSize: fs.xs, marginTop: 6, color: c.text.muted }}>
               schema.prisma not found · check packages/db/prisma/
             </div>
           </div>

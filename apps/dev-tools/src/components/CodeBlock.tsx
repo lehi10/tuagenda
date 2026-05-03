@@ -1,5 +1,7 @@
 import hljs from "highlight.js/lib/core";
 import type { ExtractedBlock } from "../server/extractor";
+import { fs } from "../theme";
+import { useTheme } from "../ThemeContext";
 
 // ── CodeBlock: syntax-highlighted table with line numbers ────────────────────
 
@@ -16,6 +18,8 @@ export function CodeBlock({
   targetRowRef,
   file,
 }: CodeBlockProps) {
+  const c = useTheme();
+
   const lang = file.endsWith(".prisma") ? "plaintext" : "typescript";
   const highlighted = hljs.highlight(block.code, { language: lang }).value;
   const htmlLines = highlighted.split("\n");
@@ -27,10 +31,10 @@ export function CodeBlock({
       <div
         style={{
           padding: "5px 14px",
-          background: "#161b22",
-          borderBottom: "1px solid #30363d",
-          fontSize: 10,
-          color: "#8b949e",
+          background: c.bg.surface,
+          borderBottom: `1px solid ${c.border.default}`,
+          fontSize: fs.xs,
+          color: c.text.muted,
           fontFamily: "sans-serif",
           display: "flex",
           alignItems: "center",
@@ -48,23 +52,23 @@ export function CodeBlock({
           }}
         />
         {htmlLines.length} lines &nbsp;·&nbsp;
-        <span style={{ color: "#adbac7" }}>target </span>
+        <span style={{ color: c.text.tertiary }}>target </span>
         <span style={{ color: accentColor, fontWeight: 600 }}>
           :{block.targetLine}
         </span>
         {hasFnRange && (
           <>
             &nbsp;·&nbsp;
-            <span style={{ color: "#8b949e" }}>fn </span>
-            <span style={{ color: "#adbac7" }}>
+            <span style={{ color: c.text.muted }}>fn </span>
+            <span style={{ color: c.text.tertiary }}>
               {block.fnStartLine}–{block.fnEndLine}
             </span>
           </>
         )}
         &nbsp;·&nbsp;
-        <span style={{ color: "#adbac7" }}>click </span>
-        <span style={{ color: "#58a6ff", fontWeight: 600 }}>VS Code</span>
-        <span style={{ color: "#adbac7" }}> to open</span>
+        <span style={{ color: c.text.tertiary }}>click </span>
+        <span style={{ color: c.info.text, fontWeight: 600 }}>VS Code</span>
+        <span style={{ color: c.text.tertiary }}> to open</span>
       </div>
 
       {/* Code table */}
@@ -74,13 +78,13 @@ export function CodeBlock({
           width: "100%",
           fontFamily:
             "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
-          fontSize: 12,
-          background: "#0d1117",
+          fontSize: fs.base,
+          background: c.bg.base,
         }}
       >
         <tbody>
           {htmlLines.map((lineHtml, i) => {
-            const lineNum = i + 1; // startLine is always 1 (full file)
+            const lineNum = i + 1;
             const isTarget = lineNum === block.targetLine;
             const inFn =
               hasFnRange &&
@@ -88,8 +92,8 @@ export function CodeBlock({
               lineNum <= block.fnEndLine!;
 
             let bg = "transparent";
-            if (isTarget) bg = "rgba(88,166,255,0.13)";
-            else if (inFn) bg = "rgba(255,255,255,0.03)";
+            if (isTarget) bg = c.info.highlight;
+            else if (inFn) bg = c.info.fnHighlight;
 
             return (
               <tr
@@ -100,7 +104,7 @@ export function CodeBlock({
                   borderLeft: isTarget
                     ? `3px solid ${accentColor}`
                     : inFn
-                      ? "3px solid rgba(255,255,255,0.06)"
+                      ? `3px solid ${c.info.fnBorder}`
                       : "3px solid transparent",
                 }}
               >
@@ -110,14 +114,14 @@ export function CodeBlock({
                     color: isTarget
                       ? accentColor
                       : inFn
-                        ? "#8b949e"
-                        : "#484f58",
+                        ? c.text.muted
+                        : c.text.ghost,
                     textAlign: "right",
                     padding: "1.5px 12px 1.5px 8px",
                     minWidth: 40,
-                    fontSize: 11,
+                    fontSize: fs.sm,
                     verticalAlign: "top",
-                    borderRight: "1px solid #21262d",
+                    borderRight: `1px solid ${c.border.subtle}`,
                   }}
                 >
                   {lineNum}
@@ -127,7 +131,7 @@ export function CodeBlock({
                     padding: "1.5px 16px 1.5px 12px",
                     whiteSpace: "pre",
                     verticalAlign: "top",
-                    color: "#abb2bf",
+                    color: c.code.fg,
                   }}
                   dangerouslySetInnerHTML={{ __html: lineHtml || " " }}
                 />

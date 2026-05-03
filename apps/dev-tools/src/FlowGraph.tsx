@@ -22,11 +22,15 @@ import { applyLayout, buildEdge, reachableFrom, groupByRouter } from "./layout";
 import { Header, type AppView } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 import { FileRanking } from "./components/FileRanking";
+import { fs } from "./theme";
+import { useTheme } from "./ThemeContext";
 import { NavMenu } from "./components/NavMenu";
 
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function FlowGraph() {
+  const c = useTheme();
+
   const [view, setView] = useState<AppView>("flow");
   const [status, setStatus] = useState<"loading" | "error" | "ok">("loading");
   const [errorMsg, setErrorMsg] = useState("");
@@ -37,12 +41,10 @@ export function FlowGraph() {
   const shouldFitView = useRef(false);
   const [search, setSearch] = useState("");
 
-  // Auto-expand routers that have matching procedures when searching
   useEffect(() => {
     if (!graphData) return;
     const q = search.trim().toLowerCase();
     if (!q) {
-      // Restore all routers to collapsed when search is cleared
       setCollapsedRouters(
         new Set(
           graphData.nodes.filter((n) => n.layer === "router").map((n) => n.id),
@@ -61,6 +63,7 @@ export function FlowGraph() {
       return next;
     });
   }, [search, graphData]);
+
   const [collapsedRouters, setCollapsedRouters] = useState<Set<string>>(
     new Set(),
   );
@@ -72,6 +75,7 @@ export function FlowGraph() {
       return next;
     });
   }, []);
+
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
@@ -99,7 +103,6 @@ export function FlowGraph() {
     load();
   }, [load]);
 
-  // Recompute flow whenever selection changes
   useEffect(() => {
     if (!graphData || !selectedProcId) {
       setNodes([]);
@@ -107,7 +110,6 @@ export function FlowGraph() {
       return;
     }
 
-    // Find the router that owns this procedure
     const routerEdge = graphData.edges.find((e) => e.target === selectedProcId);
     const routerId = routerEdge?.source ?? "";
 
@@ -123,7 +125,6 @@ export function FlowGraph() {
       (e) => visibleIds.has(e.source) && visibleIds.has(e.target),
     );
 
-    // Sibling procedures: same router, not selected
     const siblingProcs = graphData.nodes.filter(
       (n) =>
         n.layer === "procedure" &&
@@ -131,7 +132,6 @@ export function FlowGraph() {
         graphData.edges.some((e) => e.source === routerId && e.target === n.id),
     );
 
-    // Router node gets siblingCount to show in its label
     const rawNodes: Node[] = visibleNodes.map((n) => ({
       id: n.id,
       type: "flowNode",
@@ -141,7 +141,6 @@ export function FlowGraph() {
         : n) as unknown as Record<string, unknown>,
     }));
 
-    // Add dimmed sibling procedure nodes
     for (const sib of siblingProcs) {
       rawNodes.push({
         id: sib.id,
@@ -151,9 +150,8 @@ export function FlowGraph() {
       });
     }
 
-    const rawEdges = visibleEdges.map(buildEdge);
+    const rawEdges = visibleEdges.map((e) => buildEdge(e, c));
 
-    // Add dimmed edges from router to sibling procedures
     for (const sib of siblingProcs) {
       rawEdges.push({
         id: `${routerId}→${sib.id}`,
@@ -163,12 +161,12 @@ export function FlowGraph() {
         interactionWidth: 0,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#d1d5db",
+          color: c.edge.sibling,
           width: 12,
           height: 12,
         },
         style: {
-          stroke: "#d1d5db",
+          stroke: c.edge.sibling,
           strokeWidth: 1.5,
           strokeDasharray: "4 3",
           opacity: 0.5,
@@ -178,12 +176,11 @@ export function FlowGraph() {
 
     setNodes(applyLayout(rawNodes, rawEdges, selectedProcId, routerId));
     setEdges(rawEdges);
-  }, [graphData, selectedProcId, setNodes, setEdges]);
+  }, [graphData, selectedProcId, setNodes, setEdges, c]);
 
   const onNodeClick: NodeMouseHandler = useCallback((_evt, node) => {
-    const gn = node.data as unknown as FlowNodeData; // double cast needed: Record<string,unknown> → unknown → FlowNodeData
+    const gn = node.data as unknown as FlowNodeData;
     if (gn.isSibling) {
-      // Switch procedure but keep current viewport position
       shouldFitView.current = false;
       setSelectedProcId(gn.id);
       setActiveTarget(null);
@@ -223,12 +220,10 @@ export function FlowGraph() {
     [graphData],
   );
 
-  // Flat ordered list of all procedures for ↑↓ navigation
   const allProcs = useMemo(() => groups.flatMap((g) => g.procedures), [groups]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      // Ignore when focus is inside an input
       if (document.activeElement?.tagName === "INPUT") return;
 
       if (e.key === "Escape") {
@@ -268,14 +263,12 @@ export function FlowGraph() {
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#0d1117",
+        background: c.bg.base,
       }}
     >
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        {/* ── Left nav menu ── */}
         <NavMenu view={view} onViewChange={setView} />
 
-        {/* ── Right side: header + content ── */}
         <div
           style={{
             flex: 1,
@@ -294,10 +287,8 @@ export function FlowGraph() {
           />
 
           <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-            {/* ── File Ranking view ── */}
             {view === "file-ranking" && <FileRanking />}
 
-            {/* ── Flow view ── */}
             {view === "flow" && (
               <>
                 <Sidebar
@@ -315,7 +306,6 @@ export function FlowGraph() {
                   }}
                 />
 
-                {/* ── Main area ── */}
                 <div
                   style={{
                     flex: 1,
@@ -338,10 +328,12 @@ export function FlowGraph() {
                           fontFamily: "sans-serif",
                         }}
                       >
-                        <div style={{ fontSize: 13, color: "#c9d1d9" }}>
+                        <div
+                          style={{ fontSize: fs.base, color: c.text.secondary }}
+                        >
                           Analyzing codebase with ts-morph...
                         </div>
-                        <div style={{ fontSize: 11, color: "#8b949e" }}>
+                        <div style={{ fontSize: fs.sm, color: c.text.muted }}>
                           First load may take a few seconds
                         </div>
                       </div>
@@ -360,18 +352,18 @@ export function FlowGraph() {
                           fontFamily: "sans-serif",
                         }}
                       >
-                        <div style={{ fontWeight: 700, color: "#f85149" }}>
+                        <div style={{ fontWeight: 700, color: c.danger.text }}>
                           Analysis failed
                         </div>
                         <div
                           style={{
-                            fontSize: 12,
+                            fontSize: fs.base,
                             fontFamily: "monospace",
-                            background: "#1a0a0a",
+                            background: c.danger.altBg,
                             padding: "8px 14px",
                             borderRadius: 6,
-                            color: "#f85149",
-                            border: "1px solid #3d1c1c",
+                            color: c.danger.text,
+                            border: `1px solid ${c.danger.border}`,
                           }}
                         >
                           {errorMsg}
@@ -381,12 +373,12 @@ export function FlowGraph() {
                           style={{
                             marginTop: 4,
                             padding: "6px 14px",
-                            background: "#3d1c1c",
-                            color: "#f85149",
-                            border: "1px solid #612020",
+                            background: c.danger.border,
+                            color: c.danger.text,
+                            border: `1px solid ${c.danger.altBorder}`,
                             borderRadius: 6,
                             cursor: "pointer",
-                            fontSize: 12,
+                            fontSize: fs.base,
                           }}
                         >
                           Retry
@@ -407,11 +399,15 @@ export function FlowGraph() {
                           fontFamily: "sans-serif",
                         }}
                       >
-                        <div style={{ fontSize: 26, color: "#8b949e" }}>←</div>
-                        <div style={{ fontSize: 13, color: "#c9d1d9" }}>
+                        <div style={{ fontSize: 26, color: c.text.muted }}>
+                          ←
+                        </div>
+                        <div
+                          style={{ fontSize: fs.base, color: c.text.secondary }}
+                        >
                           Select a procedure from the sidebar
                         </div>
-                        <div style={{ fontSize: 11, color: "#8b949e" }}>
+                        <div style={{ fontSize: fs.sm, color: c.text.muted }}>
                           {
                             graphData?.nodes.filter(
                               (n) => n.layer === "procedure",
@@ -443,7 +439,7 @@ export function FlowGraph() {
                         <AutoFitView shouldFit={shouldFitView} />
                         <Background
                           variant={BackgroundVariant.Dots}
-                          color="#30363d"
+                          color={c.border.default}
                           gap={20}
                           size={1.5}
                         />
@@ -452,13 +448,13 @@ export function FlowGraph() {
                           nodeColor={(n) => {
                             const layer = (n.data as unknown as FlowNodeData)
                               .layer;
-                            return LAYER[layer]?.border ?? "#484f58";
+                            return LAYER[layer]?.border ?? c.text.ghost;
                           }}
-                          maskColor="rgba(13,17,23,0.85)"
+                          maskColor={`${c.bg.base}d9`}
                           style={{
-                            border: "1px solid #21262d",
+                            border: `1px solid ${c.border.subtle}`,
                             borderRadius: 8,
-                            background: "#161b22",
+                            background: c.bg.surface,
                           }}
                           zoomable
                           pannable
@@ -470,8 +466,8 @@ export function FlowGraph() {
                             position: "absolute",
                             bottom: 16,
                             left: 16,
-                            background: "#161b22",
-                            border: "1px solid #21262d",
+                            background: c.bg.surface,
+                            border: `1px solid ${c.border.subtle}`,
                             borderRadius: 8,
                             padding: "7px 12px",
                             display: "flex",
@@ -493,9 +489,9 @@ export function FlowGraph() {
                                 display: "flex",
                                 alignItems: "center",
                                 gap: 5,
-                                fontSize: 10,
+                                fontSize: fs.xs,
                                 fontFamily: "sans-serif",
-                                color: "#adbac7",
+                                color: c.text.tertiary,
                               }}
                             >
                               <span
@@ -515,7 +511,6 @@ export function FlowGraph() {
                     )}
                   </div>
 
-                  {/* ── Code panel ── */}
                   {activeTarget && (
                     <CodePanel
                       target={activeTarget}

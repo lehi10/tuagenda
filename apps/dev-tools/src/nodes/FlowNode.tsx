@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Handle, Position, useReactFlow } from "@xyflow/react";
 import type { GraphNode } from "../server/analyzer";
 import { LAYER, PROC_BADGE } from "../config";
+import { fs } from "../theme";
+import { useTheme } from "../ThemeContext";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -30,13 +32,6 @@ function FileIcon({ color }: { color: string }) {
   );
 }
 
-const HANDLE_STYLE = (color: string) => ({
-  background: color,
-  width: 7,
-  height: 7,
-  border: "2px solid #0d1117",
-});
-
 // ── FlowNode ──────────────────────────────────────────────────────────────────
 
 export function FlowNode({
@@ -44,6 +39,14 @@ export function FlowNode({
 }: {
   data: FlowNodeData & Record<string, unknown>;
 }) {
+  const c = useTheme();
+  const handleStyle = (color: string) => ({
+    background: color,
+    width: 7,
+    height: 7,
+    border: `2px solid ${c.bg.base}`,
+  });
+
   const cfg = LAYER[data.layer];
   const procCfg = data.meta?.procType ? PROC_BADGE[data.meta.procType] : null;
   const isSibling = !!data.isSibling;
@@ -54,9 +57,9 @@ export function FlowNode({
     return (
       <div
         style={{
-          background: "#161b22",
-          border: "1px solid #30363d",
-          borderTop: "3px solid #7c3aed",
+          background: c.bg.surface,
+          border: `1px solid ${c.border.default}`,
+          borderTop: `3px solid ${c.brand.primary}`,
           borderRadius: 8,
           padding: "10px 14px",
           minWidth: 220,
@@ -69,20 +72,20 @@ export function FlowNode({
         <Handle
           type="target"
           position={Position.Top}
-          style={HANDLE_STYLE("#7c3aed")}
+          style={handleStyle(c.brand.primary)}
         />
 
         <div style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-          <div style={{ color: "#7c3aed", marginTop: 2, flexShrink: 0 }}>
-            <FileIcon color="#7c3aed" />
+          <div style={{ color: c.brand.primary, marginTop: 2, flexShrink: 0 }}>
+            <FileIcon color={c.brand.primary} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ marginBottom: 5 }}>
               <span
                 style={{
-                  background: "#21262d",
-                  color: "#8b949e",
-                  fontSize: 9,
+                  background: c.border.subtle,
+                  color: c.text.muted,
+                  fontSize: fs.xxs,
                   fontWeight: 700,
                   padding: "2px 7px",
                   borderRadius: 3,
@@ -97,8 +100,8 @@ export function FlowNode({
             <div
               style={{
                 fontWeight: 700,
-                fontSize: 14,
-                color: "#e6edf3",
+                fontSize: fs.lg,
+                color: c.text.primary,
                 letterSpacing: -0.2,
               }}
             >
@@ -106,8 +109,8 @@ export function FlowNode({
             </div>
             <div
               style={{
-                fontSize: 10,
-                color: "#484f58",
+                fontSize: fs.xs,
+                color: c.text.ghost,
                 marginTop: 3,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -116,7 +119,7 @@ export function FlowNode({
             >
               {fileName}
               {data.siblingCount != null && (
-                <span style={{ color: "#30363d", marginLeft: 6 }}>
+                <span style={{ color: c.text.faint, marginLeft: 6 }}>
                   · {data.siblingCount} procedures
                 </span>
               )}
@@ -127,7 +130,7 @@ export function FlowNode({
         <Handle
           type="source"
           position={Position.Bottom}
-          style={HANDLE_STYLE("#7c3aed")}
+          style={handleStyle(c.brand.primary)}
         />
       </div>
     );
@@ -141,8 +144,8 @@ export function FlowNode({
     return (
       <div
         style={{
-          background: "#0d1117",
-          border: "1px dashed #21262d",
+          background: c.bg.base,
+          border: `1px dashed ${c.border.subtle}`,
           borderRadius: 8,
           padding: "8px 12px",
           minWidth: 180,
@@ -155,7 +158,7 @@ export function FlowNode({
         <Handle
           type="target"
           position={Position.Top}
-          style={HANDLE_STYLE("#30363d")}
+          style={handleStyle(c.border.default)}
         />
 
         <div
@@ -168,9 +171,9 @@ export function FlowNode({
         >
           <span
             style={{
-              background: "#161b22",
-              color: "#484f58",
-              fontSize: 9,
+              background: c.bg.surface,
+              color: c.text.ghost,
+              fontSize: fs.xxs,
               fontWeight: 700,
               padding: "1px 5px",
               borderRadius: 3,
@@ -186,7 +189,7 @@ export function FlowNode({
               style={{
                 background: sibProcCfg.bg,
                 color: sibProcCfg.text,
-                fontSize: 9,
+                fontSize: fs.xxs,
                 padding: "1px 5px",
                 borderRadius: 3,
                 fontFamily: "sans-serif",
@@ -197,14 +200,16 @@ export function FlowNode({
           )}
         </div>
 
-        <div style={{ fontWeight: 600, fontSize: 12, color: "#484f58" }}>
+        <div
+          style={{ fontWeight: 600, fontSize: fs.base, color: c.text.ghost }}
+        >
           {data.label}
         </div>
 
         <Handle
           type="source"
           position={Position.Bottom}
-          style={HANDLE_STYLE("#30363d")}
+          style={handleStyle(c.border.default)}
         />
       </div>
     );
@@ -215,7 +220,7 @@ export function FlowNode({
     <div
       style={{
         background: cfg.bg,
-        border: "1px solid #21262d",
+        border: `1px solid ${c.border.subtle}`,
         borderLeft: `3px solid ${cfg.border}`,
         borderRadius: 8,
         padding: "10px 14px",
@@ -229,7 +234,7 @@ export function FlowNode({
       <Handle
         type="target"
         position={Position.Top}
-        style={HANDLE_STYLE(cfg.border)}
+        style={handleStyle(cfg.border)}
       />
 
       <div
@@ -246,7 +251,7 @@ export function FlowNode({
             background: cfg.badge + "22",
             color: cfg.badge,
             border: `1px solid ${cfg.badge}44`,
-            fontSize: 9,
+            fontSize: fs.xxs,
             fontWeight: 700,
             padding: "2px 7px",
             borderRadius: 4,
@@ -262,7 +267,7 @@ export function FlowNode({
             style={{
               background: procCfg.bg,
               color: procCfg.text,
-              fontSize: 9,
+              fontSize: fs.xxs,
               fontWeight: 600,
               padding: "2px 7px",
               borderRadius: 4,
@@ -277,8 +282,8 @@ export function FlowNode({
       <div
         style={{
           fontWeight: 700,
-          fontSize: 14,
-          color: "#e6edf3",
+          fontSize: fs.lg,
+          color: c.text.primary,
           marginBottom: 4,
           letterSpacing: -0.2,
         }}
@@ -288,8 +293,8 @@ export function FlowNode({
 
       <div
         style={{
-          fontSize: 10,
-          color: "#484f58",
+          fontSize: fs.xs,
+          color: c.text.ghost,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
@@ -297,14 +302,14 @@ export function FlowNode({
       >
         {data.file}
         {data.line > 0 && (
-          <span style={{ color: "#30363d" }}>:{data.line}</span>
+          <span style={{ color: c.text.faint }}>:{data.line}</span>
         )}
       </div>
 
       <Handle
         type="source"
         position={Position.Bottom}
-        style={HANDLE_STYLE(cfg.border)}
+        style={handleStyle(cfg.border)}
       />
     </div>
   );

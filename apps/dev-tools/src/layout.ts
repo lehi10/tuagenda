@@ -3,6 +3,8 @@ import { Position } from "@xyflow/react";
 import type { Node, Edge } from "@xyflow/react";
 import { MarkerType } from "@xyflow/react";
 import type { GraphNode, GraphEdge } from "./server/analyzer";
+import type { ColorPalette } from "./theme";
+import { fs } from "./theme";
 import type { FlowNodeData } from "./nodes/FlowNode";
 
 // ── Layout constants ──────────────────────────────────────────────────────────
@@ -60,7 +62,7 @@ export function applyLayout(
   const routerNode = nodes.find((n) => n.id === routerId);
   const procNodes = nodes
     .filter((n) => (n.data as unknown as FlowNodeData).layer === "procedure")
-    .sort((a, b) => a.id.localeCompare(b.id)); // stable sort
+    .sort((a, b) => a.id.localeCompare(b.id));
   const flowNodes = nodes.filter((n) => {
     const l = (n.data as unknown as FlowNodeData).layer;
     return l !== "router" && l !== "procedure";
@@ -125,9 +127,9 @@ export function applyLayout(
 
 // ── buildEdge ─────────────────────────────────────────────────────────────────
 
-export function buildEdge(e: GraphEdge): Edge {
+export function buildEdge(e: GraphEdge, colors: ColorPalette): Edge {
   const isImpl = e.variant === "implements";
-  const color = isImpl ? "#a78bfa" : "#94a3b8";
+  const color = isImpl ? colors.edge.implements : colors.edge.default;
   return {
     id: e.id,
     source: e.source,
@@ -147,8 +149,8 @@ export function buildEdge(e: GraphEdge): Edge {
       strokeDasharray: isImpl ? "6 3" : undefined,
       cursor: "pointer",
     },
-    labelStyle: { fontSize: 10, fill: "#6b7280", fontWeight: 600 },
-    labelBgStyle: { fill: "white", fillOpacity: 0.9 },
+    labelStyle: { fontSize: fs.xs, fill: colors.edge.label, fontWeight: 600 },
+    labelBgStyle: { fill: colors.edge.labelBg, fillOpacity: 0.9 },
     labelBgPadding: [4, 6] as [number, number],
     labelBgBorderRadius: 4,
   };
@@ -156,8 +158,6 @@ export function buildEdge(e: GraphEdge): Edge {
 
 // ── reachableFrom ─────────────────────────────────────────────────────────────
 
-// Given a selected procedure id, walk edges forward to collect all reachable node ids
-// Also include the parent router node
 export function reachableFrom(
   startId: string,
   routerId: string,

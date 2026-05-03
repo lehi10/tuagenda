@@ -1,43 +1,149 @@
 import { useEffect, useState } from "react";
+import { fs } from "../theme";
+import { useTheme } from "../ThemeContext";
 
-interface FileEntry {
+interface FileMetrics {
   path: string;
   lines: number;
+  anyCount: number;
+  asCount: number;
+  tsIgnoreCount: number;
+  consoleCount: number;
+  todoCount: number;
+  useEffectCount: number;
+  importCount: number;
+  fnCount: number;
+  maxFnLines: number;
+  avgFnLines: number;
 }
 
-// Refactor urgency: top 10% of files are flagged
-function urgencyColor(i: number, total: number): string {
-  const pct = i / Math.max(total - 1, 1);
-  if (pct < 0.05) return "#f85149"; // top 5% — high priority
-  if (pct < 0.15) return "#e3b341"; // top 15% — medium
-  if (pct < 0.35) return "#8b949e"; // top 35% — low
-  return "#484f58"; // rest — fine
+// ── Urgency helpers ───────────────────────────────────────────────────────────
+
+function useLineColor() {
+  const c = useTheme();
+  return (i: number, total: number): string => {
+    const pct = i / Math.max(total - 1, 1);
+    if (pct < 0.05) return c.danger.text;
+    if (pct < 0.15) return c.warning.text;
+    if (pct < 0.35) return c.text.muted;
+    return c.text.ghost;
+  };
 }
 
-function urgencyLabel(
-  i: number,
-  total: number,
-): { label: string; color: string; bg: string } | null {
-  const pct = i / Math.max(total - 1, 1);
-  if (pct < 0.05) return { label: "refactor", color: "#f85149", bg: "#2d0f0f" };
-  if (pct < 0.15) return { label: "review", color: "#e3b341", bg: "#2a1f00" };
-  return null;
+function useMaxFnColor() {
+  const c = useTheme();
+  return (lines: number): string => {
+    if (lines >= 100) return c.danger.text;
+    if (lines >= 50) return c.warning.text;
+    if (lines >= 25) return c.text.muted;
+    return c.success.text;
+  };
 }
+
+// ── Badge component ───────────────────────────────────────────────────────────
+
+interface BadgeDef {
+  key: string;
+  label: string;
+  value: number | string;
+  color: string;
+  bg: string;
+  title: string;
+}
+
+function MetricBadge({ label, value, color, bg, title }: BadgeDef) {
+  return (
+    <span
+      title={title}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 3,
+        padding: "1px 6px",
+        borderRadius: 4,
+        fontSize: fs.xs,
+        fontFamily: "monospace",
+        background: bg,
+        color,
+        border: `1px solid ${color}33`,
+        whiteSpace: "nowrap",
+        cursor: "default",
+      }}
+    >
+      <span style={{ opacity: 0.7, fontSize: fs.xxs }}>{label}</span>
+      <span style={{ fontWeight: 700 }}>{value}</span>
+    </span>
+  );
+}
+
+// ── Sort options ──────────────────────────────────────────────────────────────
+
+type SortKey =
+  | "lines"
+  | "any"
+  | "maxFnLines"
+  | "tsIgnore"
+  | "console"
+  | "imports";
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "lines", label: "Lines" },
+  { key: "any", label: "any count" },
+  { key: "maxFnLines", label: "Max fn length" },
+  { key: "tsIgnore", label: "@ts-ignore" },
+  { key: "console", label: "console.log" },
+  { key: "imports", label: "Imports" },
+];
+
+function sortFiles(files: FileMetrics[], key: SortKey): FileMetrics[] {
+  return [...files].sort((a, b) => {
+    switch (key) {
+      case "lines":
+        return b.lines - a.lines;
+      case "any":
+        return b.anyCount - a.anyCount;
+      case "maxFnLines":
+        return b.maxFnLines - a.maxFnLines;
+      case "tsIgnore":
+        return b.tsIgnoreCount - a.tsIgnoreCount;
+      case "console":
+        return b.consoleCount - a.consoleCount;
+      case "imports":
+        return b.importCount - a.importCount;
+    }
+  });
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 export function FileRanking() {
-  const [files, setFiles] = useState<FileEntry[]>([]);
+  const c = useTheme();
+  const lineColor = useLineColor();
+  const maxFnColor = useMaxFnColor();
+
+  const [files, setFiles] = useState<FileMetrics[]>([]);
+  const [scopes, setScopes] = useState<string[]>([]);
+  const [scope, setScope] = useState("apps/web-app");
+  const [totalInRepo, setTotalInRepo] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("lines");
 
-  const load = async () => {
+  const load = async (forceRefresh = false) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/file-ranking");
-      const data: FileEntry[] | { error: string } = await res.json();
+      const params = new URLSearchParams({ scope });
+      if (forceRefresh) params.set("refresh", "1");
+      const res = await fetch(`/api/file-ranking?${params}`);
+      const data:
+        | { metrics: FileMetrics[]; scopes: string[]; total: number }
+        | { error: string } = await res.json();
       if ("error" in data) throw new Error(data.error);
-      setFiles(data);
+      setFiles(data.metrics);
+      setScopes(data.scopes);
+      setTotalInRepo(data.total);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -47,20 +153,115 @@ export function FileRanking() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [scope]);
 
-  const maxLines = files[0]?.lines ?? 1;
+  // ── Compute badges inside component so colors are reactive ────────────────
+  const getBadges = (f: FileMetrics): BadgeDef[] => {
+    const badges: BadgeDef[] = [];
+
+    if (f.tsIgnoreCount > 0)
+      badges.push({
+        key: "ts-ignore",
+        label: "@ts-ignore",
+        value: f.tsIgnoreCount,
+        color: c.danger.text,
+        bg: c.danger.bg,
+        title: "TypeScript errors silenced with @ts-ignore or @ts-nocheck",
+      });
+
+    if (f.anyCount > 0)
+      badges.push({
+        key: "any",
+        label: "any",
+        value: f.anyCount,
+        color: f.anyCount >= 5 ? c.danger.text : c.warning.text,
+        bg: f.anyCount >= 5 ? c.danger.bg : c.warning.bg,
+        title: `${f.anyCount} uses of the \`any\` type — reduces type safety`,
+      });
+
+    if (f.asCount > 3)
+      badges.push({
+        key: "as",
+        label: "as cast",
+        value: f.asCount,
+        color: c.warning.text,
+        bg: c.warning.bg,
+        title: `${f.asCount} type assertions (as Foo) — consider tightening types`,
+      });
+
+    if (f.consoleCount > 0)
+      badges.push({
+        key: "console",
+        label: "console",
+        value: f.consoleCount,
+        color: c.orange.text,
+        bg: c.orange.bg,
+        title: `${f.consoleCount} console.log/warn/error calls left in code`,
+      });
+
+    if (f.todoCount > 0)
+      badges.push({
+        key: "todo",
+        label: "TODO",
+        value: f.todoCount,
+        color: c.warning.text,
+        bg: c.warning.bg,
+        title: `${f.todoCount} TODO / FIXME / HACK comments`,
+      });
+
+    if (f.maxFnLines >= 25) {
+      const col = maxFnColor(f.maxFnLines);
+      badges.push({
+        key: "maxfn",
+        label: "max fn",
+        value: `${f.maxFnLines}ln`,
+        color: col,
+        bg:
+          col === c.danger.text
+            ? c.danger.bg
+            : col === c.warning.text
+              ? c.warning.bg
+              : c.bg.surface,
+        title: `Longest function is ${f.maxFnLines} lines — consider splitting`,
+      });
+    }
+
+    if (f.useEffectCount >= 3)
+      badges.push({
+        key: "useeffect",
+        label: "useEffect",
+        value: f.useEffectCount,
+        color: c.info.lightText,
+        bg: c.info.bg,
+        title: `${f.useEffectCount} useEffect calls — may indicate complex side-effect logic`,
+      });
+
+    if (f.importCount >= 12)
+      badges.push({
+        key: "imports",
+        label: "imports",
+        value: f.importCount,
+        color: c.purple.text,
+        bg: c.purple.bg,
+        title: `${f.importCount} imports — highly coupled file`,
+      });
+
+    return badges;
+  };
+
+  const extBadge = (p: string) =>
+    p.endsWith(".tsx")
+      ? { label: "tsx", bg: c.info.bg, color: c.info.lightText }
+      : { label: "ts", bg: c.purple.bg, color: c.purple.text };
+
   const filtered = filter.trim()
     ? files.filter((f) =>
         f.path.toLowerCase().includes(filter.trim().toLowerCase()),
       )
     : files;
 
-  const badge = (filePath: string) => {
-    if (filePath.endsWith(".tsx"))
-      return { label: "tsx", bg: "#0d1a3a", color: "#79c0ff" };
-    return { label: "ts", bg: "#1a0d30", color: "#d2a8ff" };
-  };
+  const sorted = sortFiles(filtered, sortKey);
+  const maxLines = sorted[0]?.lines ?? 1;
 
   return (
     <div
@@ -69,21 +270,22 @@ export function FileRanking() {
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: "#0d1117",
+        background: c.bg.base,
         fontFamily: "sans-serif",
       }}
     >
-      {/* Toolbar */}
+      {/* ── Toolbar ── */}
       <div
         style={{
           padding: "8px 16px",
-          borderBottom: "1px solid #21262d",
+          borderBottom: `1px solid ${c.border.subtle}`,
           display: "flex",
           alignItems: "center",
           gap: 10,
           flexShrink: 0,
         }}
       >
+        {/* Search */}
         <div style={{ position: "relative" }}>
           <svg
             style={{
@@ -91,7 +293,7 @@ export function FileRanking() {
               left: 8,
               top: "50%",
               transform: "translateY(-50%)",
-              color: "#6e7681",
+              color: c.text.dim,
               pointerEvents: "none",
             }}
             width="12"
@@ -114,60 +316,120 @@ export function FileRanking() {
               paddingRight: 10,
               paddingTop: 5,
               paddingBottom: 5,
-              border: "1px solid #30363d",
+              border: `1px solid ${c.border.default}`,
               borderRadius: 6,
-              fontSize: 12,
-              width: 220,
+              fontSize: fs.base,
+              width: 200,
               outline: "none",
               fontFamily: "monospace",
-              background: "#161b22",
-              color: "#e6edf3",
+              background: c.bg.surface,
+              color: c.text.primary,
             }}
           />
         </div>
+
+        {/* Scope */}
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ fontSize: fs.xs, color: c.text.muted }}>scope</span>
+          <select
+            value={scope}
+            onChange={(e) => setScope(e.target.value)}
+            style={{
+              padding: "4px 8px",
+              background: c.bg.surface,
+              color: c.text.secondary,
+              border: `1px solid ${c.border.default}`,
+              borderRadius: 6,
+              fontSize: fs.sm,
+              cursor: "pointer",
+              outline: "none",
+            }}
+          >
+            {scopes.map((s) => (
+              <option key={s} value={s}>
+                {s === "all" ? `all (${totalInRepo})` : s}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Sort */}
+        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ fontSize: fs.xs, color: c.text.muted }}>sort by</span>
+          <select
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value as SortKey)}
+            style={{
+              padding: "4px 8px",
+              background: c.bg.surface,
+              color: c.text.secondary,
+              border: `1px solid ${c.border.default}`,
+              borderRadius: 6,
+              fontSize: fs.sm,
+              cursor: "pointer",
+              outline: "none",
+            }}
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.key} value={o.key}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {!loading && (
-          <span style={{ fontSize: 11, color: "#c9d1d9" }}>
+          <span style={{ fontSize: fs.sm, color: c.text.secondary }}>
             {filtered.length} / {files.length} files
           </span>
         )}
+
         <button
-          onClick={load}
+          onClick={() => load(true)}
+          title="Clear cache and re-analyze"
           style={{
             marginLeft: "auto",
             padding: "5px 12px",
-            background: "#1c2128",
-            color: "#c9d1d9",
-            border: "1px solid #30363d",
+            background: c.bg.raised,
+            color: c.text.secondary,
+            border: `1px solid ${c.border.default}`,
             borderRadius: 6,
-            fontSize: 11,
+            fontSize: fs.sm,
             cursor: "pointer",
             fontWeight: 500,
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background = "#282e36";
+            (e.currentTarget as HTMLButtonElement).style.background =
+              c.bg.hover;
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background = "#1c2128";
+            (e.currentTarget as HTMLButtonElement).style.background =
+              c.bg.raised;
           }}
         >
           Refresh
         </button>
       </div>
 
-      {/* Content */}
+      {/* ── Content ── */}
       <div style={{ flex: 1, overflow: "auto" }}>
         {loading && (
           <div
             style={{
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               height: "100%",
-              color: "#8b949e",
-              fontSize: 13,
+              gap: 6,
             }}
           >
-            Scanning files...
+            <div style={{ color: c.text.secondary, fontSize: fs.base }}>
+              Analyzing files with ts-morph...
+            </div>
+            <div style={{ color: c.text.muted, fontSize: fs.sm }}>
+              First scan may take a few seconds
+            </div>
           </div>
         )}
 
@@ -182,18 +444,18 @@ export function FileRanking() {
               gap: 10,
             }}
           >
-            <div style={{ color: "#f85149", fontWeight: 700 }}>
+            <div style={{ color: c.danger.text, fontWeight: 700 }}>
               Failed to load
             </div>
             <div
               style={{
-                fontSize: 12,
+                fontSize: fs.base,
                 fontFamily: "monospace",
-                background: "#1a0a0a",
+                background: c.danger.altBg,
                 padding: "8px 14px",
                 borderRadius: 6,
-                color: "#f85149",
-                border: "1px solid #3d1c1c",
+                color: c.danger.text,
+                border: `1px solid ${c.danger.border}`,
               }}
             >
               {error}
@@ -202,12 +464,12 @@ export function FileRanking() {
               onClick={load}
               style={{
                 padding: "6px 14px",
-                background: "#3d1c1c",
-                color: "#f85149",
-                border: "1px solid #612020",
+                background: c.danger.border,
+                color: c.danger.text,
+                border: `1px solid ${c.danger.altBorder}`,
                 borderRadius: 6,
                 cursor: "pointer",
-                fontSize: 12,
+                fontSize: fs.base,
               }}
             >
               Retry
@@ -217,98 +479,72 @@ export function FileRanking() {
 
         {!loading && !error && (
           <table
-            style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: fs.base,
+            }}
           >
             <thead>
               <tr
                 style={{
-                  borderBottom: "1px solid #21262d",
+                  borderBottom: `1px solid ${c.border.subtle}`,
                   position: "sticky",
                   top: 0,
-                  background: "#0d1117",
+                  background: c.bg.base,
                   zIndex: 1,
                 }}
               >
-                <th
-                  style={{
-                    padding: "8px 12px",
-                    color: "#adbac7",
-                    fontWeight: 600,
-                    fontSize: 10,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    width: 48,
-                    textAlign: "right",
-                  }}
-                >
-                  #
-                </th>
-                <th
-                  style={{
-                    padding: "8px 12px",
-                    color: "#adbac7",
-                    fontWeight: 600,
-                    fontSize: 10,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    textAlign: "left",
-                  }}
-                >
-                  File
-                </th>
-                <th
-                  style={{
-                    padding: "8px 12px",
-                    color: "#adbac7",
-                    fontWeight: 600,
-                    fontSize: 10,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    width: 80,
-                    textAlign: "right",
-                  }}
-                >
-                  Lines
-                </th>
-                <th
-                  style={{
-                    padding: "8px 12px",
-                    color: "#adbac7",
-                    fontWeight: 600,
-                    fontSize: 10,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    width: 100,
-                  }}
-                >
-                  &nbsp;
-                </th>
-                <th style={{ padding: "8px 24px 8px 0", width: 200 }} />
+                {[
+                  { label: "#", w: 40, align: "right" as const },
+                  { label: "File", align: "left" as const },
+                  { label: "Lines", w: 56, align: "right" as const },
+                  { label: "Fns", w: 52, align: "right" as const },
+                  { label: "Imports", w: 56, align: "right" as const },
+                  { label: "Issues" },
+                ].map((col) => (
+                  <th
+                    key={col.label}
+                    style={{
+                      padding: "8px 12px",
+                      color: c.text.tertiary,
+                      fontWeight: 600,
+                      fontSize: fs.xs,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      width: col.w,
+                      textAlign: col.align ?? "left",
+                    }}
+                  >
+                    {col.label}
+                  </th>
+                ))}
+                <th style={{ padding: "8px 24px 8px 8px", width: 160 }} />
               </tr>
             </thead>
             <tbody>
-              {filtered.map((entry, i) => {
-                const b = badge(entry.path);
+              {sorted.map((entry, i) => {
+                const b = extBadge(entry.path);
                 const pct = Math.max(
                   3,
                   Math.round((entry.lines / maxLines) * 100),
                 );
-                const color = urgencyColor(i, filtered.length);
-                const tag = urgencyLabel(i, filtered.length);
+                const color = lineColor(i, sorted.length);
                 const dir = entry.path.split("/").slice(0, -1).join("/");
                 const filename = entry.path.split("/").pop() ?? entry.path;
+                const badges = getBadges(entry);
 
                 return (
                   <tr
                     key={entry.path}
                     style={{
-                      borderBottom: "1px solid #161b22",
+                      borderBottom: `1px solid ${c.border.faint}`,
                       transition: "background 0.1s",
                     }}
                     onMouseEnter={(e) => {
                       (
                         e.currentTarget as HTMLTableRowElement
-                      ).style.background = "#161b22";
+                      ).style.background = c.bg.surface;
                     }}
                     onMouseLeave={(e) => {
                       (
@@ -316,97 +552,142 @@ export function FileRanking() {
                       ).style.background = "transparent";
                     }}
                   >
-                    {/* Rank */}
                     <td
                       style={{
-                        padding: "9px 12px",
+                        padding: "10px 12px",
                         textAlign: "right",
                         fontFamily: "monospace",
-                        fontSize: 11,
-                        color: "#8b949e",
+                        fontSize: fs.sm,
+                        color: c.text.muted,
+                        verticalAlign: "top",
                       }}
                     >
                       {i + 1}
                     </td>
 
-                    {/* File path */}
-                    <td style={{ padding: "9px 12px" }}>
+                    <td style={{ padding: "10px 12px", verticalAlign: "top" }}>
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 8,
+                          gap: 7,
+                          marginBottom: badges.length > 0 ? 5 : 0,
                         }}
                       >
                         <span
                           style={{
                             display: "inline-block",
-                            padding: "1px 6px",
+                            padding: "1px 5px",
                             borderRadius: 4,
-                            fontSize: 9,
+                            fontSize: fs.xxs,
                             fontWeight: 700,
                             background: b.bg,
                             color: b.color,
                             fontFamily: "monospace",
-                            letterSpacing: "0.03em",
                             flexShrink: 0,
                           }}
                         >
                           {b.label}
                         </span>
-                        <span style={{ fontFamily: "monospace", fontSize: 12 }}>
+                        <span
+                          style={{ fontFamily: "monospace", fontSize: fs.sm }}
+                        >
                           {dir && (
-                            <span style={{ color: "#8b949e" }}>{dir}/</span>
+                            <span style={{ color: c.text.muted }}>{dir}/</span>
                           )}
-                          <span style={{ color: "#e6edf3", fontWeight: 500 }}>
+                          <span
+                            style={{ color: c.text.primary, fontWeight: 500 }}
+                          >
                             {filename}
                           </span>
                         </span>
                       </div>
+                      {badges.length > 0 && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 4,
+                            paddingLeft: 2,
+                          }}
+                        >
+                          {badges.map((badge) => (
+                            <MetricBadge key={badge.key} {...badge} />
+                          ))}
+                        </div>
+                      )}
                     </td>
 
-                    {/* Line count */}
                     <td
                       style={{
-                        padding: "9px 12px",
+                        padding: "10px 12px",
                         textAlign: "right",
                         fontFamily: "monospace",
                         fontWeight: 700,
-                        color: color,
-                        fontSize: 12,
+                        color,
+                        fontSize: fs.base,
+                        verticalAlign: "top",
                       }}
                     >
                       {entry.lines.toLocaleString()}
                     </td>
 
-                    {/* Urgency tag */}
-                    <td style={{ padding: "9px 12px" }}>
-                      {tag && (
+                    <td
+                      style={{
+                        padding: "10px 12px",
+                        textAlign: "right",
+                        fontFamily: "monospace",
+                        fontSize: fs.sm,
+                        color: c.text.tertiary,
+                        verticalAlign: "top",
+                      }}
+                    >
+                      {entry.fnCount}
+                    </td>
+
+                    <td
+                      style={{
+                        padding: "10px 12px",
+                        textAlign: "right",
+                        fontFamily: "monospace",
+                        fontSize: fs.sm,
+                        color:
+                          entry.importCount >= 12
+                            ? c.purple.text
+                            : c.text.tertiary,
+                        verticalAlign: "top",
+                      }}
+                    >
+                      {entry.importCount}
+                    </td>
+
+                    <td style={{ padding: "10px 12px", verticalAlign: "top" }}>
+                      {badges.length === 0 ? (
                         <span
-                          style={{
-                            fontSize: 10,
-                            fontWeight: 600,
-                            padding: "2px 7px",
-                            background: tag.bg,
-                            color: tag.color,
-                            borderRadius: 4,
-                            fontFamily: "sans-serif",
-                            border: `1px solid ${tag.color}33`,
-                          }}
+                          style={{ fontSize: fs.xs, color: c.success.text }}
                         >
-                          {tag.label}
+                          ✓ clean
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: fs.xs, color: c.text.muted }}>
+                          {badges.length} issue{badges.length > 1 ? "s" : ""}
                         </span>
                       )}
                     </td>
 
-                    {/* Bar */}
-                    <td style={{ padding: "9px 24px 9px 0" }}>
+                    <td
+                      style={{
+                        padding: "10px 24px 10px 8px",
+                        verticalAlign: "top",
+                      }}
+                    >
                       <div
                         style={{
                           height: 4,
                           borderRadius: 2,
-                          background: "#21262d",
+                          background: c.border.subtle,
                           overflow: "hidden",
+                          marginTop: 4,
                         }}
                       >
                         <div
@@ -416,7 +697,6 @@ export function FileRanking() {
                             background: color,
                             borderRadius: 2,
                             opacity: 0.7,
-                            transition: "width 0.4s ease",
                           }}
                         />
                       </div>

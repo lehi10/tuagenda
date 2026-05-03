@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { AppView } from "./Header";
+import { fs } from "../theme";
+import { useTheme, useThemeToggle } from "../ThemeContext";
 
 interface NavItem {
   id: AppView;
@@ -60,7 +62,51 @@ interface NavMenuProps {
   onViewChange: (v: AppView) => void;
 }
 
+function SunIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
 export function NavMenu({ view, onViewChange }: NavMenuProps) {
+  const c = useTheme();
+  const { isDark, toggle } = useThemeToggle();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -68,10 +114,10 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
       style={{
         width: collapsed ? 52 : 204,
         flexShrink: 0,
-        background: "#0d1117",
+        background: c.bg.base,
         display: "flex",
         flexDirection: "column",
-        borderRight: "1px solid #21262d",
+        borderRight: `1px solid ${c.border.subtle}`,
         transition: "width 0.2s ease",
         overflow: "hidden",
         fontFamily: "sans-serif",
@@ -81,7 +127,7 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
       <div
         style={{
           padding: collapsed ? "16px 0" : "16px 14px",
-          borderBottom: "1px solid #21262d",
+          borderBottom: `1px solid ${c.border.subtle}`,
           flexShrink: 0,
           display: "flex",
           alignItems: "center",
@@ -90,18 +136,17 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
           minHeight: 56,
         }}
       >
-        {/* Logo mark */}
         <div
           style={{
             width: 26,
             height: 26,
-            background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+            background: `linear-gradient(135deg, ${c.brand.primary} 0%, ${c.brand.secondary} 100%)`,
             borderRadius: 7,
             flexShrink: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 12,
+            fontSize: fs.base,
             fontWeight: 800,
             color: "white",
             letterSpacing: "-0.5px",
@@ -113,16 +158,16 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
           <div>
             <div
               style={{
-                fontSize: 13,
+                fontSize: fs.md,
                 fontWeight: 700,
-                color: "#e6edf3",
+                color: c.text.primary,
                 letterSpacing: "-0.2px",
                 lineHeight: 1.2,
               }}
             >
               Dev Tools
             </div>
-            <div style={{ fontSize: 10, color: "#484f58", marginTop: 1 }}>
+            <div style={{ fontSize: fs.xs, color: c.text.ghost, marginTop: 1 }}>
               TuAgenda
             </div>
           </div>
@@ -148,9 +193,9 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
                 border: "none",
                 borderRadius: 6,
                 cursor: "pointer",
-                background: active ? "#1c2128" : "transparent",
-                color: active ? "#e6edf3" : "#7d8590",
-                fontSize: 12,
+                background: active ? c.bg.raised : "transparent",
+                color: active ? c.text.primary : c.text.dim,
+                fontSize: fs.base,
                 fontWeight: active ? 600 : 400,
                 textAlign: "left",
                 marginBottom: 1,
@@ -162,9 +207,9 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
               onMouseEnter={(e) => {
                 if (!active) {
                   (e.currentTarget as HTMLButtonElement).style.background =
-                    "#161b22";
+                    c.bg.surface;
                   (e.currentTarget as HTMLButtonElement).style.color =
-                    "#c9d1d9";
+                    c.text.secondary;
                 }
               }}
               onMouseLeave={(e) => {
@@ -172,7 +217,7 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
                   (e.currentTarget as HTMLButtonElement).style.background =
                     "transparent";
                   (e.currentTarget as HTMLButtonElement).style.color =
-                    "#7d8590";
+                    c.text.dim;
                 }
               }}
             >
@@ -185,14 +230,14 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
                     transform: "translateY(-50%)",
                     width: 3,
                     height: 18,
-                    background: "linear-gradient(180deg, #7c3aed, #4f46e5)",
+                    background: `linear-gradient(180deg, ${c.brand.primary}, ${c.brand.secondary})`,
                     borderRadius: "0 2px 2px 0",
                   }}
                 />
               )}
               <span
                 style={{
-                  color: active ? "#a78bfa" : "inherit",
+                  color: active ? c.brand.light : "inherit",
                   flexShrink: 0,
                   display: "flex",
                 }}
@@ -205,44 +250,78 @@ export function NavMenu({ view, onViewChange }: NavMenuProps) {
         })}
       </nav>
 
-      {/* Collapse toggle */}
+      {/* Bottom: theme toggle + collapse */}
       <div
         style={{
           padding: collapsed ? "10px 6px" : "10px 10px",
-          borderTop: "1px solid #21262d",
+          borderTop: `1px solid ${c.border.subtle}`,
           display: "flex",
           alignItems: "center",
           justifyContent: collapsed ? "center" : "space-between",
+          gap: 6,
         }}
       >
-        {!collapsed && (
-          <span
-            style={{ fontSize: 10, color: "#30363d", fontFamily: "monospace" }}
-          >
-            :3002
-          </span>
-        )}
+        {/* Theme toggle */}
         <button
-          onClick={() => setCollapsed((v) => !v)}
-          title={collapsed ? "Expand" : "Collapse"}
+          onClick={toggle}
+          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
           style={{
             padding: "4px 7px",
             background: "transparent",
-            border: "1px solid #21262d",
+            border: `1px solid ${c.border.subtle}`,
             borderRadius: 5,
-            color: "#484f58",
+            color: c.text.ghost,
             cursor: "pointer",
-            fontSize: 10,
+            fontSize: fs.xs,
             lineHeight: 1,
             display: "flex",
             alignItems: "center",
             transition: "color 0.1s",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#7d8590";
+            (e.currentTarget as HTMLButtonElement).style.color = c.text.dim;
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#484f58";
+            (e.currentTarget as HTMLButtonElement).style.color = c.text.ghost;
+          }}
+        >
+          {isDark ? <SunIcon /> : <MoonIcon />}
+        </button>
+
+        {!collapsed && (
+          <span
+            style={{
+              fontSize: fs.xs,
+              color: c.text.faint,
+              fontFamily: "monospace",
+            }}
+          >
+            :3002
+          </span>
+        )}
+
+        {/* Collapse toggle */}
+        <button
+          onClick={() => setCollapsed((v) => !v)}
+          title={collapsed ? "Expand" : "Collapse"}
+          style={{
+            padding: "4px 7px",
+            background: "transparent",
+            border: `1px solid ${c.border.subtle}`,
+            borderRadius: 5,
+            color: c.text.ghost,
+            cursor: "pointer",
+            fontSize: fs.xs,
+            lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
+            transition: "color 0.1s",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = c.text.dim;
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = c.text.ghost;
           }}
         >
           {collapsed ? "▶" : "◀"}

@@ -5,6 +5,7 @@ import fs from "fs";
 import { execSync } from "child_process";
 import { analyzeGraph } from "./src/server/analyzer";
 import { extractBlock } from "./src/server/extractor";
+import { analyzeFiles, clearCache } from "./src/server/file-metrics";
 
 const WEB_APP_ROOT = path.resolve(__dirname, "../web-app");
 const MONOREPO_ROOT = path.resolve(__dirname, "../..");
@@ -28,14 +29,21 @@ export default defineConfig({
           }
         });
 
-        // GET /api/file-ranking — list all .ts/.tsx files sorted by line count
-        server.middlewares.use("/api/file-ranking", (_req, res) => {
+        // GET /api/file-ranking?scope=apps/web-app — files with quality metrics
+        server.middlewares.use("/api/file-ranking", (req, res) => {
           try {
+            const url = new URL(req.url ?? "", "http://localhost");
+            const scope = url.searchParams.get("scope") ?? "";
+            const forceRefresh = url.searchParams.get("refresh") === "1";
+
+            if (forceRefresh) clearCache();
+
             const raw = execSync("git ls-files", {
               cwd: MONOREPO_ROOT,
               encoding: "utf-8",
             });
-            const files = raw
+
+            const allRelPaths = raw
               .trim()
               .split("\n")
               .filter(
@@ -44,26 +52,38 @@ export default defineConfig({
                   !f.endsWith(".d.ts"),
               );
 
-            const results = files
-              .map((relPath) => {
-                const abs = path.resolve(MONOREPO_ROOT, relPath);
+            // Derive available scopes from top-level dirs
+            const scopeSet = new Set<string>();
+            for (const p of allRelPaths) {
+              const parts = p.split("/");
+              if (parts.length >= 2) scopeSet.add(`${parts[0]}/${parts[1]}`);
+            }
+            const scopes = ["all", ...Array.from(scopeSet).sort()];
+
+            const relPaths =
+              scope && scope !== "all"
+                ? allRelPaths.filter((p) => p.startsWith(scope + "/"))
+                : allRelPaths;
+
+            const files = relPaths
+              .map((rel) => ({ rel, abs: path.resolve(MONOREPO_ROOT, rel) }))
+              .filter(({ abs }) => {
                 try {
-                  const content = fs.readFileSync(abs, "utf-8");
-                  const lines = content.split("\n").length;
-                  return { path: relPath, lines };
+                  fs.accessSync(abs);
+                  return true;
                 } catch {
-                  return null;
+                  return false;
                 }
-              })
-              .filter(Boolean)
-              .sort(
-                (a, b) =>
-                  (b as { lines: number }).lines -
-                  (a as { lines: number }).lines,
-              );
+              });
+
+            const metrics = analyzeFiles(files).sort(
+              (a, b) => b.lines - a.lines,
+            );
 
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify(results));
+            res.end(
+              JSON.stringify({ metrics, scopes, total: allRelPaths.length }),
+            );
           } catch (err) {
             const message = err instanceof Error ? err.message : String(err);
             res.statusCode = 500;

@@ -1,4 +1,6 @@
 import type { GraphData, GraphNode } from "../server/analyzer";
+import { fs } from "../theme";
+import { useTheme } from "../ThemeContext";
 
 export type AppView = "flow" | "file-ranking";
 
@@ -19,13 +21,15 @@ export function Header({
   onReanalyze,
   view,
 }: HeaderProps) {
+  const c = useTheme();
+
   return (
     <div
       style={{
         padding: "0 16px",
         height: 44,
-        background: "#0d1117",
-        borderBottom: "1px solid #21262d",
+        background: c.bg.base,
+        borderBottom: `1px solid ${c.border.subtle}`,
         display: "flex",
         alignItems: "center",
         gap: 10,
@@ -40,10 +44,10 @@ export function Header({
           style={{
             padding: "4px 7px",
             background: "transparent",
-            color: "#484f58",
-            border: "1px solid #21262d",
+            color: c.text.ghost,
+            border: `1px solid ${c.border.subtle}`,
             borderRadius: 5,
-            fontSize: 10,
+            fontSize: fs.xs,
             cursor: "pointer",
             lineHeight: 1,
             display: "flex",
@@ -51,10 +55,10 @@ export function Header({
             transition: "color 0.1s",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#7d8590";
+            (e.currentTarget as HTMLButtonElement).style.color = c.text.dim;
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#484f58";
+            (e.currentTarget as HTMLButtonElement).style.color = c.text.ghost;
           }}
         >
           {sidebarOpen ? "◀" : "▶"}
@@ -74,7 +78,7 @@ export function Header({
         {view === "flow" ? (
           selectedProc ? (
             <>
-              <span style={{ fontSize: 11, color: "#484f58" }}>
+              <span style={{ fontSize: fs.sm, color: c.text.ghost }}>
                 {
                   graphData?.nodes.find((n) =>
                     graphData.edges.some(
@@ -83,12 +87,12 @@ export function Header({
                   )?.label
                 }
               </span>
-              <span style={{ color: "#30363d", fontSize: 12 }}>›</span>
+              <span style={{ color: c.text.faint, fontSize: fs.base }}>›</span>
               <span
                 style={{
-                  fontSize: 12,
+                  fontSize: fs.base,
                   fontWeight: 600,
-                  color: "#c9d1d9",
+                  color: c.text.secondary,
                   fontFamily: "monospace",
                 }}
               >
@@ -96,12 +100,12 @@ export function Header({
               </span>
             </>
           ) : (
-            <span style={{ fontSize: 11, color: "#484f58" }}>
+            <span style={{ fontSize: fs.sm, color: c.text.ghost }}>
               Select a procedure from the sidebar
             </span>
           )
         ) : (
-          <span style={{ fontSize: 11, color: "#484f58" }}>
+          <span style={{ fontSize: fs.sm, color: c.text.ghost }}>
             .ts / .tsx · sorted by line count · respects .gitignore
           </span>
         )}
@@ -119,7 +123,11 @@ export function Header({
       >
         {view === "flow" && graphData?.analyzedAt && (
           <span
-            style={{ fontSize: 10, color: "#30363d", fontFamily: "monospace" }}
+            style={{
+              fontSize: fs.xs,
+              color: c.text.faint,
+              fontFamily: "monospace",
+            }}
           >
             {new Date(graphData.analyzedAt).toLocaleTimeString([], {
               hour: "2-digit",
@@ -133,11 +141,11 @@ export function Header({
             onClick={onReanalyze}
             style={{
               padding: "4px 12px",
-              background: "#1c2128",
-              color: "#c9d1d9",
-              border: "1px solid #30363d",
+              background: c.bg.raised,
+              color: c.text.secondary,
+              border: `1px solid ${c.border.default}`,
               borderRadius: 6,
-              fontSize: 11,
+              fontSize: fs.sm,
               cursor: "pointer",
               fontFamily: "sans-serif",
               fontWeight: 500,
@@ -145,15 +153,15 @@ export function Header({
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLButtonElement).style.background =
-                "#282e36";
+                c.bg.hover;
               (e.currentTarget as HTMLButtonElement).style.borderColor =
-                "#484f58";
+                c.text.ghost;
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLButtonElement).style.background =
-                "#1c2128";
+                c.bg.raised;
               (e.currentTarget as HTMLButtonElement).style.borderColor =
-                "#30363d";
+                c.border.default;
             }}
           >
             Re-analyze

@@ -1,5 +1,7 @@
 import { PROC_BADGE } from "../config";
 import type { RouterGroup } from "../layout";
+import { fs } from "../theme";
+import { useTheme } from "../ThemeContext";
 
 interface SidebarProps {
   status: "loading" | "error" | "ok";
@@ -24,13 +26,15 @@ export function Sidebar({
   onToggleRouter,
   onSelectProc,
 }: SidebarProps) {
+  const c = useTheme();
+
   return (
     <div
       style={{
         width: sidebarOpen ? 240 : 0,
         minWidth: sidebarOpen ? 240 : 0,
-        background: "#0d1117",
-        borderRight: "1px solid #21262d",
+        background: c.bg.base,
+        borderRight: `1px solid ${c.border.subtle}`,
         overflowY: sidebarOpen ? "auto" : "hidden",
         overflowX: "hidden",
         flexShrink: 0,
@@ -39,7 +43,7 @@ export function Sidebar({
       }}
     >
       {status === "loading" && sidebarOpen && (
-        <div style={{ padding: 16, fontSize: 12, color: "#8b949e" }}>
+        <div style={{ padding: 16, fontSize: fs.base, color: c.text.muted }}>
           Analyzing...
         </div>
       )}
@@ -50,8 +54,8 @@ export function Sidebar({
           <div
             style={{
               padding: "8px 8px",
-              borderBottom: "1px solid #21262d",
-              background: "#0d1117",
+              borderBottom: `1px solid ${c.border.subtle}`,
+              background: c.bg.base,
               position: "sticky",
               top: 0,
               zIndex: 1,
@@ -65,13 +69,13 @@ export function Sidebar({
               style={{
                 width: "100%",
                 padding: "6px 10px",
-                fontSize: 11,
+                fontSize: fs.sm,
                 fontFamily: "monospace",
-                border: "1px solid #21262d",
+                border: `1px solid ${c.border.subtle}`,
                 borderRadius: 6,
                 outline: "none",
-                background: "#161b22",
-                color: "#c9d1d9",
+                background: c.bg.surface,
+                color: c.text.secondary,
                 boxSizing: "border-box",
               }}
             />
@@ -98,9 +102,9 @@ export function Sidebar({
                     textAlign: "left",
                     padding: "6px 12px",
                     border: "none",
-                    borderBottom: "1px solid #161b22",
+                    borderBottom: `1px solid ${c.bg.surface}`,
                     marginTop: 4,
-                    background: "#0d1117",
+                    background: c.bg.base,
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -110,9 +114,9 @@ export function Sidebar({
                 >
                   <span
                     style={{
-                      fontSize: 10,
+                      fontSize: fs.xs,
                       fontWeight: 700,
-                      color: "#adbac7",
+                      color: c.text.tertiary,
                       textTransform: "uppercase",
                       letterSpacing: 1,
                     }}
@@ -121,14 +125,14 @@ export function Sidebar({
                   </span>
                   <span
                     style={{
-                      fontSize: 10,
-                      color: "#8b949e",
+                      fontSize: fs.xs,
+                      color: c.text.muted,
                       display: "flex",
                       alignItems: "center",
                       gap: 4,
                     }}
                   >
-                    <span style={{ fontSize: 9 }}>{filtered.length}</span>
+                    <span style={{ fontSize: fs.xxs }}>{filtered.length}</span>
                     {isCollapsed ? "▶" : "▼"}
                   </span>
                 </button>
@@ -153,10 +157,10 @@ export function Sidebar({
                           textAlign: "left",
                           padding: "8px 12px",
                           border: "none",
-                          borderBottom: "1px solid #161b22",
-                          background: isSelected ? "#1c2128" : "transparent",
+                          borderBottom: `1px solid ${c.bg.surface}`,
+                          background: isSelected ? c.bg.raised : "transparent",
                           borderLeft: isSelected
-                            ? "2px solid #7c3aed"
+                            ? `2px solid ${c.brand.primary}`
                             : "2px solid transparent",
                           cursor: "pointer",
                           display: "flex",
@@ -168,7 +172,7 @@ export function Sidebar({
                           if (!isSelected)
                             (
                               e.currentTarget as HTMLButtonElement
-                            ).style.background = "#161b22";
+                            ).style.background = c.bg.surface;
                         }}
                         onMouseLeave={(e) => {
                           if (!isSelected)
@@ -179,9 +183,11 @@ export function Sidebar({
                       >
                         <div
                           style={{
-                            fontSize: 12,
+                            fontSize: fs.base,
                             fontWeight: 600,
-                            color: isSelected ? "#e6edf3" : "#adbac7",
+                            color: isSelected
+                              ? c.text.primary
+                              : c.text.tertiary,
                             fontFamily: "monospace",
                           }}
                         >
@@ -190,8 +196,8 @@ export function Sidebar({
                               {label.slice(0, matchIdx)}
                               <mark
                                 style={{
-                                  background: "#3d2e00",
-                                  color: "#f0b429",
+                                  background: c.warning.highlight,
+                                  color: c.warning.highlightText,
                                   borderRadius: 2,
                                   padding: "0 1px",
                                 }}
@@ -208,7 +214,7 @@ export function Sidebar({
                           <div style={{ display: "flex", gap: 4 }}>
                             <span
                               style={{
-                                fontSize: 9,
+                                fontSize: fs.xxs,
                                 padding: "1px 5px",
                                 background: procBadge.bg,
                                 color: procBadge.text,
@@ -220,10 +226,10 @@ export function Sidebar({
                             </span>
                             <span
                               style={{
-                                fontSize: 9,
+                                fontSize: fs.xxs,
                                 padding: "1px 5px",
-                                background: "#161b22",
-                                color: "#8b949e",
+                                background: c.bg.surface,
+                                color: c.text.muted,
                                 borderRadius: 3,
                               }}
                             >
