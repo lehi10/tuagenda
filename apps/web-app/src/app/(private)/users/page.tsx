@@ -7,6 +7,15 @@ import type { UserProps } from "@/server/core/domain/entities/User";
 import { Input } from "@/client/components/ui/input";
 import { Button } from "@/client/components/ui/button";
 import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/client/components/ui/pagination";
+import {
   Search,
   Users as UsersIcon,
   Loader2,
@@ -16,6 +25,8 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
+
+const PAGE_SIZE = 20;
 import { useDebounce } from "@/client/hooks/use-debounce";
 import { USER_TYPE_FILTERS, USER_STATUS_FILTERS } from "./constants";
 import { UsersTable } from "./components/users-table";
@@ -42,13 +53,18 @@ export default function UsersPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserProps | null>(null);
+  const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search, 300);
   const queryClient = useQueryClient();
+
+  const { data: statsData } = useTrpc.user.getAll.useQuery({});
 
   const { data, isLoading, error } = useTrpc.user.getAll.useQuery({
     search: debouncedSearch || undefined,
     type: typeFilter !== "all" ? (typeFilter as UserType) : undefined,
     status: statusFilter !== "all" ? (statusFilter as UserStatus) : undefined,
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
   });
 
   // Update user mutation
@@ -103,16 +119,21 @@ export default function UsersPage() {
     }
   };
 
-  // Calculate stats
+  // Calculate stats from unfiltered/unpaginated data
   const activeUsers =
-    data?.users?.filter((u) => u.status === UserStatus.VISIBLE).length || 0;
+    statsData?.users?.filter((u) => u.status === UserStatus.VISIBLE).length ||
+    0;
   const inactiveUsers =
-    data?.users?.filter(
+    statsData?.users?.filter(
       (u) => u.status === UserStatus.HIDDEN || u.status === UserStatus.DISABLED
     ).length || 0;
   const adminUsers =
-    data?.users?.filter((u) => u.type === UserType.ADMIN).length || 0;
-  const totalUsers = data?.total || 0;
+    statsData?.users?.filter((u) => u.type === UserType.ADMIN).length || 0;
+  const totalUsers = statsData?.total || 0;
+
+  // Pagination
+  const filteredTotal = data?.total || 0;
+  const totalPages = Math.ceil(filteredTotal / PAGE_SIZE);
 
   return (
     <div className="p-6 space-y-6">
@@ -164,7 +185,10 @@ export default function UsersPage() {
             <Input
               placeholder="Search by name or email..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               className="pl-9 h-9"
             />
             {search && (
@@ -172,7 +196,10 @@ export default function UsersPage() {
                 variant="ghost"
                 size="sm"
                 className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
-                onClick={() => setSearch("")}
+                onClick={() => {
+                  setSearch("");
+                  setPage(1);
+                }}
               >
                 <X className="h-3.5 w-3.5" />
               </Button>
@@ -185,7 +212,10 @@ export default function UsersPage() {
                 (o) => ({ value: o.value, label: o.label })
               )}
               value={typeFilter}
-              onChange={setTypeFilter}
+              onChange={(v) => {
+                setTypeFilter(v);
+                setPage(1);
+              }}
               allLabel="All types"
               active={typeFilter !== "all"}
             />
@@ -194,7 +224,10 @@ export default function UsersPage() {
                 variant="default"
                 size="sm"
                 className="h-9 w-7 rounded-l-none px-0"
-                onClick={() => setTypeFilter("all")}
+                onClick={() => {
+                  setTypeFilter("all");
+                  setPage(1);
+                }}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -207,7 +240,10 @@ export default function UsersPage() {
                 (o) => ({ value: o.value, label: o.label })
               )}
               value={statusFilter}
-              onChange={setStatusFilter}
+              onChange={(v) => {
+                setStatusFilter(v);
+                setPage(1);
+              }}
               allLabel="All statuses"
               active={statusFilter !== "all"}
             />
@@ -216,7 +252,10 @@ export default function UsersPage() {
                 variant="default"
                 size="sm"
                 className="h-9 w-7 rounded-l-none px-0"
-                onClick={() => setStatusFilter("all")}
+                onClick={() => {
+                  setStatusFilter("all");
+                  setPage(1);
+                }}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -231,6 +270,7 @@ export default function UsersPage() {
                 setSearch("");
                 setTypeFilter("all");
                 setStatusFilter("all");
+                setPage(1);
               }}
               className="h-9 gap-1"
             >
@@ -244,7 +284,7 @@ export default function UsersPage() {
         <p className="text-xs text-muted-foreground">
           {isLoading
             ? "Loading users..."
-            : `${totalUsers} ${totalUsers === 1 ? "user" : "users"}${search || typeFilter !== "all" || statusFilter !== "all" ? " (filtered)" : ""}`}
+            : `${filteredTotal} ${filteredTotal === 1 ? "user" : "users"}${search || typeFilter !== "all" || statusFilter !== "all" ? " (filtered)" : ""}`}
         </p>
 
         {/* Table */}
@@ -286,6 +326,71 @@ export default function UsersPage() {
             />
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-muted-foreground">
+              Page {page} of {totalPages}
+            </p>
+            <Pagination className="w-auto mx-0">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    aria-disabled={page === 1}
+                    className={
+                      page === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(
+                    (p) =>
+                      p === 1 || p === totalPages || Math.abs(p - page) <= 1
+                  )
+                  .reduce<(number | "ellipsis")[]>((acc, p, idx, arr) => {
+                    if (idx > 0 && p - (arr[idx - 1] as number) > 1)
+                      acc.push("ellipsis");
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item, idx) =>
+                    item === "ellipsis" ? (
+                      <PaginationItem key={`ellipsis-${idx}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={item}>
+                        <PaginationLink
+                          isActive={item === page}
+                          onClick={() => setPage(item)}
+                          className="cursor-pointer"
+                        >
+                          {item}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    aria-disabled={page === totalPages}
+                    className={
+                      page === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
 
       {/* Edit Dialog */}
